@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>L2cache — Your clipboard remembers everything</title>
+  <meta name="description" content="The AI-powered clipboard manager for Mac. Built for developers, researchers, and power users who copy and paste all day."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple:     #7F77DD;
+      --purple-dark:#5C52C8;
+      --purple-deep:#2D2A5E;
+      --pink:       #F472B6;
+      --bg:         #0D0C1A;
+      --bg2:        #131126;
+      --bg3:        #1A1830;
+      --border:     rgba(127,119,221,0.18);
+      --text:       #F0EFF8;
+      --text-muted: rgba(240,239,248,0.5);
+      --text-dim:   rgba(240,239,248,0.28);
+      --mono:       'DM Mono', monospace;
+      --serif:      'Fraunces', serif;
+      --sans:       'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── noise overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0;
+      opacity: 0.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 48px;
+      background: rgba(13,12,26,0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 15px;
+      color: var(--text);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .nav-logo-chip {
+      width: 28px; height: 28px;
+      background: var(--purple);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 500; color: white;
+    }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      background: var(--purple);
+      color: white !important;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 14px !important;
+      font-weight: 500;
+      transition: background 0.2s !important;
+    }
+
+    .nav-cta:hover { background: var(--purple-dark) !important; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+    }
+
+    /* glow orbs */
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 20%; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(ellipse, rgba(127,119,221,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(127,119,221,0.12);
+      border: 1px solid rgba(127,119,221,0.3);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--purple);
+      margin-bottom: 32px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .badge-dot {
+      width: 6px; height: 6px;
+      background: var(--purple);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(48px, 7vw, 88px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      animation: fadeUp 0.6s ease 0.1s both;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--purple);
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 0 auto 48px;
+      animation: fadeUp 0.6s ease 0.2s both;
+    }
+
+    .hero-actions {
+      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+      animation: fadeUp 0.6s ease 0.3s both;
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--purple);
+      color: white;
+      padding: 14px 28px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.2s;
+      box-shadow: 0 0 0 0 rgba(127,119,221,0.4);
+    }
+
+    .btn-primary:hover {
+      background: var(--purple-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 32px rgba(127,119,221,0.35);
+    }
+
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 14px 28px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-1px);
+    }
+
+    .price-tag {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-top: 16px;
+      animation: fadeUp 0.6s ease 0.4s both;
+    }
+
+    /* ── APP MOCKUP ── */
+    .mockup-wrap {
+      margin-top: 72px;
+      position: relative;
+      animation: fadeUp 0.8s ease 0.5s both;
+    }
+
+    .mockup {
+      width: min(420px, 90vw);
+      background: rgba(26,24,48,0.95);
+      border: 1px solid rgba(127,119,221,0.25);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 32px 80px rgba(0,0,0,0.6),
+        0 0 80px rgba(127,119,221,0.12);
+      margin: 0 auto;
+    }
+
+    .mockup-search {
+      padding: 16px;
+      border-bottom: 1px solid rgba(127,119,221,0.1);
+    }
+
+    .mockup-search-bar {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(127,119,221,0.15);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex; align-items: center; gap: 10px;
+      color: rgba(255,255,255,0.3);
+      font-size: 13px;
+    }
+
+    .mockup-pills {
+      display: flex; gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(127,119,221,0.08);
+      overflow-x: auto;
+    }
+
+    .pill {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-family: var(--mono);
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+
+    .pill-active { background: var(--purple); color: white; }
+    .pill-inactive { background: rgba(255,255,255,0.05); color: var(--text-muted); border-color: var(--border); }
+
+    .mockup-clips { padding: 8px 0; }
+
+    .clip-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 16px;
+      border-bottom: 1px solid rgba(127,119,221,0.05);
+      transition: background 0.15s;
+    }
+
+    .clip-row:hover { background: rgba(127,119,221,0.08); }
+
+    .clip-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .clip-icon-code { background: rgba(127,119,221,0.2); }
+    .clip-icon-url  { background: rgba(96,165,250,0.2); }
+    .clip-icon-text { background: rgba(52,211,153,0.2); }
+    .clip-icon-img  { background: rgba(244,114,182,0.2); }
+
+    .clip-body { flex: 1; min-width: 0; }
+
+    .clip-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .clip-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .clip-badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .badge-swift { background: rgba(244,114,182,0.15); color: #F472B6; }
+    .badge-words { background: rgba(127,119,221,0.15); color: var(--purple); }
+
+    .mockup-footer {
+      padding: 10px 16px;
+      border-top: 1px solid rgba(127,119,221,0.1);
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .ai-dot {
+      width: 6px; height: 6px;
+      background: #34D399;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    /* ── FEATURES ── */
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 120px 24px;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--purple);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 540px;
+      margin-bottom: 64px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(127,119,221,0.4);
+      transform: translateY(-2px);
+    }
+
+    .feature-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: rgba(127,119,221,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .feature-title {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* ── WHO IS IT FOR ── */
+    .users-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .user-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+    }
+
+    .user-emoji { font-size: 28px; margin-bottom: 14px; }
+
+    .user-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .user-pain {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .user-pain strong {
+      color: var(--purple);
+      font-weight: 500;
+    }
+
+    /* ── SMART PASTER ── */
+    .paster-demo {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 500px;
+    }
+
+    .paster-header {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+
+    .paster-actions {
+      display: flex; flex-direction: column; gap: 8px;
+    }
+
+    .paster-action {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .paster-action:hover, .paster-action.active {
+      background: rgba(127,119,221,0.15);
+      border-color: rgba(127,119,221,0.3);
+    }
+
+    .paster-action-icon { font-size: 16px; width: 20px; text-align: center; }
+    .paster-action-label { flex: 1; }
+    .paster-action-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(127,119,221,0.15);
+      color: var(--purple);
+    }
+
+    /* ── PRICING ── */
+    .pricing-card {
+      max-width: 400px;
+      margin: 0 auto;
+      background: var(--bg2);
+      border: 1px solid rgba(127,119,221,0.4);
+      border-radius: 20px;
+      padding: 48px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pricing-card::before {
+      content: '';
+      position: absolute;
+      top: -80px; left: 50%;
+      transform: translateX(-50%);
+      width: 300px; height: 300px;
+      background: radial-gradient(ellipse, rgba(127,119,221,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .pricing-amount {
+      font-family: var(--serif);
+      font-size: 72px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .pricing-amount sup {
+      font-size: 32px;
+      vertical-align: super;
+      font-weight: 300;
+    }
+
+    .pricing-type {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+
+    .pricing-features {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 40px;
+    }
+
+    .pricing-features li {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .pricing-features li:last-child { border-bottom: none; }
+
+    .check { color: #34D399; font-size: 16px; }
+
+    /* ── PRIVACY STRIP ── */
+    .privacy-strip {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 48px 24px;
+    }
+
+    .privacy-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex; align-items: center; gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .privacy-stat {
+      flex: 1; min-width: 160px;
+      text-align: center;
+    }
+
+    .privacy-stat-number {
+      font-family: var(--serif);
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--purple);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .privacy-stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 48px 24px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-logo {
+      font-family: var(--mono);
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .footer-links {
+      display: flex; gap: 24px; justify-content: center;
+      list-style: none;
+      margin-bottom: 24px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text-muted); }
+
+    .footer-copy {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .hero { padding: 100px 24px 60px; }
+      .section { padding: 80px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-chip">L2</div>
+    L2cache
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#who">Who it's for</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="support.html">Support</a></li>
+    <li><a href="#pricing" class="nav-cta">Download — $19</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    Now on the Mac App Store
+  </div>
+
+  <h1>Your clipboard<br/><em>remembers</em> everything</h1>
+
+  <p class="hero-sub">
+    The AI-powered clipboard manager for Mac. Captures everything you copy,
+    understands what it is, and surfaces it instantly.
+  </p>
+
+  <div class="hero-actions">
+    <a href="#pricing" class="btn-primary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12l2 2 4-4"/></svg>
+      Download for Mac
+    </a>
+    <a href="#features" class="btn-secondary">See features</a>
+  </div>
+
+  <p class="price-tag">$19 · one-time · macOS 15+ · Apple Silicon &amp; Intel</p>
+
+  <!-- App mockup -->
+  <div class="mockup-wrap">
+    <div class="mockup">
+      <div class="mockup-search">
+        <div class="mockup-search-bar">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          Search clips...
+          <span style="margin-left:auto;font-family:var(--mono);font-size:11px;">⌘K</span>
+        </div>
+      </div>
+      <div class="mockup-pills">
+        <span class="pill pill-active">All</span>
+        <span class="pill pill-inactive">Text</span>
+        <span class="pill pill-inactive">Code</span>
+        <span class="pill pill-inactive">URL</span>
+        <span class="pill pill-inactive">Image</span>
+        <span class="pill pill-inactive">Email</span>
+      </div>
+      <div class="mockup-clips">
+        <div class="clip-row">
+          <div class="clip-icon clip-icon-code">⟨/⟩</div>
+          <div class="clip-body">
+            <div class="clip-title">Authenticate user and store session in Keychain</div>
+            <div class="clip-meta">Xcode · 2 mins ago</div>
+          </div>
+          <span class="clip-badge badge-swift">swift</span>
+        </div>
+        <div class="clip-row">
+          <div class="clip-icon clip-icon-url">🔗</div>
+          <div class="clip-body">
+            <div class="clip-title">Scaling Laws for Neural Language Models — OpenAI</div>
+            <div class="clip-meta">Safari · 14 mins ago</div>
+          </div>
+        </div>
+        <div class="clip-row">
+          <div class="clip-icon clip-icon-text">📄</div>
+          <div class="clip-body">
+            <div class="clip-title">Fetch user profile from API with retry logic</div>
+            <div class="clip-meta">Cursor · 1 hour ago</div>
+          </div>
+          <span class="clip-badge badge-words">195 words</span>
+        </div>
+        <div class="clip-row">
+          <div class="clip-icon clip-icon-img" style="font-size:18px;">🖼</div>
+          <div class="clip-body">
+            <div class="clip-title">Dashboard revenue chart — Q2 breakdown</div>
+            <div class="clip-meta">195 words extracted · Finder · 2h ago</div>
+          </div>
+        </div>
+        <div class="clip-row">
+          <div class="clip-icon clip-icon-code">⟨/⟩</div>
+          <div class="clip-body">
+            <div class="clip-title">Debounce search input with 300ms delay</div>
+            <div class="clip-meta">VS Code · 3h ago</div>
+          </div>
+        </div>
+      </div>
+      <div class="mockup-footer">
+        <span><span class="ai-dot"></span>Apple Intelligence</span>
+        <span>219 clips</span>
+        <span>⚙</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRIVACY STATS -->
+<div class="privacy-strip">
+  <div class="privacy-inner">
+    <div class="privacy-stat">
+      <div class="privacy-stat-number">0</div>
+      <div class="privacy-stat-label">bytes sent to any server</div>
+    </div>
+    <div class="privacy-stat">
+      <div class="privacy-stat-number">$19</div>
+      <div class="privacy-stat-label">one-time, no subscription ever</div>
+    </div>
+    <div class="privacy-stat">
+      <div class="privacy-stat-number">∞</div>
+      <div class="privacy-stat-label">clipboard history on your Mac</div>
+    </div>
+    <div class="privacy-stat">
+      <div class="privacy-stat-number">100ms</div>
+      <div class="privacy-stat-label">panel opens, every time</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="reveal">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">Built for people who<br/>copy things all day</h2>
+    <p class="section-sub">Not just another clipboard manager. L2cache understands what you copy.</p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon">🧠</div>
+      <div class="feature-title">AI-generated titles</div>
+      <div class="feature-desc">Code clips show what the code <em>does</em>, not what language it's in. "Authenticate user and store session in Keychain" — not "Swift function".</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">Smart Paster</div>
+      <div class="feature-desc">Hold ⌥V instead of ⌘V. Transform your clipboard before pasting — strip markdown fences, fix grammar, convert code, clean URLs, format JSON.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🍎</div>
+      <div class="feature-title">Apple Intelligence</div>
+      <div class="feature-desc">Runs on-device using Apple's foundation model. Private by default — your clipboard never leaves your Mac unless you explicitly enable cloud AI.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🔍</div>
+      <div class="feature-title">Search everything</div>
+      <div class="feature-desc">Full-text search across all clips. Screenshots are searchable by their text content via OCR. Find anything in under 100ms.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🛡</div>
+      <div class="feature-title">Sensitive radar</div>
+      <div class="feature-desc">API keys, passwords, and credit cards are automatically detected and never stored. A shield badge confirms when something was blocked.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">📦</div>
+      <div class="feature-title">Smart bundles</div>
+      <div class="feature-desc">Everything you copy during a coding session groups automatically. "Auth Sprint — 12 clips" — recall an entire context with one click.</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IS IT FOR -->
+<section class="section" id="who" style="padding-top:0">
+  <div class="reveal">
+    <div class="section-label">Who it's for</div>
+    <h2 class="section-title">Three kinds of power users</h2>
+    <p class="section-sub">If you copy more than 20 things a day, L2cache was built for you.</p>
+  </div>
+
+  <div class="users-grid">
+    <div class="user-card reveal">
+      <div class="user-emoji">🤖</div>
+      <div class="user-title">AI Engineers &amp; Developers</div>
+      <div class="user-pain">Juggling LLM outputs, stack traces, and prompts across Windsurf, Cursor, and ChatGPT. L2cache <strong>strips markdown fences</strong>, isolates error messages, and never lets a good prompt disappear.</div>
+    </div>
+    <div class="user-card reveal">
+      <div class="user-emoji">✍️</div>
+      <div class="user-title">Researchers &amp; Writers</div>
+      <div class="user-pain">Copying quotes and URLs from 40 browser tabs. L2cache <strong>enriches every URL</strong> with its page title, strips tracking parameters, and groups clips by topic automatically.</div>
+    </div>
+    <div class="user-card reveal">
+      <div class="user-emoji">📊</div>
+      <div class="user-title">Data &amp; Ops Professionals</div>
+      <div class="user-pain">Copying tables from PDFs and emails into Excel — only to watch the formatting break. L2cache <strong>detects tabular data</strong> and offers clean CSV or markdown table in one click.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SMART PASTER DEMO -->
+<section class="section" style="padding-top:0">
+  <div style="display:flex;gap:64px;align-items:center;flex-wrap:wrap">
+    <div style="flex:1;min-width:260px" class="reveal">
+      <div class="section-label">Smart Paster</div>
+      <h2 class="section-title" style="font-size:clamp(28px,3vw,42px)">Transform before<br/>you paste</h2>
+      <p style="color:var(--text-muted);font-size:16px;margin-top:16px;line-height:1.7">
+        Hold <kbd style="background:rgba(255,255,255,0.1);border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-family:var(--mono);font-size:13px">⌥V</kbd> on any clip to open a context-aware transform menu. Local transforms are instant. AI transforms use your chosen provider.
+      </p>
+    </div>
+    <div class="paster-demo reveal" style="flex:1;min-width:280px">
+      <div class="paster-header">// Swift code clip detected</div>
+      <div class="paster-actions">
+        <div class="paster-action active">
+          <span class="paster-action-icon">✂️</span>
+          <span class="paster-action-label">Strip markdown fences</span>
+          <span class="paster-action-tag">instant</span>
+        </div>
+        <div class="paster-action">
+          <span class="paster-action-icon">💬</span>
+          <span class="paster-action-label">Add comments</span>
+          <span class="paster-action-tag">AI</span>
+        </div>
+        <div class="paster-action">
+          <span class="paster-action-icon">🔄</span>
+          <span class="paster-action-label">Convert to JavaScript</span>
+          <span class="paster-action-tag">AI</span>
+        </div>
+        <div class="paster-action">
+          <span class="paster-action-icon">📋</span>
+          <span class="paster-action-label">Extract function signature</span>
+          <span class="paster-action-tag">instant</span>
+        </div>
+        <div class="paster-action">
+          <span class="paster-action-icon">🧠</span>
+          <span class="paster-action-label">Explain this code</span>
+          <span class="paster-action-tag">AI</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing" style="padding-top:0">
+  <div class="reveal" style="text-align:center;margin-bottom:48px">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title">Simple, honest pricing</h2>
+    <p class="section-sub" style="margin:16px auto 0">No subscription. No upsell. Pay once, use forever.</p>
+  </div>
+
+  <div class="pricing-card reveal">
+    <div class="pricing-amount"><sup>$</sup>19</div>
+    <div class="pricing-type">one-time purchase · all future updates included</div>
+    <ul class="pricing-features">
+      <li><span class="check">✓</span> Unlimited clipboard history</li>
+      <li><span class="check">✓</span> Apple Intelligence on-device AI</li>
+      <li><span class="check">✓</span> Smart Paster with transforms</li>
+      <li><span class="check">✓</span> Screenshot OCR search</li>
+      <li><span class="check">✓</span> Smart Bundles</li>
+      <li><span class="check">✓</span> Sensitive data protection</li>
+      <li><span class="check">✓</span> Claude &amp; Gemini cloud AI (bring your own key)</li>
+      <li><span class="check">✓</span> All future updates</li>
+    </ul>
+    <a href="#" class="btn-primary" style="width:100%;justify-content:center;font-size:16px;padding:16px">
+      Download L2cache
+    </a>
+    <p style="font-size:12px;color:var(--text-dim);margin-top:16px">macOS 15 Sequoia or later · 14-day free trial</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">L2cache by <a href="https://github.com/dindina" style="color:var(--purple);text-decoration:none">@dindina</a></div>
+  <ul class="footer-links">
+    <li><a href="privacy.html">Privacy Policy</a></li>
+    <li><a href="support.html">Support</a></li>
+    <li><a href="https://github.com/dindina">GitHub</a></li>
+  </ul>
+  <p class="footer-copy">© 2026 L2cache. Made in Sydney, Australia. 🇦🇺</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
