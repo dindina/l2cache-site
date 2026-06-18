@@ -578,34 +578,45 @@
     .privacy-strip {
       background: var(--bg2);
       border-bottom: 1px solid var(--border);
-      padding: 80px 24px 14px;
+      padding: 88px 24px 36px;
     }
 
     .privacy-inner {
-      max-width: 1100px;
+      max-width: 860px;
       margin: 0 auto;
-      display: flex; align-items: center; justify-content: center;
-      flex-wrap: wrap;
+      display: flex; align-items: flex-start; justify-content: center;
       gap: 0;
     }
 
     .privacy-stat {
-      display: flex; align-items: baseline; gap: 5px;
-      padding: 0 20px;
-      font-size: 13px;
-      color: var(--text-muted);
-      white-space: nowrap;
+      flex: 1;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center;
+      padding: 0 28px;
+      gap: 8px;
     }
 
     .privacy-stat:not(:last-child) {
       border-right: 1px solid var(--border);
     }
 
+    .privacy-stat-icon {
+      color: var(--purple);
+      display: flex; align-items: center; justify-content: center;
+    }
+
     .privacy-stat-value {
       font-family: var(--mono);
-      font-size: 13px;
+      font-size: 22px;
       font-weight: 700;
       color: var(--text);
+      line-height: 1;
+    }
+
+    .privacy-stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
     }
 
     /* ── SECOND MEMORY SECTION ── */
@@ -821,9 +832,11 @@
         object-position: center center;
       }
       .hero-shots-dots { margin-top: 12px; }
-      .privacy-strip { padding: 72px 16px 12px; }
-      .privacy-stat { padding: 4px 12px; border-right: none; }
+      .privacy-strip { padding: 72px 16px 28px; }
+      .privacy-inner { flex-wrap: wrap; }
+      .privacy-stat { flex: 0 0 50%; padding: 20px 16px; border-right: none; border-bottom: 1px solid var(--border); }
       .privacy-stat:nth-child(odd) { border-right: 1px solid var(--border); }
+      .privacy-stat:nth-child(3), .privacy-stat:nth-child(4) { border-bottom: none; }
       .section { padding: 56px 24px; }
       .section-title { font-size: clamp(28px, 7vw, 42px); }
       .features-grid { grid-template-columns: 1fr; }
@@ -857,10 +870,34 @@
 <!-- STATS STRIP -->
 <div class="privacy-strip">
   <div class="privacy-inner">
-    <div class="privacy-stat"><span class="privacy-stat-value">0 bytes</span> of clip content sent to any server</div>
-    <div class="privacy-stat"><span class="privacy-stat-value">$6.99</span> introductory price, no subscription ever</div>
-    <div class="privacy-stat"><span class="privacy-stat-value">Unlimited</span> clipboard history on your Mac</div>
-    <div class="privacy-stat"><span class="privacy-stat-value">100ms</span> panel opens, every time</div>
+    <div class="privacy-stat">
+      <div class="privacy-stat-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="privacy-stat-value">0 bytes</div>
+      <div class="privacy-stat-label">of clip content<br>sent to any server</div>
+    </div>
+    <div class="privacy-stat">
+      <div class="privacy-stat-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <div class="privacy-stat-value">100ms</div>
+      <div class="privacy-stat-label">panel opens,<br>every time</div>
+    </div>
+    <div class="privacy-stat">
+      <div class="privacy-stat-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 12c-2-2.5-4-4-6-4a4 4 0 0 0 0 8c2 0 4-1.5 6-4zm0 0c2 2.5 4 4 6 4a4 4 0 0 0 0-8c-2 0-4 1.5-6 4z"/></svg>
+      </div>
+      <div class="privacy-stat-value">Unlimited</div>
+      <div class="privacy-stat-label">clipboard history<br>on your Mac</div>
+    </div>
+    <div class="privacy-stat">
+      <div class="privacy-stat-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      </div>
+      <div class="privacy-stat-value">$6.99</div>
+      <div class="privacy-stat-label">introductory price,<br>no subscription ever</div>
+    </div>
   </div>
 </div>
 
