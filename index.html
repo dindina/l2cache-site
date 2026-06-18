@@ -426,6 +426,14 @@
       line-height: 1.65;
     }
 
+    .feature-caveat {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.8em;
+      opacity: 0.6;
+      font-weight: 400;
+    }
+
     /* ── FOR EVERY USER ── */
     .users-grid {
       display: grid;
@@ -851,7 +859,7 @@
   <div class="privacy-inner">
     <div class="privacy-stat">
       <div class="privacy-stat-number">0</div>
-      <div class="privacy-stat-label">bytes sent to any server</div>
+      <div class="privacy-stat-label">bytes of clip content sent to any server</div>
     </div>
     <div class="privacy-stat">
       <div class="privacy-stat-number">$6.99</div>
@@ -873,10 +881,7 @@
 
   <!-- left: headline + actions -->
   <div class="hero-text">
-    <div class="hero-badge">
-      <span class="badge-dot"></span>
-      Now on the Mac App Store
-    </div>
+    <!-- TODO: re-add "Now on the Mac App Store" badge once App Store listing is live and approved -->
 
     <h1>Your clipboard<br/><em>has a memory</em> now</h1>
 
@@ -890,7 +895,7 @@
       <a href="#features" class="btn-secondary">See features</a>
     </div>
 
-    <p class="price-tag">$6.99 · introductory price · macOS 15+ · Apple Silicon &amp; Intel</p>
+    <p class="price-tag">$6.99 · introductory price · macOS 13+ · Apple Silicon &amp; Intel</p>
   </div>
 
   <!-- right: screenshot carousel -->
@@ -1006,17 +1011,17 @@
     <div class="feature-card reveal">
       <div class="feature-icon">🧠</div>
       <div class="feature-title">AI-generated titles</div>
-      <div class="feature-desc">Code clips show what the code <em>does</em>, not what language it's in. "Authenticate user and store session in Keychain" — not "Swift function".</div>
+      <div class="feature-desc">Code clips show what the code <em>does</em>, not what language it's in. "Authenticate user and store session in Keychain" — not "Swift function".<span class="feature-caveat">Requires macOS 15.1+ and Apple Silicon. Falls back to plain-text titles on other Macs.</span></div>
     </div>
     <div class="feature-card reveal">
       <div class="feature-icon">⚡</div>
       <div class="feature-title">Smart Transform</div>
-      <div class="feature-desc">Copy smarter. Transform your clipboard as you copy — strip markdown fences, fix grammar, convert code, clean URLs, format JSON.</div>
+      <div class="feature-desc">Copy smarter. Transform your clipboard as you copy — strip markdown fences, fix grammar, convert code, clean URLs, format JSON.<span class="feature-caveat">AI-powered transforms require macOS 15.1+ and Apple Silicon. Local instant transforms work on any supported Mac.</span></div>
     </div>
     <div class="feature-card reveal">
       <div class="feature-icon">🍎</div>
       <div class="feature-title">Apple Intelligence</div>
-      <div class="feature-desc">Runs on-device using Apple's foundation model. Private by default — your clipboard never leaves your Mac.</div>
+      <div class="feature-desc">Runs on-device using Apple's foundation model. Private by default — your clipboard never leaves your Mac.<span class="feature-caveat">Apple Intelligence requires macOS 15.1+ and Apple Silicon. Core clipboard features work on macOS 13+ regardless.</span></div>
     </div>
     <div class="feature-card reveal">
       <div class="feature-icon">🔍</div>
@@ -1069,7 +1074,7 @@
     <a href="#" class="btn-primary" style="width:100%;justify-content:center;font-size:16px;padding:16px">
       Download L2Cache
     </a>
-    <p style="font-size:12px;color:var(--text-dim);margin-top:16px">macOS 15 Sequoia or later · 14-day free trial</p>
+    <p style="font-size:12px;color:var(--text-dim);margin-top:16px">macOS 13 Ventura or later · 14-day free trial</p>
   </div>
 </section>
 
