@@ -200,7 +200,7 @@
 <section class="section">
   <div class="reveal">
     <div class="section-label">Auto-detection</div>
-    <h2 class="section-title">20+ content types,<br/>detected instantly</h2>
+    <h2 class="section-title">22+ content types,<br/>detected instantly</h2>
     <p class="section-sub">No configuration needed. L2Cache reads what you copy and categorises it in the background.</p>
   </div>
 
@@ -243,6 +243,13 @@
         <div class="type-pill"><span class="type-pill-icon">📍</span> Address</div>
         <div class="type-pill"><span class="type-pill-icon">🎨</span> Color (hex / rgb)</div>
         <div class="type-pill"><span class="type-pill-icon">🖼</span> Image</div>
+      </div>
+    </div>
+    <div>
+      <div class="type-group-label">Developer Tools</div>
+      <div class="type-pills">
+        <div class="type-pill"><span class="type-pill-icon">$_</span> Terminal Commands</div>
+        <div class="type-pill"><span class="type-pill-icon">⚠</span> Exception Logs</div>
       </div>
     </div>
     <div>
@@ -429,6 +436,40 @@
       </div>
     </div>
 
+    <div class="transform-example">
+      <div class="te-header">
+        <div class="te-icon" style="font-family:var(--mono);font-size:13px">$_</div>
+        <div class="te-type">Terminal Commands</div>
+        <div class="te-count">4 actions</div>
+        <span class="te-chevron">▼</span>
+      </div>
+      <div class="te-body">
+        <div class="te-actions">
+          <div class="te-action"><span class="te-action-dot"></span>Sanitize inputs</div>
+          <div class="te-action"><span class="te-action-dot"></span>Translate to CMD</div>
+          <div class="te-action"><span class="te-action-dot"></span>Translate to PowerShell</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>Explain command</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="transform-example">
+      <div class="te-header">
+        <div class="te-icon">⚠️</div>
+        <div class="te-type">Exception Logs</div>
+        <div class="te-count">4 actions</div>
+        <span class="te-chevron">▼</span>
+      </div>
+      <div class="te-body">
+        <div class="te-actions">
+          <div class="te-action"><span class="te-action-dot"></span>Noise Filter</div>
+          <div class="te-action"><span class="te-action-dot"></span>Search Stack Overflow</div>
+          <div class="te-action"><span class="te-action-dot"></span>Search GitHub Issues</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>Explain error</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -571,6 +612,16 @@
       <div class="ai-card-label">Address</div>
       <div class="ai-card-title">Format as vCard</div>
       <div class="ai-card-desc">Converts contact details into a standards-compliant vCard 3.0.</div>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-label">Terminal Commands</div>
+      <div class="ai-card-title">Explain command</div>
+      <div class="ai-card-desc">Breaks down any shell command into plain English — flags, arguments, and what it actually does.</div>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-label">Exception Logs</div>
+      <div class="ai-card-title">Explain error</div>
+      <div class="ai-card-desc">Reads the stack trace and explains the root cause and likely fix in plain English.</div>
     </div>
   </div>
 </section>
