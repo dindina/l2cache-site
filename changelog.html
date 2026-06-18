@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>What's New — L2cache</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #7F77DD; --bg: #0D0C1A; --bg2: #131126; --bg3: #1A1830;
+      --border: rgba(127,119,221,0.18); --text: #F0EFF8;
+      --text-muted: rgba(240,239,248,0.5); --text-dim: rgba(240,239,248,0.28);
+      --mono: 'DM Mono', monospace; --serif: 'Fraunces', serif; --sans: 'DM Sans', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; }
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 48px; border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .nav-logo-chip { width: 28px; height: 28px; background: var(--purple); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: white; }
+    .container { max-width: 720px; margin: 0 auto; padding: 80px 24px; }
+    .label { font-family: var(--mono); font-size: 12px; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+    h1 { font-family: var(--serif); font-size: 48px; font-weight: 700; line-height: 1.1; margin-bottom: 48px; }
+
+    /* Timeline */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+
+    .release {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 0 32px;
+      padding-bottom: 56px;
+      position: relative;
+    }
+
+    .release:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 119px;
+      top: 10px;
+      bottom: 0;
+      width: 1px;
+      background: var(--border);
+    }
+
+    .release-meta { padding-top: 2px; }
+
+    .release-version {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--purple);
+      margin-bottom: 4px;
+    }
+
+    .release-date {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    .release-dot {
+      position: absolute;
+      left: 113px;
+      top: 4px;
+      width: 13px; height: 13px;
+      border-radius: 50%;
+      background: var(--purple);
+      border: 2px solid var(--bg);
+      box-shadow: 0 0 0 1px var(--purple);
+    }
+
+    .release-body {}
+
+    .release-title {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .release-summary {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.65;
+    }
+
+    .change-group { margin-bottom: 16px; }
+
+    .change-group-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .change-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+
+    .change-list li {
+      font-size: 14px;
+      color: var(--text-muted);
+      display: flex;
+      gap: 10px;
+      line-height: 1.5;
+    }
+
+    .change-list li::before {
+      content: '–';
+      color: var(--purple);
+      flex-shrink: 0;
+    }
+
+    footer { padding: 48px 24px; text-align: center; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-dim); }
+    footer a { color: var(--text-dim); text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: var(--text-muted); }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 24px; }
+      h1 { font-size: 36px; }
+      .release { grid-template-columns: 1fr; gap: 8px; padding-left: 24px; }
+      .release::after { left: 5px; }
+      .release-dot { left: -1px; }
+      .release-meta { display: flex; gap: 12px; align-items: baseline; }
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-chip">L2</div>
+    L2cache
+  </a>
+</nav>
+
+<div class="container">
+  <div class="label">Release notes</div>
+  <h1>What's New</h1>
+
+  <div class="timeline">
+
+    <div class="release">
+      <div class="release-dot"></div>
+      <div class="release-meta">
+        <div class="release-version">v1.0</div>
+        <div class="release-date">June 2026</div>
+      </div>
+      <div class="release-body">
+        <div class="release-title">Initial release</div>
+        <p class="release-summary">L2cache is here. A clipboard manager that remembers everything you copy, understands what it is, and gets out of your way.</p>
+
+        <div class="change-group">
+          <div class="change-group-label">Clipboard</div>
+          <ul class="change-list">
+            <li>Unlimited clipboard history — text, images, URLs, code, files</li>
+            <li>Panel opens in under 100ms via <strong>⌘⇧V</strong></li>
+            <li>Full-text search across all clips</li>
+            <li>Smart albums automatically group clips by type and context</li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <div class="change-group-label">AI</div>
+          <ul class="change-list">
+            <li>AI-generated titles — clips are named by what they mean, not what they are</li>
+            <li>Apple Intelligence on-device categorisation — nothing leaves your Mac</li>
+            <li>Smart Transform — copy smarter: strip markdown, fix grammar, format JSON, convert code</li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <div class="change-group-label">Privacy &amp; Security</div>
+          <ul class="change-list">
+            <li>Sensitive radar — API keys, credit cards, private keys, SSNs, and WiFi credentials automatically detected and locked</li>
+            <li>Unlock sensitive items with Touch ID or your login password</li>
+            <li>App exclusions — stop capturing from any app</li>
+            <li>All data stored locally in SQLite — zero network requests</li>
+          </ul>
+        </div>
+
+        <div class="change-group">
+          <div class="change-group-label">Extras</div>
+          <ul class="change-list">
+            <li>QR code generation — turn any URL or text into a QR code in one click</li>
+            <li>Screenshot renaming — AI renames screenshots by their content automatically</li>
+            <li>Spotlight integration — find clips without opening the panel</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">Home</a>
+  <a href="support.html">Support</a>
+  <a href="privacy.html">Privacy Policy</a>
+  <br/><br/>
+  © 2026 L2cache
+</footer>
+</body>
+</html>

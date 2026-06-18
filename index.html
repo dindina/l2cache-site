@@ -701,6 +701,13 @@
     @media (max-width: 900px) {
       nav { padding: 16px 24px; }
       .nav-links { display: none; }
+      .nav-mobile-cta {
+        display: inline-flex;
+        background: var(--purple); color: white;
+        padding: 7px 16px; border-radius: 8px;
+        font-size: 13px; font-weight: 500;
+        text-decoration: none;
+      }
       .hero {
         flex-direction: column;
         padding: 100px 24px 60px;
@@ -711,8 +718,20 @@
         align-items: center;
         text-align: center;
       }
+      .hero-sub { margin: 0 0 32px; }
       .hero-actions { justify-content: center; }
+      .privacy-strip { padding: 56px 24px 32px; }
+      .privacy-inner { gap: 24px; justify-content: center; }
+      .privacy-stat { min-width: 140px; flex: 0 0 calc(50% - 12px); }
+      .privacy-stat-number { font-size: 28px; }
       .section { padding: 56px 24px; }
+      .section-title { font-size: clamp(28px, 7vw, 42px); }
+      .features-grid { grid-template-columns: 1fr; }
+      .users-grid { grid-template-columns: 1fr; }
+      .pricing-card { padding: 36px 24px; }
+    }
+    @media (min-width: 901px) {
+      .nav-mobile-cta { display: none; }
     }
   </style>
 </head>
@@ -731,6 +750,7 @@
     <li><a href="support.html">Support</a></li>
     <li><a href="#pricing" class="nav-cta">Download — $6.99</a></li>
   </ul>
+  <a href="#pricing" class="nav-mobile-cta">Download</a>
 </nav>
 
 <!-- STATS STRIP -->
