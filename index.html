@@ -102,21 +102,35 @@
     /* ── HERO ── */
     .hero {
       min-height: 100vh;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      text-align: center;
-      padding: 120px 24px 80px;
+      display: flex; flex-direction: row;
+      align-items: center;
+      padding: 60px 2% 60px 6%;
       position: relative;
+      gap: 3%;
+    }
+
+    .hero-text {
+      flex: 0 0 auto;
+      width: clamp(280px, 32%, 420px);
+      display: flex; flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+      position: relative; z-index: 1;
+    }
+
+    .hero-visual {
+      flex: 1;
+      min-width: 0;
+      position: relative; z-index: 1;
     }
 
     /* glow orbs */
     .hero::after {
       content: '';
       position: absolute;
-      top: 20%; left: 50%;
-      transform: translateX(-50%);
-      width: 600px; height: 600px;
-      background: radial-gradient(ellipse, rgba(127,119,221,0.15) 0%, transparent 70%);
+      top: 10%; right: 5%;
+      width: 700px; height: 700px;
+      background: radial-gradient(ellipse, rgba(127,119,221,0.13) 0%, transparent 70%);
       pointer-events: none;
     }
 
@@ -169,7 +183,7 @@
     }
 
     .hero-actions {
-      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+      display: flex; gap: 16px; justify-content: flex-start; flex-wrap: wrap;
       animation: fadeUp 0.6s ease 0.3s both;
     }
 
@@ -342,7 +356,7 @@
     .section {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 120px 24px;
+      padding: 80px 24px;
     }
 
     .section-label {
@@ -409,7 +423,7 @@
       line-height: 1.65;
     }
 
-    /* ── WHO IS IT FOR ── */
+    /* ── FOR EVERY USER ── */
     .users-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -421,24 +435,22 @@
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
-    .user-emoji { font-size: 28px; margin-bottom: 14px; }
-
-    .user-title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 8px;
+    .moment-problem {
+      font-size: 15px;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.55;
     }
 
-    .user-pain {
+    .moment-fix {
       font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-
-    .user-pain strong {
       color: var(--purple);
+      line-height: 1.65;
       font-weight: 500;
     }
 
@@ -554,13 +566,12 @@
     /* ── PRIVACY STRIP ── */
     .privacy-strip {
       background: var(--bg2);
-      border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
-      padding: 48px 24px;
+      padding: 80px 24px 40px;
     }
 
     .privacy-inner {
-      max-width: 900px;
+      max-width: 1100px;
       margin: 0 auto;
       display: flex; align-items: center; gap: 48px;
       flex-wrap: wrap;
@@ -636,12 +647,72 @@
       transform: translateY(0);
     }
 
+    /* ── HERO SCREENSHOT CAROUSEL ── */
+    .hero-shots-wrap {
+      width: 100%;
+      animation: fadeUp 0.8s ease 0.4s both;
+    }
+
+    .hero-shots {
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid rgba(127,119,221,0.25);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 40px 120px rgba(0,0,0,0.7),
+        0 0 100px rgba(127,119,221,0.18);
+      cursor: grab;
+      user-select: none;
+    }
+
+    .hero-shots.grabbing { cursor: grabbing; }
+
+    .hero-shots-track {
+      display: flex;
+      transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .hero-shots-track img {
+      min-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .hero-shots-dots {
+      display: flex; gap: 6px; justify-content: center;
+      margin-top: 18px;
+    }
+
+    .hero-dot {
+      width: 5px; height: 5px;
+      border-radius: 3px;
+      background: var(--text-dim);
+      border: none; padding: 0;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .hero-dot.active {
+      background: var(--purple);
+      width: 20px;
+    }
+
     /* ── RESPONSIVE ── */
-    @media (max-width: 768px) {
+    @media (max-width: 900px) {
       nav { padding: 16px 24px; }
       .nav-links { display: none; }
-      .hero { padding: 100px 24px 60px; }
-      .section { padding: 80px 24px; }
+      .hero {
+        flex-direction: column;
+        padding: 100px 24px 60px;
+        gap: 32px;
+      }
+      .hero-text {
+        width: 100%;
+        align-items: center;
+        text-align: center;
+      }
+      .hero-actions { justify-content: center; }
+      .section { padding: 56px 24px; }
     }
   </style>
 </head>
@@ -649,110 +720,20 @@
 
 <!-- NAV -->
 <nav>
-  <a href="/" class="nav-logo">
+  <a href="index.html" class="nav-logo">
     <div class="nav-logo-chip">L2</div>
     L2cache
   </a>
   <ul class="nav-links">
-    <li><a href="#features">Features</a></li>
     <li><a href="#who">Who it's for</a></li>
+    <li><a href="#features">Features</a></li>
     <li><a href="#pricing">Pricing</a></li>
     <li><a href="support.html">Support</a></li>
-    <li><a href="#pricing" class="nav-cta">Download — $19</a></li>
+    <li><a href="#pricing" class="nav-cta">Download — $6.99</a></li>
   </ul>
 </nav>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-badge">
-    <span class="badge-dot"></span>
-    Now on the Mac App Store
-  </div>
-
-  <h1>Your clipboard<br/><em>remembers</em> everything</h1>
-
-  <p class="hero-sub">
-    The AI-powered clipboard manager for Mac. Captures everything you copy,
-    understands what it is, and surfaces it instantly.
-  </p>
-
-  <div class="hero-actions">
-    <a href="#pricing" class="btn-primary">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12l2 2 4-4"/></svg>
-      Download for Mac
-    </a>
-    <a href="#features" class="btn-secondary">See features</a>
-  </div>
-
-  <p class="price-tag">$19 · one-time · macOS 15+ · Apple Silicon &amp; Intel</p>
-
-  <!-- App mockup -->
-  <div class="mockup-wrap">
-    <div class="mockup">
-      <div class="mockup-search">
-        <div class="mockup-search-bar">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          Search clips...
-          <span style="margin-left:auto;font-family:var(--mono);font-size:11px;">⌘K</span>
-        </div>
-      </div>
-      <div class="mockup-pills">
-        <span class="pill pill-active">All</span>
-        <span class="pill pill-inactive">Text</span>
-        <span class="pill pill-inactive">Code</span>
-        <span class="pill pill-inactive">URL</span>
-        <span class="pill pill-inactive">Image</span>
-        <span class="pill pill-inactive">Email</span>
-      </div>
-      <div class="mockup-clips">
-        <div class="clip-row">
-          <div class="clip-icon clip-icon-code">⟨/⟩</div>
-          <div class="clip-body">
-            <div class="clip-title">Authenticate user and store session in Keychain</div>
-            <div class="clip-meta">Xcode · 2 mins ago</div>
-          </div>
-          <span class="clip-badge badge-swift">swift</span>
-        </div>
-        <div class="clip-row">
-          <div class="clip-icon clip-icon-url">🔗</div>
-          <div class="clip-body">
-            <div class="clip-title">Scaling Laws for Neural Language Models — OpenAI</div>
-            <div class="clip-meta">Safari · 14 mins ago</div>
-          </div>
-        </div>
-        <div class="clip-row">
-          <div class="clip-icon clip-icon-text">📄</div>
-          <div class="clip-body">
-            <div class="clip-title">Fetch user profile from API with retry logic</div>
-            <div class="clip-meta">Cursor · 1 hour ago</div>
-          </div>
-          <span class="clip-badge badge-words">195 words</span>
-        </div>
-        <div class="clip-row">
-          <div class="clip-icon clip-icon-img" style="font-size:18px;">🖼</div>
-          <div class="clip-body">
-            <div class="clip-title">Dashboard revenue chart — Q2 breakdown</div>
-            <div class="clip-meta">195 words extracted · Finder · 2h ago</div>
-          </div>
-        </div>
-        <div class="clip-row">
-          <div class="clip-icon clip-icon-code">⟨/⟩</div>
-          <div class="clip-body">
-            <div class="clip-title">Debounce search input with 300ms delay</div>
-            <div class="clip-meta">VS Code · 3h ago</div>
-          </div>
-        </div>
-      </div>
-      <div class="mockup-footer">
-        <span><span class="ai-dot"></span>Apple Intelligence</span>
-        <span>219 clips</span>
-        <span>⚙</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PRIVACY STATS -->
+<!-- STATS STRIP -->
 <div class="privacy-strip">
   <div class="privacy-inner">
     <div class="privacy-stat">
@@ -760,8 +741,8 @@
       <div class="privacy-stat-label">bytes sent to any server</div>
     </div>
     <div class="privacy-stat">
-      <div class="privacy-stat-number">$19</div>
-      <div class="privacy-stat-label">one-time, no subscription ever</div>
+      <div class="privacy-stat-number">$6.99</div>
+      <div class="privacy-stat-label">introductory price, no subscription ever</div>
     </div>
     <div class="privacy-stat">
       <div class="privacy-stat-number">∞</div>
@@ -773,6 +754,99 @@
     </div>
   </div>
 </div>
+
+<!-- HERO -->
+<section class="hero">
+
+  <!-- left: headline + actions -->
+  <div class="hero-text">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Now on the Mac App Store
+    </div>
+
+    <h1>Your clipboard<br/><em>has a memory</em> now</h1>
+
+    <p class="hero-sub">If you've ever lost something you copied, L2cache was built for you.</p>
+
+    <div class="hero-actions">
+      <a href="#pricing" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12l2 2 4-4"/></svg>
+        Download for Mac
+      </a>
+      <a href="#features" class="btn-secondary">See features</a>
+    </div>
+
+    <p class="price-tag">$6.99 · introductory price · macOS 15+ · Apple Silicon &amp; Intel</p>
+  </div>
+
+  <!-- right: screenshot carousel -->
+  <div class="hero-visual">
+    <div class="hero-shots-wrap">
+      <div class="hero-shots">
+        <div class="hero-shots-track" id="heroTrack">
+          <img src="screenshots/screenshot-1-history.png" alt="Clipboard History — L2cache"/>
+          <img src="screenshots/screenshot-2-search.png" alt="Instant Search — L2cache"/>
+          <img src="screenshots/screenshot-3-ai-titles.png" alt="AI Titles — L2cache"/>
+          <img src="screenshots/screenshot-4-transform.png" alt="Smart Transform — L2cache"/>
+          <img src="screenshots/screenshot-5-developer.png" alt="Developer Tools — L2cache"/>
+          <img src="screenshots/screenshot-6-smart-albums.png" alt="Smart Albums — L2cache"/>
+          <img src="screenshots/screenshot-7-local-ai.png" alt="Local AI — L2cache"/>
+          <img src="screenshots/screenshot-8-spotlight.png" alt="Spotlight Search — L2cache"/>
+          <img src="screenshots/screenshot-9-qrcode.png" alt="QR Code — L2cache"/>
+        </div>
+      </div>
+      <div class="hero-shots-dots">
+        <button class="hero-dot active" aria-label="Screenshot 1"></button>
+        <button class="hero-dot" aria-label="Screenshot 2"></button>
+        <button class="hero-dot" aria-label="Screenshot 3"></button>
+        <button class="hero-dot" aria-label="Screenshot 4"></button>
+        <button class="hero-dot" aria-label="Screenshot 5"></button>
+        <button class="hero-dot" aria-label="Screenshot 6"></button>
+        <button class="hero-dot" aria-label="Screenshot 7"></button>
+        <button class="hero-dot" aria-label="Screenshot 8"></button>
+        <button class="hero-dot" aria-label="Screenshot 9"></button>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- FOR EVERY MAC USER -->
+<section class="section" id="who">
+  <div class="reveal">
+    <div class="section-label">For every Mac user</div>
+    <h2 class="section-title">Six moments every<br/>Mac user knows</h2>
+    <p class="section-sub">You don't have to be a power user. You just have to copy things.</p>
+  </div>
+
+  <div class="users-grid">
+    <div class="user-card reveal">
+      <div class="moment-problem">"I copied a link, then opened a new tab and lost it."</div>
+      <div class="moment-fix">It's still there. Your clipboard history goes back as far as you need it to.</div>
+    </div>
+    <div class="user-card reveal">
+      <div class="moment-problem">"I wrote the perfect reply, then accidentally copied over it."</div>
+      <div class="moment-fix">L2cache captured it the moment you hit ⌘C. It's waiting for you.</div>
+    </div>
+    <div class="user-card reveal">
+      <div class="moment-problem">"That snippet from this morning — where did it go?"</div>
+      <div class="moment-fix">Search your entire clipboard history. Find anything in under a second.</div>
+    </div>
+    <div class="user-card reveal">
+      <div class="moment-problem">"I copied a serial number from an email. Now I can't find the email."</div>
+      <div class="moment-fix">Still in your history, right where you left it.</div>
+    </div>
+    <div class="user-card reveal">
+      <div class="moment-problem">"I work across five apps all day, copying things constantly."</div>
+      <div class="moment-fix">Every copy is saved automatically — text, images, URLs, code. All of it.</div>
+    </div>
+    <div class="user-card reveal">
+      <div class="moment-problem">"I copied an image, then needed the text I had before."</div>
+      <div class="moment-fix">Both are there. L2cache keeps everything, not just the last thing you copied.</div>
+    </div>
+  </div>
+</section>
 
 <!-- FEATURES -->
 <section class="section" id="features">
@@ -790,13 +864,13 @@
     </div>
     <div class="feature-card reveal">
       <div class="feature-icon">⚡</div>
-      <div class="feature-title">Smart Paster</div>
-      <div class="feature-desc">Hold ⌥V instead of ⌘V. Transform your clipboard before pasting — strip markdown fences, fix grammar, convert code, clean URLs, format JSON.</div>
+      <div class="feature-title">Smart Transform</div>
+      <div class="feature-desc">Copy smarter. Transform your clipboard as you copy — strip markdown fences, fix grammar, convert code, clean URLs, format JSON.</div>
     </div>
     <div class="feature-card reveal">
       <div class="feature-icon">🍎</div>
       <div class="feature-title">Apple Intelligence</div>
-      <div class="feature-desc">Runs on-device using Apple's foundation model. Private by default — your clipboard never leaves your Mac unless you explicitly enable cloud AI.</div>
+      <div class="feature-desc">Runs on-device using Apple's foundation model. Private by default — your clipboard never leaves your Mac.</div>
     </div>
     <div class="feature-card reveal">
       <div class="feature-icon">🔍</div>
@@ -806,88 +880,28 @@
     <div class="feature-card reveal">
       <div class="feature-icon">🛡</div>
       <div class="feature-title">Sensitive radar</div>
-      <div class="feature-desc">API keys, passwords, and credit cards are automatically detected and never stored. A shield badge confirms when something was blocked.</div>
+      <div class="feature-desc">API keys, credit card numbers, private keys, SSNs, and WiFi credentials are automatically detected and stored as hidden. Content stays locked — unlock with Touch ID or your password to copy it.</div>
     </div>
     <div class="feature-card reveal">
-      <div class="feature-icon">📦</div>
-      <div class="feature-title">Smart bundles</div>
-      <div class="feature-desc">Everything you copy during a coding session groups automatically. "Auth Sprint — 12 clips" — recall an entire context with one click.</div>
+      <div class="feature-icon">🗂</div>
+      <div class="feature-title">Smart albums</div>
+      <div class="feature-desc">Clips are automatically grouped into albums by type and context — code, URLs, images, and more. Browse by album to find related clips instantly.</div>
     </div>
-  </div>
-</section>
-
-<!-- WHO IS IT FOR -->
-<section class="section" id="who" style="padding-top:0">
-  <div class="reveal">
-    <div class="section-label">Who it's for</div>
-    <h2 class="section-title">Three kinds of power users</h2>
-    <p class="section-sub">If you copy more than 20 things a day, L2cache was built for you.</p>
-  </div>
-
-  <div class="users-grid">
-    <div class="user-card reveal">
-      <div class="user-emoji">🤖</div>
-      <div class="user-title">AI Engineers &amp; Developers</div>
-      <div class="user-pain">Juggling LLM outputs, stack traces, and prompts across Windsurf, Cursor, and ChatGPT. L2cache <strong>strips markdown fences</strong>, isolates error messages, and never lets a good prompt disappear.</div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">📱</div>
+      <div class="feature-title">QR code generation</div>
+      <div class="feature-desc">Copy any URL, text, or contact detail and generate a QR code in one click. Share instantly without any extra app.</div>
     </div>
-    <div class="user-card reveal">
-      <div class="user-emoji">✍️</div>
-      <div class="user-title">Researchers &amp; Writers</div>
-      <div class="user-pain">Copying quotes and URLs from 40 browser tabs. L2cache <strong>enriches every URL</strong> with its page title, strips tracking parameters, and groups clips by topic automatically.</div>
-    </div>
-    <div class="user-card reveal">
-      <div class="user-emoji">📊</div>
-      <div class="user-title">Data &amp; Ops Professionals</div>
-      <div class="user-pain">Copying tables from PDFs and emails into Excel — only to watch the formatting break. L2cache <strong>detects tabular data</strong> and offers clean CSV or markdown table in one click.</div>
-    </div>
-  </div>
-</section>
-
-<!-- SMART PASTER DEMO -->
-<section class="section" style="padding-top:0">
-  <div style="display:flex;gap:64px;align-items:center;flex-wrap:wrap">
-    <div style="flex:1;min-width:260px" class="reveal">
-      <div class="section-label">Smart Paster</div>
-      <h2 class="section-title" style="font-size:clamp(28px,3vw,42px)">Transform before<br/>you paste</h2>
-      <p style="color:var(--text-muted);font-size:16px;margin-top:16px;line-height:1.7">
-        Hold <kbd style="background:rgba(255,255,255,0.1);border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-family:var(--mono);font-size:13px">⌥V</kbd> on any clip to open a context-aware transform menu. Local transforms are instant. AI transforms use your chosen provider.
-      </p>
-    </div>
-    <div class="paster-demo reveal" style="flex:1;min-width:280px">
-      <div class="paster-header">// Swift code clip detected</div>
-      <div class="paster-actions">
-        <div class="paster-action active">
-          <span class="paster-action-icon">✂️</span>
-          <span class="paster-action-label">Strip markdown fences</span>
-          <span class="paster-action-tag">instant</span>
-        </div>
-        <div class="paster-action">
-          <span class="paster-action-icon">💬</span>
-          <span class="paster-action-label">Add comments</span>
-          <span class="paster-action-tag">AI</span>
-        </div>
-        <div class="paster-action">
-          <span class="paster-action-icon">🔄</span>
-          <span class="paster-action-label">Convert to JavaScript</span>
-          <span class="paster-action-tag">AI</span>
-        </div>
-        <div class="paster-action">
-          <span class="paster-action-icon">📋</span>
-          <span class="paster-action-label">Extract function signature</span>
-          <span class="paster-action-tag">instant</span>
-        </div>
-        <div class="paster-action">
-          <span class="paster-action-icon">🧠</span>
-          <span class="paster-action-label">Explain this code</span>
-          <span class="paster-action-tag">AI</span>
-        </div>
-      </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🖼</div>
+      <div class="feature-title">Screenshot renaming</div>
+      <div class="feature-desc">Screenshots are automatically renamed using AI — no more "Screenshot 2025-06-18 at 10.34.02". Find your screenshots by what's actually in them.</div>
     </div>
   </div>
 </section>
 
 <!-- PRICING -->
-<section class="section" id="pricing" style="padding-top:0">
+<section class="section" id="pricing">
   <div class="reveal" style="text-align:center;margin-bottom:48px">
     <div class="section-label">Pricing</div>
     <h2 class="section-title">Simple, honest pricing</h2>
@@ -895,16 +909,15 @@
   </div>
 
   <div class="pricing-card reveal">
-    <div class="pricing-amount"><sup>$</sup>19</div>
-    <div class="pricing-type">one-time purchase · all future updates included</div>
+    <div class="pricing-amount"><sup>$</sup>6.99</div>
+    <div class="pricing-type">introductory price · one-time purchase · all future updates included</div>
     <ul class="pricing-features">
       <li><span class="check">✓</span> Unlimited clipboard history</li>
       <li><span class="check">✓</span> Apple Intelligence on-device AI</li>
-      <li><span class="check">✓</span> Smart Paster with transforms</li>
+      <li><span class="check">✓</span> Smart Transform</li>
       <li><span class="check">✓</span> Screenshot OCR search</li>
-      <li><span class="check">✓</span> Smart Bundles</li>
+      <li><span class="check">✓</span> Smart albums &amp; QR code generation</li>
       <li><span class="check">✓</span> Sensitive data protection</li>
-      <li><span class="check">✓</span> Claude &amp; Gemini cloud AI (bring your own key)</li>
       <li><span class="check">✓</span> All future updates</li>
     </ul>
     <a href="#" class="btn-primary" style="width:100%;justify-content:center;font-size:16px;padding:16px">
@@ -916,16 +929,90 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">L2cache by <a href="https://github.com/dindina" style="color:var(--purple);text-decoration:none">@dindina</a></div>
   <ul class="footer-links">
     <li><a href="privacy.html">Privacy Policy</a></li>
     <li><a href="support.html">Support</a></li>
-    <li><a href="https://github.com/dindina">GitHub</a></li>
   </ul>
-  <p class="footer-copy">© 2026 L2cache. Made in Sydney, Australia. 🇦🇺</p>
+  <p class="footer-copy">© 2026 L2cache</p>
 </footer>
 
 <script>
+  // Hero screenshot carousel — swipe + drag
+  (function() {
+    const track = document.getElementById('heroTrack');
+    const wrap  = track.parentElement; // .hero-shots
+    const dots  = document.querySelectorAll('.hero-dot');
+    const TOTAL = 9, THRESHOLD = 50;
+    let cur = 0, timer, startX = 0, moved = 0, dragging = false;
+
+    function go(n) {
+      cur = (n + TOTAL) % TOTAL;
+      track.style.transition = 'transform 0.55s cubic-bezier(0.4,0,0.2,1)';
+      track.style.transform  = 'translateX(-' + (cur * 100) + '%)';
+      dots.forEach(function(d, i) { d.classList.toggle('active', i === cur); });
+    }
+
+    function resetTimer() {
+      clearInterval(timer);
+      timer = setInterval(function() { go(cur + 1); }, 4500);
+    }
+
+    dots.forEach(function(d, i) {
+      d.addEventListener('click', function() { go(i); resetTimer(); });
+    });
+
+    // ── touch ──
+    wrap.addEventListener('touchstart', function(e) {
+      startX = e.touches[0].clientX;
+      moved = 0;
+      clearInterval(timer);
+    }, { passive: true });
+
+    wrap.addEventListener('touchmove', function(e) {
+      moved = e.touches[0].clientX - startX;
+      track.style.transition = 'none';
+      track.style.transform  = 'translateX(calc(-' + (cur * 100) + '% + ' + moved + 'px))';
+    }, { passive: true });
+
+    wrap.addEventListener('touchend', function() {
+      go(Math.abs(moved) > THRESHOLD ? (moved < 0 ? cur + 1 : cur - 1) : cur);
+      resetTimer();
+    });
+
+    // ── mouse drag ──
+    wrap.addEventListener('mousedown', function(e) {
+      dragging = true; startX = e.clientX; moved = 0;
+      track.style.transition = 'none';
+      wrap.classList.add('grabbing');
+      clearInterval(timer);
+      e.preventDefault();
+    });
+
+    window.addEventListener('mousemove', function(e) {
+      if (!dragging) return;
+      moved = e.clientX - startX;
+      track.style.transform = 'translateX(calc(-' + (cur * 100) + '% + ' + moved + 'px))';
+    });
+
+    function endDrag() {
+      if (!dragging) return;
+      dragging = false;
+      wrap.classList.remove('grabbing');
+      go(Math.abs(moved) > THRESHOLD ? (moved < 0 ? cur + 1 : cur - 1) : cur);
+      resetTimer();
+    }
+
+    window.addEventListener('mouseup', endDrag);
+    window.addEventListener('mouseleave', endDrag);
+
+    // prevent native image drag interfering
+    track.querySelectorAll('img').forEach(function(img) {
+      img.addEventListener('dragstart', function(e) { e.preventDefault(); });
+    });
+
+    resetTimer();
+  })();
+
   // Scroll reveal
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver(entries => {
@@ -937,6 +1024,7 @@
     });
   }, { threshold: 0.1 });
   reveals.forEach(el => observer.observe(el));
+
 </script>
 </body>
 </html>

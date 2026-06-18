@@ -116,11 +116,11 @@
       <span class="shortcut-keys"><kbd>⌘</kbd><kbd>⇧</kbd><kbd>V</kbd></span>
     </div>
     <div class="shortcut-row">
-      <span class="shortcut-label">Smart Paster</span>
+      <span class="shortcut-label">Smart Transform</span>
       <span class="shortcut-keys"><kbd>⌥</kbd><kbd>V</kbd></span>
     </div>
     <div class="shortcut-row">
-      <span class="shortcut-label">Paste selected clip</span>
+      <span class="shortcut-label">Copy selected clip</span>
       <span class="shortcut-keys"><kbd>↵</kbd></span>
     </div>
     <div class="shortcut-row">
@@ -130,18 +130,6 @@
     <div class="shortcut-row">
       <span class="shortcut-label">Navigate clips</span>
       <span class="shortcut-keys"><kbd>↑</kbd><kbd>↓</kbd></span>
-    </div>
-    <div class="shortcut-row">
-      <span class="shortcut-label">Search</span>
-      <span class="shortcut-keys"><kbd>⌘</kbd><kbd>K</kbd></span>
-    </div>
-    <div class="shortcut-row">
-      <span class="shortcut-label">Pin / unpin clip</span>
-      <span class="shortcut-keys"><kbd>⌥</kbd><kbd>P</kbd></span>
-    </div>
-    <div class="shortcut-row">
-      <span class="shortcut-label">Delete clip</span>
-      <span class="shortcut-keys"><kbd>⌥</kbd><kbd>⌫</kbd></span>
     </div>
   </div>
 
@@ -154,16 +142,16 @@
         <span class="faq-chevron">▼</span>
       </button>
       <div class="faq-a">
-        L2cache needs Accessibility permission to monitor your clipboard. Go to <strong>System Settings → Privacy &amp; Security → Accessibility</strong> and make sure L2cache is toggled on. If it's already on, try toggling it off and back on, then relaunch the app.
+        No special permission is needed to capture clipboard content. If clips aren't appearing, check these things: <strong>(1)</strong> Make sure L2cache is running — you should see its icon in the menu bar. <strong>(2)</strong> Check that the app you're copying from isn't on your exclusion list — go to <strong>Settings → Privacy → App Exclusions</strong>. <strong>(3)</strong> Try quitting and relaunching L2cache.
       </div>
     </div>
     <div class="faq-item">
       <button class="faq-q">
-        Paste isn't working in some apps (Slack, Chrome, VS Code).
+        I selected a clip from the panel — how do I paste it into my app?
         <span class="faq-chevron">▼</span>
       </button>
       <div class="faq-a">
-        Some Electron-based apps (Slack, Chrome, VS Code) block synthetic keyboard events. If paste doesn't work, the app will show a hint — just press <kbd>⌘V</kbd> manually after selecting the clip. The content is already on your clipboard.
+        Selecting a clip (or pressing <kbd>↵</kbd>) copies it to your clipboard. Switch back to your app and press <kbd>⌘V</kbd> to paste. L2cache puts the content on your clipboard — you're always in control of where it goes.
       </div>
     </div>
     <div class="faq-item">
@@ -181,16 +169,7 @@
         <span class="faq-chevron">▼</span>
       </button>
       <div class="faq-a">
-        Apple Intelligence requires macOS 26 (Tahoe) on Apple Silicon with Apple Intelligence enabled in System Settings. If you're on an earlier macOS or Intel Mac, L2cache falls back to rule-based categorisation automatically. You can also enable Claude or Gemini in Settings → AI as an alternative.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q">
-        How do I enter my licence key?
-        <span class="faq-chevron">▼</span>
-      </button>
-      <div class="faq-a">
-        Click the gear icon in the bottom-right of the panel → Settings → General → Enter Licence Key. Paste your key in the format <code>L2C-XXXX-XXXX-XXXX-XXXX</code> and click Validate. Validation happens offline — no internet required.
+        Apple Intelligence requires macOS 26 (Tahoe) on Apple Silicon with Apple Intelligence enabled in System Settings. If you're on an earlier macOS or Intel Mac, L2cache falls back to rule-based categorisation automatically.
       </div>
     </div>
     <div class="faq-item">
@@ -199,7 +178,7 @@
         <span class="faq-chevron">▼</span>
       </button>
       <div class="faq-a">
-        L2cache automatically detects API keys, passwords, credit card numbers, and other sensitive patterns. When detected, the item is flagged and excluded from history — it is never stored. You'll see a shield badge in the menu bar briefly confirming it was blocked.
+        L2cache automatically detects: API keys (OpenAI, GitHub, Stripe, AWS, Slack, and more), credit card numbers, PEM private keys and certificates, US Social Security Numbers, WiFi credentials, and secret assignments in config or environment files (e.g. <code>API_KEY=abc123</code>). When detected, the item is saved but marked as hidden — the content is locked behind Touch ID or your login password. Only you can unlock and copy it back.
       </div>
     </div>
     <div class="faq-item">
@@ -236,9 +215,8 @@
 <footer>
   <a href="index.html">Home</a>
   <a href="privacy.html">Privacy Policy</a>
-  <a href="https://github.com/dindina">GitHub</a>
   <br/><br/>
-  © 2026 L2cache · Made in Sydney, Australia 🇦🇺
+  © 2026 L2cache
 </footer>
 
 <script>

@@ -65,23 +65,10 @@
 
   <h2>Your clipboard data</h2>
   <p>All clipboard history is stored exclusively on your device. L2cache never uploads, transmits, or shares your clipboard content with anyone, including us.</p>
-  <p>Sensitive items (API keys, passwords, credit card numbers) are detected locally and automatically excluded from storage. They are never saved anywhere.</p>
+  <p>Sensitive items are detected locally and stored as hidden, locked entries. Detected categories include: API keys (OpenAI, GitHub, Stripe, AWS, Slack, and others), credit card numbers, PEM private keys and certificates, US Social Security Numbers, WiFi credentials, and secret or password assignments in config and environment files. Their content is never displayed in plain text — unlocking requires Touch ID or your login password. They are never transmitted anywhere.</p>
 
   <h2>AI processing</h2>
-  <p>L2cache supports multiple AI providers for content categorisation:</p>
-  <ul>
-    <li><strong>Apple Intelligence</strong> — runs entirely on-device. No data leaves your Mac.</li>
-    <li><strong>Claude (Anthropic)</strong> — if you choose to enable this and provide your own API key, clipboard content is sent to Anthropic's API. This is subject to <a href="https://www.anthropic.com/privacy" target="_blank">Anthropic's Privacy Policy</a>.</li>
-    <li><strong>Gemini (Google)</strong> — if you choose to enable this and provide your own API key, clipboard content is sent to Google's API. This is subject to <a href="https://policies.google.com/privacy" target="_blank">Google's Privacy Policy</a>.</li>
-    <li><strong>Ollama</strong> — runs entirely on-device. No data leaves your Mac.</li>
-  </ul>
-  <p>Cloud AI is always opt-in. The default is Apple Intelligence (on-device) or rule-based categorisation. Sensitive items are never sent to any AI provider regardless of your settings.</p>
-
-  <h2>API keys</h2>
-  <p>If you provide API keys for Claude or Gemini, they are stored exclusively in your Mac's system Keychain. They are never stored in plain text, never in our databases, and never transmitted to us.</p>
-
-  <h2>Licence keys</h2>
-  <p>Licence key validation happens entirely offline using HMAC verification. Your licence key is stored in your Mac's Keychain. We do not operate a licence verification server and never receive your key.</p>
+  <p>L2cache uses on-device AI for content categorisation. All AI processing runs locally using Apple Intelligence or rule-based categorisation — no clipboard content is ever sent to any external server or AI provider.</p>
 
   <h2>Analytics and tracking</h2>
   <p>L2cache contains no analytics, no crash reporting services, no third-party SDKs, and no tracking of any kind. We have no idea how many people use the app or how they use it.</p>
@@ -98,15 +85,14 @@
   <h2>Contact</h2>
   <p>Questions about privacy? Contact us at <a href="mailto:amvo.tech.au@gmail.com">amvo.tech.au@gmail.com</a> or via the <a href="support.html">support page</a>.</p>
 
-  <p>This privacy policy applies to all apps published by the developer at <a href="https://github.com/dindina">github.com/dindina</a>, including L2cache and any future apps unless otherwise stated.</p>
+  <p>This privacy policy applies to L2cache and any future apps published by the same developer, unless otherwise stated.</p>
 </div>
 
 <footer>
   <a href="index.html">L2cache</a>
   <a href="support.html">Support</a>
-  <a href="https://github.com/dindina">GitHub</a>
   <br/><br/>
-  © 2026 L2cache · Made in Sydney, Australia 🇦🇺
+  © 2026 L2cache
 </footer>
 </body>
 </html>
