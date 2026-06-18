@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Clipboard Intelligence — L2Cache</title>
+  <meta name="description" content="L2Cache detects 20+ content types automatically and offers Smart Transform actions tailored to each one."/>
+  <link rel="icon" type="image/png" href="icon.png"/>
+  <link rel="apple-touch-icon" href="icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #7F77DD; --purple-dark: #5C52C8;
+      --bg: #0D0C1A; --bg2: #131126; --bg3: #1A1830;
+      --border: rgba(127,119,221,0.18); --text: #F0EFF8;
+      --text-muted: rgba(240,239,248,0.5); --text-dim: rgba(240,239,248,0.28);
+      --mono: 'DM Mono', monospace; --serif: 'Fraunces', serif; --sans: 'DM Sans', sans-serif;
+      --green: #34D399; --blue: #60A5FA; --pink: #F472B6; --amber: #FBBF24;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.6; overflow-x: hidden; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 48px;
+      background: rgba(13,12,26,0.85); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: var(--mono); font-size: 17px; font-weight: 500; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .nav-back { font-family: var(--mono); font-size: 13px; color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+    .nav-back:hover { color: var(--text); }
+
+    /* HERO */
+    .hero {
+      padding: 160px 48px 80px;
+      max-width: 900px; margin: 0 auto;
+      text-align: center;
+    }
+    .hero-label {
+      font-family: var(--mono); font-size: 12px; color: var(--purple);
+      letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: var(--serif); font-size: clamp(40px, 6vw, 72px);
+      font-weight: 700; line-height: 1.05; letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+    .hero h1 em { font-style: italic; color: var(--purple); }
+    .hero-sub { font-size: clamp(16px, 2vw, 20px); color: var(--text-muted); max-width: 560px; margin: 0 auto 40px; }
+    .shortcut-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(127,119,221,0.1); border: 1px solid rgba(127,119,221,0.3);
+      border-radius: 100px; padding: 8px 20px;
+      font-family: var(--mono); font-size: 13px; color: var(--purple);
+    }
+    kbd {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 5px; padding: 2px 8px;
+      font-family: var(--mono); font-size: 12px; color: var(--text);
+    }
+
+    /* SECTIONS */
+    .section { max-width: 1100px; margin: 0 auto; padding: 80px 24px; }
+    .section-label { font-family: var(--mono); font-size: 12px; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+    .section-title { font-family: var(--serif); font-size: clamp(28px, 4vw, 48px); font-weight: 700; line-height: 1.1; margin-bottom: 16px; }
+    .section-sub { font-size: 17px; color: var(--text-muted); max-width: 540px; margin-bottom: 56px; line-height: 1.65; }
+
+    /* CONTENT TYPES GRID */
+    .types-groups { display: flex; flex-direction: column; gap: 36px; }
+    .type-group-label { font-family: var(--mono); font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px; }
+    .type-pills { display: flex; flex-wrap: wrap; gap: 10px; }
+    .type-pill {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: 10px;
+      background: var(--bg2); border: 1px solid var(--border);
+      font-size: 13px; font-weight: 500;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .type-pill:hover { border-color: rgba(127,119,221,0.4); transform: translateY(-1px); }
+    .type-pill-icon { font-size: 15px; }
+    .type-pill.sensitive { border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.06); }
+    .type-pill.sensitive .type-pill-icon::after { content: ' 🔒'; font-size: 11px; }
+
+    /* SMART TRANSFORM EXAMPLES */
+    .transform-examples { display: flex; flex-direction: column; gap: 2px; }
+    .transform-example {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+    }
+    .te-header {
+      display: flex; align-items: center; gap: 14px;
+      padding: 20px 24px; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .te-header:hover { background: rgba(127,119,221,0.05); }
+    .te-icon { font-size: 20px; width: 36px; height: 36px; border-radius: 9px; background: rgba(127,119,221,0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .te-type { font-size: 15px; font-weight: 600; flex: 1; }
+    .te-count { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+    .te-chevron { color: var(--text-muted); font-size: 11px; transition: transform 0.2s; }
+    .transform-example.open .te-chevron { transform: rotate(180deg); }
+    .te-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.35s ease;
+      padding: 0 24px;
+    }
+    .transform-example.open .te-body { max-height: 600px; padding: 0 24px 24px; }
+    .te-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .te-action {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 12px; border-radius: 7px;
+      background: rgba(127,119,221,0.08); border: 1px solid rgba(127,119,221,0.2);
+      font-size: 12px; color: var(--text-muted);
+    }
+    .te-action.ai { background: rgba(52,211,153,0.07); border-color: rgba(52,211,153,0.2); color: #34D399; }
+    .te-action-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--purple); flex-shrink: 0; }
+    .te-action.ai .te-action-dot { background: var(--green); }
+
+    /* TRANSFORM CATEGORIES GRID */
+    .categories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .cat-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .cat-card:hover { border-color: rgba(127,119,221,0.4); transform: translateY(-2px); }
+    .cat-icon { font-size: 22px; margin-bottom: 12px; }
+    .cat-name { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+    .cat-items { font-size: 12px; color: var(--text-dim); line-height: 1.6; }
+
+    /* AI SECTION */
+    .ai-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .ai-card {
+      background: rgba(52,211,153,0.05); border: 1px solid rgba(52,211,153,0.15);
+      border-radius: 12px; padding: 20px 22px;
+      transition: border-color 0.2s;
+    }
+    .ai-card:hover { border-color: rgba(52,211,153,0.3); }
+    .ai-card-label { font-family: var(--mono); font-size: 10px; color: var(--green); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+    .ai-card-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+    .ai-card-desc { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+
+    /* DIVIDER */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+    /* CTA */
+    .cta-section { text-align: center; padding: 80px 24px; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--purple); color: white;
+      padding: 14px 32px; border-radius: 12px; text-decoration: none;
+      font-weight: 600; font-size: 15px; transition: all 0.2s;
+    }
+    .btn-primary:hover { background: var(--purple-dark); transform: translateY(-1px); box-shadow: 0 8px 32px rgba(127,119,221,0.35); }
+
+    /* ANIMATIONS */
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* FOOTER */
+    footer { padding: 48px 24px; text-align: center; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-dim); }
+    footer a { color: var(--text-dim); text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: var(--text-muted); }
+
+    /* RESPONSIVE */
+    @media (max-width: 700px) {
+      nav { padding: 16px 24px; }
+      .hero { padding: 120px 24px 60px; }
+      .section { padding: 56px 24px; }
+      .categories-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="icon.png" width="34" height="34" alt="L2Cache" style="border-radius:8px"/>
+    L2Cache
+  </a>
+  <a href="index.html" class="nav-back">← Back</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Clipboard Intelligence</div>
+  <h1>Your clipboard<br/><em>knows what it holds</em></h1>
+  <p class="hero-sub">L2Cache detects 20+ content types the moment you copy — then Smart Transform offers the right actions instantly.</p>
+  <div class="shortcut-badge">
+    Smart Transform &nbsp; <kbd>⌥</kbd><kbd>V</kbd>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<!-- CONTENT TYPES -->
+<section class="section">
+  <div class="reveal">
+    <div class="section-label">Auto-detection</div>
+    <h2 class="section-title">20+ content types,<br/>detected instantly</h2>
+    <p class="section-sub">No configuration needed. L2Cache reads what you copy and categorises it in the background.</p>
+  </div>
+
+  <div class="types-groups reveal">
+    <div>
+      <div class="type-group-label">Text &amp; Documents</div>
+      <div class="type-pills">
+        <div class="type-pill"><span class="type-pill-icon">📝</span> Plain text</div>
+        <div class="type-pill"><span class="type-pill-icon">✦</span> Rich text</div>
+        <div class="type-pill"><span class="type-pill-icon">#</span> Markdown</div>
+        <div class="type-pill"><span class="type-pill-icon">💻</span> Code</div>
+        <div class="type-pill"><span class="type-pill-icon">✦</span> AI prompt</div>
+        <div class="type-pill"><span class="type-pill-icon">✦</span> AI response</div>
+      </div>
+    </div>
+    <div>
+      <div class="type-group-label">Data Formats</div>
+      <div class="type-pills">
+        <div class="type-pill"><span class="type-pill-icon">{ }</span> JSON</div>
+        <div class="type-pill"><span class="type-pill-icon">&lt;/&gt;</span> XML</div>
+        <div class="type-pill"><span class="type-pill-icon">🗄</span> SQL</div>
+        <div class="type-pill"><span class="type-pill-icon">—</span> YAML</div>
+        <div class="type-pill"><span class="type-pill-icon">⊞</span> CSV / Table</div>
+      </div>
+    </div>
+    <div>
+      <div class="type-group-label">Web &amp; Network</div>
+      <div class="type-pills">
+        <div class="type-pill"><span class="type-pill-icon">🔗</span> URL</div>
+        <div class="type-pill"><span class="type-pill-icon">⇄</span> HTTP / cURL</div>
+        <div class="type-pill"><span class="type-pill-icon">🔑</span> JWT</div>
+        <div class="type-pill"><span class="type-pill-icon">64</span> Base64</div>
+      </div>
+    </div>
+    <div>
+      <div class="type-group-label">Contact &amp; Media</div>
+      <div class="type-pills">
+        <div class="type-pill"><span class="type-pill-icon">📧</span> Email address</div>
+        <div class="type-pill"><span class="type-pill-icon">📞</span> Phone number</div>
+        <div class="type-pill"><span class="type-pill-icon">📍</span> Address</div>
+        <div class="type-pill"><span class="type-pill-icon">🎨</span> Color (hex / rgb)</div>
+        <div class="type-pill"><span class="type-pill-icon">🖼</span> Image</div>
+      </div>
+    </div>
+    <div>
+      <div class="type-group-label">Sensitive — auto-hidden &amp; locked</div>
+      <div class="type-pills">
+        <div class="type-pill sensitive"><span class="type-pill-icon">🔐</span> API keys</div>
+        <div class="type-pill sensitive"><span class="type-pill-icon">💳</span> Credit cards</div>
+        <div class="type-pill sensitive"><span class="type-pill-icon">🔏</span> PEM private keys</div>
+        <div class="type-pill sensitive"><span class="type-pill-icon">🪪</span> Social Security Numbers</div>
+        <div class="type-pill sensitive"><span class="type-pill-icon">📶</span> WiFi credentials</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- SMART TRANSFORM EXAMPLES -->
+<section class="section">
+  <div class="reveal">
+    <div class="section-label">Smart Transform</div>
+    <h2 class="section-title">The right action,<br/>every time</h2>
+    <p class="section-sub">Press <kbd>⌥V</kbd> on any clip. L2Cache shows only the transforms that make sense for what you copied — nothing else.</p>
+  </div>
+
+  <div class="transform-examples reveal">
+
+    <div class="transform-example">
+      <div class="te-header">
+        <div class="te-icon">{ }</div>
+        <div class="te-type">JSON</div>
+        <div class="te-count">10 actions</div>
+        <span class="te-chevron">▼</span>
+      </div>
+      <div class="te-body">
+        <div class="te-actions">
+          <div class="te-action"><span class="te-action-dot"></span>Format JSON</div>
+          <div class="te-action"><span class="te-action-dot"></span>Minify JSON</div>
+          <div class="te-action"><span class="te-action-dot"></span>Sort keys</div>
+          <div class="te-action"><span class="te-action-dot"></span>Escape / Unescape</div>
+          <div class="te-action"><span class="te-action-dot"></span>→ TypeScript interface</div>
+          <div class="te-action"><span class="te-action-dot"></span>→ Swift Codable</div>
+          <div class="te-action"><span class="te-action-dot"></span>→ CSV / Table</div>
+          <div class="te-action"><span class="te-action-dot"></span>→ Query params</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>Repair JSON</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="transform-example">
+      <div class="te-header">
+        <div class="te-icon">🗄</div>
+        <div class="te-type">SQL</div>
+        <div class="te-count">15+ actions</div>
+        <span class="te-chevron">▼</span>
+      </div>
+      <div class="te-body">
+        <div class="te-actions">
+          <div class="te-action"><span class="te-action-dot"></span>Format SQL</div>
+          <div class="te-action"><span class="te-action-dot"></span>Minify SQL</div>
+          <div class="te-action"><span class="te-action-dot"></span>Extract tables</div>
+          <div class="te-action"><span class="te-action-dot"></span>Extract columns</div>
+          <div class="te-action"><span class="te-action-dot"></span>Parameterize</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>Generate sample data</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>Generate schema</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>Suggest indexes</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>→ ORM code</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>Explain query</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>Convert SQL dialect</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="transform-example">
+      <div class="te-header">
+        <div class="te-icon">⇄</div>
+        <div class="te-type">HTTP / cURL</div>
+        <div class="te-count">7 actions</div>
+        <span class="te-chevron">▼</span>
+      </div>
+      <div class="te-body">
+        <div class="te-actions">
+          <div class="te-action"><span class="te-action-dot"></span>Extract URL</div>
+          <div class="te-action"><span class="te-action-dot"></span>Extract headers</div>
+          <div class="te-action"><span class="te-action-dot"></span>→ Fetch (JS)</div>
+          <div class="te-action"><span class="te-action-dot"></span>→ URLSession (Swift)</div>
+          <div class="te-action"><span class="te-action-dot"></span>→ Python requests</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>Explain request</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>→ Swift Codable response</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="transform-example">
+      <div class="te-header">
+        <div class="te-icon">🔗</div>
+        <div class="te-type">URL</div>
+        <div class="te-count">4 actions</div>
+        <span class="te-chevron">▼</span>
+      </div>
+      <div class="te-body">
+        <div class="te-actions">
+          <div class="te-action"><span class="te-action-dot"></span>Decode URL</div>
+          <div class="te-action"><span class="te-action-dot"></span>Remove UTM params</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>Copy as APA citation</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>Copy as MLA citation</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="transform-example">
+      <div class="te-header">
+        <div class="te-icon">🎨</div>
+        <div class="te-type">Color (hex / rgb)</div>
+        <div class="te-count">6 actions</div>
+        <span class="te-chevron">▼</span>
+      </div>
+      <div class="te-body">
+        <div class="te-actions">
+          <div class="te-action"><span class="te-action-dot"></span>Copy as RGB</div>
+          <div class="te-action"><span class="te-action-dot"></span>Copy as HSL</div>
+          <div class="te-action"><span class="te-action-dot"></span>Tailwind class</div>
+          <div class="te-action"><span class="te-action-dot"></span>SwiftUI Color</div>
+          <div class="te-action"><span class="te-action-dot"></span>CSS variable</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>Complementary palette</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="transform-example">
+      <div class="te-header">
+        <div class="te-icon">#</div>
+        <div class="te-type">Markdown</div>
+        <div class="te-count">4 actions</div>
+        <span class="te-chevron">▼</span>
+      </div>
+      <div class="te-body">
+        <div class="te-actions">
+          <div class="te-action"><span class="te-action-dot"></span>→ HTML</div>
+          <div class="te-action"><span class="te-action-dot"></span>Strip formatting</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>Summarize</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>Fix grammar &amp; spelling</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="transform-example">
+      <div class="te-header">
+        <div class="te-icon">⊞</div>
+        <div class="te-type">CSV / Table</div>
+        <div class="te-count">8 actions</div>
+        <span class="te-chevron">▼</span>
+      </div>
+      <div class="te-body">
+        <div class="te-actions">
+          <div class="te-action"><span class="te-action-dot"></span>→ Markdown table</div>
+          <div class="te-action"><span class="te-action-dot"></span>→ JSON array</div>
+          <div class="te-action"><span class="te-action-dot"></span>→ SQL inserts</div>
+          <div class="te-action"><span class="te-action-dot"></span>→ HTML table</div>
+          <div class="te-action"><span class="te-action-dot"></span>Sort by first column</div>
+          <div class="te-action"><span class="te-action-dot"></span>Transpose table</div>
+          <div class="te-action"><span class="te-action-dot"></span>Extract headers</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>Analyse table</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="transform-example">
+      <div class="te-header">
+        <div class="te-icon">📝</div>
+        <div class="te-type">Plain text</div>
+        <div class="te-count">6 actions</div>
+        <span class="te-chevron">▼</span>
+      </div>
+      <div class="te-body">
+        <div class="te-actions">
+          <div class="te-action"><span class="te-action-dot"></span>UPPERCASE / lowercase</div>
+          <div class="te-action"><span class="te-action-dot"></span>Trim whitespace</div>
+          <div class="te-action"><span class="te-action-dot"></span>Remove line breaks</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>Fix grammar</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>Summarise in one sentence</div>
+          <div class="te-action ai"><span class="te-action-dot"></span>Translate to English</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ALL TRANSFORM CATEGORIES -->
+<section class="section">
+  <div class="reveal">
+    <div class="section-label">Transform library</div>
+    <h2 class="section-title">50+ transforms<br/>across 14 categories</h2>
+    <p class="section-sub">Available any time from the transform panel — not just on detected types.</p>
+  </div>
+
+  <div class="categories-grid reveal">
+    <div class="cat-card">
+      <div class="cat-icon">🔒</div>
+      <div class="cat-name">Encoding</div>
+      <div class="cat-items">Base64, URL, HTML encode &amp; decode</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon">{ }</div>
+      <div class="cat-name">JSON</div>
+      <div class="cat-items">Prettify, Minify, YAML, Escape, Unescape</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon">&lt;/&gt;</div>
+      <div class="cat-name">XML</div>
+      <div class="cat-items">Format, Minify, Strip tags, → JSON</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon">🗄</div>
+      <div class="cat-name">SQL</div>
+      <div class="cat-items">Format, Minify, Extract tables, Parameterize</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon">—</div>
+      <div class="cat-name">YAML</div>
+      <div class="cat-items">→ JSON, Extract keys</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon">#</div>
+      <div class="cat-name">Markdown</div>
+      <div class="cat-items">→ HTML, Strip formatting</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon">⇄</div>
+      <div class="cat-name">HTTP</div>
+      <div class="cat-items">Extract URL &amp; headers, → Fetch, URLSession, requests</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon">🔑</div>
+      <div class="cat-name">JWT</div>
+      <div class="cat-items">Decode &amp; inspect token payload</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon">#️⃣</div>
+      <div class="cat-name">Hashing</div>
+      <div class="cat-items">SHA-256, SHA-512, MD5</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon">🎲</div>
+      <div class="cat-name">UUID</div>
+      <div class="cat-items">Generate, Uppercase, Lowercase</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon">Aa</div>
+      <div class="cat-name">Case</div>
+      <div class="cat-items">camelCase, snake_case, kebab-case, PascalCase, Title</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon">✂️</div>
+      <div class="cat-name">Text</div>
+      <div class="cat-items">Trim, Remove duplicates, Sort lines, Reverse, Count chars</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon">0x</div>
+      <div class="cat-name">Numbers</div>
+      <div class="cat-items">Hex ↔ Decimal, Binary ↔ Decimal</div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon">🎨</div>
+      <div class="cat-name">Colour</div>
+      <div class="cat-items">Hex ↔ RGB, → HSL, Tailwind, SwiftUI, CSS variable</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- AI ACTIONS -->
+<section class="section">
+  <div class="reveal">
+    <div class="section-label">AI-powered</div>
+    <h2 class="section-title">Smarter actions<br/>with Apple Intelligence</h2>
+    <p class="section-sub">AI transforms run on-device using Apple Intelligence. Nothing leaves your Mac.</p>
+  </div>
+
+  <div class="ai-grid reveal">
+    <div class="ai-card">
+      <div class="ai-card-label">Text</div>
+      <div class="ai-card-title">Fix grammar &amp; spelling</div>
+      <div class="ai-card-desc">Corrects errors while preserving your tone, language, and structure.</div>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-label">Text</div>
+      <div class="ai-card-title">Summarise in one sentence</div>
+      <div class="ai-card-desc">Condenses any block of text into a single clear sentence.</div>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-label">Text</div>
+      <div class="ai-card-title">Translate to English</div>
+      <div class="ai-card-desc">Detects the source language automatically and translates.</div>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-label">Code</div>
+      <div class="ai-card-title">Explain code</div>
+      <div class="ai-card-desc">Explains what any code snippet does in plain English.</div>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-label">JSON</div>
+      <div class="ai-card-title">Repair JSON</div>
+      <div class="ai-card-desc">Fixes OCR errors, missing quotes, and unbalanced braces.</div>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-label">SQL</div>
+      <div class="ai-card-title">Generate sample data</div>
+      <div class="ai-card-desc">Creates realistic test rows in Markdown, CSV, or SQL INSERT format.</div>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-label">URL</div>
+      <div class="ai-card-title">APA &amp; MLA citations</div>
+      <div class="ai-card-desc">Generates a formatted academic citation for any webpage URL.</div>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-label">Colour</div>
+      <div class="ai-card-title">Complementary palette</div>
+      <div class="ai-card-desc">Generates 5 harmonious hex colours that pair with your copied colour.</div>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-label">Address</div>
+      <div class="ai-card-title">Format as vCard</div>
+      <div class="ai-card-desc">Converts contact details into a standards-compliant vCard 3.0.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section reveal">
+  <p style="font-family:var(--mono);font-size:12px;color:var(--purple);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:20px">Get started</p>
+  <h2 style="font-family:var(--serif);font-size:clamp(28px,4vw,44px);font-weight:700;margin-bottom:16px">Ready to try it?</h2>
+  <p style="font-size:16px;color:var(--text-muted);margin-bottom:36px">$6.99 · one-time purchase · 14-day free trial</p>
+  <a href="index.html#pricing" class="btn-primary">Download L2Cache</a>
+</div>
+
+<footer>
+  <a href="index.html">Home</a>
+  <a href="support.html">Support</a>
+  <a href="privacy.html">Privacy Policy</a>
+  <br/><br/>
+  © 2026 L2Cache
+</footer>
+
+<script>
+  // Accordion for transform examples
+  document.querySelectorAll('.te-header').forEach(function(hdr) {
+    hdr.addEventListener('click', function() {
+      var item = hdr.closest('.transform-example');
+      var isOpen = item.classList.contains('open');
+      document.querySelectorAll('.transform-example').forEach(function(i) { i.classList.remove('open'); });
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // Scroll reveal
+  var reveals = document.querySelectorAll('.reveal');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry, i) {
+      if (entry.isIntersecting) {
+        setTimeout(function() { entry.target.classList.add('visible'); }, i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(function(el) { observer.observe(el); });
+</script>
+</body>
+</html>
