@@ -578,33 +578,34 @@
     .privacy-strip {
       background: var(--bg2);
       border-bottom: 1px solid var(--border);
-      padding: 80px 24px 40px;
+      padding: 80px 24px 14px;
     }
 
     .privacy-inner {
       max-width: 1100px;
       margin: 0 auto;
-      display: flex; align-items: center; gap: 48px;
+      display: flex; align-items: center; justify-content: center;
       flex-wrap: wrap;
+      gap: 0;
     }
 
     .privacy-stat {
-      flex: 1; min-width: 160px;
-      text-align: center;
-    }
-
-    .privacy-stat-number {
-      font-family: var(--serif);
-      font-size: 40px;
-      font-weight: 700;
-      color: var(--purple);
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-
-    .privacy-stat-label {
+      display: flex; align-items: baseline; gap: 5px;
+      padding: 0 20px;
       font-size: 13px;
       color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .privacy-stat:not(:last-child) {
+      border-right: 1px solid var(--border);
+    }
+
+    .privacy-stat-value {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
     }
 
     /* ── SECOND MEMORY SECTION ── */
@@ -820,10 +821,9 @@
         object-position: center center;
       }
       .hero-shots-dots { margin-top: 12px; }
-      .privacy-strip { padding: 72px 24px 32px; }
-      .privacy-inner { gap: 24px; justify-content: center; }
-      .privacy-stat { min-width: 140px; flex: 0 0 calc(50% - 12px); }
-      .privacy-stat-number { font-size: 28px; }
+      .privacy-strip { padding: 72px 16px 12px; }
+      .privacy-stat { padding: 4px 12px; border-right: none; }
+      .privacy-stat:nth-child(odd) { border-right: 1px solid var(--border); }
       .section { padding: 56px 24px; }
       .section-title { font-size: clamp(28px, 7vw, 42px); }
       .features-grid { grid-template-columns: 1fr; }
@@ -857,22 +857,10 @@
 <!-- STATS STRIP -->
 <div class="privacy-strip">
   <div class="privacy-inner">
-    <div class="privacy-stat">
-      <div class="privacy-stat-number">0</div>
-      <div class="privacy-stat-label">bytes of clip content sent to any server</div>
-    </div>
-    <div class="privacy-stat">
-      <div class="privacy-stat-number">$6.99</div>
-      <div class="privacy-stat-label">introductory price, no subscription ever</div>
-    </div>
-    <div class="privacy-stat">
-      <div class="privacy-stat-number" style="font-size:clamp(24px,4vw,36px)">Unlimited</div>
-      <div class="privacy-stat-label">clipboard history on your Mac</div>
-    </div>
-    <div class="privacy-stat">
-      <div class="privacy-stat-number">100ms</div>
-      <div class="privacy-stat-label">panel opens, every time</div>
-    </div>
+    <div class="privacy-stat"><span class="privacy-stat-value">0 bytes</span> of clip content sent to any server</div>
+    <div class="privacy-stat"><span class="privacy-stat-value">$6.99</span> introductory price, no subscription ever</div>
+    <div class="privacy-stat"><span class="privacy-stat-value">Unlimited</span> clipboard history on your Mac</div>
+    <div class="privacy-stat"><span class="privacy-stat-value">100ms</span> panel opens, every time</div>
   </div>
 </div>
 
