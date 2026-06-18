@@ -711,10 +711,9 @@
       .hero {
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        padding: 100px 32px 60px;
-        gap: 32px;
-        min-height: 80vh;
+        padding: 90px 20px 48px;
+        min-height: auto;
+        gap: 28px;
       }
       .hero-text {
         width: 100%;
@@ -722,10 +721,15 @@
         align-items: center;
         text-align: center;
       }
+      .hero-visual { flex: none; width: 100%; }
       .hero-sub { margin: 0 0 32px; }
       .hero-actions { justify-content: center; }
-      .hero-shots-wrap { margin-top: 0; }
       .hero-shots { border-radius: 10px; }
+      .hero-shots-track img {
+        max-height: 220px;
+        object-fit: cover;
+        object-position: center center;
+      }
       .hero-shots-dots { margin-top: 12px; }
       .privacy-strip { padding: 56px 24px 32px; }
       .privacy-inner { gap: 24px; justify-content: center; }
