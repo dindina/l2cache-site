@@ -599,6 +599,56 @@
       color: var(--text-muted);
     }
 
+    /* ── SECOND MEMORY SECTION ── */
+    .memory-section {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 80px 24px;
+    }
+    .memory-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .memory-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 56px;
+    }
+    .compare-card {
+      border-radius: 16px;
+      padding: 32px;
+    }
+    .compare-card.traditional {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .compare-card.l2cache {
+      background: rgba(127,119,221,0.08);
+      border: 1px solid rgba(127,119,221,0.3);
+    }
+    .compare-card-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .compare-card.traditional .compare-card-label { color: var(--text-dim); }
+    .compare-card.l2cache .compare-card-label { color: var(--purple); }
+    .compare-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+    .compare-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; line-height: 1.5; }
+    .compare-list li .ci { flex-shrink: 0; font-size: 15px; margin-top: 1px; }
+    .compare-card.traditional .compare-list li { color: var(--text-muted); }
+    .compare-card.l2cache .compare-list li { color: var(--text); }
+    .compare-card.l2cache .ci { color: #34D399; }
+    .compare-card.traditional .ci { color: var(--text-dim); }
+
+    @media (max-width: 700px) {
+      .memory-compare { grid-template-columns: 1fr; }
+    }
+
     /* ── FOOTER ── */
     footer {
       padding: 48px 24px;
@@ -910,6 +960,39 @@
     </div>
   </div>
 </section>
+
+<!-- SECOND MEMORY -->
+<div class="memory-section">
+  <div class="memory-inner">
+    <div class="reveal">
+      <div class="section-label">Second memory</div>
+      <h2 class="section-title" style="margin-bottom:16px">The notes you never<br/>had to take</h2>
+      <p style="font-size:18px;color:var(--text-muted);max-width:560px;margin:0 auto 56px;text-align:center;line-height:1.65">Every app on your Mac has a notes feature. L2Cache is the one that works for all of them at once — automatically.</p>
+      <div class="memory-compare">
+        <div class="compare-card traditional">
+          <div class="compare-card-label">Traditional notes</div>
+          <ul class="compare-list">
+            <li><span class="ci">✕</span> You have to remember to open a notes app</li>
+            <li><span class="ci">✕</span> You manually type or paste what you want to keep</li>
+            <li><span class="ci">✕</span> Different apps, different notebooks — no single place</li>
+            <li><span class="ci">✕</span> Context disappears — just the text, no source app</li>
+            <li><span class="ci">✕</span> Search only finds what you deliberately saved</li>
+          </ul>
+        </div>
+        <div class="compare-card l2cache">
+          <div class="compare-card-label">L2Cache</div>
+          <ul class="compare-list">
+            <li><span class="ci">✓</span> Every copy is saved automatically — nothing to open</li>
+            <li><span class="ci">✓</span> Text, code, links, images, addresses — all captured</li>
+            <li><span class="ci">✓</span> One unified history across every app on your Mac</li>
+            <li><span class="ci">✓</span> Knows which app each clip came from</li>
+            <li><span class="ci">✓</span> AI-powered search finds anything, instantly</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- FEATURES -->
 <section class="section" id="features">
