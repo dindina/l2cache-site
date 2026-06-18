@@ -710,16 +710,21 @@
       }
       .hero {
         flex-direction: column;
-        padding: 100px 24px 60px;
+        align-items: center;
+        justify-content: center;
+        padding: 100px 32px 60px;
         gap: 32px;
+        min-height: 80vh;
       }
       .hero-text {
         width: 100%;
+        max-width: 480px;
         align-items: center;
         text-align: center;
       }
       .hero-sub { margin: 0 0 32px; }
       .hero-actions { justify-content: center; }
+      .hero-visual { display: none; }
       .privacy-strip { padding: 56px 24px 32px; }
       .privacy-inner { gap: 24px; justify-content: center; }
       .privacy-stat { min-width: 140px; flex: 0 0 calc(50% - 12px); }
