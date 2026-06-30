@@ -1,0 +1,7 @@
+{
+  "name": "l2cache-site",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "python3 build.py"
+  }
+}
