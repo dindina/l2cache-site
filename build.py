@@ -44,9 +44,11 @@ def get_language_switcher_html(current_lang):
         selected = "selected" if code == current_lang else ""
         options += f'<option value="{code}" {selected}>{name}</option>'
     
+    lang_codes = "|".join(LANGUAGES.keys())
+    
     switcher = f"""
     <div class="lang-switcher" style="margin-left: 20px;">
-        <select onchange="window.location.href = '/' + this.value + window.location.pathname.replace(/^\\/([a-zA-Z-]+\\/)?/, '/');" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; border-radius: 6px; font-size: 13px; font-family: var(--sans);">
+        <select onchange="window.location.href = '/' + this.value + window.location.pathname.replace(/^\\/({lang_codes})(\\/|$)/, '/');" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; border-radius: 6px; font-size: 13px; font-family: var(--sans);">
             {options}
         </select>
     </div>
