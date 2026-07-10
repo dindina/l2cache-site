@@ -35,9 +35,9 @@
     "Unlimited": "无限制",
     "clipboard history<br>on your Mac": "Mac 上的<br>剪贴板历史记录",
     "14 days": "14天",
-    "free trial, then<br>$6.99 one-time": "免费试用，之后<br>一次性支付 $6.99",
+    "free trial, then<br>$6.99 one-time": "免费试用，之后<br>一次性支付 ¥48.00",
     "If you've ever lost something you copied, L2Cache was built for you.": "如果你曾经丢失过复制的内容，L2Cache 就是为你量身定制的。",
-    "Free 14-day trial · No credit card · Search anything you've ever copied · Upgrade to Pro for $6.99": "14 天免费试用 · 无需信用卡 · 搜索你复制过的任何内容 · 升级到专业版只需 $6.99",
+    "Free 14-day trial · No credit card · Search anything you've ever copied · Upgrade to Pro for $6.99": "14 天免费试用 · 无需信用卡 · 搜索你复制过的任何内容 · 升级到专业版只需 ¥48.00",
     "Second memory": "第二记忆",
     "The notes you never<br/>had to take": "你从未<br/>需要记的笔记",
     "Every app on your Mac has a notes feature. L2Cache is the one that works for all of them at once — automatically.": "你的 Mac 上每个应用都有笔记功能。L2Cache 是唯一一个同时为所有应用自动工作的。",
@@ -113,7 +113,7 @@
     "Converts contact details into a standards-compliant vCard 3.0.": "将联系人详情转换为符合标准的 vCard 3.0。",
     "Breaks down any shell command into plain English — flags, arguments, and what it actually does.": "用通俗易懂的语言分解任何 shell 命令——标志、参数及其直实作用。",
     "Reads the stack trace and explains the root cause and likely fix in plain English.": "读取堆栈跟踪并用通俗易懂的语言解释根本原因和可能的修复方法。",
-    "$6.99 · one-time purchase · 14-day free trial": "$6.99 · 一次性购买 · 14 天免费试用",
+    "$6.99 · one-time purchase · 14-day free trial": "¥48.00 · 一次性购买 · 14 天免费试用",
     "Fix grammar &amp; spelling": "修复语法和拼写",
     "Summarise in one sentence": "一句话总结",
     "Translate to English": "翻译为英语",
@@ -238,7 +238,8 @@
     "Extras": "额外功能",
     "QR code generation — turn any URL or text into a QR code in one click": "二维码生成——一键将任何 URL 或文本转换为二维码",
     "Screenshot renaming — AI renames screenshots by their content automatically": "屏幕截图重命名——AI 自动根据内容重命名屏幕截图",
-    "Spotlight integration — find clips without opening the panel": "Spotlight 集成——无需打开面板即可查找片段"
+    "Spotlight integration — find clips without opening the panel": "Spotlight 集成——无需打开面板即可查找片段",
+    "<sup>$</sup>6.99": "<sup>¥</sup>48.00"
   },
   "fr": {
     "Who it's for": "Pour qui",
@@ -276,9 +277,9 @@
     "Unlimited": "Illimité",
     "clipboard history<br>on your Mac": "historique du presse-papiers<br>sur votre Mac",
     "14 days": "14 jours",
-    "free trial, then<br>$6.99 one-time": "d'essai gratuit, puis<br>6,99 $ en une seule fois",
+    "free trial, then<br>$6.99 one-time": "d'essai gratuit, puis<br>6,99€ en une seule fois",
     "If you've ever lost something you copied, L2Cache was built for you.": "Si vous avez déjà perdu quelque chose que vous avez copié, L2Cache a été conçu pour vous.",
-    "Free 14-day trial · No credit card · Search anything you've ever copied · Upgrade to Pro for $6.99": "Essai gratuit de 14 jours · Aucune carte de crédit · Recherchez tout ce que vous avez copié · Passez à la version Pro pour 6,99 $",
+    "Free 14-day trial · No credit card · Search anything you've ever copied · Upgrade to Pro for $6.99": "Essai gratuit de 14 jours · Aucune carte de crédit · Recherchez tout ce que vous avez copié · Passez à la version Pro pour 6,99€",
     "Second memory": "Deuxième mémoire",
     "The notes you never<br/>had to take": "Les notes que vous n'avez<br/>jamais eu besoin de prendre",
     "Every app on your Mac has a notes feature. L2Cache is the one that works for all of them at once — automatically.": "Chaque application sur votre Mac dispose d'une fonctionnalité de notes. L2Cache est celle qui fonctionne pour toutes en même temps — automatiquement.",
@@ -354,7 +355,7 @@
     "Converts contact details into a standards-compliant vCard 3.0.": "Convertit les coordonnées en une vCard 3.0 conforme aux normes.",
     "Breaks down any shell command into plain English — flags, arguments, and what it actually does.": "Décompose n'importe quelle commande shell en termes simples — options, arguments et ce qu'elle fait réellement.",
     "Reads the stack trace and explains the root cause and likely fix in plain English.": "Lit la trace de la pile et explique la cause première et la solution probable en termes simples.",
-    "$6.99 · one-time purchase · 14-day free trial": "6,99 $ · achat unique · essai gratuit de 14 jours",
+    "$6.99 · one-time purchase · 14-day free trial": "6,99€ · achat unique · essai gratuit de 14 jours",
     "Fix grammar &amp; spelling": "Corriger la grammaire et l'orthographe",
     "Summarise in one sentence": "Résumer en une phrase",
     "Translate to English": "Traduire en anglais",
@@ -479,7 +480,8 @@
     "Extras": "Fonctionnalités supplémentaires",
     "QR code generation — turn any URL or text into a QR code in one click": "Génération de codes QR — transformez n'importe quelle URL ou texte en code QR en un clic",
     "Screenshot renaming — AI renames screenshots by their content automatically": "Renommage des captures d'écran — l'IA renomme automatiquement les captures d'écran selon leur contenu",
-    "Spotlight integration — find clips without opening the panel": "Intégration Spotlight — trouvez des clips sans ouvrir le panneau"
+    "Spotlight integration — find clips without opening the panel": "Intégration Spotlight — trouvez des clips sans ouvrir le panneau",
+    "<sup>$</sup>6.99": "6,99<sup>€</sup>"
   },
   "de": {
     "Who it's for": "Für wen",
@@ -517,9 +519,9 @@
     "Unlimited": "Unbegrenzt",
     "clipboard history<br>on your Mac": "Zwischenablage-Verlauf<br>auf Ihrem Mac",
     "14 days": "14 Tage",
-    "free trial, then<br>$6.99 one-time": "kostenlos testen, dann<br>$6.99 einmalig",
+    "free trial, then<br>$6.99 one-time": "kostenlos testen, dann<br>6,99€ einmalig",
     "If you've ever lost something you copied, L2Cache was built for you.": "Wenn Sie jemals etwas Kopiertes verloren haben, wurde L2Cache für Sie entwickelt.",
-    "Free 14-day trial · No credit card · Search anything you've ever copied · Upgrade to Pro for $6.99": "Kostenlose 14-Tage-Testversion · Keine Kreditkarte · Durchsuchen Sie alles, was Sie je kopiert haben · Upgrade auf Pro für 6,99 $",
+    "Free 14-day trial · No credit card · Search anything you've ever copied · Upgrade to Pro for $6.99": "Kostenlose 14-Tage-Testversion · Keine Kreditkarte · Durchsuchen Sie alles, was Sie je kopiert haben · Upgrade auf Pro für 6,99€",
     "Second memory": "Zweites Gedächtnis",
     "The notes you never<br/>had to take": "Die Notizen, die Sie nie<br/>machen mussten",
     "Every app on your Mac has a notes feature. L2Cache is the one that works for all of them at once — automatically.": "Jede App auf Ihrem Mac verfügt über eine Notizfunktion. L2Cache ist die einzige, die für alle gleichzeitig funktioniert — automatisch.",
@@ -595,7 +597,7 @@
     "Converts contact details into a standards-compliant vCard 3.0.": "Konvertiert Kontaktdaten in eine standardkonforme vCard 3.0.",
     "Breaks down any shell command into plain English — flags, arguments, and what it actually does.": "Erklärt jeden Shell-Befehl in einfachem Englisch — Flags, Argumente und was er tatsächlich tut.",
     "Reads the stack trace and explains the root cause and likely fix in plain English.": "Liest den Stack-Trace und erklärt die Grundursache und wahrscheinliche Lösung in einfachem Englisch.",
-    "$6.99 · one-time purchase · 14-day free trial": "6,99 $ · Einmaliger Kauf · 14 Tage kostenlose Testversion",
+    "$6.99 · one-time purchase · 14-day free trial": "6,99€ · Einmaliger Kauf · 14 Tage kostenlose Testversion",
     "Fix grammar &amp; spelling": "Grammatik & Rechtschreibung korrigieren",
     "Summarise in one sentence": "In einem Satz zusammenfassen",
     "Translate to English": "Ins Englische übersetzen",
@@ -720,7 +722,8 @@
     "Extras": "Extras",
     "QR code generation — turn any URL or text into a QR code in one click": "QR-Code-Erstellung — verwandeln Sie jede URL oder jeden Text mit einem Klick in einen QR-Code",
     "Screenshot renaming — AI renames screenshots by their content automatically": "Screenshot-Umbenennung — die KI benennt Screenshots automatisch nach ihrem Inhalt",
-    "Spotlight integration — find clips without opening the panel": "Spotlight-Integration — finden Sie Clips, ohne das Panel zu öffnen"
+    "Spotlight integration — find clips without opening the panel": "Spotlight-Integration — finden Sie Clips, ohne das Panel zu öffnen",
+    "<sup>$</sup>6.99": "6,99<sup>€</sup>"
   },
   "it": {
     "Who it's for": "A chi si rivolge",
@@ -758,9 +761,9 @@
     "Unlimited": "Illimitato",
     "clipboard history<br>on your Mac": "cronologia degli appunti<br>sul tuo Mac",
     "14 days": "14 giorni",
-    "free trial, then<br>$6.99 one-time": "di prova gratuita, poi<br>$6.99 una tantum",
+    "free trial, then<br>$6.99 one-time": "di prova gratuita, poi<br>6,99€ una tantum",
     "If you've ever lost something you copied, L2Cache was built for you.": "Se hai mai perso qualcosa che avevi copiato, L2Cache è stata creata per te.",
-    "Free 14-day trial · No credit card · Search anything you've ever copied · Upgrade to Pro for $6.99": "Prova gratuita di 14 giorni · Nessuna carta di credito · Cerca qualsiasi cosa tu abbia mai copiato · Passa a Pro per 6,99 $",
+    "Free 14-day trial · No credit card · Search anything you've ever copied · Upgrade to Pro for $6.99": "Prova gratuita di 14 giorni · Nessuna carta di credito · Cerca qualsiasi cosa tu abbia mai copiato · Passa a Pro per 6,99€",
     "Second memory": "Seconda memoria",
     "The notes you never<br/>had to take": "Gli appunti che non hai<br/>mai dovuto prendere",
     "Every app on your Mac has a notes feature. L2Cache is the one that works for all of them at once — automatically.": "Ogni app sul tuo Mac ha una funzione per gli appunti. L2Cache è quella che funziona per tutte quante contemporaneamente, automaticamente.",
@@ -836,7 +839,7 @@
     "Converts contact details into a standards-compliant vCard 3.0.": "Converte i dettagli del contatto in una vCard 3.0 conforme agli standard.",
     "Breaks down any shell command into plain English — flags, arguments, and what it actually does.": "Analizza qualsiasi comando shell in un linguaggio semplice: flag, argomenti e cosa fa effettivamente.",
     "Reads the stack trace and explains the root cause and likely fix in plain English.": "Legge la traccia dello stack e spiega la causa principale e la probabile soluzione in un linguaggio semplice.",
-    "$6.99 · one-time purchase · 14-day free trial": "$6,99 · acquisto una tantum · prova gratuita di 14 giorni",
+    "$6.99 · one-time purchase · 14-day free trial": "6,99€ · acquisto una tantum · prova gratuita di 14 giorni",
     "Fix grammar &amp; spelling": "Correggi grammatica e ortografia",
     "Summarise in one sentence": "Riassumi in una frase",
     "Translate to English": "Traduci in inglese",
@@ -961,7 +964,8 @@
     "Extras": "Extra",
     "QR code generation — turn any URL or text into a QR code in one click": "Generazione di codici QR: trasforma qualsiasi URL o testo in un codice QR con un clic",
     "Screenshot renaming — AI renames screenshots by their content automatically": "Rinominazione degli screenshot: l'IA rinomina automaticamente gli screenshot in base al loro contenuto",
-    "Spotlight integration — find clips without opening the panel": "Integrazione Spotlight: trova i clip senza aprire il pannello"
+    "Spotlight integration — find clips without opening the panel": "Integrazione Spotlight: trova i clip senza aprire il pannello",
+    "<sup>$</sup>6.99": "6,99<sup>€</sup>"
   },
   "ja": {
     "Who it's for": "対象者",
@@ -999,9 +1003,9 @@
     "Unlimited": "無制限",
     "clipboard history<br>on your Mac": "Mac上の<br>クリップボード履歴",
     "14 days": "14日間",
-    "free trial, then<br>$6.99 one-time": "無料トライアル、その後<br>$6.99の一括払い",
+    "free trial, then<br>$6.99 one-time": "無料トライアル、その後<br>1000¥の一括払い",
     "If you've ever lost something you copied, L2Cache was built for you.": "コピーしたものを失った経験があるなら、L2Cacheはあなたのために作られました。",
-    "Free 14-day trial · No credit card · Search anything you've ever copied · Upgrade to Pro for $6.99": "14日間無料トライアル · クレジットカード不要 · これまでにコピーしたすべてのものを検索 · $6.99でProにアップグレード",
+    "Free 14-day trial · No credit card · Search anything you've ever copied · Upgrade to Pro for $6.99": "14日間無料トライアル · クレジットカード不要 · これまでにコピーしたすべてのものを検索 · 1000¥でProにアップグレード",
     "Second memory": "第二の記憶",
     "The notes you never<br/>had to take": "あなたが取る必要の<br/>なかったメモ",
     "Every app on your Mac has a notes feature. L2Cache is the one that works for all of them at once — automatically.": "Mac上のすべてのアプリにはメモ機能があります。L2Cacheは、すべてのアプリで同時に機能する唯一のアプリです — 自動的に。",
@@ -1077,7 +1081,7 @@
     "Converts contact details into a standards-compliant vCard 3.0.": "連絡先の詳細を標準準拠のvCard 3.0に変換します。",
     "Breaks down any shell command into plain English — flags, arguments, and what it actually does.": "シェルコマンドを分かりやすく分解して説明します — フラグ、引数、実際の動作など。",
     "Reads the stack trace and explains the root cause and likely fix in plain English.": "スタックトレースを読み取り、根本原因と可能性のある修正方法を分かりやすく説明します。",
-    "$6.99 · one-time purchase · 14-day free trial": "$6.99 · 買い切り · 14日間の無料トライアル",
+    "$6.99 · one-time purchase · 14-day free trial": "1000¥ · 買い切り · 14日間の無料トライアル",
     "Fix grammar &amp; spelling": "文法とスペルを修正する",
     "Summarise in one sentence": "一文で要約する",
     "Translate to English": "英語に翻訳する",
@@ -1202,7 +1206,8 @@
     "Extras": "追加機能",
     "QR code generation — turn any URL or text into a QR code in one click": "QR コードの生成 — ワンクリックで任意の URL やテキストを QR コードに変換します",
     "Screenshot renaming — AI renames screenshots by their content automatically": "スクリーンショットのファイル名変更 — AI がコンテンツに基づいてスクリーンショットの名前を自動的に変更します",
-    "Spotlight integration — find clips without opening the panel": "Spotlight 統合 — パネルを開かずにクリップを見つける"
+    "Spotlight integration — find clips without opening the panel": "Spotlight 統合 — パネルを開かずにクリップを見つける",
+    "<sup>$</sup>6.99": "1000<sup>¥</sup>"
   },
   "ko": {
     "Who it's for": "대상",
@@ -1240,9 +1245,9 @@
     "Unlimited": "무제한",
     "clipboard history<br>on your Mac": "Mac의<br>클립보드 기록",
     "14 days": "14일",
-    "free trial, then<br>$6.99 one-time": "무료 체험 후<br>$6.99 일회성 구매",
+    "free trial, then<br>$6.99 one-time": "무료 체험 후<br>₩6,600.00 일회성 구매",
     "If you've ever lost something you copied, L2Cache was built for you.": "복사한 것을 잃어버린 적이 있다면 L2Cache가 당신을 위해 만들어졌습니다.",
-    "Free 14-day trial · No credit card · Search anything you've ever copied · Upgrade to Pro for $6.99": "14일 무료 평가판 · 신용카드 불필요 · 복사했던 모든 것 검색 · $6.99로 Pro 업그레이드",
+    "Free 14-day trial · No credit card · Search anything you've ever copied · Upgrade to Pro for $6.99": "14일 무료 평가판 · 신용카드 불필요 · 복사했던 모든 것 검색 · ₩6,600.00로 Pro 업그레이드",
     "Second memory": "두 번째 기억",
     "The notes you never<br/>had to take": "당신이 적을 필요<br/>없었던 메모",
     "Every app on your Mac has a notes feature. L2Cache is the one that works for all of them at once — automatically.": "Mac의 모든 앱에는 메모 기능이 있습니다. L2Cache는 모든 앱에서 한 번에 자동으로 작동하는 유일한 앱입니다.",
@@ -1318,7 +1323,7 @@
     "Converts contact details into a standards-compliant vCard 3.0.": "연락처 세부 정보를 표준 준수 vCard 3.0으로 변환합니다.",
     "Breaks down any shell command into plain English — flags, arguments, and what it actually does.": "모든 셸 명령을 쉬운 말로 분석합니다(플래그, 인수 및 실제 수행하는 작업).",
     "Reads the stack trace and explains the root cause and likely fix in plain English.": "스택 트레이스를 읽고 쉬운 말로 근본 원인과 가능한 해결책을 설명합니다.",
-    "$6.99 · one-time purchase · 14-day free trial": "$6.99 · 일회성 구매 · 14일 무료 평가판",
+    "$6.99 · one-time purchase · 14-day free trial": "₩6,600.00 · 일회성 구매 · 14일 무료 평가판",
     "Fix grammar &amp; spelling": "문법 및 맞춤법 수정",
     "Summarise in one sentence": "한 문장으로 요약하기",
     "Translate to English": "영어로 번역하기",
@@ -1443,7 +1448,8 @@
     "Extras": "추가 기능",
     "QR code generation — turn any URL or text into a QR code in one click": "QR 코드 생성 — 클릭 한 번으로 모든 URL이나 텍스트를 QR 코드로 변환합니다",
     "Screenshot renaming — AI renames screenshots by their content automatically": "스크린샷 이름 변경 — AI가 내용에 따라 스크린샷 이름을 자동으로 변경합니다",
-    "Spotlight integration — find clips without opening the panel": "Spotlight 통합 — 패널을 열지 않고 클립 찾기"
+    "Spotlight integration — find clips without opening the panel": "Spotlight 통합 — 패널을 열지 않고 클립 찾기",
+    "<sup>$</sup>6.99": "<sup>₩</sup>6,600.00"
   },
   "pt-BR": {
     "Who it's for": "Para quem é",
@@ -1481,9 +1487,9 @@
     "Unlimited": "Ilimitado",
     "clipboard history<br>on your Mac": "histórico da área de transferência<br>no seu Mac",
     "14 days": "14 dias",
-    "free trial, then<br>$6.99 one-time": "de teste grátis, depois<br>$6.99 em pagamento único",
+    "free trial, then<br>$6.99 one-time": "de teste grátis, depois<br>R$18.49 em pagamento único",
     "If you've ever lost something you copied, L2Cache was built for you.": "Se você já perdeu algo que copiou, o L2Cache foi feito para você.",
-    "Free 14-day trial · No credit card · Search anything you've ever copied · Upgrade to Pro for $6.99": "Teste grátis de 14 dias · Sem cartão de crédito · Pesquise tudo que você já copiou · Atualize para o Pro por $6,99",
+    "Free 14-day trial · No credit card · Search anything you've ever copied · Upgrade to Pro for $6.99": "Teste grátis de 14 dias · Sem cartão de crédito · Pesquise tudo que você já copiou · Atualize para o Pro por R$18.49",
     "Second memory": "Segunda memória",
     "The notes you never<br/>had to take": "As notas que você nunca<br/>precisou fazer",
     "Every app on your Mac has a notes feature. L2Cache is the one that works for all of them at once — automatically.": "Todo app no seu Mac tem um recurso de notas. O L2Cache é aquele que funciona para todos eles de uma vez — automaticamente.",
@@ -1559,7 +1565,7 @@
     "Converts contact details into a standards-compliant vCard 3.0.": "Converte os detalhes do contato em um vCard 3.0 compatível com os padrões.",
     "Breaks down any shell command into plain English — flags, arguments, and what it actually does.": "Analisa qualquer comando de shell em linguagem simples — sinalizadores, argumentos e o que ele realmente faz.",
     "Reads the stack trace and explains the root cause and likely fix in plain English.": "Lê o rastreamento de pilha e explica a causa raiz e a provável correção em linguagem simples.",
-    "$6.99 · one-time purchase · 14-day free trial": "$6,99 · compra única · teste grátis de 14 dias",
+    "$6.99 · one-time purchase · 14-day free trial": "R$18.49 · compra única · teste grátis de 14 dias",
     "Fix grammar &amp; spelling": "Corrigir gramática e ortografia",
     "Summarise in one sentence": "Resumir em uma frase",
     "Translate to English": "Traduzir para o inglês",
@@ -1684,7 +1690,8 @@
     "Extras": "Extras",
     "QR code generation — turn any URL or text into a QR code in one click": "Geração de código QR — transforme qualquer URL ou texto em um código QR com um clique",
     "Screenshot renaming — AI renames screenshots by their content automatically": "Renomeação de captura de tela — a IA renomeia automaticamente as capturas de tela de acordo com seu conteúdo",
-    "Spotlight integration — find clips without opening the panel": "Integração do Spotlight — encontre clipes sem abrir o painel"
+    "Spotlight integration — find clips without opening the panel": "Integração do Spotlight — encontre clipes sem abrir o painel",
+    "<sup>$</sup>6.99": "<sup>R$</sup>18.49"
   },
   "es": {
     "Who it's for": "Para quién es",
@@ -1722,9 +1729,9 @@
     "Unlimited": "Ilimitado",
     "clipboard history<br>on your Mac": "historial del portapapeles<br>en tu Mac",
     "14 days": "14 días",
-    "free trial, then<br>$6.99 one-time": "de prueba gratis, luego<br>$6.99 un pago único",
+    "free trial, then<br>$6.99 one-time": "de prueba gratis, luego<br>6,99€ un pago único",
     "If you've ever lost something you copied, L2Cache was built for you.": "Si alguna vez has perdido algo que copiaste, L2Cache fue creado para ti.",
-    "Free 14-day trial · No credit card · Search anything you've ever copied · Upgrade to Pro for $6.99": "Prueba gratuita de 14 días · Sin tarjeta de crédito · Busca cualquier cosa que hayas copiado · Actualiza a Pro por $6.99",
+    "Free 14-day trial · No credit card · Search anything you've ever copied · Upgrade to Pro for $6.99": "Prueba gratuita de 14 días · Sin tarjeta de crédito · Busca cualquier cosa que hayas copiado · Actualiza a Pro por 6,99€",
     "Second memory": "Segunda memoria",
     "The notes you never<br/>had to take": "Las notas que nunca<br/>tuviste que tomar",
     "Every app on your Mac has a notes feature. L2Cache is the one that works for all of them at once — automatically.": "Cada app en tu Mac tiene una función de notas. L2Cache es la que funciona para todas ellas a la vez, automáticamente.",
@@ -1800,7 +1807,7 @@
     "Converts contact details into a standards-compliant vCard 3.0.": "Convierte los detalles de contacto en una vCard 3.0 que cumple con los estándares.",
     "Breaks down any shell command into plain English — flags, arguments, and what it actually does.": "Desglosa cualquier comando de shell en lenguaje sencillo: indicadores, argumentos y lo que realmente hace.",
     "Reads the stack trace and explains the root cause and likely fix in plain English.": "Lee el seguimiento de la pila y explica la causa raíz y la solución probable en lenguaje sencillo.",
-    "$6.99 · one-time purchase · 14-day free trial": "$6.99 · compra única · prueba gratuita de 14 días",
+    "$6.99 · one-time purchase · 14-day free trial": "6,99€ · compra única · prueba gratuita de 14 días",
     "Fix grammar &amp; spelling": "Corregir gramática y ortografía",
     "Summarise in one sentence": "Resumir en una oración",
     "Translate to English": "Traducir al inglés",
@@ -1925,7 +1932,8 @@
     "Extras": "Extras",
     "QR code generation — turn any URL or text into a QR code in one click": "Generación de códigos QR: convierte cualquier URL o texto en un código QR con un clic",
     "Screenshot renaming — AI renames screenshots by their content automatically": "Renombramiento de capturas de pantalla: la IA renombra automáticamente las capturas de pantalla por su contenido",
-    "Spotlight integration — find clips without opening the panel": "Integración con Spotlight: encuentra clips sin abrir el panel"
+    "Spotlight integration — find clips without opening the panel": "Integración con Spotlight: encuentra clips sin abrir el panel",
+    "<sup>$</sup>6.99": "6,99<sup>€</sup>"
   },
   "vi": {
     "Who it's for": "Dành cho ai",
@@ -1963,9 +1971,9 @@
     "Unlimited": "Không giới hạn",
     "clipboard history<br>on your Mac": "lịch sử khay nhớ tạm<br>trên máy Mac của bạn",
     "14 days": "14 ngày",
-    "free trial, then<br>$6.99 one-time": "dùng thử miễn phí, sau đó<br>$6.99 thanh toán một lần",
+    "free trial, then<br>$6.99 one-time": "dùng thử miễn phí, sau đó<br>₫119,000.00 thanh toán một lần",
     "If you've ever lost something you copied, L2Cache was built for you.": "Nếu bạn đã từng đánh mất thứ gì đó bạn đã sao chép, L2Cache được tạo ra cho bạn.",
-    "Free 14-day trial · No credit card · Search anything you've ever copied · Upgrade to Pro for $6.99": "Dùng thử miễn phí 14 ngày · Không cần thẻ tín dụng · Tìm kiếm mọi thứ bạn đã từng sao chép · Nâng cấp lên bản Pro với giá $6,99",
+    "Free 14-day trial · No credit card · Search anything you've ever copied · Upgrade to Pro for $6.99": "Dùng thử miễn phí 14 ngày · Không cần thẻ tín dụng · Tìm kiếm mọi thứ bạn đã từng sao chép · Nâng cấp lên bản Pro với giá ₫119,000.00",
     "Second memory": "Bộ nhớ thứ hai",
     "The notes you never<br/>had to take": "Những ghi chú mà bạn không bao giờ<br/>phải thực hiện",
     "Every app on your Mac has a notes feature. L2Cache is the one that works for all of them at once — automatically.": "Mọi ứng dụng trên máy Mac của bạn đều có tính năng ghi chú. L2Cache là ứng dụng hoạt động cho tất cả các ứng dụng cùng một lúc — một cách tự động.",
@@ -2041,7 +2049,7 @@
     "Converts contact details into a standards-compliant vCard 3.0.": "Chuyển đổi chi tiết liên hệ thành vCard 3.0 tuân thủ tiêu chuẩn.",
     "Breaks down any shell command into plain English — flags, arguments, and what it actually does.": "Phân tích bất kỳ lệnh shell nào bằng ngôn ngữ dễ hiểu — cờ, đối số và chức năng thực sự của nó.",
     "Reads the stack trace and explains the root cause and likely fix in plain English.": "Đọc dấu vết ngăn xếp và giải thích nguyên nhân cốt lõi cũng như khả năng khắc phục bằng ngôn ngữ dễ hiểu.",
-    "$6.99 · one-time purchase · 14-day free trial": "$6,99 · mua một lần · 14 ngày dùng thử miễn phí",
+    "$6.99 · one-time purchase · 14-day free trial": "₫119,000.00 · mua một lần · 14 ngày dùng thử miễn phí",
     "Fix grammar &amp; spelling": "Sửa lỗi ngữ pháp & chính tả",
     "Summarise in one sentence": "Tóm tắt trong một câu",
     "Translate to English": "Dịch sang tiếng Anh",
@@ -2167,6 +2175,7 @@
     "Extras": "Tính năng bổ sung",
     "QR code generation — turn any URL or text into a QR code in one click": "Tạo mã QR — biến bất kỳ URL hoặc văn bản nào thành mã QR chỉ bằng một cú nhấp chuột",
     "Screenshot renaming — AI renames screenshots by their content automatically": "Đổi tên ảnh chụp màn hình — AI tự động đổi tên ảnh chụp màn hình theo nội dung của chúng",
-    "Spotlight integration — find clips without opening the panel": "Tích hợp Spotlight — tìm clip mà không cần mở bảng điều khiển"
+    "Spotlight integration — find clips without opening the panel": "Tích hợp Spotlight — tìm clip mà không cần mở bảng điều khiển",
+    "<sup>$</sup>6.99": "<sup>₫</sup>119,000.00"
   }
 }
