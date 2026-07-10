@@ -35,6 +35,8 @@ with open("locales.json", "r", encoding="utf-8") as f:
 
 HTML_FILES = ["index.html", "support.html", "privacy.html", "intelligence.html", "changelog.html"]
 OUT_DIR = "out"
+L2CACHE_OUT_DIR = os.path.join(OUT_DIR, "l2cache")
+AMVO_OUT_DIR = os.path.join(OUT_DIR, "amvo-store")
 
 def get_language_switcher_html(current_lang):
     options = ""
@@ -62,17 +64,22 @@ def build():
     if os.path.exists(OUT_DIR):
         shutil.rmtree(OUT_DIR)
     os.makedirs(OUT_DIR)
+    os.makedirs(L2CACHE_OUT_DIR)
 
-    # Copy assets
-    for asset in ["icon.png", "screenshots", "amvo-store"]:
+    # Copy L2Cache assets
+    for asset in ["icon.png", "screenshots"]:
         if os.path.exists(asset):
             if os.path.isdir(asset):
-                shutil.copytree(asset, os.path.join(OUT_DIR, asset))
+                shutil.copytree(asset, os.path.join(L2CACHE_OUT_DIR, asset))
             else:
-                shutil.copy(asset, os.path.join(OUT_DIR, asset))
+                shutil.copy(asset, os.path.join(L2CACHE_OUT_DIR, asset))
+                
+    # Copy amvo-store
+    if os.path.exists("amvo-store"):
+        shutil.copytree("amvo-store", AMVO_OUT_DIR)
 
     for lang in LANGUAGES.keys():
-        lang_dir = os.path.join(OUT_DIR, lang)
+        lang_dir = os.path.join(L2CACHE_OUT_DIR, lang)
         os.makedirs(lang_dir, exist_ok=True)
         print(f"Building for {lang}...")
         

@@ -23,6 +23,10 @@
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "www.amvo.store" }],
       "destination": "/amvo-store/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/l2cache/$1"
     }
   ]
 }
