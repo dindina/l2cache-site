@@ -11,6 +11,15 @@
       ],
       "destination": "/en/",
       "permanent": false
+    },
+    {
+      "source": "/:page(privacy|support|intelligence|changelog)",
+      "missing": [
+        { "type": "host", "value": "amvo.store" },
+        { "type": "host", "value": "www.amvo.store" }
+      ],
+      "destination": "/en/:page",
+      "permanent": false
     }
   ],
   "rewrites": [
