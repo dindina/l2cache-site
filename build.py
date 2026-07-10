@@ -131,18 +131,7 @@ def build():
             with open(os.path.join(lang_dir, file), "w", encoding="utf-8") as f:
                 f.write(content)
 
-    # Root redirect to /en/
-    redirect_html = '''<!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="refresh" content="0; url='/en/index.html'" />
-  </head>
-  <body>
-    <p>Redirecting to <a href="/en/index.html">/en/</a></p>
-  </body>
-</html>'''
-    with open(os.path.join(OUT_DIR, "index.html"), "w", encoding="utf-8") as f:
-        f.write(redirect_html)
+    # We let Vercel handle the root redirect to /en/ so it doesn't conflict with amvo.store routing
 
     # Copy vercel.json if exists to out dir? No, vercel.json should be at root.
 

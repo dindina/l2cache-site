@@ -2,6 +2,17 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "outputDirectory": "out",
+  "redirects": [
+    {
+      "source": "/",
+      "missing": [
+        { "type": "host", "value": "amvo.store" },
+        { "type": "host", "value": "www.amvo.store" }
+      ],
+      "destination": "/en/",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
