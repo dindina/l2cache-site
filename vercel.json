@@ -1,5 +1,17 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "outputDirectory": "out"
+  "outputDirectory": "out",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "amvo.store" }],
+      "destination": "/amvo-store/$1"
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "www.amvo.store" }],
+      "destination": "/amvo-store/$1"
+    }
+  ]
 }

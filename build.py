@@ -16,6 +16,19 @@ LANGUAGES = {
     "vi": "Vietnamese"
 }
 
+APP_STORE_COUNTRIES = {
+    "en": "us",
+    "zh-Hans": "cn",
+    "fr": "fr",
+    "de": "de",
+    "it": "it",
+    "ja": "jp",
+    "ko": "kr",
+    "pt-BR": "br",
+    "es": "es",
+    "vi": "vn"
+}
+
 # Core dictionary mapping English strings to their translations in various languages.
 with open("locales.json", "r", encoding="utf-8") as f:
     TRANSLATIONS = json.load(f)
@@ -51,7 +64,7 @@ def build():
     os.makedirs(OUT_DIR)
 
     # Copy assets
-    for asset in ["icon.png", "screenshots"]:
+    for asset in ["icon.png", "screenshots", "amvo-store"]:
         if os.path.exists(asset):
             if os.path.isdir(asset):
                 shutil.copytree(asset, os.path.join(OUT_DIR, asset))
@@ -77,6 +90,23 @@ def build():
                     loc_str = TRANSLATIONS[lang][en_str]
                     content = content.replace(en_str, loc_str)
                     
+            # Localize screenshots if available
+            if lang != "en":
+                def replace_screenshot(match):
+                    base = match.group(1)
+                    ext = match.group(2)
+                    loc_name = f"{base}-{lang}.html{ext}"
+                    if os.path.exists(os.path.join("screenshots", loc_name)):
+                        return f'screenshots/{loc_name}'
+                    return match.group(0)
+                content = re.sub(r'screenshots/([^"/]+)(\.png)', replace_screenshot, content)
+
+            # Localize App Store links
+            if lang != "en":
+                country_code = APP_STORE_COUNTRIES.get(lang, "us")
+                if country_code != "us":
+                    content = content.replace('apps.apple.com/us/', f'apps.apple.com/{country_code}/')
+
             # Inject language switcher into nav and footer
             switcher_html = get_language_switcher_html(lang)
             if '</nav>' in content:
