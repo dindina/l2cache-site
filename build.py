@@ -141,9 +141,24 @@ def build():
             with open(os.path.join(lang_dir, file), "w", encoding="utf-8") as f:
                 f.write(content)
 
+    # Generate sitemap.xml
+    sitemap_path = os.path.join(L2CACHE_OUT_DIR, "sitemap.xml")
+    base_url = "https://l2cache.amvo.store"
+    with open(sitemap_path, "w", encoding="utf-8") as f:
+        f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+        f.write('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
+        for lang in LANGUAGES.keys():
+            for file in HTML_FILES:
+                if not os.path.exists(file):
+                    continue
+                # For cleanUrls, omit index.html
+                url_path = f"{base_url}/{lang}/" if file == "index.html" else f"{base_url}/{lang}/{file}"
+                f.write('  <url>\n')
+                f.write(f'    <loc>{url_path}</loc>\n')
+                f.write('  </url>\n')
+        f.write('</urlset>\n')
+        
     # We let Vercel handle the root redirect to /en/ so it doesn't conflict with amvo.store routing
-
-    # Copy vercel.json if exists to out dir? No, vercel.json should be at root.
 
 if __name__ == "__main__":
     build()
