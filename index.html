@@ -993,6 +993,7 @@
       <div class="hero-shots">
         <div class="hero-shots-track" id="heroTrack">
           <img src="screenshots/screenshot-1-history.png" alt="Clipboard History — L2Cache"/>
+          <img src="screenshots/screenshot-10-terminal-history.png" alt="Terminal History — L2Cache"/>
           <img src="screenshots/screenshot-2-search.png" alt="Instant Search — L2Cache"/>
           <img src="screenshots/screenshot-3-ai-titles.png" alt="AI Titles — L2Cache"/>
           <img src="screenshots/screenshot-4-transform.png" alt="Smart Transform — L2Cache"/>
@@ -1013,6 +1014,7 @@
         <button class="hero-dot" aria-label="Screenshot 7"></button>
         <button class="hero-dot" aria-label="Screenshot 8"></button>
         <button class="hero-dot" aria-label="Screenshot 9"></button>
+        <button class="hero-dot" aria-label="Screenshot 10"></button>
       </div>
     </div>
   </div>
@@ -1173,6 +1175,7 @@
     <li><a href="privacy.html">Privacy Policy</a></li>
     <li><a href="support.html">Support</a></li>
     <li><a href="clipboard-history-mac.html">Clipboard History on Mac</a></li>
+    <li><a href="mac-command-history.html">Mac Command History</a></li>
   </ul>
   <p class="footer-copy">© 2026 Amvotech</p>
 </footer>
@@ -1189,7 +1192,7 @@
     const track = document.getElementById('heroTrack');
     const wrap  = track.parentElement; // .hero-shots
     const dots  = document.querySelectorAll('.hero-dot');
-    const TOTAL = 9, THRESHOLD = 50;
+    const TOTAL = 10, THRESHOLD = 50;
     let cur = 0, timer, startX = 0, moved = 0, dragging = false;
 
     function go(n) {

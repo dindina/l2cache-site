@@ -13,7 +13,7 @@
       "permanent": false
     },
     {
-      "source": "/:page(privacy|support|intelligence|changelog|clipboard-history-mac)",
+      "source": "/:page(privacy|support|intelligence|changelog|clipboard-history-mac|mac-command-history)",
       "missing": [
         { "type": "host", "value": "amvo.store" },
         { "type": "host", "value": "www.amvo.store" }
