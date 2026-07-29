@@ -3,12 +3,82 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>L2Cache — Your clipboard remembers everything</title>
-  <meta name="description" content="The AI-powered clipboard manager for Mac. Built for developers, researchers, and power users who copy and paste all day."/>
+  <title>L2Cache — Clipboard Manager & History for Mac</title>
+  <meta name="description" content="Clipboard manager for Mac that saves your full clipboard history — search everything you've ever copied. Private, on-device AI. Free while in early access."/>
   <link rel="icon" type="image/png" href="icon.png"/>
   <link rel="apple-touch-icon" href="icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+
+  <!-- SEO: SoftwareApplication schema. NOTE: "price" is "0" while free in early access.
+       When you flip to paid, update price + priceCurrency here to match the new price. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "L2Cache",
+    "applicationCategory": "DeveloperApplication",
+    "applicationSubCategory": "Clipboard Manager",
+    "operatingSystem": "macOS 13.0 or later",
+    "description": "Clipboard manager for Mac that saves your full clipboard history so you can search everything you've ever copied. Private, on-device AI. Free while in early access.",
+    "url": "https://l2cache.amvo.store/en",
+    "downloadUrl": "https://apps.apple.com/us/app/l2cache/id6774423992?mt=12",
+    "softwareVersion": "1.1",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Amvo"
+    }
+  }
+  </script>
+
+  <!-- SEO: FAQPage schema — targets 'is it free', 'Intel Macs', 'privacy' style queries. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is L2Cache free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. L2Cache is free while in early access, and everyone who joins during early access keeps it free for good, including all future updates. No credit card required."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does L2Cache keep my clipboard history private?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. L2Cache stores your clipboard history locally on your Mac and its AI runs on-device using Apple Intelligence. No clip content is sent to any server."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What Macs does L2Cache work on?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "L2Cache runs on macOS 13 Ventura or later. Core clipboard history and search work on any supported Mac; the on-device AI features (AI titles, Smart Transform) require macOS 15.1 or later on Apple Silicon."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How is L2Cache different from the built-in macOS clipboard history?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The built-in Spotlight clipboard history in recent macOS only lets you re-copy a recent item. L2Cache keeps unlimited history, full-text and OCR search across everything you've copied, smart albums, and on-device AI — and it works back to macOS 13."
+        }
+      }
+    ]
+  }
+  </script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -892,7 +962,7 @@
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
       </div>
       <div class="privacy-stat-value">Free</div>
-      <div class="privacy-stat-label">for a limited time<br>get it now</div>
+      <div class="privacy-stat-label">in early access<br>yours to keep</div>
     </div>
   </div>
 </div>
@@ -902,9 +972,9 @@
 
   <!-- left: headline + actions -->
   <div class="hero-text">
-    <h1>Your clipboard<br/><em>has a memory</em> now</h1>
+    <h1>Clipboard history<br/>for Mac that <em>remembers</em></h1>
 
-    <p class="hero-sub">If you've ever lost something you copied, L2Cache was built for you.</p>
+    <p class="hero-sub">L2Cache is the clipboard manager that saves everything you copy — search your entire history in a keystroke. If you've ever lost something you copied, it was built for you.</p>
 
     <div class="hero-actions">
       <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="btn-primary" target="_blank" rel="noopener">
@@ -914,7 +984,7 @@
       <a href="#features" class="btn-secondary">See features</a>
     </div>
 
-    <p class="price-tag">Free for a limited time · No credit card · Search anything you've ever copied</p>
+    <p class="price-tag">Free while in early access · Join now and keep it free for good · No credit card</p>
   </div>
 
   <!-- right: screenshot carousel -->
@@ -1075,12 +1145,12 @@
   <div class="reveal" style="text-align:center;margin-bottom:48px">
     <div class="section-label">Pricing</div>
     <h2 class="section-title">Simple, honest pricing</h2>
-    <p class="section-sub" style="margin:16px auto 0">No subscription. No upsell. Free for a limited time.</p>
+    <p class="section-sub" style="margin:16px auto 0">No subscription. No upsell. Free while in early access — and everyone who joins now keeps it free for good.</p>
   </div>
 
   <div class="pricing-card reveal">
     <div class="pricing-amount">Free</div>
-    <div class="pricing-type">for a limited time · all future updates included</div>
+    <div class="pricing-type">while in early access · join now, keep it free for good · all future updates included</div>
     <ul class="pricing-features">
       <li><span class="check">✓</span> Unlimited clipboard history</li>
       <li><span class="check">✓</span> Apple Intelligence on-device AI</li>
@@ -1093,7 +1163,7 @@
     <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="btn-primary" style="width:100%;justify-content:center;font-size:16px;padding:16px" target="_blank" rel="noopener">
       Download L2Cache
     </a>
-    <p style="font-size:12px;color:var(--text-dim);margin-top:16px">macOS 13 Ventura or later · Free for a limited time</p>
+    <p style="font-size:12px;color:var(--text-dim);margin-top:16px">macOS 13 Ventura or later · Free while in early access — yours to keep for good</p>
   </div>
 </section>
 
@@ -1102,6 +1172,7 @@
   <ul class="footer-links">
     <li><a href="privacy.html">Privacy Policy</a></li>
     <li><a href="support.html">Support</a></li>
+    <li><a href="clipboard-history-mac.html">Clipboard History on Mac</a></li>
   </ul>
   <p class="footer-copy">© 2026 Amvotech</p>
 </footer>

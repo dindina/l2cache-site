@@ -33,7 +33,7 @@ APP_STORE_COUNTRIES = {
 with open("locales.json", "r", encoding="utf-8") as f:
     TRANSLATIONS = json.load(f)
 
-HTML_FILES = ["index.html", "support.html", "privacy.html", "intelligence.html", "changelog.html"]
+HTML_FILES = ["index.html", "support.html", "privacy.html", "intelligence.html", "changelog.html", "clipboard-history-mac.html"]
 OUT_DIR = "out"
 L2CACHE_OUT_DIR = os.path.join(OUT_DIR, "l2cache")
 AMVO_OUT_DIR = os.path.join(OUT_DIR, "amvo-store")
@@ -116,19 +116,20 @@ def build():
                 if country_code != "us":
                     content = content.replace('apps.apple.com/us/', f'apps.apple.com/{country_code}/')
 
-            # Inject language switcher into nav and footer
-            switcher_html = get_language_switcher_html(lang)
-            if '</nav>' in content:
-                content = content.replace('</nav>', f'{switcher_html}\n</nav>')
-            if '</footer>' in content:
-                content = content.replace('</footer>', f'{switcher_html}\n</footer>')
+            # Inject language switcher into nav and footer (skip for untranslated files)
+            if file not in ["clipboard-history-mac.html"]:
+                switcher_html = get_language_switcher_html(lang)
+                if '</nav>' in content:
+                    content = content.replace('</nav>', f'{switcher_html}\n</nav>')
+                if '</footer>' in content:
+                    content = content.replace('</footer>', f'{switcher_html}\n</footer>')
 
             # Adjust link prefixes
             content = fix_links(content, lang)
 
-            # Fix asset paths to be absolute from the root
-            content = re.sub(r'(src|href)="icon\.png"', r'\1="/icon.png"', content)
-            content = re.sub(r'(src|href)="screenshots/', r'\1="/screenshots/', content)
+            # Fix asset paths to be relative from the lang directory (works locally and on Vercel)
+            content = re.sub(r'(src|href)="icon\.png"', r'\1="../icon.png"', content)
+            content = re.sub(r'(src|href)="screenshots/', r'\1="../screenshots/', content)
             
             # Update html lang attribute and prevent auto-translation
             content = re.sub(r'<html lang="en">', f'<html lang="{lang}" translate="no" class="notranslate">', content)
