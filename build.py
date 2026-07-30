@@ -29,9 +29,9 @@ APP_STORE_COUNTRIES = {
     "vi": "vn"
 }
 
-# Core dictionary mapping English strings to their translations in various languages.
-with open("locales.json", "r", encoding="utf-8") as f:
-    TRANSLATIONS = json.load(f)
+# Translations temporarily disabled. Serving English on all routes.
+# with open("locales.json", "r", encoding="utf-8") as f:
+#     TRANSLATIONS = json.load(f)
 
 HTML_FILES = ["index.html", "support.html", "privacy.html", "intelligence.html", "changelog.html", "clipboard-history-mac.html", "mac-command-history.html"]
 OUT_DIR = "out"
@@ -48,7 +48,7 @@ def get_language_switcher_html(current_lang):
     
     switcher = f"""
     <div class="lang-switcher" style="margin-left: 20px;">
-        <select onchange="window.location.href = '/' + this.value + window.location.pathname.replace(/^\\/({lang_codes})(\\/|$)/, '/');" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; border-radius: 6px; font-size: 13px; font-family: var(--sans);">
+        <select onchange="window.location.href = window.location.pathname.replace(/\\/({lang_codes})\\//, '/' + this.value + '/');" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; border-radius: 6px; font-size: 13px; font-family: var(--sans);">
             {options}
         </select>
     </div>
@@ -91,13 +91,7 @@ def build():
             with open(file, "r", encoding="utf-8") as f:
                 content = f.read()
 
-            # Replace strings
-            if lang != "en" and lang in TRANSLATIONS:
-                # Sort keys by length descending to avoid partial replacements breaking longer strings
-                sorted_keys = sorted(TRANSLATIONS[lang].keys(), key=len, reverse=True)
-                for en_str in sorted_keys:
-                    loc_str = TRANSLATIONS[lang][en_str]
-                    content = content.replace(en_str, loc_str)
+            # Translation replacement removed temporarily (serving English only)
                     
             # Localize screenshots if available
             if lang != "en":
@@ -131,12 +125,10 @@ def build():
             content = re.sub(r'(src|href)="icon\.png"', r'\1="../icon.png"', content)
             content = re.sub(r'(src|href)="screenshots/', r'\1="../screenshots/', content)
             
-            # Update html lang attribute and prevent auto-translation
-            content = re.sub(r'<html lang="en">', f'<html lang="{lang}" translate="no" class="notranslate">', content)
-            
-            # Add google notranslate meta tag for extra safety
-            if '<head>' in content:
-                content = content.replace('<head>', '<head>\n  <meta name="google" content="notranslate" />')
+            # Note: 
+            # 1. We keep <html lang="en"> (no replacement) because content is English.
+            # 2. We remove <meta name="google" content="notranslate"> so Chrome offers translation natively.
+            # 3. We remove broken hreflang tags since all pages are now duplicate English.
 
             with open(os.path.join(lang_dir, file), "w", encoding="utf-8") as f:
                 f.write(content)
