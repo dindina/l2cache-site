@@ -63,6 +63,16 @@ def fix_links(html_content, lang):
     return html_content
 
 def build():
+    import subprocess
+    import glob
+    print("Generating competitor comparisons...")
+    subprocess.run(["python3", "generate_comparisons.py"])
+    
+    # Dynamically include generated comparison pages
+    for comp_file in glob.glob("l2cache-vs-*.html"):
+        if comp_file not in HTML_FILES:
+            HTML_FILES.append(comp_file)
+
     if os.path.exists(OUT_DIR):
         shutil.rmtree(OUT_DIR)
     os.makedirs(OUT_DIR)
