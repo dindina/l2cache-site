@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to View and Search Mac Terminal Command History</title>
+  <meta name="description" content="Why developers need a smart clipboard manager with JSON formatting and OCR." />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/developer-clipboard.html" />
+  <link rel="icon" type="image/png" href="icon.png" />
+  <link rel="apple-touch-icon" href="icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+
+  <!-- SEO: Article schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "How to View and Search Mac Terminal Command History",
+    "description": "How to view, search, and sync your Mac command history — using the native history command, reverse search (Ctrl+R), and how to organize complex terminal snippets.",
+    "author": { "@type": "Organization", "name": "Amvo" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Amvo",
+      "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" }
+    },
+    "mainEntityOfPage": "https://l2cache.amvo.store/en/developer-clipboard.html",
+    "datePublished": "2026-07-29",
+    "dateModified": "2026-07-29"
+  }
+  </script>
+
+  <!-- SEO: FAQPage schema -->
+  <script type="application/ld+json">
+    {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I see my command history on a Mac?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Open the Terminal and type the command `history`. This will print a numbered list of the most recent commands you have executed."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Where is the terminal history file located on Mac?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "If you are using Zsh (the default since macOS Catalina), the history file is located at `~/.zsh_history`. For Bash users, it is located at `~/.bash_history`."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I search my previous commands in Mac terminal?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Press `Ctrl + R` inside your terminal to open the reverse-i-search prompt. Start typing part of the command, and it will find the most recent match. Press `Ctrl + R` again to cycle through older matches."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --purple: #7F77DD;
+      --purple-dark: #5C52C8;
+      --purple-deep: #2D2A5E;
+      --pink: #F472B6;
+      --bg: #0D0C1A;
+      --bg2: #131126;
+      --bg3: #1A1830;
+      --border: rgba(127, 119, 221, 0.18);
+      --text: #F0EFF8;
+      --text-muted: rgba(240, 239, 248, 0.5);
+      --text-dim: rgba(240, 239, 248, 0.28);
+      --mono: 'DM Mono', monospace;
+      --serif: 'Fraunces', serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      background: rgba(13, 12, 26, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-cta {
+      background: var(--purple);
+      color: white !important;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 14px !important;
+      font-weight: 500;
+      transition: background 0.2s !important;
+    }
+
+    .nav-cta:hover {
+      background: var(--purple-dark) !important;
+    }
+
+    .nav-mobile-cta {
+      display: none;
+    }
+
+    /* ── ARTICLE ── */
+    .article-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 140px 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: clamp(34px, 6vw, 54px);
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      margin-bottom: 24px;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--purple);
+    }
+
+    .lede {
+      font-size: 19px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 20px;
+    }
+
+    .byline {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: var(--text-dim);
+      padding-bottom: 40px;
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h2 {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: clamp(24px, 4vw, 32px);
+      line-height: 1.2;
+      margin: 56px 0 20px;
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 19px;
+      margin: 36px 0 12px;
+    }
+
+    .article-wrap p {
+      font-size: 17px;
+      color: var(--text);
+      opacity: 0.9;
+      margin-bottom: 20px;
+    }
+
+    .article-wrap p.muted {
+      color: var(--text-muted);
+      opacity: 1;
+    }
+
+    .article-wrap ul,
+    .article-wrap ol {
+      margin: 0 0 20px 22px;
+    }
+
+    .article-wrap li {
+      font-size: 17px;
+      opacity: 0.9;
+      margin-bottom: 10px;
+      padding-left: 4px;
+    }
+
+    .article-wrap strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .steps li {
+      position: relative;
+      padding: 0 0 4px 44px;
+      margin-bottom: 18px;
+    }
+
+    .steps li::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: -2px;
+      width: 28px;
+      height: 28px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--purple);
+    }
+
+    kbd {
+      font-family: var(--mono);
+      font-size: 13px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2px 8px;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .callout {
+      background: linear-gradient(135deg, rgba(127, 119, 221, 0.08), rgba(244, 114, 182, 0.05));
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--purple);
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin: 32px 0;
+    }
+
+    .ore-to-gold {
+      display: flex;
+      flex-direction: row;
+      gap: 0;
+      margin: 28px 0 40px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    
+    @media (max-width: 700px) {
+      .ore-to-gold { flex-direction: column; }
+    }
+
+    .ore-to-gold > div {
+      flex: 1;
+      padding: 20px;
+    }
+
+    .ore-to-gold .raw {
+      background: rgba(0,0,0,0.3);
+      border-right: 1px dashed var(--border);
+    }
+    
+    @media (max-width: 700px) {
+      .ore-to-gold .raw { border-right: none; border-bottom: 1px dashed var(--border); }
+    }
+
+    .ore-to-gold .gold {
+      background: var(--bg3);
+      position: relative;
+    }
+    
+    .ore-to-gold .code-content {
+      white-space: pre-wrap;
+      word-break: break-all;
+      color: #A5D6FF;
+    }
+
+    .ore-to-gold .col-header {
+      font-family: var(--sans);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-muted);
+    }
+    
+    .ore-to-gold .gold .col-header {
+      color: var(--purple);
+    }
+
+    .ore-to-gold .gold span.val {
+      color: #7EE787; /* syntax highlighting for strings */
+    }
+
+
+
+    .callout p {
+      margin-bottom: 0;
+    }
+
+    .callout .callout-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .limit-list {
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .limit-list li {
+      position: relative;
+      padding-left: 30px;
+    }
+
+    .limit-list li::before {
+      content: '✕';
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--pink);
+      font-size: 14px;
+    }
+
+    /* ── CTA card ── */
+    .cta-card {
+      background: linear-gradient(160deg, var(--bg2), var(--bg3));
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 36px;
+      margin: 56px 0 24px;
+      text-align: center;
+    }
+
+    .cta-card h2 {
+      margin-top: 0;
+    }
+
+    .cta-card p {
+      color: var(--text-muted);
+      opacity: 1;
+      max-width: 460px;
+      margin: 0 auto 28px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--purple);
+      color: white;
+      padding: 14px 28px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--purple-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 32px rgba(127, 119, 221, 0.35);
+    }
+
+    .cta-note {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 16px;
+    }
+
+    /* ── FAQ ── */
+    .faq h3 {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+    }
+
+    .footer-copy {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    @media (max-width: 700px) {
+      nav {
+        padding: 16px 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .nav-mobile-cta {
+        display: inline-flex;
+        background: var(--purple);
+        color: white;
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+      }
+
+      .article-wrap {
+        padding: 110px 20px 60px;
+      }
+
+      footer {
+        padding: 32px 20px;
+      }
+    }
+  
+    
+    /* Icons */
+    .icon-container {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+    }
+    .check-icon {
+      background: rgba(127,119,221,0.15);
+      color: var(--purple);
+    }
+    .cross-icon {
+      background: rgba(240,239,248,0.05);
+      color: var(--text-muted);
+    }
+    .partial-icon {
+      background: rgba(244, 114, 182, 0.1);
+      color: var(--pink);
+    }
+    svg { width: 16px; height: 16px; stroke-width: 2.5; }
+
+    /* ── COMPARISON TABLE ── */
+    .comparison-container {
+      background: var(--bg2);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      margin-top: 40px;
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 24px 20px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    th:first-child, td:first-child {
+      text-align: left;
+      padding-left: 32px;
+    }
+
+    th {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 500;
+      padding-top: 32px;
+      padding-bottom: 24px;
+    }
+
+    td:first-child {
+      font-weight: 500;
+      color: var(--text);
+      font-size: 16px;
+    }
+    
+    .sub-th {
+      display: block;
+      text-transform: none;
+      letter-spacing: normal;
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 4px;
+      font-family: var(--sans);
+    }
+
+    /* L2Cache Column Highlights */
+    .l2cache-col {
+      background: rgba(127,119,221,0.06);
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+
+    th.l2cache-col {
+      background: rgba(127,119,221,0.12);
+      color: var(--purple);
+      font-weight: 600;
+      font-size: 15px;
+      border-top: 1px solid var(--purple);
+    }
+    
+    tbody tr:hover td:not(.l2cache-col) {
+      background: rgba(255,255,255,0.02);
+    }
+
+    /* Icons */
+    .icon-container {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+    }
+
+    .check-icon {
+      background: rgba(127,119,221,0.15);
+      color: var(--purple);
+    }
+
+    .cross-icon {
+      background: rgba(240,239,248,0.05);
+      color: var(--text-muted);
+    }
+    
+    .partial-icon {
+      background: rgba(244, 114, 182, 0.1);
+      color: var(--pink);
+    }
+    
+    svg { width: 16px; height: 16px; stroke-width: 2.5; }
+
+    /* FOOTER */
+    footer {
+      padding: 60px 48px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      margin-top: 80px;
+      position: relative;
+      z-index: 10;
+      background: var(--bg);
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 24px;
+      list-style: none;
+    }
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text); }
+    .footer-copy {
+      color: var(--text-dim);
+      font-size: 13px;
+    }
+    
+    @media (max-width: 768px) {
+      .section { padding: 120px 24px 60px; }
+      .comparison-container { overflow-x: auto; border-radius: 12px; }
+      th, td { padding: 16px 12px; font-size: 14px; }
+      th:first-child, td:first-child { padding-left: 16px; min-width: 160px; }
+    }
+  
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="icon.png" width="34" height="34" alt="L2Cache" style="border-radius:8px" />
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html#who">Who it's for</a></li>
+      <li><a href="index.html#features">Features</a></li>
+      <li><a href="intelligence.html">Intelligence</a></li>
+      <li><a href="index.html#pricing">Pricing</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta" target="_blank"
+          rel="noopener">Download L2Cache</a></li>
+    </ul>
+    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-mobile-cta" target="_blank"
+      rel="noopener">Download</a>
+  </nav>
+
+  <article class="article-wrap">
+
+    <div class="eyebrow">Developer Guide</div>
+    <h1>Why Every Developer Needs a <em>Clipboard Manager</em> (And Why You Probably Don't Use One)</h1>
+
+
+    <p class="lede">If you write code on a Mac, you probably rely on the <a href="https://l2cache.amvo.store/en/clipboard-history-mac" style="color: var(--purple); text-decoration: underline;">native clipboard</a>. Using it is like having a CPU
+      with no cache memory—every time you need data, you do a slow fetch from the disk (re-typing it or digging through
+      browser tabs).</p>
+
+    <p class="byline">Updated August 2026 · By the team behind L2Cache</p>
+
+    <p>Other clipboard managers (like Maccy or Paste) act like RAM. They give you a ton of storage, but the memory is
+      "dumb." It doesn't understand JSON formatting, can't decode a JWT, and can't run OCR on a stack trace.</p>
+
+    <p>That’s why I built <strong>L2Cache</strong>. If standard clipboards just hold raw ore, L2Cache acts like a miner
+      that effortlessly refines it into gold. It’s the <em>L2 cache</em> for your workflow—an ultra-fast, intelligent
+      memory layer. It doesn't just store data; it acts like the short-term memory of an AI coding agent, letting you
+      instantly format, decode, and transform your messy code with a single click.</p>
+
+    <div class="ore-to-gold">
+      <div class="raw">
+        <div class="col-header">Standard Clipboards</div>
+        <div class="code-content" style="color: var(--text-muted);">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</div>
+      </div>
+      <div class="gold">
+        <div class="col-header">L2Cache</div>
+        <div class="code-content">{
+  "header" : {
+    "alg" : <span class="val">"HS256"</span>,
+    "typ" : <span class="val">"JWT"</span>
+  },
+  "payload" : {
+    "iat" : <span class="val">1516239022</span>,
+    "name" : <span class="val">"John Doe"</span>,
+    "sub" : <span class="val">"1234567890"</span>
+  },
+  "signature" : <span class="val">"SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"</span>,
+  "verified" : <span class="val">false</span>
+}</div>
+      </div>
+    </div>
+
+    <p>Here are five all-too-common stories of daily developer pain, and how a smart clipboard fixes them:</p>
+
+    <hr style="border: 0; border-top: 1px solid var(--border); margin: 40px 0;">
+
+    <h2>1. No More Tab Hopping for Data Formatting</h2>
+    <p>Last week, I logged a massive JWT in my console. Normally, I'd copy it, open a browser, navigate to
+      <code>jwt.io</code>, get distracted, and lose my train of thought. With L2Cache, I just clicked "Decode JWT" right
+      inside the clipboard panel. The payload popped up instantly on-device.
+    </p>
+
+    <img src="screenshots/l2cache-jwt.gif" alt="Data formatting and JWT decoding"
+      style="width:100%; max-width:400px; display:block; border-radius:12px; margin:32px auto; border: 1px solid var(--border);" />
+
+    <h2>2. Generating Sample Data Without a Browser</h2>
+    <p>I needed to mock a user profile JSON based on a database schema. Usually, I'd copy the SQL, tab over to ChatGPT,
+      prompt it, and copy the result back. Instead, I copied the SQL and ran an AI prompt right inside my clipboard to
+      generate the JSON instantly, without leaving Xcode.</p>
+
+    <img src="screenshots/l2cache-sql-smart.gif" alt="AI data generation in clipboard"
+      style="width:100%; max-width:400px; display:block; border-radius:12px; margin:32px auto; border: 1px solid var(--border);" />
+
+    <h2>3. Extracting Text from Screenshots</h2>
+    <p>A client emailed a blurry screenshot of an error instead of the text. Rather than manually typing out the stack
+      trace to search it, I just copied the image. L2Cache ripped the raw text out via Apple's Vision framework, and I
+      pasted it straight into Claude two seconds later.</p>
+
+    <img src="screenshots/l2cache-ocr.gif" alt="Extract text from screenshot OCR"
+      style="width:100%; max-width:400px; display:block; border-radius:12px; margin:32px auto; border: 1px solid var(--border);" />
+
+    <h2>4. The Terminal History Trap</h2>
+    <p>Three months ago, I fixed a bug with an obscure 7-flag <code>ffmpeg</code> command. Yesterday, the bug returned,
+      and my terminal <code>history</code> was long gone. Because L2Cache auto-tags clips by app, I simply filtered my
+      clipboard for "Terminal" and found the command sitting safely in my history from March.</p>
+
+    <img src="screenshots/terminal-history.gif" alt="Terminal command history"
+      style="width:100%; max-width:400px; display:block; border-radius:12px; margin:32px auto; border: 1px solid var(--border);" />
+
+    <h2>5. Passing Context to the Team</h2>
+    <p>Our QA engineer needed to debug a failing endpoint. Instead of digging through notes to find the
+      <code>curl</code> command, bearer token, and JSON payload, I bundled the last three things I copied into a single
+      "Clip Chain." He imported it and had my exact testing environment ready instantly.
+    </p>
+
+    <img src="screenshots/l2cache-smart-connections.gif" alt="Clip Chains and Context passing"
+      style="width:100%; max-width:400px; display:block; border-radius:12px; margin:32px auto; border: 1px solid var(--border);" />
+
+    <hr style="border: 0; border-top: 1px solid var(--border); margin: 40px 0;">
+
+    <h2>The Reality of Mac Tooling</h2>
+    <div class="comparison-container">
+    <table class="comparison-table">
+        <thead>
+            <tr>
+                <th style="width: 32%;"></th>
+                <th style="width: 17%;">Standard<span class="sub-th">Maccy, Paste</span></th>
+                <th style="width: 17%;">Launchers<span class="sub-th">Raycast</span></th>
+                <th style="width: 17%;">Scratchpads<span class="sub-th">Boop</span></th>
+                <th style="width: 17%;" class="l2cache-col">L2Cache</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Basic Clipboard History</td>
+                <td><div class="icon-container check-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></div></td>
+                <td><div class="icon-container check-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></div></td>
+                <td><div class="icon-container cross-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg></div></td>
+                <td class="l2cache-col"><div class="icon-container check-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></div></td>
+            </tr>
+            <tr>
+                <td>Format JSON, XML, JWTs</td>
+                <td><div class="icon-container cross-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg></div></td>
+                <td>
+                    <div class="icon-container partial-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4"></path></svg></div>
+                    <span style="font-size:11px;display:block;color:var(--text-dim);margin-top:4px;">Via Plugins</span>
+                </td>
+                <td><div class="icon-container check-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></div></td>
+                <td class="l2cache-col"><div class="icon-container check-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></div></td>
+            </tr>
+            <tr>
+                <td>On-Device OCR for Errors</td>
+                <td><div class="icon-container cross-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg></div></td>
+                <td><div class="icon-container partial-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4"></path></svg></div></td>
+                <td><div class="icon-container cross-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg></div></td>
+                <td class="l2cache-col"><div class="icon-container check-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></div></td>
+            </tr>
+            <tr>
+                <td>Auto-Detect Terminal History</td>
+                <td><div class="icon-container cross-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg></div></td>
+                <td><div class="icon-container cross-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg></div></td>
+                <td><div class="icon-container cross-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg></div></td>
+                <td class="l2cache-col"><div class="icon-container check-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></div></td>
+            </tr>
+            <tr>
+                <td>AI Data & SQL Generation</td>
+                <td><div class="icon-container cross-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg></div></td>
+                <td><div class="icon-container cross-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg></div></td>
+                <td><div class="icon-container cross-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg></div></td>
+                <td class="l2cache-col"><div class="icon-container check-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></div></td>
+            </tr>
+            <tr>
+                <td>Bundle Context (Clip Chains)</td>
+                <td><div class="icon-container cross-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg></div></td>
+                <td><div class="icon-container cross-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg></div></td>
+                <td><div class="icon-container cross-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg></div></td>
+                <td class="l2cache-col"><div class="icon-container check-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></div></td>
+            </tr>
+        </tbody>
+    </table>
+  </div>
+    <p>Standard managers like Paste handle basic storage. Scratchpads like Boop are great for formatting, but force
+      window bouncing. AI tools generate code but break your focus.</p>
+
+    <p>L2Cache brings the storage of Paste, the transformations of Boop, and on-device OCR into a single, unified layer.
+      It eliminates the tiny, annoying micro-frictions that derail your focus. L2Cache is built natively for macOS, runs
+      locally for privacy, and is free in early access.</p>
+
+  </article>
+
+
+  <!-- FOOTER -->
+  <footer>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="privacy.html">Privacy Policy</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="clipboard-history-mac.html">Clipboard History on Mac</a></li>
+    </ul>
+    <p class="footer-copy">© 2026 Amvotech</p>
+  </footer>
+
+</body>
+
+</html>
