@@ -33,7 +33,7 @@ APP_STORE_COUNTRIES = {
 # with open("locales.json", "r", encoding="utf-8") as f:
 #     TRANSLATIONS = json.load(f)
 
-HTML_FILES = ["index.html", "support.html", "privacy.html", "intelligence.html", "changelog.html", "clipboard-history-mac.html", "mac-command-history.html"]
+HTML_FILES = ["index.html", "support.html", "privacy.html", "intelligence.html", "changelog.html", "clipboard-history-mac.html", "mac-command-history.html", "comparison.html"]
 OUT_DIR = "out"
 L2CACHE_OUT_DIR = os.path.join(OUT_DIR, "l2cache")
 AMVO_OUT_DIR = os.path.join(OUT_DIR, "amvo-store")
