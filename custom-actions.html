@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Scriptable Clipboard & Custom Actions for Mac — L2Cache</title>
-  <meta name="description" content="Turn your Mac clipboard into a programmable tool. Run bash, python, or ruby commands directly on copied data, filtered by content type — privately and locally." />
+  <meta name="description" content="Turn your Mac clipboard into a programmable tool. Run bash or ruby commands directly on copied data, filtered by content type — privately and locally." />
   <meta name="keywords" content="programmable clipboard mac, custom clipboard actions, clipboard automation mac, shell scripts clipboard, run script on clipboard, developer clipboard mac" />
   <link rel="canonical" href="https://l2cache.amvo.store/en/custom-actions.html" />
   <link rel="icon" type="image/png" href="icon.png" />
@@ -138,7 +138,7 @@
   <article class="article-wrap">
     <div class="eyebrow">Power User Tools</div>
     <h1>Scriptable Clipboard & Custom Actions</h1>
-    <p class="lede">L2Cache lets you build your own custom Clipboard Actions using standard shell commands, python scripts, or ruby tools. Scoped dynamically to target only specific content types.</p>
+    <p class="lede">L2Cache lets you build your own custom Clipboard Actions using standard shell commands or ruby tools. Scoped dynamically to target only specific content types.</p>
 
     <p>Standard clipboard managers are passive filing cabinets. They store your copied strings but can't do anything with them. If you want to transform a clipboard item (e.g. format JSON, strip formatting, extract IDs), you are forced to paste it into a scratchpad app, modify it, and copy it back.</p>
 
@@ -189,14 +189,13 @@
       </div>
 
       <div class="recipe-card">
-        <div class="recipe-title">4. Convert SQL Schema to JSON (using Python)</div>
+        <div class="recipe-title">4. Convert SQL Schema to JSON (using Ruby)</div>
         <div class="recipe-desc">Applies to: <strong>SQL</strong></div>
-        <pre><code>python3 -c "
-import sys, re, json
-sql = sys.stdin.read()
-fields = re.findall(r'(\w+)\s+(VARCHAR|INT|TEXT|TIMESTAMP|DATETIME)', sql, re.IGNORECASE)
-print(json.dumps({f[0]: f[1].lower() for f in fields}, indent=2))
-"</code></pre>
+        <pre><code>ruby -rjson -e '
+  sql = STDIN.read
+  fields = sql.scan(/(\w+)\s+(VARCHAR|INT|TEXT|TIMESTAMP|DATETIME)/i)
+  puts JSON.pretty_generate(fields.to_h.transform_values(&:downcase))
+'</code></pre>
       </div>
 
       <div class="recipe-card">
@@ -212,9 +211,9 @@ print(json.dumps({f[0]: f[1].lower() for f in fields}, indent=2))
       </div>
 
       <div class="recipe-card">
-        <div class="recipe-title">7. URL Decode String</div>
+        <div class="recipe-title">7. URL Decode String (using Ruby)</div>
         <div class="recipe-desc">Applies to: <strong>Text</strong></div>
-        <pre><code>python3 -c "import sys, urllib.parse; print(urllib.parse.unquote(sys.stdin.read()))"</code></pre>
+        <pre><code>ruby -ruri -e 'puts URI.decode_www_form_component(STDIN.read.strip)'</code></pre>
       </div>
 
       <div class="recipe-card">
