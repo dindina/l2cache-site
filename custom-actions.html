@@ -153,7 +153,7 @@
     </ol>
     
     <div style="background: rgba(0, 200, 150, 0.08); border-left: 4px solid #00C896; padding: 16px 20px; margin-bottom: 32px; border-radius: 6px;">
-      <p style="margin-bottom: 0; font-size: 15px; color: var(--text-muted); line-height: 1.6;"><strong>💡 How data is passed without parameters:</strong> Because L2Cache pipes the clipboard content directly into the command's standard input (<code>stdin</code>), you don't need to specify files or variables. Commands like <code>nc termbin.com 9999</code> or <code>sort | uniq</code> automatically receive and process the copied text.</p>
+      <p style="margin-bottom: 0; font-size: 15px; color: var(--text-muted); line-height: 1.6;"><strong>💡 Accessing the clipboard text:</strong> Your command receives the clipboard string via standard input (<code>stdin</code>). You can read it directly in Ruby using <code>STDIN.read</code>, in Perl using default inputs, or inside bash/curl commands using <code>$(cat)</code> to pass it as a parameter.</p>
     </div>
 
     <h2>Scoped Content Filtering</h2>
@@ -170,7 +170,7 @@
       <div class="recipe-card">
         <div class="recipe-title">1. Send Clipboard JSON payload to Local Server (using Curl)</div>
         <div class="recipe-desc">Applies to: <strong>JSON</strong></div>
-        <pre><code>curl -X POST -H "Content-Type: application/json" -d @- http://localhost:3000/api/webhook</code></pre>
+        <pre><code>curl -s -X POST -H "Content-Type: application/json" -d "$(cat)" http://localhost:3000/api/webhook</code></pre>
       </div>
 
       <div class="recipe-card">
@@ -203,9 +203,9 @@
       </div>
 
       <div class="recipe-card">
-        <div class="recipe-title">5. Share Log/Text to Termbin (returns a shareable URL)</div>
-        <div class="recipe-desc">Applies to: <strong>Text</strong>. Termbin.com is a command-line pastebin that takes raw text via TCP and instantly returns a shareable paste URL.</div>
-        <pre><code>nc termbin.com 9999</code></pre>
+        <div class="recipe-title">5. Share Log/Text to ix.io (returns a shareable URL)</div>
+        <div class="recipe-desc">Applies to: <strong>Text</strong>. ix.io is a command-line pastebin that takes text input and returns a short paste URL.</div>
+        <pre><code>curl -s -F "f:1=$(cat)" ix.io</code></pre>
       </div>
 
       <div class="recipe-card">
