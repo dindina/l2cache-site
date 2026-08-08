@@ -235,7 +235,7 @@
       <div class="recipe-card">
         <div class="recipe-title">10. Extract YAML Keys</div>
         <div class="recipe-desc">Applies to: <strong>YAML</strong></div>
-        <pre><code>cat | grep -E '^[a-zA-Z0-9_-]+:' | sed 's/://'</code></pre>
+        <pre><code>cat | grep -E '^[[:space:]]*[a-zA-Z0-9_-]+:' | sed -E 's/^[[:space:]]*//; s/:.*$//'</code></pre>
       </div>
     </div>
 
