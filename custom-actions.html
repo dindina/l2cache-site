@@ -223,15 +223,29 @@
       </div>
 
       <div class="recipe-card">
-        <div class="recipe-title">6. Extract Unique IP Addresses</div>
-        <div class="recipe-desc">Applies to: <strong>System Log</strong></div>
-        <pre><code>cat | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" | sort -u</code></pre>
+        <div class="recipe-title">6. Unix Epoch Timestamp to Human Date (using Ruby)</div>
+        <div class="recipe-desc">Applies to: <strong>Text</strong>. Parse raw Unix epoch timestamps (seconds or milliseconds) and print them in local, UTC, and ISO 8601 formats.</div>
+        <pre><code>ruby -rtime -e '
+  val = STDIN.read.strip.to_i
+  val = val / 1000 if val > 9999999999
+  t = Time.at(val)
+  puts "Local: #{t.strftime("%Y-%m-%d %H:%M:%S %Z")}"
+  puts "UTC:   #{t.utc.strftime("%Y-%m-%d %H:%M:%S UTC")}"
+  puts "ISO:   #{t.iso8601}"
+'</code></pre>
       </div>
 
       <div class="recipe-card">
-        <div class="recipe-title">7. URL Decode String (using Ruby)</div>
-        <div class="recipe-desc">Applies to: <strong>Text</strong></div>
-        <pre><code>ruby -ruri -e 'puts URI.decode_www_form_component(STDIN.read.strip)'</code></pre>
+        <div class="recipe-title">7. Variable Case Switcher (using Ruby)</div>
+        <div class="recipe-desc">Applies to: <strong>Text</strong>. Automatically toggle variable names between camelCase and snake_case format depending on input.</div>
+        <pre><code>ruby -e '
+  str = STDIN.read.strip
+  if str =~ /_/
+    puts str.gsub(/_([a-z])/) { $1.upcase }
+  else
+    puts str.gsub(/([a-z\d])([A-Z])/, "\\1_\\2").downcase
+  end
+'</code></pre>
       </div>
 
       <div class="recipe-card">
@@ -255,6 +269,12 @@
         <div class="recipe-title">9. HTML Special Entities Encoder (using Ruby)</div>
         <div class="recipe-desc">Applies to: <strong>Text</strong>. Escape all HTML characters (like &lt;, &gt;, &amp;) into their safe HTML entity representations.</div>
         <pre><code>ruby -rcgi -e 'puts CGI.escapeHTML(STDIN.read)'</code></pre>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-title">10. Escape JSON Object to String Literal (using Ruby)</div>
+        <div class="recipe-desc">Applies to: <strong>JSON</strong>. Minify and escape a raw JSON object string to be used safely inside string literal parameters.</div>
+        <pre><code>ruby -rjson -e 'puts JSON.dump(STDIN.read.strip)'</code></pre>
       </div>
 
       <div class="recipe-card">
