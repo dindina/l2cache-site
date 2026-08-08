@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scriptable Clipboard & Custom Actions for Mac — L2Cache</title>
-  <meta name="description" content="Turn your Mac clipboard into a programmable tool. Run bash or ruby commands directly on copied data, filtered by content type — privately and locally." />
+  <title>Scriptable Clipboard, AI Prompts & Custom Actions for Mac — L2Cache</title>
+  <meta name="description" content="Turn your Mac clipboard into a programmable tool. Run bash commands, ruby scripts, or custom AI prompts directly on copied data — privately and locally." />
   <meta name="keywords" content="programmable clipboard mac, custom clipboard actions, clipboard automation mac, shell scripts clipboard, run script on clipboard, developer clipboard mac" />
   <link rel="canonical" href="https://l2cache.amvo.store/en/custom-actions" />
   
@@ -26,7 +26,7 @@
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://l2cache.amvo.store/en/custom-actions" />
   <meta property="og:title" content="Scriptable Clipboard & Custom Actions for Mac — L2Cache" />
-  <meta property="og:description" content="Turn your Mac clipboard into a programmable tool. Run bash or ruby commands directly on copied data, filtered by content type — privately and locally." />
+  <meta property="og:description" content="Turn your Mac clipboard into a programmable tool. Run bash commands, ruby scripts, or custom AI prompts directly on copied data — privately and locally." />
   <meta property="og:image" content="https://l2cache.amvo.store/icon.png" />
   <meta property="og:site_name" content="L2Cache" />
 
@@ -34,7 +34,7 @@
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:url" content="https://l2cache.amvo.store/en/custom-actions" />
   <meta name="twitter:title" content="Scriptable Clipboard & Custom Actions for Mac — L2Cache" />
-  <meta name="twitter:description" content="Turn your Mac clipboard into a programmable tool. Run bash or ruby commands directly on copied data, filtered by content type — privately and locally." />
+  <meta name="twitter:description" content="Turn your Mac clipboard into a programmable tool. Run bash commands, ruby scripts, or custom AI prompts directly on copied data — privately and locally." />
   <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png" />
 
   <!-- Structured Data JSON-LD (TechArticle) -->
@@ -161,6 +161,38 @@
       margin-bottom: 8px;
       color: var(--text);
     }
+
+    .pre-wrapper {
+      position: relative;
+      margin-bottom: 24px;
+    }
+    .pre-wrapper pre {
+      margin-bottom: 0;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #a5d6ff;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-family: var(--sans);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+    .copy-btn.copied {
+      background: #00C896;
+      border-color: #00C896;
+      color: #fff;
+    }
     .recipe-desc {
       font-size: 14.5px;
       color: var(--text-muted);
@@ -189,7 +221,7 @@
   <article class="article-wrap">
     <div class="eyebrow">Power User Tools</div>
     <h1>Scriptable Clipboard & Custom Actions</h1>
-    <p class="lede">L2Cache lets you build your own custom Clipboard Actions using standard shell commands or ruby tools. Scoped dynamically to target only specific content types.</p>
+    <p class="lede">L2Cache lets you build your own custom Clipboard Actions using standard shell commands, ruby scripts, or AI Prompts. Scoped dynamically to target only specific content types.</p>
 
     <p>Standard clipboard managers are passive filing cabinets. They store your copied strings but can't do anything with them. If you want to transform a clipboard item (e.g. format JSON, strip formatting, extract IDs), you are forced to paste it into a scratchpad app, modify it, and copy it back.</p>
 
@@ -221,12 +253,16 @@
       <div class="recipe-card">
         <div class="recipe-title">1. Send Clipboard JSON payload to Local Server (using Curl)</div>
         <div class="recipe-desc">Applies to: <strong>JSON</strong></div>
+        <div class="pre-wrapper">
         <pre><code>curl -s -X POST -H "Content-Type: application/json" -d "$(cat)" http://localhost:3000/api/webhook</code></pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
       </div>
 
       <div class="recipe-card">
         <div class="recipe-title">2. Generate Mock JSON from Field Names (using Ruby)</div>
         <div class="recipe-desc">Applies to: <strong>Text</strong>. Copy a list of comma-separated fields (e.g. <code>id, name, email, price, created_at</code>) and generate mock JSON output instantly.</div>
+        <div class="pre-wrapper">
         <pre><code>ruby -rjson -rtime -e '
   fields = STDIN.read.strip.split(/\s*,\s*|\s+/)
   mock = fields.each_with_object({}) do |f, h|
@@ -242,11 +278,14 @@
   end
   puts JSON.pretty_generate(mock)
 '</code></pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
       </div>
 
       <div class="recipe-card">
         <div class="recipe-title">3. Strip URL Tracking Parameters</div>
         <div class="recipe-desc">Applies to: <strong>URL</strong></div>
+        <div class="pre-wrapper">
         <pre><code>ruby -ruri -e '
   uri = URI.parse(STDIN.read.strip)
   if uri.query
@@ -255,27 +294,36 @@
   end
   puts uri.to_s
 '</code></pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
       </div>
 
       <div class="recipe-card">
         <div class="recipe-title">4. Convert SQL Schema to JSON (using Ruby)</div>
         <div class="recipe-desc">Applies to: <strong>SQL</strong></div>
+        <div class="pre-wrapper">
         <pre><code>ruby -rjson -e '
   sql = STDIN.read
   fields = sql.scan(/(\w+)\s+(VARCHAR|INT|TEXT|TIMESTAMP|DATETIME)/i)
   puts JSON.pretty_generate(fields.to_h.transform_values(&:downcase))
 '</code></pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
       </div>
 
       <div class="recipe-card">
         <div class="recipe-title">5. Share Log/Text to ix.io (returns a shareable URL)</div>
         <div class="recipe-desc">Applies to: <strong>Text</strong>. ix.io is a command-line pastebin that takes text input and returns a short paste URL.</div>
+        <div class="pre-wrapper">
         <pre><code>curl -s -F "f:1=$(cat)" ix.io</code></pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
       </div>
 
       <div class="recipe-card">
         <div class="recipe-title">6. Unix Epoch Timestamp to Human Date (using Ruby)</div>
         <div class="recipe-desc">Applies to: <strong>Text</strong>. Parse raw Unix epoch timestamps (seconds or milliseconds) and print them in local, UTC, and ISO 8601 formats.</div>
+        <div class="pre-wrapper">
         <pre><code>ruby -rtime -e '
   val = STDIN.read.strip.to_i
   val = val / 1000 if val > 9999999999
@@ -284,11 +332,14 @@
   puts "UTC:   #{t.utc.strftime("%Y-%m-%d %H:%M:%S UTC")}"
   puts "ISO:   #{t.iso8601}"
 '</code></pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
       </div>
 
       <div class="recipe-card">
         <div class="recipe-title">7. Variable Case Switcher (using Ruby)</div>
         <div class="recipe-desc">Applies to: <strong>Text</strong>. Automatically toggle variable names between camelCase and snake_case format depending on input.</div>
+        <div class="pre-wrapper">
         <pre><code>ruby -e '
   str = STDIN.read.strip
   if str =~ /_/
@@ -297,11 +348,14 @@
     puts str.gsub(/([a-z\d])([A-Z])/, "\\1_\\2").downcase
   end
 '</code></pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
       </div>
 
       <div class="recipe-card">
         <div class="recipe-title">8. Convert CSV to Markdown Table (using Ruby)</div>
         <div class="recipe-desc">Applies to: <strong>Text</strong>. Copy any standard CSV block and automatically convert it into a clean, formatted Markdown table structure.</div>
+        <div class="pre-wrapper">
         <pre><code>ruby -rcsv -e '
   rows = CSV.parse(STDIN.read.strip)
   exit if rows.empty?
@@ -314,23 +368,32 @@
     puts "| " + row.map { |v| v.to_s.gsub("|", "\\|") }.join(" | ") + " |"
   end
 '</code></pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
       </div>
 
       <div class="recipe-card">
         <div class="recipe-title">9. HTML Special Entities Encoder (using Ruby)</div>
         <div class="recipe-desc">Applies to: <strong>Text</strong>. Escape all HTML characters (like &lt;, &gt;, &amp;) into their safe HTML entity representations.</div>
+        <div class="pre-wrapper">
         <pre><code>ruby -rcgi -e 'puts CGI.escapeHTML(STDIN.read)'</code></pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
       </div>
 
       <div class="recipe-card">
         <div class="recipe-title">10. Escape JSON Object to String Literal (using Ruby)</div>
         <div class="recipe-desc">Applies to: <strong>JSON</strong>. Minify and escape a raw JSON object string to be used safely inside string literal parameters.</div>
+        <div class="pre-wrapper">
         <pre><code>ruby -rjson -e 'puts JSON.dump(STDIN.read.strip)'</code></pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
       </div>
 
       <div class="recipe-card">
         <div class="recipe-title">11. Redact Sensitive Keys in JSON (using Ruby)</div>
         <div class="recipe-desc">Applies to: <strong>JSON</strong>. Recursively checks all keys in a JSON object and replaces values matching sensitive names (like passwords, keys, tokens, or emails) with "[REDACTED]".</div>
+        <div class="pre-wrapper">
         <pre><code>ruby -rjson -e '
   def redact(obj)
     case obj
@@ -350,7 +413,10 @@
   end
   puts JSON.pretty_generate(redact(JSON.parse(STDIN.read)))
 '</code></pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
         <p style="margin-top: 20px; font-size: 13px; color: var(--text-muted); font-weight: 500;">📋 Copy this sample payload to your clipboard to test the action:</p>
+        <div class="pre-wrapper">
         <pre style="background: #141324; margin-top: 8px; font-size: 13px; color: #a5d6ff;"><code>{
   "user": "dinesh_dev",
   "email": "dinesh@example.com",
@@ -367,6 +433,50 @@
     "aws_secret": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
   }
 }</code></pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      </div>
+    </div>
+
+    
+    <h2>Custom AI Prompt Actions</h2>
+    <p>Beyond traditional shell scripts, L2Cache allows you to define <strong>Custom AI Prompts</strong> that execute locally (via Ollama) or via cloud (Anthropic, OpenAI) against your clipboard contents.</p>
+    
+    <div class="recipe-grid" style="margin-bottom: 56px;">
+      <div class="recipe-card">
+        <div class="recipe-title">1. Generate TypeScript Interfaces from JSON</div>
+        <div class="recipe-desc">Applies to: <strong>JSON</strong></div>
+        <div class="pre-wrapper">
+          <pre><code>Create a TypeScript interface for this JSON payload. Use proper typings and nested interfaces where appropriate.</code></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-title">2. Explain Complex CLI Commands</div>
+        <div class="recipe-desc">Applies to: <strong>Terminal Commands</strong></div>
+        <div class="pre-wrapper">
+          <pre><code>Explain this bash command step-by-step and describe what each flag does in plain English.</code></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-title">3. Error Log Analysis</div>
+        <div class="recipe-desc">Applies to: <strong>Logs</strong></div>
+        <div class="pre-wrapper">
+          <pre><code>Summarize this error log, explain the likely root cause, and suggest a fix. Keep it concise.</code></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-title">4. Code Vulnerability Check</div>
+        <div class="recipe-desc">Applies to: <strong>Code</strong></div>
+        <div class="pre-wrapper">
+          <pre><code>Analyze this code snippet for security vulnerabilities, such as injection flaws or memory leaks, and suggest improvements.</code></pre>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
       </div>
     </div>
 
@@ -386,6 +496,22 @@
     <p class="footer-copy">© 2026 Amvotech</p>
   </footer>
 
+
+  <script>
+    function copyCode(btn) {
+      const wrapper = btn.closest('.pre-wrapper');
+      const code = wrapper.querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const originalText = btn.innerText;
+        btn.innerText = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
 </body>
 
 </html>
