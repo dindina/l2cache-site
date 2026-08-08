@@ -164,9 +164,9 @@
     
     <div class="recipe-grid">
       <div class="recipe-card">
-        <div class="recipe-title">1. Pretty Print JSON (with <code>jq</code>)</div>
+        <div class="recipe-title">1. Convert JSON to YAML (using Ruby)</div>
         <div class="recipe-desc">Applies to: <strong>JSON</strong></div>
-        <pre><code>jq .</code></pre>
+        <pre><code>ruby -rjson -ryaml -e 'puts YAML.dump(JSON.parse(STDIN.read))'</code></pre>
       </div>
 
       <div class="recipe-card">
@@ -199,15 +199,18 @@
       </div>
 
       <div class="recipe-card">
-        <div class="recipe-title">5. Base64 Decode</div>
-        <div class="recipe-desc">Applies to: <strong>Text</strong></div>
-        <pre><code>base64 --decode</code></pre>
+        <div class="recipe-title">5. Format XML (using Ruby)</div>
+        <div class="recipe-desc">Applies to: <strong>XML</strong></div>
+        <pre><code>ruby -rrexml/document -e '
+  doc = REXML::Document.new(STDIN.read)
+  doc.write($stdout, 2)
+'</code></pre>
       </div>
 
       <div class="recipe-card">
-        <div class="recipe-title">6. Count Lines, Words, and Characters</div>
-        <div class="recipe-desc">Applies to: <strong>Text</strong></div>
-        <pre><code>wc</code></pre>
+        <div class="recipe-title">6. Extract Unique IP Addresses</div>
+        <div class="recipe-desc">Applies to: <strong>System Log</strong></div>
+        <pre><code>grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" | sort -u</code></pre>
       </div>
 
       <div class="recipe-card">
