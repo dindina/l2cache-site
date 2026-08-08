@@ -151,6 +151,10 @@
       <li style="margin-bottom: 12px;">Your shell script executes (using <code>/bin/bash -c</code> under the hood).</li>
       <li style="margin-bottom: 12px;">L2Cache intercepts the output (<code>stdout</code>) and updates the clipboard copy with the formatted result.</li>
     </ol>
+    
+    <div style="background: rgba(0, 200, 150, 0.08); border-left: 4px solid #00C896; padding: 16px 20px; margin-bottom: 32px; border-radius: 6px;">
+      <p style="margin-bottom: 0; font-size: 15px; color: var(--text-muted); line-height: 1.6;"><strong>💡 How data is passed without parameters:</strong> Because L2Cache pipes the clipboard content directly into the command's standard input (<code>stdin</code>), you don't need to specify files or variables. Commands like <code>nc termbin.com 9999</code> or <code>sort | uniq</code> automatically receive and process the copied text.</p>
+    </div>
 
     <h2>Scoped Content Filtering</h2>
     <p>You don't want a "Format SQL" action cluttering your options when you copy an image or a URL. L2Cache lets you choose exactly which content types trigger your action:</p>
