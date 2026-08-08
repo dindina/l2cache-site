@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scriptable Clipboard & Custom Actions for Mac — L2Cache</title>
+  <meta name="description" content="Turn your Mac clipboard into a programmable tool. Run bash, python, or ruby commands directly on copied data, filtered by content type — privately and locally." />
+  <meta name="keywords" content="programmable clipboard mac, custom clipboard actions, clipboard automation mac, shell scripts clipboard, run script on clipboard, developer clipboard mac" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/custom-actions.html" />
+  <link rel="icon" type="image/png" href="icon.png" />
+  <link rel="apple-touch-icon" href="icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .article-wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 140px 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-weight: 900;
+      font-size: clamp(34px, 6vw, 54px);
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      margin-bottom: 24px;
+      color: var(--text);
+    }
+    .lede {
+      font-size: 19px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 40px;
+    }
+    h2 {
+      font-family: var(--serif);
+      font-weight: 800;
+      font-size: clamp(24px, 4vw, 32px);
+      line-height: 1.2;
+      margin: 56px 0 20px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    h3 {
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 19px;
+      margin: 36px 0 12px;
+      color: var(--text);
+    }
+    p {
+      font-size: 17px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+    pre, code {
+      font-family: var(--mono);
+      background: rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-size: 14px;
+      color: #b91c1c;
+    }
+    pre {
+      display: block;
+      padding: 16px;
+      background: #0d0c1d;
+      color: #a5d6ff;
+      overflow-x: auto;
+      margin-bottom: 24px;
+      border-radius: 12px;
+    }
+    pre code {
+      background: transparent;
+      border: none;
+      padding: 0;
+      color: inherit;
+    }
+    .recipe-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+      margin-top: 40px;
+    }
+    .recipe-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
+    .recipe-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .recipe-desc {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="icon.png" width="34" height="34" alt="L2Cache" style="border-radius:8px"/>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html#who">Who it's for</a></li>
+      <li><a href="index.html#features">Features</a></li>
+      <li><a href="intelligence.html">Intelligence</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta" target="_blank" rel="noopener">Download</a></li>
+    </ul>
+  </nav>
+
+  <article class="article-wrap">
+    <div class="eyebrow">Power User Tools</div>
+    <h1>Scriptable Clipboard & Custom Actions</h1>
+    <p class="lede">L2Cache lets you build your own custom Clipboard Actions using standard shell commands, python scripts, or ruby tools. Scoped dynamically to target only specific content types.</p>
+
+    <p>Standard clipboard managers are passive filing cabinets. They store your copied strings but can't do anything with them. If you want to transform a clipboard item (e.g. format JSON, strip formatting, extract IDs), you are forced to paste it into a scratchpad app, modify it, and copy it back.</p>
+
+    <p><strong>L2Cache makes your clipboard programmable.</strong> With Custom Shell Actions, you can run any tool that accepts standard input (<code>stdin</code>), processes it, and returns the output via standard output (<code>stdout</code>).</p>
+
+    <h2>How Custom Shell Actions Work</h2>
+    <p>When you create a custom action, you write a standard shell command. When you copy an item and trigger that action:</p>
+    <ol style="margin-left: 20px; margin-bottom: 24px;">
+      <li style="margin-bottom: 12px;">L2Cache pipes the copied text directly into the standard input (<code>stdin</code>) of your shell script.</li>
+      <li style="margin-bottom: 12px;">Your shell script executes (using <code>/bin/bash -c</code> under the hood).</li>
+      <li style="margin-bottom: 12px;">L2Cache intercepts the output (<code>stdout</code>) and updates the clipboard copy with the formatted result.</li>
+    </ol>
+
+    <h2>Scoped Content Filtering</h2>
+    <p>You don't want a "Format SQL" action cluttering your options when you copy an image or a URL. L2Cache lets you choose exactly which content types trigger your action:</p>
+    <ul style="margin-left: 20px; margin-bottom: 24px;">
+      <li>JSON, YAML, XML, SQL, Markdown, GraphQL</li>
+      <li>Docker commands, Kubernetes manifests, AWS resources</li>
+      <li>Git URLs, raw URLs, plain text, or code blocks</li>
+    </ul>
+
+    <h2>10 Shell Action Recipes to Try</h2>
+    
+    <div class="recipe-grid">
+      <div class="recipe-card">
+        <div class="recipe-title">1. Pretty Print JSON (with <code>jq</code>)</div>
+        <div class="recipe-desc">Applies to: <strong>JSON</strong></div>
+        <pre><code>jq .</code></pre>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-title">2. Extract URLs from Text</div>
+        <div class="recipe-desc">Applies to: <strong>Text</strong></div>
+        <pre><code>grep -Eo 'https?://[^ ]+'</code></pre>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-title">3. Strip URL Tracking Parameters</div>
+        <div class="recipe-desc">Applies to: <strong>URL</strong></div>
+        <pre><code>ruby -ruri -e '
+  uri = URI.parse(STDIN.read.strip)
+  if uri.query
+    params = URI.decode_www_form(uri.query).reject { |k,_| k.start_with?("utm_") }
+    uri.query = params.empty? ? nil : URI.encode_www_form(params)
+  end
+  puts uri.to_s
+'</code></pre>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-title">4. Convert SQL Schema to JSON (using Python)</div>
+        <div class="recipe-desc">Applies to: <strong>SQL</strong></div>
+        <pre><code>python3 -c "
+import sys, re, json
+sql = sys.stdin.read()
+fields = re.findall(r'(\w+)\s+(VARCHAR|INT|TEXT|TIMESTAMP|DATETIME)', sql, re.IGNORECASE)
+print(json.dumps({f[0]: f[1].lower() for f in fields}, indent=2))
+"</code></pre>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-title">5. Base64 Decode</div>
+        <div class="recipe-desc">Applies to: <strong>Text</strong></div>
+        <pre><code>base64 --decode</code></pre>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-title">6. Count Lines, Words, and Characters</div>
+        <div class="recipe-desc">Applies to: <strong>Text</strong></div>
+        <pre><code>wc</code></pre>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-title">7. URL Decode String</div>
+        <div class="recipe-desc">Applies to: <strong>Text</strong></div>
+        <pre><code>python3 -c "import sys, urllib.parse; print(urllib.parse.unquote(sys.stdin.read()))"</code></pre>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-title">8. Sort and Remove Duplicate Lines</div>
+        <div class="recipe-desc">Applies to: <strong>Text</strong></div>
+        <pre><code>sort | uniq</code></pre>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-title">9. Strip HTML Tags</div>
+        <div class="recipe-desc">Applies to: <strong>Text</strong></div>
+        <pre><code>sed 's/<[^>]*>//g'</code></pre>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-title">10. Extract YAML Keys</div>
+        <div class="recipe-desc">Applies to: <strong>YAML</strong></div>
+        <pre><code>grep -E '^[a-zA-Z0-9_-]+:' | sed 's/://'</code></pre>
+      </div>
+    </div>
+
+    <h2>Zero Network Footprint</h2>
+    <p>Unlike cloud-based snippet processors or web services, Custom Shell Actions execute <strong>entirely on-device</strong> within a sandboxed helper process. L2Cache never sends your clipboard data, environment variables, or script outputs to any external server. 100% private, 100% offline.</p>
+
+  </article>
+
+  <!-- FOOTER -->
+  <footer>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="privacy.html">Privacy Policy</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="clipboard-history-mac.html">Clipboard History on Mac</a></li>
+    </ul>
+    <p class="footer-copy">© 2026 Amvotech</p>
+  </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offline JSON Formatter App for Mac — L2Cache</title>
+  <meta name="description" content="Format, validate, and prettify JSON natively and offline on macOS. Keep your data private and clean up minified payloads directly from your clipboard." />
+  <meta name="keywords" content="json formatter mac, format json mac, offline json formatter, json formatter native mac app, json prettifier mac, dev tools mac" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/json-formatter-mac.html" />
+  <link rel="icon" type="image/png" href="icon.png" />
+  <link rel="apple-touch-icon" href="icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .article-wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 140px 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-weight: 900;
+      font-size: clamp(34px, 6vw, 54px);
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      margin-bottom: 24px;
+      color: var(--text);
+    }
+    .lede {
+      font-size: 19px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 40px;
+    }
+    h2 {
+      font-family: var(--serif);
+      font-weight: 800;
+      font-size: clamp(24px, 4vw, 32px);
+      line-height: 1.2;
+      margin: 56px 0 20px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    h3 {
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 19px;
+      margin: 36px 0 12px;
+      color: var(--text);
+    }
+    p {
+      font-size: 17px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+    .faq-item {
+      margin-bottom: 32px;
+    }
+    .faq-q {
+      font-weight: 600;
+      font-size: 18px;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .faq-a {
+      font-size: 16px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="icon.png" width="34" height="34" alt="L2Cache" style="border-radius:8px"/>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html#who">Who it's for</a></li>
+      <li><a href="index.html#features">Features</a></li>
+      <li><a href="intelligence.html">Intelligence</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta" target="_blank" rel="noopener">Download</a></li>
+    </ul>
+  </nav>
+
+  <article class="article-wrap">
+    <div class="eyebrow">Security & Dev Tools</div>
+    <h1>Offline JSON Formatter App for Mac</h1>
+    <p class="lede">Formatting API response payloads shouldn't involve pasting private data into browser tabs. Prettify, inspect, and copy JSON locally from your menu bar.</p>
+
+    <p>API responses, config files, database outputs — developers look at JSON all day. Often, this data is minified to save bandwidth, making it completely unreadable. The traditional workflow to format it is full of friction: copy, open a web page, paste, format, copy again, and go back to your IDE.</p>
+    
+    <p>This workflow has two problems: it wastes time and it leaks proprietary data or user payloads to third-party web sites.</p>
+
+    <h2>The Safety of Offline JSON Processing</h2>
+    <p>When you use an online JSON validator or formatter, your data goes to an external server. L2Cache solves this by running JSON verification and formatting entirely within a native, offline sandboxed macOS process. Your JSON stays on your machine.</p>
+
+    <h2>How It Works in L2Cache</h2>
+    <p>L2Cache acts as a smart wrapper around your clipboard history. The moment you copy a JSON string, L2Cache's intelligence recognizes the structure. Instead of manually launching a terminal tool or website, you format it in place with a single click.</p>
+
+    <h2>Key benefits:</h2>
+    <ul style="margin-left: 20px; margin-bottom: 32px;">
+      <li style="margin-bottom: 8px;"><strong>Zero Window-Switching:</strong> Format directly from L2Cache's menu bar popover.</li>
+      <li style="margin-bottom: 8px;"><strong>Strictly Local:</strong> No external API requests are made. Prettified in microseconds using high-performance native parsing.</li>
+      <li style="margin-bottom: 8px;"><strong>Auto-Validation:</strong> Quickly spot syntax issues or missing brackets before pasting.</li>
+    </ul>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <div class="faq-q">Does this offline formatter support large JSON files?</div>
+      <div class="faq-a">Yes. L2Cache's native parsing helper handles multi-megabyte JSON payloads instantly without freezing or lagging your Mac.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Does L2Cache require an active internet connection?</div>
+      <div class="faq-a">No. L2Cache runs entirely offline. You can format JSON, decode JWTs, and extract stack traces while disconnected.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I customize the indentation spaces?</div>
+      <div class="faq-a">Yes. Under the settings menu, you can configure L2Cache to format JSON using spaces (2 or 4) or tabs to match your codebase layout guidelines.</div>
+    </div>
+
+  </article>
+
+  <!-- FOOTER -->
+  <footer>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="privacy.html">Privacy Policy</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="clipboard-history-mac.html">Clipboard History on Mac</a></li>
+    </ul>
+    <p class="footer-copy">© 2026 Amvotech</p>
+  </footer>
+
+</body>
+
+</html>

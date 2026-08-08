@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offline JWT Decoder App for Mac — L2Cache</title>
+  <meta name="description" content="Decode JSON Web Tokens (JWT) natively and offline on macOS. Stop pasting secrets into web browsers. Clean, private, and fully integrated with your clipboard." />
+  <meta name="keywords" content="jwt decoder mac, decode jwt mac, offline jwt decoder, jwt decoder mac app, secure jwt decoder, dev tools mac" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/jwt-decoder-mac.html" />
+  <link rel="icon" type="image/png" href="icon.png" />
+  <link rel="apple-touch-icon" href="icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .article-wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 140px 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-weight: 900;
+      font-size: clamp(34px, 6vw, 54px);
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      margin-bottom: 24px;
+      color: var(--text);
+    }
+    .lede {
+      font-size: 19px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 40px;
+    }
+    h2 {
+      font-family: var(--serif);
+      font-weight: 800;
+      font-size: clamp(24px, 4vw, 32px);
+      line-height: 1.2;
+      margin: 56px 0 20px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    h3 {
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 19px;
+      margin: 36px 0 12px;
+      color: var(--text);
+    }
+    p {
+      font-size: 17px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+    .faq-item {
+      margin-bottom: 32px;
+    }
+    .faq-q {
+      font-weight: 600;
+      font-size: 18px;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .faq-a {
+      font-size: 16px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="icon.png" width="34" height="34" alt="L2Cache" style="border-radius:8px"/>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html#who">Who it's for</a></li>
+      <li><a href="index.html#features">Features</a></li>
+      <li><a href="intelligence.html">Intelligence</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta" target="_blank" rel="noopener">Download</a></li>
+    </ul>
+  </nav>
+
+  <article class="article-wrap">
+    <div class="eyebrow">Security & Dev Tools</div>
+    <h1>Offline JWT Decoder App for Mac</h1>
+    <p class="lede">Decoding JSON Web Tokens shouldn't mean uploading private user payloads, signatures, or keys to third-party web sites. L2Cache decodes JWTs natively and privately on your Mac.</p>
+
+    <p>JSON Web Tokens (JWT) are the backbone of modern web authentication. As developers, we deal with them daily — copying them from database rows, request headers, or config files to check expiration times, scopes, or claims.</p>
+    
+    <p>But the default habit for many developers is dangerous: pasting raw JWTs into online browser tools like <code>jwt.io</code>. While convenient, this practice leaks sensitive customer data, authentication keys, and user emails to external servers.</p>
+
+    <h2>The Security Risk of Online JWT Decoders</h2>
+    <p>Every time you paste a token into a web page, you are relying on that server's security. If the token is a production user session token, you have just transferred a live, valid session token to a third party. If they store or log that data, your application is compromised.</p>
+
+    <h2>How L2Cache Solves It</h2>
+    <p>L2Cache detects JWTs inside your clipboard history automatically. When you copy a JWT, it instantly parses the header and payload claims locally, presenting it directly in the app. No network requests are made, and your token never leaves your machine.</p>
+
+    <h2>Features built for developers:</h2>
+    <ul style="margin-left: 20px; margin-bottom: 32px;">
+      <li style="margin-bottom: 8px;"><strong>Auto-Detection:</strong> No need to navigate to a specific decoder tab. If it's a valid JWT, L2Cache identifies it.</li>
+      <li style="margin-bottom: 8px;"><strong>Offline Parsing:</strong> Decodes and formats JSON structure entirely locally on macOS.</li>
+      <li style="margin-bottom: 8px;"><strong>App Integration:</strong> Easily copy formatted claims or headers directly back to your code.</li>
+    </ul>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <div class="faq-q">Does L2Cache send my token back to any server?</div>
+      <div class="faq-a">No. L2Cache processes all clipboard content, formatting, and decoding 100% locally. 0 bytes of clip content are sent to any server.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Does the offline decoder work on expired tokens?</div>
+      <div class="faq-a">Yes. It extracts all header and payload details from the token claims structure, showing you the exact timestamp the token expired.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Does L2Cache verify the signature?</div>
+      <div class="faq-a">No. Since L2Cache is an offline utility viewer, it extracts and displays the payload and header parameters but does not require private keys to verify signatures.</div>
+    </div>
+
+  </article>
+
+  <!-- FOOTER -->
+  <footer>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="privacy.html">Privacy Policy</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="clipboard-history-mac.html">Clipboard History on Mac</a></li>
+    </ul>
+    <p class="footer-copy">© 2026 Amvotech</p>
+  </footer>
+
+</body>
+
+</html>
