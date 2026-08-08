@@ -176,7 +176,7 @@
       <div class="recipe-card">
         <div class="recipe-title">2. Extract URLs from Text</div>
         <div class="recipe-desc">Applies to: <strong>Text</strong></div>
-        <pre><code>grep -Eo 'https?://[^ ]+'</code></pre>
+        <pre><code>cat | grep -Eo 'https?://[^ ]+'</code></pre>
       </div>
 
       <div class="recipe-card">
@@ -211,7 +211,7 @@
       <div class="recipe-card">
         <div class="recipe-title">6. Extract Unique IP Addresses</div>
         <div class="recipe-desc">Applies to: <strong>System Log</strong></div>
-        <pre><code>grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" | sort -u</code></pre>
+        <pre><code>cat | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" | sort -u</code></pre>
       </div>
 
       <div class="recipe-card">
@@ -223,19 +223,19 @@
       <div class="recipe-card">
         <div class="recipe-title">8. Sort and Remove Duplicate Lines</div>
         <div class="recipe-desc">Applies to: <strong>Text</strong></div>
-        <pre><code>sort | uniq</code></pre>
+        <pre><code>cat | sort | uniq</code></pre>
       </div>
 
       <div class="recipe-card">
         <div class="recipe-title">9. Strip HTML Tags</div>
         <div class="recipe-desc">Applies to: <strong>Text</strong></div>
-        <pre><code>sed 's/<[^>]*>//g'</code></pre>
+        <pre><code>cat | sed 's/<[^>]*>//g'</code></pre>
       </div>
 
       <div class="recipe-card">
         <div class="recipe-title">10. Extract YAML Keys</div>
         <div class="recipe-desc">Applies to: <strong>YAML</strong></div>
-        <pre><code>grep -E '^[a-zA-Z0-9_-]+:' | sed 's/://'</code></pre>
+        <pre><code>cat | grep -E '^[a-zA-Z0-9_-]+:' | sed 's/://'</code></pre>
       </div>
     </div>
 
