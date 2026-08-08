@@ -254,6 +254,23 @@
   end
   puts JSON.pretty_generate(redact(JSON.parse(STDIN.read)))
 '</code></pre>
+        <p style="margin-top: 20px; font-size: 13px; color: var(--text-muted); font-weight: 500;">📋 Copy this sample payload to your clipboard to test the action:</p>
+        <pre style="background: #141324; margin-top: 8px; font-size: 13px; color: #a5d6ff;"><code>{
+  "user": "dinesh_dev",
+  "email": "dinesh@example.com",
+  "session": {
+    "auth_token": "live_tok_9823fha8921fh",
+    "expires_at": "2026-09-01T00:00:00Z"
+  },
+  "payment": {
+    "card_number": "4111-2222-3333-4444",
+    "amount_usd": 49.00
+  },
+  "config": {
+    "debug_mode": true,
+    "aws_secret": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+  }
+}</code></pre>
       </div>
     </div>
 
