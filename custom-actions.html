@@ -174,9 +174,23 @@
       </div>
 
       <div class="recipe-card">
-        <div class="recipe-title">2. Extract URLs from Text</div>
-        <div class="recipe-desc">Applies to: <strong>Text</strong></div>
-        <pre><code>cat | grep -Eo 'https?://[^ ]+'</code></pre>
+        <div class="recipe-title">2. Generate Mock JSON from Field Names (using Ruby)</div>
+        <div class="recipe-desc">Applies to: <strong>Text</strong>. Copy a list of comma-separated fields (e.g. <code>id, name, email, price, created_at</code>) and generate mock JSON output instantly.</div>
+        <pre><code>ruby -rjson -rtime -e '
+  fields = STDIN.read.strip.split(/\s*,\s*|\s+/)
+  mock = fields.each_with_object({}) do |f, h|
+    h[f] = case f
+    when /id/i; rand(1000..9999)
+    when /email/i; "user@example.com"
+    when /name/i; "John Doe"
+    when /created_at|updated_at|date/i; Time.now.utc.iso8601
+    when /status/i; "active"
+    when /price|amount/i; rand(9.99..99.99).round(2)
+    else; "mock_value"
+    end
+  end
+  puts JSON.pretty_generate(mock)
+'</code></pre>
       </div>
 
       <div class="recipe-card">
@@ -221,15 +235,26 @@
       </div>
 
       <div class="recipe-card">
-        <div class="recipe-title">8. Sort and Remove Duplicate Lines</div>
-        <div class="recipe-desc">Applies to: <strong>Text</strong></div>
-        <pre><code>cat | sort | uniq</code></pre>
+        <div class="recipe-title">8. Convert CSV to Markdown Table (using Ruby)</div>
+        <div class="recipe-desc">Applies to: <strong>Text</strong>. Copy any standard CSV block and automatically convert it into a clean, formatted Markdown table structure.</div>
+        <pre><code>ruby -rcsv -e '
+  rows = CSV.parse(STDIN.read.strip)
+  exit if rows.empty?
+  headers = rows.first
+  divider = headers.map { |h| "-" * [h.to_s.length, 3].max }
+  puts "| " + headers.map(&:to_s).join(" | ") + " |"
+  puts "| " + divider.join(" | ") + " |"
+  rows[1..].each do |row|
+    next if row.nil? || row.empty?
+    puts "| " + row.map { |v| v.to_s.gsub("|", "\\|") }.join(" | ") + " |"
+  end
+'</code></pre>
       </div>
 
       <div class="recipe-card">
-        <div class="recipe-title">9. Strip HTML Tags</div>
-        <div class="recipe-desc">Applies to: <strong>Text</strong></div>
-        <pre><code>cat | sed 's/<[^>]*>//g'</code></pre>
+        <div class="recipe-title">9. HTML Special Entities Encoder (using Ruby)</div>
+        <div class="recipe-desc">Applies to: <strong>Text</strong>. Escape all HTML characters (like &lt;, &gt;, &amp;) into their safe HTML entity representations.</div>
+        <pre><code>ruby -rcgi -e 'puts CGI.escapeHTML(STDIN.read)'</code></pre>
       </div>
 
       <div class="recipe-card">
