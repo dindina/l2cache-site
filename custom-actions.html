@@ -164,9 +164,9 @@
     
     <div class="recipe-grid">
       <div class="recipe-card">
-        <div class="recipe-title">1. Convert JSON to YAML (using Ruby)</div>
+        <div class="recipe-title">1. Send Clipboard JSON payload to Local Server (using Curl)</div>
         <div class="recipe-desc">Applies to: <strong>JSON</strong></div>
-        <pre><code>ruby -rjson -ryaml -e 'puts YAML.dump(JSON.parse(STDIN.read))'</code></pre>
+        <pre><code>curl -X POST -H "Content-Type: application/json" -d @- http://localhost:3000/api/webhook</code></pre>
       </div>
 
       <div class="recipe-card">
@@ -199,12 +199,9 @@
       </div>
 
       <div class="recipe-card">
-        <div class="recipe-title">5. Format XML (using Ruby)</div>
-        <div class="recipe-desc">Applies to: <strong>XML</strong></div>
-        <pre><code>ruby -rrexml/document -e '
-  doc = REXML::Document.new(STDIN.read)
-  doc.write($stdout, 2)
-'</code></pre>
+        <div class="recipe-title">5. Share Log/Text to Termbin (returns a shareable URL)</div>
+        <div class="recipe-desc">Applies to: <strong>Text</strong></div>
+        <pre><code>curl -s --data-binary @- https://termbin.com</code></pre>
       </div>
 
       <div class="recipe-card">
