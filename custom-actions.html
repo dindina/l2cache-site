@@ -164,7 +164,7 @@
       <li>Git URLs, raw URLs, plain text, or code blocks</li>
     </ul>
 
-    <h2>10 Shell Action Recipes to Try</h2>
+    <h2>11 Shell Action Recipes to Try</h2>
     
     <div class="recipe-grid">
       <div class="recipe-card">
@@ -233,9 +233,27 @@
       </div>
 
       <div class="recipe-card">
-        <div class="recipe-title">10. Extract YAML Keys</div>
-        <div class="recipe-desc">Applies to: <strong>YAML</strong></div>
-        <pre><code>cat | grep -E '^[[:space:]]*[a-zA-Z0-9_-]+:' | sed -E 's/^[[:space:]]*//; s/:.*$//'</code></pre>
+        <div class="recipe-title">11. Redact Sensitive Keys in JSON (using Ruby)</div>
+        <div class="recipe-desc">Applies to: <strong>JSON</strong>. Recursively checks all keys in a JSON object and replaces values matching sensitive names (like passwords, keys, tokens, or emails) with "[REDACTED]".</div>
+        <pre><code>ruby -rjson -e '
+  def redact(obj)
+    case obj
+    when Hash
+      obj.each_with_object({}) do |(k, v), h|
+        if k.to_s =~ /password|secret|key|token|auth|email|card|phone/i
+          h[k] = "[REDACTED]"
+        else
+          h[k] = redact(v)
+        end
+      end
+    when Array
+      obj.map { |v| redact(v) }
+    else
+      obj
+    end
+  end
+  puts JSON.pretty_generate(redact(JSON.parse(STDIN.read)))
+'</code></pre>
       </div>
     </div>
 
