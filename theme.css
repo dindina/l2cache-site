@@ -1,0 +1,242 @@
+/* ===================================================
+   L2Cache – Editorial Split Theme
+   Shared across all pages. Link from every HTML file.
+   =================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&display=swap');
+
+/* ── Root tokens ─────────────────────────────────── */
+:root {
+  --purple:      #00C896;
+  --purple-dark: #00a87f;
+  --purple-deep: #003d2e;
+  --pink:        #00C896;
+  --bg:          #f7f7f5;
+  --bg2:         #ffffff;
+  --bg3:         #eeeeea;
+  --border:      #e4e4e0;
+  --text:        #0a0a0a;
+  --text-muted:  #555550;
+  --text-dim:    #999992;
+  --mono:        "SFMono-Regular", Menlo, Consolas, "PT Mono", monospace;
+  --serif:       "Playfair Display", Georgia, "Times New Roman", serif;
+  --sans:        "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+/* ── Base ────────────────────────────────────────── */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+}
+
+/* ── Navigation ──────────────────────────────────── */
+nav {
+  background: rgba(247, 247, 245, 0.92) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid var(--border) !important;
+  box-shadow: none !important;
+}
+nav a,
+nav li a {
+  color: #0a0a0a !important;
+}
+.nav-cta {
+  background: #0a0a0a !important;
+  color: #fff !important;
+  border-radius: 100px !important;
+}
+.nav-logo {
+  color: #0a0a0a !important;
+  font-weight: 700 !important;
+}
+
+/* ── Hero Headline ───────────────────────────────── */
+h1 {
+  font-family: var(--serif) !important;
+  font-size: 72px !important;
+  font-weight: 900 !important;
+  line-height: 1.0 !important;
+  letter-spacing: -2px !important;
+  color: #0a0a0a !important;
+}
+@media (max-width: 900px) {
+  h1 { font-size: 48px !important; }
+}
+h1 em {
+  font-style: italic;
+  color: var(--purple) !important;
+}
+
+/* ── Hero Sub-copy ───────────────────────────────── */
+.hero-sub {
+  font-size: 18px !important;
+  color: #555550 !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+  max-width: 400px;
+}
+.price-tag { color: #999992 !important; }
+
+/* ── Buttons ─────────────────────────────────────── */
+.btn-primary {
+  background: #0a0a0a !important;
+  color: #fff !important;
+  border-radius: 100px !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  padding: 14px 28px !important;
+  box-shadow: none !important;
+  border: none !important;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition: background 0.2s ease, transform 0.2s ease !important;
+}
+.btn-primary:hover {
+  background: #222 !important;
+  transform: translateY(-1px);
+}
+.btn-secondary {
+  color: #0a0a0a !important;
+  font-weight: 600 !important;
+  border-color: #e4e4e0 !important;
+}
+
+/* ── Section Labels ──────────────────────────────── */
+.section-label {
+  display: inline-block;
+  background: rgba(0, 200, 150, 0.12);
+  border: 1px solid rgba(0, 200, 150, 0.35);
+  border-radius: 100px;
+  padding: 4px 14px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #00a87f;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+/* ── Section Headings ────────────────────────────── */
+h2.section-title {
+  font-family: var(--serif) !important;
+  font-size: 48px !important;
+  font-weight: 800 !important;
+  letter-spacing: -1.5px !important;
+  color: #0a0a0a !important;
+}
+@media (max-width: 900px) {
+  h2.section-title { font-size: 32px !important; }
+}
+h3 { color: #0a0a0a !important; }
+
+/* ── Body text ───────────────────────────────────── */
+p { color: #555550; }
+.section-sub { color: #555550 !important; }
+
+/* ── Hero Visual Panel ───────────────────────────── */
+.hero-shots {
+  background: #111118 !important;
+  border-radius: 24px !important;
+  border: 1px solid #222 !important;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.25) !important;
+  overflow: hidden;
+}
+
+/* ── Feature Cards ───────────────────────────────── */
+.feature-card,
+.user-card,
+.pricing-card,
+.compare-card {
+  background: #ffffff !important;
+  border: 1px solid #e8e8e4 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06) !important;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+.feature-card:hover,
+.user-card:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-2px);
+}
+.feature-card h3,
+.user-card h3 { color: #0a0a0a !important; }
+.feature-card p,
+.user-card p  { color: #666660 !important; }
+
+/* ── Ore-to-Gold / Mockup ────────────────────────── */
+.ore-to-gold,
+.mockup-wrap {
+  background: #ffffff !important;
+  border: 1px solid #e8e8e4 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* ── Privacy Stats Strip ─────────────────────────── */
+.privacy-strip {
+  background: #eeeeea !important;
+  border-bottom: 1px solid #e4e4e0 !important;
+}
+.privacy-stat-value { color: #0a0a0a !important; }
+.privacy-stat-label { color: #555550 !important; }
+
+/* ── Footer ──────────────────────────────────────── */
+footer {
+  background: #0a0a0a !important;
+  color: #aaa !important;
+}
+footer a           { color: #aaa !important; }
+footer a:hover     { color: #fff !important; }
+.footer-logo-name  { color: #fff !important; }
+
+/* ── Lang switcher (build-injected) ──────────────── */
+.lang-switcher select {
+  background: rgba(0, 0, 0, 0.06) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+}
+
+/* ── Split-Scroll Developer Section ──────────────── */
+.split-scroll-section {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 80px;
+  align-items: flex-start;
+  padding: 120px 40px;
+}
+.split-left {
+  flex: 1;
+  position: sticky;
+  top: 120px;
+}
+.split-left .section-title {
+  font-size: 52px !important;
+  line-height: 1.1;
+  text-align: left;
+}
+.split-left .section-sub,
+.split-left .section-label {
+  text-align: left;
+  margin-left: 0;
+}
+.split-right {
+  flex: 1.3;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+@media (max-width: 900px) {
+  .split-scroll-section {
+    flex-direction: column;
+    gap: 40px;
+    padding: 60px 20px;
+  }
+  .split-left {
+    position: relative;
+    top: 0;
+  }
+  .split-left .section-title { font-size: 36px !important; }
+}

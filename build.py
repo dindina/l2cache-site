@@ -79,7 +79,7 @@ def build():
     os.makedirs(L2CACHE_OUT_DIR)
 
     # Copy L2Cache assets
-    for asset in ["icon.png", "screenshots"]:
+    for asset in ["icon.png", "screenshots", "theme.css"]:
         if os.path.exists(asset):
             if os.path.isdir(asset):
                 shutil.copytree(asset, os.path.join(L2CACHE_OUT_DIR, asset))
@@ -134,6 +134,7 @@ def build():
             # Fix asset paths to be relative from the lang directory (works locally and on Vercel)
             content = re.sub(r'(src|href)="icon\.png"', r'\1="../icon.png"', content)
             content = re.sub(r'(src|href)="screenshots/', r'\1="../screenshots/', content)
+            content = content.replace('href="theme.css"', 'href="../theme.css"')
             
             # Note: 
             # 1. We keep <html lang="en"> (no replacement) because content is English.
