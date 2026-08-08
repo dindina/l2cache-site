@@ -83,20 +83,20 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --purple:     #7C6EFF;
-      --purple-dark:#5A4ECC;
-      --purple-deep:#1a1040;
-      --pink:       #FF6B8A;
-      --bg:         #0b0b1a;
-      --bg2:        #111128;
-      --bg3:        #181830;
-      --border:     rgba(255,255,255,0.08);
-      --text:       #f0f0fa;
-      --text-muted: rgba(240,240,250,0.55);
-      --text-dim:   rgba(240,240,250,0.3);
-      --mono:       'DM Mono', monospace;
-      --serif:      'Fraunces', serif;
-      --sans:       'DM Sans', sans-serif;
+      --purple:     #00C896;
+      --purple-dark:#00a87f;
+      --purple-deep:#003d2e;
+      --pink:       #00C896;
+      --bg:         #f7f7f5;
+      --bg2:        #ffffff;
+      --bg3:        #eeeeea;
+      --border:     #e4e4e0;
+      --text:       #0a0a0a;
+      --text-muted: #555550;
+      --text-dim:   #999992;
+      --mono:       "SFMono-Regular", Menlo, Consolas, monospace;
+      --serif:      "GT Super", "Playfair Display", Georgia, "Times New Roman", serif;
+      --sans:       -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     }
 
     html { scroll-behavior: smooth; }
@@ -967,84 +967,146 @@
       .nav-mobile-cta { display: none; }
     }
 
-    /* ===== GLASSMORPHISM + SPLIT-SCROLL COMBINED THEME ===== */
+    /* ===== EDITORIAL SPLIT THEME ===== */
 
-    /* Animated gradient background blobs */
-    body::before, body::after {
-      content: '';
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(100px);
-      opacity: 0.35;
-      pointer-events: none;
-      z-index: 0;
-    }
-    body::before {
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, #7C6EFF, transparent 70%);
-      top: -100px; left: -100px;
-      animation: blobmove 12s ease-in-out infinite alternate;
-    }
-    body::after {
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, #FF6B8A, transparent 70%);
-      bottom: -100px; right: -100px;
-      animation: blobmove 16s ease-in-out infinite alternate-reverse;
-    }
-    @keyframes blobmove {
-      0%   { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(60px, 40px) scale(1.15); }
+    /* Light body */
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
     }
 
-    /* Glass cards */
-    .feature-card, .user-card, .mockup-wrap, .ore-to-gold, .hero-shots, .compare-card, .pricing-card {
-      background: rgba(255, 255, 255, 0.04) !important;
-      border: 1px solid rgba(255, 255, 255, 0.1) !important;
-      backdrop-filter: blur(24px) saturate(160%) !important;
-      -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
-      border-radius: 20px !important;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+    /* Nav — clean white */
+    nav {
+      background: rgba(247, 247, 245, 0.92) !important;
+      backdrop-filter: blur(12px) !important;
+      border-bottom: 1px solid var(--border) !important;
+      box-shadow: none !important;
     }
+    nav a, nav li a { color: #0a0a0a !important; }
+    .nav-cta {
+      background: #0a0a0a !important;
+      color: #fff !important;
+      border-radius: 100px !important;
+    }
+
+    /* Hero headline — massive bold serif */
+    h1 {
+      font-family: var(--serif) !important;
+      font-size: 72px !important;
+      font-weight: 900 !important;
+      line-height: 1.0 !important;
+      letter-spacing: -2px !important;
+      color: #0a0a0a !important;
+    }
+    @media (max-width: 900px) { h1 { font-size: 48px !important; } }
+
+    /* Hero sub */
+    .hero-sub {
+      font-size: 18px !important;
+      color: #555550 !important;
+      font-weight: 400 !important;
+      line-height: 1.6 !important;
+      max-width: 380px;
+    }
+
+    /* Price tag */
+    .price-tag { color: #999992 !important; }
+
+    /* Primary button — solid black pill */
+    .btn-primary {
+      background: #0a0a0a !important;
+      color: #fff !important;
+      border-radius: 100px !important;
+      font-size: 15px !important;
+      font-weight: 600 !important;
+      padding: 14px 28px !important;
+      box-shadow: none !important;
+      border: none !important;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .btn-primary:hover {
+      background: #222 !important;
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      color: #0a0a0a !important;
+      font-weight: 600 !important;
+    }
+
+    /* Hero visual panel — the dark right side */
+    .hero-shots {
+      background: #111118 !important;
+      border-radius: 24px !important;
+      border: 1px solid #222 !important;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.35) !important;
+      overflow: hidden;
+    }
+
+    /* Section headings */
+    h2.section-title {
+      font-family: var(--serif) !important;
+      font-size: 48px !important;
+      font-weight: 800 !important;
+      letter-spacing: -1.5px !important;
+      color: #0a0a0a !important;
+    }
+    h3 {
+      color: #0a0a0a !important;
+    }
+    p { color: #555550 !important; }
+
+    /* Section label pill — teal */
+    .section-label {
+      display: inline-block;
+      background: rgba(0, 200, 150, 0.12);
+      border: 1px solid rgba(0, 200, 150, 0.35);
+      border-radius: 100px;
+      padding: 4px 14px;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #00a87f;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    /* Feature cards — clean white with soft shadow */
+    .feature-card, .user-card, .pricing-card, .compare-card {
+      background: #ffffff !important;
+      border: 1px solid #e8e8e4 !important;
+      border-radius: 16px !important;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06) !important;
+    }
+    .feature-card h3, .user-card h3 { color: #0a0a0a !important; }
+    .feature-card p, .user-card p { color: #666660 !important; }
     .feature-card:hover {
-      background: rgba(255, 255, 255, 0.07) !important;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1) !important;
       transform: translateY(-2px);
       transition: all 0.3s ease;
     }
 
-    /* Glass nav */
-    nav {
-      background: rgba(11, 11, 26, 0.6) !important;
-      backdrop-filter: blur(20px) !important;
-      -webkit-backdrop-filter: blur(20px) !important;
-      border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+    /* Ore-to-gold section */
+    .ore-to-gold {
+      background: #ffffff !important;
+      border: 1px solid #e8e8e4 !important;
+      border-radius: 16px !important;
     }
 
-    /* Glowing primary button */
-    .btn-primary {
-      background: linear-gradient(135deg, #7C6EFF, #a78bfa) !important;
-      box-shadow: 0 4px 24px rgba(124, 110, 255, 0.45) !important;
-      border: none !important;
-      border-radius: 12px !important;
-      transition: box-shadow 0.3s ease, transform 0.2s ease !important;
+    /* Privacy strip */
+    .privacy-strip {
+      background: #eeeeea !important;
+      border-bottom: 1px solid #e4e4e0 !important;
     }
-    .btn-primary:hover {
-      box-shadow: 0 6px 32px rgba(124, 110, 255, 0.65) !important;
-      transform: translateY(-1px);
-    }
+    .privacy-stat-value { color: #0a0a0a !important; }
 
-    /* Section label pill */
-    .section-label {
-      display: inline-block;
-      background: rgba(124, 110, 255, 0.15);
-      border: 1px solid rgba(124, 110, 255, 0.3);
-      border-radius: 100px;
-      padding: 4px 14px;
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #a78bfa;
-      margin-bottom: 16px;
+    /* Footer */
+    footer {
+      background: #0a0a0a !important;
+      color: #aaa !important;
     }
+    footer a { color: #aaa !important; }
 
     /* === SPLIT-SCROLL LAYOUT for Developer Tools === */
     .split-scroll-section {
@@ -1063,7 +1125,7 @@
       top: 120px;
     }
     .split-left .section-title {
-      font-size: 52px;
+      font-size: 52px !important;
       line-height: 1.1;
       text-align: left;
     }
@@ -1071,9 +1133,7 @@
       text-align: left;
       margin-left: 0;
     }
-    .split-left .section-label {
-      text-align: left;
-    }
+    .split-left .section-label { text-align: left; }
     .split-right {
       flex: 1.3;
       display: flex;
@@ -1083,7 +1143,7 @@
     @media (max-width: 900px) {
       .split-scroll-section { flex-direction: column; gap: 40px; padding: 60px 20px; }
       .split-left { position: relative; top: 0; }
-      .split-left .section-title { font-size: 36px; }
+      .split-left .section-title { font-size: 36px !important; }
     }
   </style>
 </head>
@@ -1145,9 +1205,9 @@
 
   <!-- left: headline + actions -->
   <div class="hero-text">
-    <h1>The Smart Clipboard<br/>for <em>Developers</em></h1>
+    <h1>You copy things.<br/>You lose things.<br/>Stop doing that.</h1>
 
-    <p class="hero-sub">Don't just store code. Format JSON, decode JWTs, run OCR on stack traces, and link context—automatically. The intelligent clipboard for macOS.</p>
+    <p class="hero-sub">It's a clipboard manager. But it actually understands code, JWTs, and stack traces. It doesn't suck.</p>
 
     <div class="hero-actions">
       <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="btn-primary" target="_blank" rel="noopener">
