@@ -13,7 +13,7 @@
       "permanent": false
     },
     {
-      "source": "/:page(privacy|support|intelligence|changelog|clipboard-history-mac|mac-command-history|comparison|developer-clipboard|custom-actions|jwt-decoder-mac|json-formatter-mac|regex-clipboard-mac)",
+      "source": "/:page(privacy|support|intelligence|changelog|clipboard-history-mac|mac-command-history|comparison|developer-clipboard|custom-actions|jwt-decoder-mac|json-formatter-mac|regex-clipboard-mac|screenshot-ocr-mac|sql-test-data-generator)",
       "missing": [
         { "type": "host", "value": "amvo.store" },
         { "type": "host", "value": "www.amvo.store" }
