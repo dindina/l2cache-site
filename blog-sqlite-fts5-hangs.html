@@ -63,7 +63,7 @@
 
   <p>Usually, this is practically instantaneous. But what happens if a user copies a 15MB minified JSON payload to their clipboard, or imports a massive unformatted XML dump?</p>
 
-  <p>The FTS5 tokenizer will attempt to parse the entire 15MB string as a single continuous stream of tokens. Depending on the exact nature of the text (especially strings lacking whitespace or punctuation), this tokenization process can cause the SQLite engine to lock up entirely, freezing your app's background processes and maxing out the CPU.</p>
+  <p>The FTS5 tokenizer will attempt to parse the entire 15MB string as a single continuous stream of tokens. Depending on the exact nature of the text (especially pathological inputs like one giant string lacking whitespace or punctuation), this tokenization process can hit disproportionately expensive code paths in the tokenizer and stemmer. If your insert or trigger runs synchronously on whatever thread issued the write, this can cause noticeable CPU spikes and hang durations.</p>
 
   <h2>The Standard (But Flawed) Solution</h2>
   <p>A common approach to fix this is to handle the truncation in your application layer. Before inserting into SQLite, your backend code truncates the string:</p>
@@ -73,10 +73,10 @@ db.insert(content: fullText, searchIndex: indexableText)</code></pre>
 
   <p>While this works, it pollutes your application logic. Worse, if you are using an <strong>External Content Table</strong> (where FTS5 automatically pulls data from a standard SQLite table to save disk space), you don't even have an explicit insert statement for the FTS table. The synchronization is usually handled by SQLite triggers.</p>
 
-  <h2>The Elegant Solution: The 8KB Trigger Hack</h2>
+  <h2>The Elegant Solution: The 8,192-Character Trigger Hack</h2>
   <p>In <strong>L2Cache</strong> (a native macOS clipboard manager built for developers), we rely heavily on SQLite triggers to automatically keep our primary <code>clips</code> table in sync with our <code>clips_fts</code> virtual search table.</p>
 
-  <p>To prevent the app from hanging when a developer copies a massive <code>node_modules</code> error log, we implemented what we call the "8KB Tokenization Hack" directly inside the SQLite trigger definition.</p>
+  <p>To prevent the app from hanging when a developer copies a massive <code>node_modules</code> error log, we implemented what we call the "8,192-Character Tokenization Hack" directly inside the SQLite trigger definition.</p>
 
   <p>Instead of passing the entire raw <code>new.content</code> string into the FTS5 table, we use SQLite's native <code>SUBSTR()</code> function to strictly cap the indexed text at 8,192 characters:</p>
 
@@ -84,17 +84,19 @@ db.insert(content: fullText, searchIndex: indexableText)</code></pre>
     INSERT INTO clips_fts(rowid, content, ai_title)
     VALUES (
         new.rowid, 
-        SUBSTR(new.content, 1, 8192), -- The 8KB Cap
+        SUBSTR(new.content, 1, 8192), -- The 8,192-Character Cap
         new.ai_title
     );
 END</code></pre>
+
+  <p><em>Note: If your content can be edited or deleted after insertion, you must also add matching <code>AFTER UPDATE</code> and <code>AFTER DELETE</code> triggers to keep the search index from accumulating orphaned rows or silently drifting from the primary table.</em></p>
 
   <h2>Why This Works Perfectly</h2>
   <p>By enforcing this limit at the database level:</p>
   <ul>
     <li><strong>Application code stays clean:</strong> Your backend still just writes <code>INSERT INTO clips (content) VALUES ('15MB_STRING')</code>. It doesn't need to know about the search index limits.</li>
     <li><strong>Zero data loss:</strong> The full 15MB string is safely stored in the primary <code>clips</code> table. Only the <em>searchable index</em> is truncated.</li>
-    <li><strong>Guaranteed performance:</strong> The FTS5 tokenizer is never fed more than 8KB of text per row, guaranteeing predictable, microsecond execution times regardless of what the user does.</li>
+    <li><strong>Guaranteed performance:</strong> The FTS5 tokenizer is never fed more than 8,192 characters per row, ensuring predictable, single-digit millisecond execution times regardless of what the user copies.</li>
   </ul>
 
   <p>If you are building an offline-first application that handles unpredictable user inputs, capping your FTS5 indexes via database triggers is one of the most effective defensive engineering practices you can adopt.</p>
