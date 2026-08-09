@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Regex Pattern Matching — L2Cache</title>
+  <meta name="description" content="Format, validate, and prettify JSON natively and offline on macOS. Keep your data private and clean up minified payloads directly from your clipboard." />
+  <meta name="keywords" content="json formatter mac, format json mac, offline json formatter, json formatter native mac app, json prettifier mac, dev tools mac" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/json-formatter-mac.html" />
+  <link rel="icon" type="image/png" href="icon.png" />
+  <link rel="apple-touch-icon" href="icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .article-wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 140px 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-weight: 900;
+      font-size: clamp(34px, 6vw, 54px);
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      margin-bottom: 24px;
+      color: var(--text);
+    }
+    .lede {
+      font-size: 19px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 40px;
+    }
+    h2 {
+      font-family: var(--serif);
+      font-weight: 800;
+      font-size: clamp(24px, 4vw, 32px);
+      line-height: 1.2;
+      margin: 56px 0 20px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    h3 {
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 19px;
+      margin: 36px 0 12px;
+      color: var(--text);
+    }
+    p {
+      font-size: 17px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+    .faq-item {
+      margin-bottom: 32px;
+    }
+    .faq-q {
+      font-weight: 600;
+      font-size: 18px;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .faq-a {
+      font-size: 16px;
+      color: var(--text-muted);
+    }
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      background: rgba(13, 12, 26, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-cta {
+      background: var(--purple);
+      color: white !important;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 14px !important;
+      font-weight: 500;
+      transition: background 0.2s !important;
+    }
+
+    .nav-cta:hover {
+      background: var(--purple-dark) !important;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+    }
+
+    .footer-copy {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    @media (max-width: 700px) {
+      .ore-to-gold { flex-direction: column; }
+    }
+
+    .ore-to-gold > div {
+      flex: 1;
+      padding: 20px;
+    }
+
+    .ore-to-gold .raw {
+      background: #f0f0ec;
+      border-right: 1px dashed var(--border);
+    }
+    
+    @media (max-width: 700px) {
+      .ore-to-gold .raw { border-right: none; border-bottom: 1px dashed var(--border); }
+    }
+
+    .ore-to-gold .gold {
+      background: #0a0a0a;
+      position: relative;
+    }
+    
+    .ore-to-gold .code-content {
+      white-space: pre-wrap;
+      word-break: break-all;
+      color: #a5d6ff;
+    }
+
+    .ore-to-gold .gold .code-content {
+      color: #e0ffe8;
+    }
+
+    .ore-to-gold .col-header {
+      font-family: var(--sans);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-muted);
+    }
+    
+    .ore-to-gold .gold .col-header {
+      color: #00C896;
+    }
+
+    .ore-to-gold .gold span.val {
+      color: #00C896; /* syntax highlighting for strings */
+    }
+
+
+
+    .callout p {
+      margin-bottom: 0;
+    }
+
+    .callout .callout-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .limit-list {
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .limit-list li {
+      position: relative;
+      padding-left: 30px;
+    }
+
+    .limit-list li::before {
+      content: '✕';
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--pink);
+      font-size: 14px;
+    }
+
+    /* ── CTA card ── */
+    .cta-card {
+      background: linear-gradient(160deg, var(--bg2), var(--bg3));
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 36px;
+      margin: 56px 0 24px;
+      text-align: center;
+    }
+
+    .cta-card h2 {
+      margin-top: 0;
+    }
+
+    .cta-card p {
+      color: var(--text-muted);
+      opacity: 1;
+      max-width: 460px;
+      margin: 0 auto 28px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--purple);
+      color: white;
+      padding: 14px 28px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--purple-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 32px rgba(127, 119, 221, 0.35);
+    }
+
+    .cta-note {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 16px;
+    }
+
+    /* ── FAQ ── */
+    .faq h3 {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+    }
+
+    .footer-copy {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    @media (max-width: 700px) {
+      nav {
+        padding: 16px 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .nav-mobile-cta {
+        display: inline-flex;
+        background: var(--purple);
+        color: white;
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+      }
+
+      .article-wrap {
+        padding: 110px 20px 60px;
+      }
+
+      footer {
+        padding: 32px 20px;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="icon.png" width="34" height="34" alt="L2Cache" style="border-radius:8px" />
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html#who">Who it's for</a></li>
+      <li><a href="index.html#features">Features</a></li>
+      <li><a href="intelligence.html">Intelligence</a></li>
+      <li><a href="index.html#pricing">Pricing</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta" target="_blank"
+          rel="noopener">Download L2Cache</a></li>
+    </ul>
+    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-mobile-cta" target="_blank"
+      rel="noopener">Download</a>
+  </nav>
+
+  <article class="article-wrap">
+    <div class="eyebrow">Security & Dev Tools</div>
+    <h1>Regex Pattern Matching for Mac Clipboard</h1>
+    <p class="lede">Why settle for basic text search? L2Cache lets you filter your clipboard history using powerful Regular Expressions (Regex) directly from your menu bar.</p>
+    <img src="screenshots/regex-pattern-matcher.gif" alt="Regex Clipboard Mac" style="width:100%; max-width:800px; display:block; margin: 40px auto; border-radius:12px; border:1px solid var(--border); box-shadow:0 10px 30px rgba(0,0,0,0.3);"/>
+
+    <p>As a developer, you often copy hundreds of snippets a day — log lines, UUIDs, IP addresses, JSON blobs, and API tokens. When you need to find a specific clip from hours ago, typing a simple keyword isn't always enough.</p>
+    
+    <p>What if you need to find all the IP addresses you copied today? Or every AWS Access Key? With L2Cache, you can use standard Regex syntax to instantly filter your massive clipboard history.</p>
+
+    <h2>The Power of "History Grep"</h2>
+    <p>L2Cache brings the power of terminal <code>grep</code> to your Mac's clipboard. By typing a Regex pattern into the search bar, L2Cache natively evaluates your local SQLite clipboard store and highlights the exact matches in milliseconds.</p>
+
+    <h2>Key benefits:</h2>
+    <ul style="margin-left: 20px; margin-bottom: 32px;">
+      <li style="margin-bottom: 8px;"><strong>Standard Syntax:</strong> Supports standard PCRE/Swift Regex syntax. Just type your pattern and see the results.</li>
+      <li style="margin-bottom: 8px;"><strong>Instant Filtering:</strong> The native SQLite FTS5 backend ensures that even if you have 10,000 clips, regex filtering is lightning fast.</li>
+      <li style="margin-bottom: 8px;"><strong>Complex Queries:</strong> Combine full-text search with regex patterns to narrow down exactly what you're looking for.</li>
+    </ul>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <div class="faq-q">Is the regex search case-sensitive?</div>
+      <div class="faq-a">By default, regex searches in L2Cache are case-insensitive to help you find data faster, but you can enforce case sensitivity using standard regex flags.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Do I need an active internet connection to use Regex?</div>
+      <div class="faq-a">No. All pattern matching is evaluated entirely locally on your Mac using native macOS frameworks. Your clipboard data never leaves your machine.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I extract specific capture groups?</div>
+      <div class="faq-a">L2Cache uses the regex pattern to filter the <i>clips</i> that match. It currently returns the entire clip that contains the match, highlighting the matched text.</div>
+    </div>
+
+  </article>
+  
+  <!-- FOOTER -->
+  <footer>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="privacy.html">Privacy Policy</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="clipboard-history-mac.html">Clipboard History on Mac</a></li>
+    </ul>
+    <p class="footer-copy">© 2026 Amvotech</p>
+  </footer>
+
+</body>
+
+</html>
