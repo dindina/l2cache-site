@@ -65,7 +65,7 @@
 
   <p>In the pre-async/await era, handling SQLite concurrency usually meant juggling complex `DispatchQueue` callbacks and hoping you didn't accidentally capture the main thread. Today, Swift provides a native construct to guarantee thread safety: <strong>Actors</strong>.</p>
 
-  <p>By declaring our entire <code>ClipStore</code> class as a Global Actor, we guarantee at compile-time that no database reads or writes can ever block the main thread.</p>
+  <p>By declaring our entire <code>ClipStore</code> class as a Global Actor, we ensure that calls from the Main Actor are suspended safely rather than blocking synchronously. This runs heavy SQLite work entirely off the main thread.</p>
 
   <pre><code>@globalActor
 public actor ClipStoreActor {
@@ -80,8 +80,8 @@ class ClipStore {
         self.dbQueue = try DatabaseQueue(path: databaseURL.path)
     }
     
-    func save(clip: ClipItem) throws {
-        try dbQueue.write { db in
+    func save(clip: ClipItem) async throws {
+        try await dbQueue.write { db in
             try clip.insert(db)
         }
     }
@@ -113,7 +113,7 @@ class ClipStore {
 }</code></pre>
 
   <h2>The Result: A Zero-Jank Experience</h2>
-  <p>By combining Swift's <code>@globalActor</code> with GRDB's underlying connection pool and ValueObservations, L2Cache achieves a state where:</p>
+  <p>By combining Swift's <code>@globalActor</code> with GRDB's serialized database queue and ValueObservations, L2Cache achieves a state where:</p>
   <ul>
     <li>The background polling loop runs flawlessly on a background thread.</li>
     <li>Heavy FTS5 indexing operations are completely isolated from the UI.</li>
