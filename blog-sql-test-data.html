@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stop Writing Mock Data by Hand: Generate JSON from SQL using AI</title>
+  <meta name="description" content="Learn how to instantly generate realistic mock JSON data from SQL CREATE TABLE statements directly on your Mac clipboard using AI.">
+  <link rel="icon" type="image/png" href="icon.png"/>
+  <link rel="apple-touch-icon" href="icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #7F77DD; --bg: #0D0C1A; --bg2: #131126; --bg3: #1A1830;
+      --border: rgba(127,119,221,0.18); --text: #F0EFF8;
+      --text-muted: rgba(240,239,248,0.5); --text-dim: rgba(240,239,248,0.28);
+      --mono: 'DM Mono', monospace; --serif: 'Fraunces', serif; --sans: 'DM Sans', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .container { max-width: 720px; margin: 0 auto; padding: 80px 24px; min-height: 80vh; }
+    .label { font-family: var(--mono); font-size: 12px; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: inline-block; }
+    h1 { font-family: var(--serif); font-size: 40px; font-weight: 700; line-height: 1.2; margin-bottom: 32px; color: var(--text); }
+    h2 { font-family: var(--serif); font-size: 28px; font-weight: 700; margin-top: 48px; margin-bottom: 16px; color: var(--text); }
+    p { font-size: 16px; color: rgba(240,239,248,0.7); margin-bottom: 24px; }
+    ol { margin-bottom: 24px; padding-left: 24px; color: rgba(240,239,248,0.7); }
+    li { margin-bottom: 8px; }
+    code { font-family: var(--mono); font-size: 14px; background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; color: #a197fd; }
+    strong { color: var(--text); font-weight: 600; }
+    .blog-image { width: 100%; border-radius: 12px; border: 1px solid var(--border); margin: 32px 0; display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .cta-box { background: rgba(127,119,221,0.08); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
+    .cta-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+    .cta-btn { display: inline-block; background: var(--purple); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
+    .cta-btn:hover { background: #5C52C8; }
+    footer { padding: 48px 24px; text-align: center; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-dim); }
+    footer a { color: var(--text-dim); text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: var(--text-muted); }
+  </style>
+  <link rel="stylesheet" href="theme.css">
+  <link rel="canonical" href="https://l2cache.amvo.store/en/sql-test-data-generator.html">
+  <meta property="og:title" content="Stop Writing Mock Data by Hand">
+  <meta property="og:description" content="Learn how to instantly generate realistic mock JSON data from SQL CREATE TABLE statements directly on your Mac clipboard using AI.">
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="icon.png" width="28" height="28" alt="L2Cache" style="border-radius:7px"/>
+    L2Cache
+  </a>
+</nav>
+
+<div class="container">
+  <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
+  <h1>Stop Writing Mock Data by Hand: Generate JSON from SQL using AI</h1>
+
+  <img src="screenshots/l2cache-sql-smart.gif" alt="SQL Mock Data Generator" class="blog-image" onerror="this.src='icon.png'">
+
+  <p>Setting up a testing environment is the most tedious part of building any new feature.</p>
+  
+  <p>You write a beautiful, perfectly normalized <code>CREATE TABLE</code> SQL statement for your new "User Profile" feature. Then, you realize you need to test the frontend UI. Now you have to sit there and manually type out a massive JSON array with fake names, fake emails, and fake timestamps just to see if your React component renders correctly.</p>
+
+  <p>The standard workflow usually involves:</p>
+  <ol>
+    <li>Copying the SQL schema.</li>
+    <li>Opening a browser.</li>
+    <li>Loading up ChatGPT or Claude.</li>
+    <li>Writing a prompt like, <em>"Generate 5 rows of mock JSON data for this schema."</em></li>
+    <li>Copying the result back to your IDE.</li>
+  </ol>
+
+  <p>It's a massive context switch that derails your focus.</p>
+
+  <h2>The AI-Powered Clipboard</h2>
+  <p>What if your clipboard could just do the translation for you?</p>
+
+  <p>With <strong>L2Cache</strong>, I built a clipboard manager that acts like a local, scriptable AI agent. It allows you to run "Custom Smart Actions" directly on whatever text is currently sitting in your clipboard.</p>
+
+  <p>Here is the new workflow:</p>
+  <ol>
+    <li>Highlight your SQL schema in your IDE and hit <code>Cmd + C</code>.</li>
+    <li>Hit <code>Option + V</code> to bring up the Smart Paste menu.</li>
+    <li>Select "Generate Mock JSON".</li>
+    <li>Paste the fully populated JSON array directly into your code.</li>
+  </ol>
+
+  <p>Behind the scenes, L2Cache takes the SQL schema you copied, wraps it in a predefined prompt, sends it to an LLM (either a local model via Ollama or a cloud model), and streams the resulting JSON back into your clipboard buffer.</p>
+
+  <p>No browser. No context switching. Just instant mock data formatted exactly how you need it.</p>
+
+  <p>Because L2Cache allows you to write your own Custom Actions using Python, Ruby, or Bash, you can tweak the generation prompt to output CSVs, XML, or even Swift <code>structs</code> based on that same SQL block.</p>
+
+  <div class="cta-box">
+    <div class="cta-title">Try L2Cache for Mac</div>
+    <p>A completely native clipboard manager built specifically for developers.</p>
+    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="cta-btn">Download Free Early Access</a>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">Home</a>
+  <a href="blog.html">Blog</a>
+  <a href="support.html">Support</a>
+  <a href="blog.html">Blog</a>
+  <a href="privacy.html">Privacy Policy</a>
+  <br/><br/>
+  © 2026 Amvotech
+</footer>
+</body>
+</html>

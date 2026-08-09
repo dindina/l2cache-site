@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Safe SQLite Concurrency in macOS using Swift Actors and GRDB</title>
+  <meta name="description" content="Learn how to build a buttery smooth macOS app by isolating heavy SQLite FTS5 operations off the main thread using Swift Actors and GRDB.">
+  <link rel="icon" type="image/png" href="icon.png"/>
+  <link rel="apple-touch-icon" href="icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #7F77DD; --bg: #0D0C1A; --bg2: #131126; --bg3: #1A1830;
+      --border: rgba(127,119,221,0.18); --text: #F0EFF8;
+      --text-muted: rgba(240,239,248,0.5); --text-dim: rgba(240,239,248,0.28);
+      --mono: 'DM Mono', monospace; --serif: 'Fraunces', serif; --sans: 'DM Sans', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .container { max-width: 720px; margin: 0 auto; padding: 80px 24px; min-height: 80vh; }
+    .label { font-family: var(--mono); font-size: 12px; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: inline-block; }
+    h1 { font-family: var(--serif); font-size: 40px; font-weight: 700; line-height: 1.2; margin-bottom: 32px; color: var(--text); }
+    h2 { font-family: var(--serif); font-size: 28px; font-weight: 700; margin-top: 48px; margin-bottom: 16px; color: var(--text); }
+    p { font-size: 16px; color: rgba(240,239,248,0.7); margin-bottom: 24px; }
+    pre { background: rgba(255,255,255,0.05); padding: 16px; border-radius: 8px; overflow-x: auto; margin-bottom: 24px; border: 1px solid var(--border); }
+    code { font-family: var(--mono); font-size: 14px; color: #a197fd; }
+    pre code { color: var(--text); }
+    strong { color: var(--text); font-weight: 600; }
+    .cta-box { background: rgba(127,119,221,0.08); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
+    .cta-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+    .cta-btn { display: inline-block; background: var(--purple); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
+    .cta-btn:hover { background: #5C52C8; }
+    footer { padding: 48px 24px; text-align: center; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-dim); }
+    footer a { color: var(--text-dim); text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: var(--text-muted); }
+  </style>
+  <link rel="stylesheet" href="theme.css">
+  <link rel="canonical" href="https://l2cache.amvo.store/en/blog-swift-sqlite-concurrency.html">
+  <meta property="og:title" content="Safe SQLite Concurrency in macOS using Swift Actors">
+  <meta property="og:description" content="Learn how to build a buttery smooth macOS app by isolating heavy SQLite operations off the main thread using Swift Actors and GRDB.">
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="icon.png" width="28" height="28" alt="L2Cache" style="border-radius:7px"/>
+    L2Cache
+  </a>
+</nav>
+
+<div class="container">
+  <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
+  <h1>Safe SQLite Concurrency in macOS using Swift Actors and GRDB</h1>
+
+  <p>Building a native macOS utility app comes with a strict, unspoken rule: <strong>Never drop a frame.</strong> Users expect utility apps to feel like an extension of the operating system. If your app stutters while they are typing, they will uninstall it immediately.</p>
+  
+  <p>This creates a massive architectural challenge for data-intensive applications. In <strong>L2Cache</strong>, our developer clipboard manager, the app runs a background loop that polls the <code>NSPasteboard</code> every 0.5 seconds. If a new clipboard item is found, the app needs to process it, save it to a local SQLite database, and update an FTS5 (Full-Text Search) index.</p>
+
+  <p>If any of those database operations accidentally touch the main UI thread, the entire macOS interface will micro-stutter.</p>
+
+  <h2>The Magic of GRDB and Swift Actors</h2>
+  <p>To solve this, we rely on <a href="https://github.com/groue/GRDB.swift" style="color:var(--purple)">GRDB.swift</a>, an incredibly robust SQLite toolkit for Swift, paired with modern Swift Concurrency (specifically, <code>Actor</code> isolation).</p>
+
+  <p>In the pre-async/await era, handling SQLite concurrency usually meant juggling complex `DispatchQueue` callbacks and hoping you didn't accidentally capture the main thread. Today, Swift provides a native construct to guarantee thread safety: <strong>Actors</strong>.</p>
+
+  <p>By declaring our entire <code>ClipStore</code> class as a Global Actor, we guarantee at compile-time that no database reads or writes can ever block the main thread.</p>
+
+  <pre><code>@globalActor
+public actor ClipStoreActor {
+    public static let shared = ClipStoreActor()
+}
+
+@ClipStoreActor
+class ClipStore {
+    private let dbQueue: DatabaseQueue
+    
+    init(databaseURL: URL) throws {
+        self.dbQueue = try DatabaseQueue(path: databaseURL.path)
+    }
+    
+    func save(clip: ClipItem) throws {
+        try dbQueue.write { db in
+            try clip.insert(db)
+        }
+    }
+}</code></pre>
+
+  <h2>Seamless UI Updates with Asynchronous Streams</h2>
+  <p>Writing to the database in the background is only half the battle. When a new clip is saved, the UI (which <em>must</em> run on the Main Actor) needs to be updated instantly.</p>
+
+  <p>GRDB makes this incredibly easy using <code>ValueObservation</code>. We can observe the database for changes and yield those changes back to the UI using an <code>AsyncStream</code>, crossing the actor boundary safely.</p>
+
+  <pre><code>func observeAll() -> AsyncStream&lt;[ClipItem]&gt; {
+    AsyncStream { continuation in
+        let observation = ValueObservation.tracking { db in
+            try ClipItem.fetchAll(db, sql: "SELECT * FROM clips ORDER BY created_at DESC")
+        }
+        
+        let observer = observation.start(in: dbQueue,
+            onError: { error in
+                print("Observation error: \(error)")
+            },
+            onChange: { clips in
+                continuation.yield(clips)
+            })
+            
+        continuation.onTermination = { @Sendable _ in
+            observer.cancel()
+        }
+    }
+}</code></pre>
+
+  <h2>The Result: A Zero-Jank Experience</h2>
+  <p>By combining Swift's <code>@globalActor</code> with GRDB's underlying connection pool and ValueObservations, L2Cache achieves a state where:</p>
+  <ul>
+    <li>The background polling loop runs flawlessly on a background thread.</li>
+    <li>Heavy FTS5 indexing operations are completely isolated from the UI.</li>
+    <li>The SwiftUI views receive real-time updates seamlessly without ever polling or blocking.</li>
+  </ul>
+
+  <p>If you are building a modern, data-intensive macOS or iOS app, leaning fully into Swift Concurrency and GRDB is the best architectural decision you can make.</p>
+
+  <div class="cta-box">
+    <div class="cta-title">Try a truly native macOS experience</div>
+    <p>L2Cache is a completely native, privacy-first clipboard manager built specifically for developers.</p>
+    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="cta-btn">Download Free Early Access</a>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">Home</a>
+  <a href="blog.html">Blog</a>
+  <a href="support.html">Support</a>
+  <a href="privacy.html">Privacy Policy</a>
+  <br/><br/>
+  © 2026 Amvotech
+</footer>
+</body>
+</html>
