@@ -80,6 +80,305 @@
       font-size: 16px;
       color: var(--text-muted);
     }
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      background: rgba(13, 12, 26, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-cta {
+      background: var(--purple);
+      color: white !important;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 14px !important;
+      font-weight: 500;
+      transition: background 0.2s !important;
+    }
+
+    .nav-cta:hover {
+      background: var(--purple-dark) !important;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+    }
+
+    .footer-copy {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    @media (max-width: 700px) {
+      .ore-to-gold { flex-direction: column; }
+    }
+
+    .ore-to-gold > div {
+      flex: 1;
+      padding: 20px;
+    }
+
+    .ore-to-gold .raw {
+      background: #f0f0ec;
+      border-right: 1px dashed var(--border);
+    }
+    
+    @media (max-width: 700px) {
+      .ore-to-gold .raw { border-right: none; border-bottom: 1px dashed var(--border); }
+    }
+
+    .ore-to-gold .gold {
+      background: #0a0a0a;
+      position: relative;
+    }
+    
+    .ore-to-gold .code-content {
+      white-space: pre-wrap;
+      word-break: break-all;
+      color: #a5d6ff;
+    }
+
+    .ore-to-gold .gold .code-content {
+      color: #e0ffe8;
+    }
+
+    .ore-to-gold .col-header {
+      font-family: var(--sans);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-muted);
+    }
+    
+    .ore-to-gold .gold .col-header {
+      color: #00C896;
+    }
+
+    .ore-to-gold .gold span.val {
+      color: #00C896; /* syntax highlighting for strings */
+    }
+
+
+
+    .callout p {
+      margin-bottom: 0;
+    }
+
+    .callout .callout-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .limit-list {
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .limit-list li {
+      position: relative;
+      padding-left: 30px;
+    }
+
+    .limit-list li::before {
+      content: '✕';
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--pink);
+      font-size: 14px;
+    }
+
+    /* ── CTA card ── */
+    .cta-card {
+      background: linear-gradient(160deg, var(--bg2), var(--bg3));
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 36px;
+      margin: 56px 0 24px;
+      text-align: center;
+    }
+
+    .cta-card h2 {
+      margin-top: 0;
+    }
+
+    .cta-card p {
+      color: var(--text-muted);
+      opacity: 1;
+      max-width: 460px;
+      margin: 0 auto 28px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--purple);
+      color: white;
+      padding: 14px 28px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--purple-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 32px rgba(127, 119, 221, 0.35);
+    }
+
+    .cta-note {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 16px;
+    }
+
+    /* ── FAQ ── */
+    .faq h3 {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+    }
+
+    .footer-copy {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    @media (max-width: 700px) {
+      nav {
+        padding: 16px 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .nav-mobile-cta {
+        display: inline-flex;
+        background: var(--purple);
+        color: white;
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+      }
+
+      .article-wrap {
+        padding: 110px 20px 60px;
+      }
+
+      footer {
+        padding: 32px 20px;
+      }
+    }
+
   </style>
 </head>
 
@@ -88,22 +387,28 @@
   <!-- NAV -->
   <nav>
     <a href="index.html" class="nav-logo">
-      <img src="icon.png" width="34" height="34" alt="L2Cache" style="border-radius:8px"/>
+      <img src="icon.png" width="34" height="34" alt="L2Cache" style="border-radius:8px" />
       L2Cache
     </a>
     <ul class="nav-links">
       <li><a href="index.html#who">Who it's for</a></li>
       <li><a href="index.html#features">Features</a></li>
       <li><a href="intelligence.html">Intelligence</a></li>
+      <li><a href="index.html#pricing">Pricing</a></li>
       <li><a href="support.html">Support</a></li>
-      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta" target="_blank" rel="noopener">Download</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta" target="_blank"
+          rel="noopener">Download L2Cache</a></li>
     </ul>
+    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-mobile-cta" target="_blank"
+      rel="noopener">Download</a>
   </nav>
 
   <article class="article-wrap">
     <div class="eyebrow">Security & Dev Tools</div>
     <h1>Offline JWT Decoder App for Mac</h1>
     <p class="lede">Decoding JSON Web Tokens shouldn't mean uploading private user payloads, signatures, or keys to third-party web sites. L2Cache decodes JWTs natively and privately on your Mac.</p>
+    <img src="screenshots/l2cache-jwt.gif" alt="JWT Decoder Mac" style="width:100%; max-width:800px; display:block; margin: 40px auto; border-radius:12px; border:1px solid var(--border); box-shadow:0 10px 30px rgba(0,0,0,0.3);"/>
+
 
     <p>JSON Web Tokens (JWT) are the backbone of modern web authentication. As developers, we deal with them daily — copying them from database rows, request headers, or config files to check expiration times, scopes, or claims.</p>
     
