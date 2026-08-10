@@ -101,11 +101,11 @@
             <div class="snippet-container" style="margin-bottom:0;"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code># Decode once
 echo "$JWT" | jq -R -s 'gsub("\n"; "") | split(".") | {header: (.[0] | @base64d | fromjson), payload: (.[1] | @base64d | fromjson), signature: .[2]}'
 
-# Or add an alias to your ~/.zshrc
-alias decodejwt="jq -R -s 'gsub(\"\\n\"; \"\") | split(\".\") | {header: (.[0] | @base64d | fromjson), payload: (.[1] | @base64d | fromjson), signature: .[2]}'"
+# Or add a function to your ~/.zshrc
+decodejwt() { echo "$1" | jq -R -s 'gsub(\"\\n\"; \"\") | split(\".\") | {header: (.[0] | @base64d | fromjson), payload: (.[1] | @base64d | fromjson), signature: .[2]}'; }
 
-# Then use it like this:
-echo "$JWT" | decodejwt</code></pre></div>
+# Then pass the token as an argument:
+decodejwt "YOUR_JWT_STRING"</code></pre></div>
           </td>
         </tr>
         <!-- Node.js -->
