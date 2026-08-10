@@ -420,6 +420,17 @@
     <h2>The Security Risk of Online JWT Decoders</h2>
     <p>Every time you paste a token into a web page, you are relying on that server's security. If the token is a production user session token, you have just transferred a live, valid session token to a third party. If they store or log that data, your application is compromised.</p>
 
+    <p><strong>And recently, this exact habit blew up in our faces.</strong></p>
+    <p>In late 2025, security researchers at watchTowr investigated popular code-formatting sites like <code>JSONformatter.org</code> and <code>CodeBeautify.org</code>. What they found was terrifying: they were able to scrape over 80,000 "saved" developer snippets that were left publicly searchable on these sites.</p>
+    
+    <p>The leaked data included:</p>
+    <ul style="margin-left: 20px; margin-bottom: 24px;">
+      <li>Administrative JWTs and API keys</li>
+      <li>Database and FTP credentials</li>
+      <li>CI/CD pipeline secrets</li>
+      <li>PII (like addresses and phone numbers)</li>
+    </ul>
+
     <h2>How L2Cache Solves It</h2>
     <p>L2Cache detects JWTs inside your clipboard history automatically. When you copy a JWT, it instantly parses the header and payload claims locally, presenting it directly in the app. No network requests are made, and your token never leaves your machine.</p>
 
