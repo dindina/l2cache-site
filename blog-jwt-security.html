@@ -78,13 +78,25 @@
   <h2>Secure Alternatives for Decoding JWTs</h2>
   <p>If pasting into random websites is off the table, what are your options?</p>
   
-  <p><strong>1. Write a local script:</strong> You can write a quick Bash, Python, or Node.js one-liner to Base64-decode the payload. It’s secure, but it’s tedious to open a terminal, copy the payload section, and pipe it through a JSON formatter every time you need to check an expiration date.</p>
+  <p><strong>1. The Bash & jq One-Liner:</strong></p>
+  <p>If you have <a href="https://jqlang.github.io/jq/" style="color: var(--purple);">jq</a> installed, you can easily parse the JWT payload directly in your terminal. Since JWTs are just three Base64-encoded strings separated by dots, you can split it and decode the second part:</p>
+<pre style="background: rgba(255,255,255,0.08); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: var(--mono); font-size: 14px; margin-bottom: 24px;"><code>echo "$JWT" | cut -d '.' -f 2 | base64 --decode | jq</code></pre>
   
-  <p><strong>2. Use a CLI tool:</strong> You can install dedicated CLI tools or alias complex <code>jq</code> commands. Again, this requires context switching away from your IDE or API client just to read a token.</p>
+  <p><strong>2. A Quick Node.js Script:</strong></p>
+  <p>If you prefer JavaScript, you can write a tiny local script (<code>decode.js</code>) that uses built-in buffers:</p>
+<pre style="background: rgba(255,255,255,0.08); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: var(--mono); font-size: 14px; margin-bottom: 24px;"><code>const token = process.argv[2];
+const payload = Buffer.from(token.split('.')[1], 'base64').toString();
+console.log(JSON.stringify(JSON.parse(payload), null, 2));</code></pre>
   
-  <p><strong>3. Self-host a decoder:</strong> You could spin up a local, open-source JWT decoder on <code>localhost:3000</code>. It’s highly secure, but maintaining a separate local web server just for debugging tokens is massive overkill.</p>
+  <p><strong>3. Python Decoder:</strong></p>
+  <p>Python makes this easy as well, though you have to handle Base64 padding manually:</p>
+<pre style="background: rgba(255,255,255,0.08); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: var(--mono); font-size: 14px; margin-bottom: 24px;"><code>import sys, base64, json
+token = sys.argv[1].split('.')[1]
+# Fix padding
+token += '=' * (-len(token) % 4)
+print(json.dumps(json.loads(base64.b64decode(token)), indent=2))</code></pre>
   
-  <p>All of these solutions prioritize security, but they sacrifice speed and convenience.</p>
+  <p>All of these solutions are 100% secure. But let's be honest: context-switching to a terminal, writing a command, and pasting the token every single time you need to check an expiration date is tedious.</p>
 
   <h2>The Best of Both Worlds: An Offline Native Tool</h2>
   <p>We need tools that are fast enough to beat the convenience of a web app, but secure enough to handle production data without the friction of CLI scripts.</p>
