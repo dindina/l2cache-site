@@ -35,6 +35,10 @@
     footer { padding: 48px 24px; text-align: center; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-dim); }
     footer a { color: var(--text-dim); text-decoration: none; margin: 0 12px; }
     footer a:hover { color: var(--text-muted); }
+    .snippet-container { position: relative; margin-bottom: 24px; }
+    .snippet-container pre { background: rgba(255,255,255,0.08); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: var(--mono); font-size: 14px; margin-bottom: 0; color: #e0ffe8; }
+    .copy-btn { position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); font-family: var(--sans); font-size: 12px; padding: 4px 8px; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+    .copy-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
   </style>
   <link rel="stylesheet" href="theme.css">
   <link rel="canonical" href="https://l2cache.amvo.store/en/jwt-decoder-mac.html">
@@ -80,30 +84,30 @@
   
   <p><strong>1. The Bash & jq One-Liner:</strong></p>
   <p>If you have <a href="https://jqlang.github.io/jq/" style="color: var(--purple);">jq</a> installed, you can parse the full JWT (header, payload, and signature) directly in your terminal, handling newlines automatically:</p>
-<pre style="background: rgba(255,255,255,0.08); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: var(--mono); font-size: 14px; margin-bottom: 24px;"><code>echo "$JWT" | jq -R -s 'gsub("\n"; "") | split(".") | {header: (.[0] | @base64d | fromjson), payload: (.[1] | @base64d | fromjson), signature: .[2]}'</code></pre>
+<div class="snippet-container"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>echo "$JWT" | jq -R -s 'gsub("\n"; "") | split(".") | {header: (.[0] | @base64d | fromjson), payload: (.[1] | @base64d | fromjson), signature: .[2]}'</code></pre></div>
   
   <p><strong>2. A Quick Node.js Script:</strong></p>
   <p>If you prefer JavaScript, you can write a tiny local script (<code>decode.js</code>) that outputs the fully structured token:</p>
-<pre style="background: rgba(255,255,255,0.08); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: var(--mono); font-size: 14px; margin-bottom: 24px;"><code>const token = process.argv[2];
+<div class="snippet-container"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>const token = process.argv[2];
 const [header, payload, signature] = token.split('.');
 console.log(JSON.stringify({
   header: JSON.parse(Buffer.from(header, 'base64').toString()),
   payload: JSON.parse(Buffer.from(payload, 'base64').toString()),
   signature
-}, null, 2));</code></pre>
+}, null, 2));</code></pre></div>
   
   <p><strong>3. Python Decoder:</strong></p>
   <p>Python makes this easy as well, provided you handle the missing Base64Url padding correctly:</p>
-<pre style="background: rgba(255,255,255,0.08); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: var(--mono); font-size: 14px; margin-bottom: 24px;"><code>import sys, base64, json
+<div class="snippet-container"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>import sys, base64, json
 def dec(s):
     return json.loads(base64.b64decode(s + '=' * (-len(s) % 4)))
 h, p, s = sys.argv[1].split('.')
-print(json.dumps({'header': dec(h), 'payload': dec(p), 'signature': s}, indent=2))</code></pre>
+print(json.dumps({'header': dec(h), 'payload': dec(p), 'signature': s}, indent=2))</code></pre></div>
 
   <p><strong>4. The "Zero-Install" Browser Method (Fully Offline):</strong></p>
   <p>Even though sites like <code>jwt.io</code> process tokens online, your browser can do it completely locally. Open your browser's Developer Tools (Press <code>F12</code> or <code>Cmd+Option+I</code>), go to the <strong>Console</strong> tab, paste this snippet, and hit Enter:</p>
-<pre style="background: rgba(255,255,255,0.08); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: var(--mono); font-size: 14px; margin-bottom: 24px;"><code>const decodeJWT = (t) => t.split('.').slice(0, 2).map(p => JSON.parse(atob(p.replace(/-/g, '+').replace(/_/g, '/'))));
-console.log(decodeJWT("YOUR_JWT_HERE"));</code></pre>
+<div class="snippet-container"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>const decodeJWT = (t) => t.split('.').slice(0, 2).map(p => JSON.parse(atob(p.replace(/-/g, '+').replace(/_/g, '/'))));
+console.log(decodeJWT("YOUR_JWT_HERE"));</code></pre></div>
   
   <p>All of these solutions are 100% secure. But let's be honest: context-switching to a terminal, writing a command, and pasting the token every single time you need to check an expiration date is tedious.</p>
 
@@ -139,5 +143,15 @@ console.log(decodeJWT("YOUR_JWT_HERE"));</code></pre>
   <br/><br/>
   © 2026 Amvotech
 </footer>
+
+<script>
+function copyCode(btn) {
+  const code = btn.nextElementSibling.innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.innerText = 'Copied!';
+    setTimeout(() => { btn.innerText = 'Copy'; }, 2000);
+  });
+}
+</script>
 </body>
 </html>
