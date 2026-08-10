@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Why I Stopped Pasting Production JWTs into Random Websites</title>
-  <meta name="description" content="Don't paste sensitive tokens into online decoders. Discover a native Mac clipboard manager with offline JWT decoding and JSON formatting.">
+  <title>Stop Leaking Secrets: How to Decode JWTs Locally on Mac</title>
+  <meta name="description" content="Don't paste sensitive tokens into online decoders. Discover how 80,000 credentials leaked from online formatters, and why you need a native offline Mac clipboard manager.">
   <link rel="icon" type="image/png" href="icon.png"/>
   <link rel="apple-touch-icon" href="icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -38,8 +38,8 @@
   </style>
   <link rel="stylesheet" href="theme.css">
   <link rel="canonical" href="https://l2cache.amvo.store/en/jwt-decoder-mac.html">
-  <meta property="og:title" content="Why I Stopped Pasting Production JWTs into Random Websites">
-  <meta property="og:description" content="Don't paste sensitive tokens into online decoders. Discover a native Mac clipboard manager with offline JWT decoding and JSON formatting.">
+  <meta property="og:title" content="Stop Leaking Secrets: How to Decode JWTs Locally on Mac">
+  <meta property="og:description" content="Don't paste sensitive tokens into online decoders. Discover how 80,000 credentials leaked from online formatters, and why you need a native offline Mac clipboard manager.">
 </head>
 <body>
 <nav>
@@ -51,7 +51,7 @@
 
 <div class="container">
   <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
-  <h1>Why I Stopped Pasting Production JWTs into Random Websites</h1>
+  <h1>Stop Leaking Secrets: How to Decode JWTs Locally on Mac</h1>
 
   <img src="screenshots/l2cache-jwt.gif" alt="Offline JWT Decoder" class="blog-image" onerror="this.src='icon.png'">
 
@@ -60,6 +60,20 @@
   <p>We all know we shouldn't do it. That token often contains sensitive user roles, PII (Personally Identifiable Information), or access privileges. Yet, we do it anyway because it's faster than writing a quick decoding script in the terminal.</p>
 
   <p>But pasting sensitive production data into random web tools is a massive security risk. You have no idea if that site is logging your tokens, saving your JSON payloads, or scraping your data.</p>
+
+  <p><strong>And recently, this exact habit blew up in our faces.</strong></p>
+
+  <p>In late 2025, security researchers at watchTowr investigated popular code-formatting sites like <code>JSONformatter.org</code> and <code>CodeBeautify.org</code>. What they found was terrifying: they were able to scrape over 80,000 "saved" developer snippets that were left publicly searchable on these sites.</p>
+
+  <p>The leaked data included:</p>
+  <ul style="margin-left: 20px; margin-bottom: 24px; color: rgba(240,239,248,0.7);">
+    <li>Administrative JWTs and API keys</li>
+    <li>Database and FTP credentials</li>
+    <li>CI/CD pipeline secrets</li>
+    <li>PII (like addresses and phone numbers)</li>
+  </ul>
+
+  <p>When you paste a JWT into a random third-party website, you are handing a bearer token to a server you do not control. Even if the site claims to be "client-side only," there is no guarantee the data isn't being indexed for a "Share this snippet" feature.</p>
 
   <h2>The Case for Offline Developer Tools</h2>
   <p>We need tools that are fast enough to beat the convenience of a web app, but secure enough to handle production data.</p>
@@ -71,7 +85,7 @@
   <p>The data never leaves your Mac.</p>
 
   <h2>Built-in JSON Formatting</h2>
-  <p>The same goes for massive, minified JSON payloads returned from a curl command. Instead of tabbing out to <code>jsonformatter.org</code>, you can use L2Cache's "Smart Actions" to format and syntax-highlight the JSON payload locally.</p>
+  <p>The same goes for massive, minified JSON payloads returned from a curl command. Instead of tabbing out to <code>jsonformatter.org</code> (and risking adding to the 80,000 leaked credentials), you can use L2Cache's "Smart Actions" to format and syntax-highlight the JSON payload locally.</p>
 
   <p>It's a subtle shift, but by moving these common formatting tasks out of the browser and into a secure, native macOS layer, you eliminate context switching <em>and</em> close a major security loophole in your daily workflow.</p>
 
