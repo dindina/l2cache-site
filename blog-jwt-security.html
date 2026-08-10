@@ -79,22 +79,26 @@
   <p>If pasting into random websites is off the table, what are your options?</p>
   
   <p><strong>1. The Bash & jq One-Liner:</strong></p>
-  <p>If you have <a href="https://jqlang.github.io/jq/" style="color: var(--purple);">jq</a> installed, you can easily parse the JWT payload directly in your terminal. Since JWTs are just three Base64-encoded strings separated by dots, you can split it and decode the second part:</p>
-<pre style="background: rgba(255,255,255,0.08); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: var(--mono); font-size: 14px; margin-bottom: 24px;"><code>echo "$JWT" | jq -R -s 'gsub("\n"; "") | split(".") | .[1] | @base64d | fromjson'</code></pre>
+  <p>If you have <a href="https://jqlang.github.io/jq/" style="color: var(--purple);">jq</a> installed, you can parse the full JWT (header, payload, and signature) directly in your terminal, handling newlines automatically:</p>
+<pre style="background: rgba(255,255,255,0.08); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: var(--mono); font-size: 14px; margin-bottom: 24px;"><code>echo "$JWT" | jq -R -s 'gsub("\n"; "") | split(".") | {header: (.[0] | @base64d | fromjson), payload: (.[1] | @base64d | fromjson), signature: .[2]}'</code></pre>
   
   <p><strong>2. A Quick Node.js Script:</strong></p>
-  <p>If you prefer JavaScript, you can write a tiny local script (<code>decode.js</code>) that uses built-in buffers:</p>
+  <p>If you prefer JavaScript, you can write a tiny local script (<code>decode.js</code>) that outputs the fully structured token:</p>
 <pre style="background: rgba(255,255,255,0.08); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: var(--mono); font-size: 14px; margin-bottom: 24px;"><code>const token = process.argv[2];
-const payload = Buffer.from(token.split('.')[1], 'base64').toString();
-console.log(JSON.stringify(JSON.parse(payload), null, 2));</code></pre>
+const [header, payload, signature] = token.split('.');
+console.log(JSON.stringify({
+  header: JSON.parse(Buffer.from(header, 'base64').toString()),
+  payload: JSON.parse(Buffer.from(payload, 'base64').toString()),
+  signature
+}, null, 2));</code></pre>
   
   <p><strong>3. Python Decoder:</strong></p>
-  <p>Python makes this easy as well, though you have to handle Base64 padding manually:</p>
+  <p>Python makes this easy as well, provided you handle the missing Base64Url padding correctly:</p>
 <pre style="background: rgba(255,255,255,0.08); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: var(--mono); font-size: 14px; margin-bottom: 24px;"><code>import sys, base64, json
-token = sys.argv[1].split('.')[1]
-# Fix padding
-token += '=' * (-len(token) % 4)
-print(json.dumps(json.loads(base64.b64decode(token)), indent=2))</code></pre>
+def dec(s):
+    return json.loads(base64.b64decode(s + '=' * (-len(s) % 4)))
+h, p, s = sys.argv[1].split('.')
+print(json.dumps({'header': dec(h), 'payload': dec(p), 'signature': s}, indent=2))</code></pre>
   
   <p>All of these solutions are 100% secure. But let's be honest: context-switching to a terminal, writing a command, and pasting the token every single time you need to check an expiration date is tedious.</p>
 
