@@ -408,38 +408,78 @@
 
   <article class="article-wrap">
     <div class="eyebrow">Security & Dev Tools</div>
-    <h1>Regex Pattern Matching for Mac Clipboard</h1>
-    <p class="lede">Why settle for basic text search? L2Cache lets you filter your clipboard history using powerful Regular Expressions (Regex) directly from your menu bar.</p>
+    <h1>Stop Pasting Logs Online: How to Extract Regex from Mac Clipboard</h1>
+    <p class="lede">Using online tools like <code>regex101.com</code> to parse clipboard logs is a massive security risk. Here are three ways to extract UUIDs, Emails, and API Keys locally on macOS.</p>
+    
+    <p>As a developer, you often copy huge chunks of log files or JSON payloads just to extract a few specific items—like a list of UUIDs, email addresses, or IP addresses. The natural instinct is to paste the massive log into an online Regex tester to quickly parse out what you need.</p>
+
+    <p><strong>But doing this with production logs is a critical security risk.</strong> You are unknowingly exposing internal system architecture, PII (Personally Identifiable Information), or even access tokens to third-party servers.</p>
+    
+    <p>Instead of risking a data leak, here are three foolproof ways to extract regex matches from your macOS clipboard entirely locally, directly from the terminal.</p>
+
+    <br>
+    <h2>Secure Offline Alternatives for Regex Extraction</h2>
+    
+    <table style="width: 100%; border-collapse: collapse; margin-top: 24px; margin-bottom: 48px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden;">
+      <thead>
+        <tr style="background: rgba(127,119,221,0.1); border-bottom: 1px solid var(--border);">
+          <th style="padding: 16px; text-align: left; font-family: var(--sans); font-size: 14px; width: 30%;">Method</th>
+          <th style="padding: 16px; text-align: left; font-family: var(--sans); font-size: 14px; width: 70%;">Code Snippet</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 20px; vertical-align: top;">
+            <strong>Bash (grep)</strong><br><br>
+            <span style="font-size: 14px; color: var(--text-muted);">The classic terminal approach. Uses <code>pbpaste</code> to read the clipboard, <code>grep -oE</code> to extract all matches (e.g., Email addresses), and <code>pbcopy</code> to write the results back.</span>
+          </td>
+          <td style="padding: 20px; vertical-align: top;">
+            <div class="snippet-container" style="margin-bottom:0;"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>pbpaste | grep -oE '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}' | pbcopy</code></pre></div>
+          </td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 20px; vertical-align: top;">
+            <strong>Ruby One-Liner</strong><br><br>
+            <span style="font-size: 14px; color: var(--text-muted);">Ruby is incredibly powerful for text processing. This one-liner extracts all UUIDs from the clipboard using Ruby's native regex engine.</span>
+          </td>
+          <td style="padding: 20px; vertical-align: top;">
+            <div class="snippet-container" style="margin-bottom:0;"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>pbpaste | ruby -ne 'puts $_.scan(/[0-9a-fA-F\-]{36}/)' | pbcopy</code></pre></div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 20px; vertical-align: top;">
+            <strong>Python Script</strong><br><br>
+            <span style="font-size: 14px; color: var(--text-muted);">If you need to handle multiline logic or case-insensitivity easily, a small Python script handles clipboard reading via <code>subprocess</code> natively. This script extracts AWS Access Keys.</span>
+          </td>
+          <td style="padding: 20px; vertical-align: top;">
+            <div class="snippet-container" style="margin-bottom:0;"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>import subprocess, re
+text = subprocess.check_output('pbpaste', text=True)
+matches = re.findall(r'(?i)AKIA[0-9A-Z]{16}', text)
+subprocess.run(['pbcopy'], input='
+'.join(matches), text=True)
+print(f"Extracted {len(matches)} keys.")</code></pre></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>The Best of Both Worlds: L2Cache Smart Actions</h2>
+    <p>Writing and remembering shell scripts for every log file is tedious. What if your clipboard manager had <code>grep</code> built-in?</p>
+
+    <p><strong>L2Cache</strong> is a native macOS clipboard manager that completely reimagines pattern matching. Instead of dropping into a terminal, L2Cache automatically parses your clipboard on the fly using native Swift Regex. </p>
+
     <img src="screenshots/regex-pattern-matcher.gif" alt="Regex Clipboard Mac" style="width:100%; max-width:800px; display:block; margin: 40px auto; border-radius:12px; border:1px solid var(--border); box-shadow:0 10px 30px rgba(0,0,0,0.3);"/>
 
-    <p>As a developer, you often copy hundreds of snippets a day — log lines, UUIDs, IP addresses, JSON blobs, and API tokens. When you need to find a specific clip from hours ago, typing a simple keyword isn't always enough.</p>
-    
-    <p>What if you need to find all the IP addresses you copied today? Or every AWS Access Key? With L2Cache, you can use standard Regex syntax to instantly filter your massive clipboard history.</p>
+    <p>With <strong>Smart Actions</strong>, L2Cache instantly recognizes structured data—like IPs, UUIDs, or URLs—within massive logs and presents them as clickable buttons. You don't have to write a single script. Need to extract a custom API token? Just type a regex pattern directly into L2Cache's search bar, and it filters your local SQLite history in milliseconds.</p>
 
-    <h2>The Power of "History Grep"</h2>
-    <p>L2Cache brings the power of terminal <code>grep</code> to your Mac's clipboard. By typing a Regex pattern into the search bar, L2Cache natively evaluates your local SQLite clipboard store and highlights the exact matches in milliseconds.</p>
+    <p>Most importantly: <strong>Everything happens 100% offline.</strong> L2Cache never sends your clipboard data to the cloud, ensuring your production logs remain completely secure on your Mac.</p>
 
-    <h2>Key benefits:</h2>
-    <ul style="margin-left: 20px; margin-bottom: 32px;">
-      <li style="margin-bottom: 8px;"><strong>Standard Syntax:</strong> Supports standard PCRE/Swift Regex syntax. Just type your pattern and see the results.</li>
-      <li style="margin-bottom: 8px;"><strong>Instant Filtering:</strong> The native SQLite FTS5 backend ensures that even if you have 10,000 clips, regex filtering is lightning fast.</li>
-      <li style="margin-bottom: 8px;"><strong>Complex Queries:</strong> Combine full-text search with regex patterns to narrow down exactly what you're looking for.</li>
-    </ul>
-
-    <h2>Frequently Asked Questions</h2>
-    <div class="faq-item">
-      <div class="faq-q">Is the regex search case-sensitive?</div>
-      <div class="faq-a">By default, regex searches in L2Cache are case-insensitive to help you find data faster, but you can enforce case sensitivity using standard regex flags.</div>
+    <div class="cta-card">
+      <h2>Stop writing shell scripts for logs.</h2>
+      <p>Download L2Cache today and get powerful, offline Regex extraction right from your menu bar.</p>
+      <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="btn-primary" target="_blank" rel="noopener">Download L2Cache on the App Store</a>
+      <div class="cta-note">$6.99 one-time purchase. No subscriptions.</div>
     </div>
-    <div class="faq-item">
-      <div class="faq-q">Do I need an active internet connection to use Regex?</div>
-      <div class="faq-a">No. All pattern matching is evaluated entirely locally on your Mac using native macOS frameworks. Your clipboard data never leaves your machine.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q">Can I extract specific capture groups?</div>
-      <div class="faq-a">L2Cache uses the regex pattern to filter the <i>clips</i> that match. It currently returns the entire clip that contains the match, highlighting the matched text.</div>
-    </div>
-
   </article>
   
   <!-- FOOTER -->
@@ -455,6 +495,15 @@
     <p class="footer-copy">© 2026 Amvotech</p>
   </footer>
 
+<script>
+function copyCode(btn) {
+  const code = btn.nextElementSibling.innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.innerText = 'Copied!';
+    setTimeout(() => { btn.innerText = 'Copy'; }, 2000);
+  });
+}
+</script>
 </body>
 
 </html>
