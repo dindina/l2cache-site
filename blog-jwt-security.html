@@ -80,7 +80,7 @@
   
   <p><strong>1. The Bash & jq One-Liner:</strong></p>
   <p>If you have <a href="https://jqlang.github.io/jq/" style="color: var(--purple);">jq</a> installed, you can easily parse the JWT payload directly in your terminal. Since JWTs are just three Base64-encoded strings separated by dots, you can split it and decode the second part:</p>
-<pre style="background: rgba(255,255,255,0.08); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: var(--mono); font-size: 14px; margin-bottom: 24px;"><code>echo "$JWT" | jq -R 'split(".") | .[1] | @base64d | fromjson'</code></pre>
+<pre style="background: rgba(255,255,255,0.08); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: var(--mono); font-size: 14px; margin-bottom: 24px;"><code>echo "$JWT" | jq -R -s 'gsub("\n"; "") | split(".") | .[1] | @base64d | fromjson'</code></pre>
   
   <p><strong>2. A Quick Node.js Script:</strong></p>
   <p>If you prefer JavaScript, you can write a tiny local script (<code>decode.js</code>) that uses built-in buffers:</p>
