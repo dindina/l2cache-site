@@ -99,6 +99,11 @@ def dec(s):
     return json.loads(base64.b64decode(s + '=' * (-len(s) % 4)))
 h, p, s = sys.argv[1].split('.')
 print(json.dumps({'header': dec(h), 'payload': dec(p), 'signature': s}, indent=2))</code></pre>
+
+  <p><strong>4. The "Zero-Install" Browser Method (Fully Offline):</strong></p>
+  <p>Even though sites like <code>jwt.io</code> process tokens online, your browser can do it completely locally. Open your browser's Developer Tools (Press <code>F12</code> or <code>Cmd+Option+I</code>), go to the <strong>Console</strong> tab, paste this snippet, and hit Enter:</p>
+<pre style="background: rgba(255,255,255,0.08); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: var(--mono); font-size: 14px; margin-bottom: 24px;"><code>const decodeJWT = (t) => t.split('.').slice(0, 2).map(p => JSON.parse(atob(p.replace(/-/g, '+').replace(/_/g, '/'))));
+console.log(decodeJWT("YOUR_JWT_HERE"));</code></pre>
   
   <p>All of these solutions are 100% secure. But let's be honest: context-switching to a terminal, writing a command, and pasting the token every single time you need to check an expiration date is tedious.</p>
 
