@@ -432,11 +432,17 @@
         <tr style="border-bottom: 1px solid var(--border);">
           <td style="padding: 20px; vertical-align: top;">
             <strong>Bash Native (=~)</strong>
-            <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px; margin-bottom: 0; line-height: 1.5;">No external tools needed. Bash's built-in <code>=~</code> operator matches a string against a regex pattern natively inside the shell.</p>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px; margin-bottom: 0; line-height: 1.5;">No external tools needed. Add this function to your <code>~/.zshrc</code> — it takes any text as <code>$1</code> and a regex pattern as <code>$2</code>, matching entirely inside the shell with no external tools.</p>
           </td>
           <td style="padding: 20px; vertical-align: top;">
-            <div class="snippet-container" style="margin-bottom:0;"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>email="test@example.com"
-[[ "$email" =~ ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.]+$ ]] && echo "Match" || echo "No Match"</code></pre></div>
+            <div class="snippet-container" style="margin-bottom:0;"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code># Add to ~/.zshrc
+matchregex() {
+  [[ "$1" =~ $2 ]] && echo "Match: $1" || echo "No Match: $1"
+}
+
+# Usage — pass text as $1 and pattern as $2:
+matchregex "test@example.com" "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.]+$"
+matchregex "123e4567-e89b-12d3-a456-426614174000" "^[0-9a-fA-F-]{36}$"</code></pre></div>
           </td>
         </tr>
         <!-- Bash grep -->
