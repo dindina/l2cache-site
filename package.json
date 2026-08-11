@@ -2,6 +2,7 @@
   "name": "l2cache-site",
   "version": "1.0.0",
   "scripts": {
-    "build": "python3 build.py"
+    "build": "python3 build.py",
+    "validate:seo": "python3 validate_seo.py"
   }
 }

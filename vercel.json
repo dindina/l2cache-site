@@ -10,16 +10,16 @@
         { "type": "host", "value": "www.amvo.store" }
       ],
       "destination": "/en/",
-      "permanent": false
+      "permanent": true
     },
     {
-      "source": "/:page(privacy|support|intelligence|changelog|clipboard-history-mac|mac-command-history|comparison|developer-clipboard|custom-actions|jwt-decoder-mac|json-formatter-mac|regex-clipboard-mac|screenshot-ocr-mac|sql-test-data-generator|sitemap)",
+      "source": "/:page(privacy|support|intelligence|changelog|clipboard-history-mac|mac-command-history|comparison|developer-clipboard|custom-actions|jwt-decoder-mac|json-formatter-mac|regex-clipboard-mac|screenshot-ocr-mac|sql-test-data-generator|sitemap|blog|blog-regex-clipboard|blog-sql-test-data|blog-jwt-security|blog-sqlite-fts5-hangs|blog-swift-sqlite-concurrency|l2cache-vs-maccy|l2cache-vs-clipy|l2cache-vs-paste)",
       "missing": [
         { "type": "host", "value": "amvo.store" },
         { "type": "host", "value": "www.amvo.store" }
       ],
       "destination": "/en/:page",
-      "permanent": false
+      "permanent": true
     }
   ],
   "rewrites": [

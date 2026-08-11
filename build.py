@@ -56,10 +56,15 @@ def get_language_switcher_html(current_lang):
     return switcher
 
 def fix_links(html_content, lang):
-    """ Prefix local links with /lang/ to maintain language context """
+    """Prefix local links with /lang/ and use Vercel's canonical clean URLs."""
     for file in HTML_FILES:
         # Avoid double replacing or replacing external links
-        html_content = re.sub(f'href="{file}(#[^"]*)?"', f'href="/{lang}/{file}\\1"', html_content)
+        clean_path = "" if file == "index.html" else file.removesuffix(".html")
+        html_content = re.sub(
+            f'href="{file}(#[^"]*)?"',
+            f'href="/{lang}/{clean_path}\\1"',
+            html_content,
+        )
     return html_content
 
 def build():
@@ -150,15 +155,17 @@ def build():
     with open(sitemap_path, "w", encoding="utf-8") as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
         f.write('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
-        for lang in LANGUAGES.keys():
-            for file in HTML_FILES:
-                if not os.path.exists(file):
-                    continue
-                # For cleanUrls, omit index.html
-                url_path = f"{base_url}/{lang}/" if file == "index.html" else f"{base_url}/{lang}/{file}"
-                f.write('  <url>\n')
-                f.write(f'    <loc>{url_path}</loc>\n')
-                f.write('  </url>\n')
+        # Translations are disabled, so submit only canonical English URLs.
+        # Add localized URLs only when they contain translated content, have
+        # self-referencing canonicals, and reciprocal hreflang annotations.
+        for file in HTML_FILES:
+            if not os.path.exists(file):
+                continue
+            clean_path = "" if file == "index.html" else file.removesuffix(".html")
+            url_path = f"{base_url}/en/{clean_path}"
+            f.write('  <url>\n')
+            f.write(f'    <loc>{url_path}</loc>\n')
+            f.write('  </url>\n')
         f.write('</urlset>\n')
         
 

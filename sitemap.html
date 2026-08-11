@@ -89,9 +89,23 @@
     @media(max-width: 600px) { .shortcuts-grid { grid-template-columns: 1fr; } nav { padding: 16px 24px; } }
   </style>
   <link rel="stylesheet" href="theme.css">
-  <link rel="canonical" href="https://l2cache.amvo.store/en/sitemap.html">
+  <link rel="canonical" href="https://l2cache.amvo.store/en/sitemap">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="L2Cache">
+  <meta property="og:url" content="https://l2cache.amvo.store/en/sitemap">
   <meta property="og:title" content="Sitemap — L2Cache">
   <meta property="og:description" content="Sitemap for L2Cache. View all pages on the site.">
+  <meta property="og:image" content="https://l2cache.amvo.store/icon.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="L2Cache app icon">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="https://l2cache.amvo.store/en/sitemap">
+  <meta name="twitter:title" content="Sitemap — L2Cache">
+  <meta name="twitter:description" content="Sitemap for L2Cache. View all pages on the site.">
+  <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
+  <meta name="twitter:image:alt" content="L2Cache app icon">
 </head>
 <body>
 <nav>
@@ -102,121 +116,27 @@
 </nav>
 
 <div class="container">
-  <div class="label">Help &amp; Support</div>
-  <h1>How can we help?</h1>
-  <p class="subtitle">Most issues are solved in the FAQ below. If not, reach out directly.</p>
-
-  <div class="contact-card">
-    <div class="contact-icon">✉️</div>
-    <div class="contact-body">
-      <div class="contact-title">Email support</div>
-      <div class="contact-desc">We respond within 24 hours on business days. Include your macOS version and a description of the issue.</div>
-    </div>
-    <a href="mailto:support@amvo.store" class="contact-link">support@amvo.store</a>
-  </div>
-
-  <!-- KEYBOARD SHORTCUTS -->
-  <h2>Keyboard shortcuts</h2>
-  <div class="shortcuts-grid">
-    <div class="shortcut-row">
-      <span class="shortcut-label">Open panel</span>
-      <span class="shortcut-keys"><kbd>⌘</kbd><kbd>⇧</kbd><kbd>V</kbd></span>
-    </div>
-    <div class="shortcut-row">
-      <span class="shortcut-label">Smart Transform</span>
-      <span class="shortcut-keys"><kbd>⌥</kbd><kbd>V</kbd></span>
-    </div>
-    <div class="shortcut-row">
-      <span class="shortcut-label">Copy selected clip</span>
-      <span class="shortcut-keys"><kbd>↵</kbd></span>
-    </div>
-    <div class="shortcut-row">
-      <span class="shortcut-label">Close panel</span>
-      <span class="shortcut-keys"><kbd>ESC</kbd></span>
-    </div>
-    <div class="shortcut-row">
-      <span class="shortcut-label">Navigate clips</span>
-      <span class="shortcut-keys"><kbd>↑</kbd><kbd>↓</kbd></span>
-    </div>
-  </div>
-
-  <!-- FAQ -->
-  <h2>Frequently asked questions</h2>
-  <div class="faq">
-    <div class="faq-item">
-      <button class="faq-q">
-        The app isn't capturing my clipboard. What's wrong?
-        <span class="faq-chevron">▼</span>
-      </button>
-      <div class="faq-a">
-        No special permission is needed to capture clipboard content. If clips aren't appearing, check these things: <strong>(1)</strong> Make sure L2Cache is running — you should see its icon in the menu bar. <strong>(2)</strong> Check that the app you're copying from isn't on your exclusion list — go to <strong>Settings → Privacy → App Exclusions</strong>. <strong>(3)</strong> Try quitting and relaunching L2Cache.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q">
-        I selected a clip from the panel — how do I paste it into my app?
-        <span class="faq-chevron">▼</span>
-      </button>
-      <div class="faq-a">
-        Selecting a clip (or pressing <kbd>↵</kbd>) copies it to your clipboard. Switch back to your app and press <kbd>⌘V</kbd> to paste. L2Cache puts the content on your clipboard — you're always in control of where it goes.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q">
-        Where is my clipboard data stored?
-        <span class="faq-chevron">▼</span>
-      </button>
-      <div class="faq-a">
-        All data is stored locally on your Mac at <code>~/Library/Application Support/L2cache/</code>. Nothing is ever sent to any server. Images are stored in the <code>images/</code> subfolder. You can view or delete this folder at any time.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q">
-        Apple Intelligence isn't working / not showing.
-        <span class="faq-chevron">▼</span>
-      </button>
-      <div class="faq-a">
-        Apple Intelligence requires macOS 26 (Tahoe) on Apple Silicon with Apple Intelligence enabled in System Settings. If you're on an earlier macOS or Intel Mac, L2Cache falls back to rule-based categorisation automatically.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q">
-        I accidentally copied a password. Is it stored?
-        <span class="faq-chevron">▼</span>
-      </button>
-      <div class="faq-a">
-        L2Cache automatically detects: API keys (OpenAI, GitHub, Stripe, AWS, Slack, and more), credit card numbers, PEM private keys and certificates, US Social Security Numbers, WiFi credentials, and secret assignments in config or environment files (e.g. <code>API_KEY=abc123</code>). When detected, the item is saved but marked as hidden — the content is locked behind Touch ID or your login password. Only you can unlock and copy it back.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q">
-        How do I add an app to the exclusion list?
-        <span class="faq-chevron">▼</span>
-      </button>
-      <div class="faq-a">
-        Go to Settings → Privacy → App Exclusions → click the + button and select the app. L2Cache will stop capturing anything copied from that app. Common uses: password managers, banking apps, or any app with sensitive data.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q">
-        Can I use L2Cache on multiple Macs?
-        <span class="faq-chevron">▼</span>
-      </button>
-      <div class="faq-a">
-        Yes. One licence covers personal use on all your Macs. Clipboard history is not synced between devices — each Mac has its own local history. iCloud sync is planned for a future version.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q">
-        How do I request a refund?
-        <span class="faq-chevron">▼</span>
-      </button>
-      <div class="faq-a">
-        Refunds for App Store purchases are handled by Apple. Visit <a href="https://reportaproblem.apple.com" target="_blank" style="color:var(--purple)">reportaproblem.apple.com</a> and select your L2Cache purchase. Apple typically processes refunds within a few days.
-      </div>
-    </div>
-  </div>
-
+  <div class="label">Navigation</div>
+  <h1>Sitemap</h1>
+  <p class="subtitle">All pages on the L2Cache website.</p>
+  <ul style="padding-left:20px;font-size:16px;line-height:2">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="clipboard-history-mac.html">Clipboard History on Mac</a></li>
+      <li><a href="mac-command-history.html">Mac Command History</a></li>
+      <li><a href="developer-clipboard.html">Developer Clipboard</a></li>
+      <li><a href="custom-actions.html">Custom Actions</a></li>
+      <li><a href="regex-clipboard-mac.html">Regex Pattern Matching</a></li>
+      <li><a href="screenshot-ocr-mac.html">Screenshot OCR</a></li>
+      <li><a href="sql-test-data-generator.html">SQL Test Data Generator</a></li>
+      <li><a href="jwt-decoder-mac.html">Offline JWT Decoder</a></li>
+      <li><a href="json-formatter-mac.html">Offline JSON Formatter</a></li>
+      <li><a href="intelligence.html">Clipboard Intelligence</a></li>
+      <li><a href="comparison.html">Compare L2Cache</a></li>
+      <li><a href="changelog.html">Changelog</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="privacy.html">Privacy Policy</a></li>
+  </ul>
 </div>
 
 <footer>
@@ -226,43 +146,5 @@
   <br/><br/>
   © 2026 Amvotech
 </footer>
-
-<script>
-  document.querySelectorAll('.faq-q').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const item = btn.closest('.faq-item');
-      const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-      if (!isOpen) item.classList.add('open');
-    });
-  });
-</script>
 </body>
 </html>
-  <main class="main-content">
-    <h1>Sitemap</h1>
-    <p class="lede">All pages on the L2Cache website.</p>
-
-    <div style="max-width: 600px; margin: 40px auto; text-align: left;">
-      <ul style="list-style: disc; padding-left: 20px; font-size: 16px; line-height: 1.8;">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="clipboard-history-mac.html">Clipboard History on Mac</a></li>
-        <li><a href="mac-command-history.html">Mac Command History</a></li>
-        <li><a href="developer-clipboard.html">Developer Clipboard</a></li>
-        <li><a href="custom-actions.html">Custom Actions</a></li>
-        <li><a href="regex-clipboard-mac.html">Regex Pattern Matching</a></li>
-        <li><a href="screenshot-ocr-mac.html">Screenshot OCR</a></li>
-        <li><a href="sql-test-data-generator.html">SQL Mock Data Gen</a></li>
-        <li><a href="jwt-decoder-mac.html">Offline JWT Decoder</a></li>
-        <li><a href="json-formatter-mac.html">Offline JSON Formatter</a></li>
-        <li><a href="intelligence.html">Apple Intelligence integration</a></li>
-        <li><a href="comparison.html">Compare L2Cache</a></li>
-        <li><a href="changelog.html">Changelog</a></li>
-        <li><a href="blog.html">Blog</a></li>
-    <li><a href="support.html">Support</a></li>
-        <li><a href="blog.html">Blog</a>
-  <a href="privacy.html">Privacy Policy</a></li>
-      </ul>
-    </div>
-  </main>
-

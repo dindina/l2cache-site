@@ -143,7 +143,7 @@ def generate_pages():
         page_html = template
         page_html = page_html.replace("{{seo_title}}", data["seo_title"])
         page_html = page_html.replace("{{seo_description}}", data["seo_description"])
-        page_html = page_html.replace("{{canonical_url}}", f"https://l2cache.amvo.store/en/l2cache-vs-{slug}.html")
+        page_html = page_html.replace("{{canonical_url}}", f"https://l2cache.amvo.store/en/l2cache-vs-{slug}")
         page_html = page_html.replace("{{competitor_name}}", comp_name)
         page_html = page_html.replace("{{intro_paragraph}}", data["intro_paragraph"])
         page_html = page_html.replace("{{comparison_table_rows}}", matrix_rows)
