@@ -409,7 +409,7 @@
   <article class="article-wrap">
     <div class="eyebrow">Security & Dev Tools</div>
     <h1>Stop Pasting Logs Online: How to Extract Regex from Mac Clipboard</h1>
-    <p class="lede">Using online tools like <code>regex101.com</code> to parse clipboard logs is a massive security risk. Here are three ways to extract UUIDs, Emails, and API Keys locally on macOS.</p>
+    <p class="lede">Using online tools like <code>regex101.com</code> to parse clipboard logs is a massive security risk. Here are four ways to extract UUIDs, Emails, and API Keys locally on macOS.</p>
     
     <p>As a developer, you often copy huge chunks of log files or JSON payloads just to extract a few specific items—like a list of UUIDs, email addresses, or IP addresses. The natural instinct is to paste the massive log into an online Regex tester to quickly parse out what you need.</p>
 
@@ -428,6 +428,17 @@
         </tr>
       </thead>
       <tbody>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 20px; vertical-align: top;">
+            <strong>Bash Native Match (=~)</strong><br><br>
+            <span style="font-size: 14px; color: var(--text-muted);">If you are running a script or command directly in a Bash terminal, you don't even need external tools like Python or grep. Bash has a built-in regular expression matching operator (<code>=~</code>). The <code>[[ ... =~ ... ]]</code> construct evaluates the string against the regex pattern natively inside the shell.</span>
+          </td>
+          <td style="padding: 20px; vertical-align: top;">
+            <div class="snippet-container" style="margin-bottom:0;"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>email="test@example.com"
+[[ "$email" =~ ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$ ]] && echo "Match" || echo "No Match"</code></pre></div>
+          </td>
+        </tr>
+
         <tr style="border-bottom: 1px solid var(--border);">
           <td style="padding: 20px; vertical-align: top;">
             <strong>Bash (grep)</strong><br><br>
