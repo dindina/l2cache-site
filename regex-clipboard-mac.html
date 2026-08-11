@@ -420,47 +420,50 @@
     <br>
     <h2>Secure Offline Alternatives for Regex Extraction</h2>
     
-    <table style="width: 100%; border-collapse: collapse; margin-top: 24px; margin-bottom: 48px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden;">
+    <table style="table-layout: fixed; width: 100%; border-collapse: collapse; text-align: left; background: rgba(255,255,255,0.03); border-radius: 12px; overflow: hidden; border: 1px solid var(--border);">
       <thead>
         <tr style="background: rgba(127,119,221,0.1); border-bottom: 1px solid var(--border);">
-          <th style="padding: 16px; text-align: left; font-family: var(--sans); font-size: 14px; width: 30%;">Method</th>
-          <th style="padding: 16px; text-align: left; font-family: var(--sans); font-size: 14px; width: 70%;">Code Snippet</th>
+          <th style="padding: 16px 20px; font-family: var(--sans); font-weight: 600; color: var(--text); width: 30%;">Method</th>
+          <th style="padding: 16px 20px; font-family: var(--sans); font-weight: 600; color: var(--text); width: 70%;">Code Snippet</th>
         </tr>
       </thead>
       <tbody>
+        <!-- Bash =~ -->
         <tr style="border-bottom: 1px solid var(--border);">
           <td style="padding: 20px; vertical-align: top;">
-            <strong>Bash Native Match (=~)</strong><br><br>
-            <span style="font-size: 14px; color: var(--text-muted);">If you are running a script or command directly in a Bash terminal, you don't even need external tools like Python or grep. Bash has a built-in regular expression matching operator (<code>=~</code>). The <code>[[ ... =~ ... ]]</code> construct evaluates the string against the regex pattern natively inside the shell.</span>
+            <strong>Bash Native (=~)</strong>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px; margin-bottom: 0; line-height: 1.5;">No external tools needed. Bash's built-in <code>=~</code> operator matches a string against a regex pattern natively inside the shell.</p>
           </td>
           <td style="padding: 20px; vertical-align: top;">
             <div class="snippet-container" style="margin-bottom:0;"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>email="test@example.com"
-[[ "$email" =~ ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$ ]] && echo "Match" || echo "No Match"</code></pre></div>
+[[ "$email" =~ ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.]+$ ]] && echo "Match" || echo "No Match"</code></pre></div>
           </td>
         </tr>
-
+        <!-- Bash grep -->
         <tr style="border-bottom: 1px solid var(--border);">
           <td style="padding: 20px; vertical-align: top;">
-            <strong>Bash (grep)</strong><br><br>
-            <span style="font-size: 14px; color: var(--text-muted);">The classic terminal approach. Uses <code>pbpaste</code> to read the clipboard, <code>grep -oE</code> to extract all matches (e.g., Email addresses), and <code>pbcopy</code> to write the results back.</span>
+            <strong>Bash (grep)</strong>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px; margin-bottom: 0; line-height: 1.5;">Uses <code>pbpaste</code> to read the clipboard, <code>grep -oE</code> to extract all email matches, and <code>pbcopy</code> to write results back.</p>
           </td>
           <td style="padding: 20px; vertical-align: top;">
             <div class="snippet-container" style="margin-bottom:0;"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>pbpaste | grep -oE '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}' | pbcopy</code></pre></div>
           </td>
         </tr>
+        <!-- Ruby -->
         <tr style="border-bottom: 1px solid var(--border);">
           <td style="padding: 20px; vertical-align: top;">
-            <strong>Ruby One-Liner</strong><br><br>
-            <span style="font-size: 14px; color: var(--text-muted);">Ruby is incredibly powerful for text processing. This one-liner extracts all UUIDs from the clipboard using Ruby's native regex engine.</span>
+            <strong>Ruby One-Liner</strong>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px; margin-bottom: 0; line-height: 1.5;">Extracts all UUIDs from the clipboard. Ruby's native regex engine is pre-installed on older Macs, or available via Homebrew.</p>
           </td>
           <td style="padding: 20px; vertical-align: top;">
             <div class="snippet-container" style="margin-bottom:0;"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>pbpaste | ruby -ne 'puts $_.scan(/[0-9a-fA-F\-]{36}/)' | pbcopy</code></pre></div>
           </td>
         </tr>
+        <!-- Python -->
         <tr>
           <td style="padding: 20px; vertical-align: top;">
-            <strong>Python Script</strong><br><br>
-            <span style="font-size: 14px; color: var(--text-muted);">If you need to handle multiline logic or case-insensitivity easily, a small Python script handles clipboard reading via <code>subprocess</code> natively. This script extracts AWS Access Keys.</span>
+            <strong>Python Script</strong>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px; margin-bottom: 0; line-height: 1.5;">Reads clipboard via <code>subprocess</code> and extracts AWS Access Key IDs using Python's <code>re</code> module. Handles case-insensitivity natively.</p>
           </td>
           <td style="padding: 20px; vertical-align: top;">
             <div class="snippet-container" style="margin-bottom:0;"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>import subprocess, re
