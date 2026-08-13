@@ -19,7 +19,9 @@ PUBLIC_PAGES = [
     "screenshot-ocr-mac.html", "sql-test-data-generator.html", "sitemap.html",
     "blog.html", "blog-regex-clipboard.html", "blog-sql-test-data.html",
     "blog-jwt-security.html", "blog-sqlite-fts5-hangs.html",
-    "blog-swift-sqlite-concurrency.html", "l2cache-vs-maccy.html",
+    "blog-swift-sqlite-concurrency.html", "blog-apple-intelligence-clipboard.html",
+    "blog-developer-workflow-apple-intelligence.html",
+    "blog-zero-cloud-mac-desktop-ai.html", "l2cache-vs-maccy.html",
     "l2cache-vs-clipy.html", "l2cache-vs-paste.html",
 ]
 ERRORS: list[str] = []
