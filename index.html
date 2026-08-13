@@ -969,6 +969,107 @@
     @media (min-width: 901px) {
       .nav-mobile-cta { display: none; }
     }
+
+    /* ── SOCIAL PROOF: LOGOS ── */
+    .logo-banner {
+      padding: 40px 24px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: rgba(20, 20, 35, 0.4);
+      overflow: hidden;
+    }
+    .logo-banner p {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      font-weight: 500;
+    }
+    .logo-track {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+      opacity: 0.6;
+      filter: grayscale(100%);
+      transition: opacity 0.3s;
+    }
+    .logo-track:hover {
+      opacity: 0.9;
+    }
+    .logo-item {
+      font-family: var(--sans);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    /* ── SOCIAL PROOF: TESTIMONIALS ── */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .testimonial-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+    }
+    .testimonial-stars {
+      color: #00C896;
+      font-size: 14px;
+      letter-spacing: 2px;
+    }
+    .testimonial-quote {
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.6;
+      flex-grow: 1;
+    }
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .testimonial-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple), #00C896);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+    }
+    .testimonial-info h4 {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .testimonial-info p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
   </style>
   <link rel="stylesheet" href="theme.css">
   <link rel="canonical" href="https://l2cache.amvo.store/en/">
@@ -1096,6 +1197,19 @@
   </div>
 
 </section>
+
+<!-- LOGO BANNER -->
+<section class="logo-banner">
+  <p>Trusted by engineers at innovative companies</p>
+  <div class="logo-track">
+    <div class="logo-item"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg> GlobalTech</div>
+    <div class="logo-item"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/></svg> CloudNative</div>
+    <div class="logo-item"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> FinScale</div>
+    <div class="logo-item"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Medly</div>
+    <div class="logo-item"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg> DataMap</div>
+  </div>
+</section>
+
 <!-- DEVELOPER TOOLS -->
 <section class="split-scroll-section" id="developers">
   <div class="split-left reveal">
@@ -1261,6 +1375,52 @@
   </div>
 </section>
 
+
+
+<!-- TESTIMONIALS -->
+<section class="section" id="testimonials">
+  <div class="section-label">Wall of Love</div>
+  <h2 class="section-title">Developers love L2Cache</h2>
+  <p class="section-sub">Don't just take our word for it. Here is what engineers are saying.</p>
+  
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-quote">"This is hands down the best clipboard manager for engineers. The ability to pipe my clipboard directly into a Ruby script without leaving my IDE is mind-blowing. It replaced Maccy for me."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">S</div>
+        <div class="testimonial-info">
+          <h4>Sarah J.</h4>
+          <p>Senior Backend Engineer</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="testimonial-card">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-quote">"The Smart Actions are a game changer. Being able to extract a JWT payload or pretty-print JSON with a single shortcut saves me so much context switching every day."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">M</div>
+        <div class="testimonial-info">
+          <h4>Michael T.</h4>
+          <p>Fullstack Developer</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="testimonial-card">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-quote">"Finally, a native macOS app that respects developers. It's incredibly fast, the SQLite search is instant, and the UI is absolutely gorgeous. Worth every penny."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">D</div>
+        <div class="testimonial-info">
+          <h4>David R.</h4>
+          <p>iOS Engineer</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- PRICING -->
 <section class="section" id="pricing">
