@@ -30,6 +30,9 @@
     strong { color: var(--text); font-weight: 600; }
     .highlight-box { background: rgba(127,119,221,0.08); border-left: 3px solid var(--purple); padding: 20px; margin: 32px 0; border-radius: 0 8px 8px 0; }
     .highlight-box p { margin-bottom: 0; color: var(--text); }
+    .feature-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 24px; border-radius: 12px; margin-bottom: 24px; }
+    .feature-card h3 { font-family: var(--mono); font-size: 18px; color: var(--purple); margin-bottom: 8px; }
+    .feature-card p { font-size: 15px; margin-bottom: 0; color: rgba(240,239,248,0.8); }
     .cta-box { background: rgba(127,119,221,0.08); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
     .cta-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
     .cta-btn { display: inline-block; background: var(--purple); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
@@ -105,11 +108,20 @@
 
   <p>This on-device architecture unlocks three fundamental advantages for professional software engineers:</p>
 
-  <ul>
-    <li><strong>Complete Privacy Sovereignty:</strong> Clipboard content—whether it is a 5,000-line SQL query or an OAuth refresh token—is processed entirely inside your Mac's secure memory boundary. Zero cloud requests, zero API key management, zero third-party data collection.</li>
-    <li><strong>Sub-100ms Categorization:</strong> Eliminating network calls eliminates network latency. Apple Intelligence models process clip content in milliseconds on the Neural Engine, allowing L2Cache to organize your clips instantly without lagging your system.</li>
-    <li><strong>100% Offline Capability:</strong> Whether you are working on an airplane, in a high-security air-gapped facility, or dealing with unstable hotel Wi-Fi, L2Cache's categorization, smart OCR, and search capabilities function seamlessly without an internet connection.</li>
-  </ul>
+  <div class="feature-card">
+    <h3>Complete Privacy Sovereignty</h3>
+    <p>Clipboard content—whether it is a 5,000-line SQL query or an OAuth refresh token—is processed entirely inside your Mac's secure memory boundary. Zero cloud requests, zero API key management, zero third-party data collection.</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>Sub-100ms Categorization</h3>
+    <p>Eliminating network calls eliminates network latency. Apple Intelligence models process clip content in milliseconds on the Neural Engine, allowing L2Cache to organize your clips instantly without lagging your system.</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>100% Offline Capability</h3>
+    <p>Whether you are working on an airplane, in a high-security air-gapped facility, or dealing with unstable hotel Wi-Fi, L2Cache's categorization, smart OCR, and search capabilities function seamlessly without an internet connection.</p>
+  </div>
 
   <h2>Intelligent Developer Workflows Without Security Leaks</h2>
   <p>On-device intelligence allows L2Cache to deliver pro features without compromising sensitive credentials:</p>
