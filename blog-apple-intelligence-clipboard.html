@@ -12,36 +12,30 @@
   <link rel="stylesheet" href="theme.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --purple: #7F77DD; --bg: #0D0C1A; --bg2: #131126; --bg3: #1A1830;
-      --border: rgba(127,119,221,0.18); --text: #F0EFF8;
-      --text-muted: rgba(240,239,248,0.5); --text-dim: rgba(240,239,248,0.28);
-      --mono: 'DM Mono', monospace; --serif: 'Fraunces', serif; --sans: 'DM Sans', sans-serif;
-    }
-    body { background: var(--bg) !important; color: var(--text) !important; font-family: var(--sans); line-height: 1.7; }
-    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; border-bottom: 1px solid var(--border) !important; background: rgba(13,12,26,0.92) !important; }
-    .nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text) !important; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    body { background: #f7f7f5 !important; color: #0a0a0a !important; font-family: var(--sans); line-height: 1.7; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; border-bottom: 1px solid #e4e4e0 !important; background: rgba(247,247,245,0.92) !important; }
+    .nav-logo { font-family: var(--mono); font-size: 15px; color: #0a0a0a !important; text-decoration: none; display: flex; align-items: center; gap: 10px; }
     .container { max-width: 720px; margin: 0 auto; padding: 80px 24px; min-height: 80vh; }
-    .label { font-family: var(--mono); font-size: 12px; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: inline-block; }
-    h1 { font-family: var(--serif); font-size: 38px !important; font-weight: 700 !important; line-height: 1.25 !important; margin-bottom: 32px !important; color: #F0EFF8 !important; }
-    h2 { font-family: var(--serif); font-size: 26px !important; font-weight: 700 !important; margin-top: 48px; margin-bottom: 16px; color: #F0EFF8 !important; }
-    h3 { font-family: var(--mono); font-size: 18px !important; color: #7F77DD !important; margin-top: 24px; margin-bottom: 12px; }
-    p { font-size: 16px; color: rgba(240,239,248,0.75) !important; margin-bottom: 24px; }
-    ul, ol { font-size: 16px; color: rgba(240,239,248,0.75) !important; margin-bottom: 24px; padding-left: 24px; }
-    li { margin-bottom: 8px; color: rgba(240,239,248,0.75) !important; }
-    strong { color: #F0EFF8 !important; font-weight: 600; }
-    .highlight-box { background: rgba(127,119,221,0.08) !important; border-left: 3px solid #7F77DD !important; padding: 20px; margin: 32px 0; border-radius: 0 8px 8px 0; }
-    .highlight-box p { margin-bottom: 0; color: #F0EFF8 !important; }
-    .feature-card { background: rgba(127,119,221,0.06) !important; border: 1px solid rgba(127,119,221,0.25) !important; padding: 24px; border-radius: 12px; margin-bottom: 24px; box-shadow: none !important; }
-    .feature-card h3 { font-family: var(--mono); font-size: 18px !important; color: #7F77DD !important; margin-bottom: 8px; margin-top: 0; }
-    .feature-card p { font-size: 15px; margin-bottom: 0; color: rgba(240,239,248,0.8) !important; }
-    .cta-box { background: rgba(127,119,221,0.08) !important; border: 1px solid rgba(127,119,221,0.3) !important; border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
-    .cta-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: #F0EFF8 !important; }
-    .cta-btn { display: inline-block; background: var(--purple) !important; color: white !important; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
-    .cta-btn:hover { background: #5C52C8 !important; }
-    footer { padding: 48px 24px; text-align: center; border-top: 1px solid var(--border) !important; font-size: 13px; color: var(--text-dim) !important; background: #0D0C1A !important; }
-    footer a { color: var(--text-dim) !important; text-decoration: none; margin: 0 12px; }
-    footer a:hover { color: var(--text-muted) !important; }
+    .label { font-family: var(--mono); font-size: 12px; color: #00a87f; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: inline-block; font-weight: 600; }
+    h1 { font-family: var(--serif); font-size: 38px !important; font-weight: 800 !important; line-height: 1.25 !important; margin-bottom: 32px !important; color: #0a0a0a !important; }
+    h2 { font-family: var(--serif); font-size: 26px !important; font-weight: 700 !important; margin-top: 48px; margin-bottom: 16px; color: #0a0a0a !important; }
+    h3 { font-family: var(--mono); font-size: 18px !important; color: #0a0a0a !important; margin-top: 24px; margin-bottom: 12px; }
+    p { font-size: 16px; color: #444440 !important; margin-bottom: 24px; }
+    ul, ol { font-size: 16px; color: #444440 !important; margin-bottom: 24px; padding-left: 24px; }
+    li { margin-bottom: 8px; color: #444440 !important; }
+    strong { color: #0a0a0a !important; font-weight: 600; }
+    .highlight-box { background: rgba(0,200,150,0.08) !important; border-left: 3px solid #00a87f !important; padding: 20px; margin: 32px 0; border-radius: 0 8px 8px 0; }
+    .highlight-box p { margin-bottom: 0; color: #0a0a0a !important; }
+    .feature-card { background: #ffffff !important; border: 1px solid #e8e8e4 !important; padding: 24px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.04) !important; }
+    .feature-card h3 { font-family: var(--mono); font-size: 18px !important; color: #0a0a0a !important; margin-bottom: 8px; margin-top: 0; }
+    .feature-card p { font-size: 15px; margin-bottom: 0; color: #555550 !important; }
+    .cta-box { background: #ffffff !important; border: 1px solid #e8e8e4 !important; border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important; }
+    .cta-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: #0a0a0a !important; }
+    .cta-btn { display: inline-block; background: #0a0a0a !important; color: #ffffff !important; padding: 12px 24px; border-radius: 100px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
+    .cta-btn:hover { background: #222222 !important; }
+    footer { padding: 48px 24px; text-align: center; border-top: 1px solid #e4e4e0 !important; font-size: 13px; color: #999992 !important; background: #0a0a0a !important; }
+    footer a { color: #aaa !important; text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: #ffffff !important; }
   </style>
   <link rel="canonical" href="https://l2cache.amvo.store/en/blog-apple-intelligence-clipboard">
 
@@ -133,7 +127,7 @@
 
   <div class="cta-box">
     <div class="cta-title">Upgrade Your Mac Clipboard to 100% Private On-Device AI</div>
-    <p style="font-size:14px; margin-bottom:20px; color:rgba(240,239,248,0.7) !important">Keep your API keys, SQL queries, and code snippets completely private. Built natively for macOS 15+ and Apple Silicon.</p>
+    <p style="font-size:14px; margin-bottom:20px; color:#555550 !important">Keep your API keys, SQL queries, and code snippets completely private. Built natively for macOS 15+ and Apple Silicon.</p>
     <a href="index.html" class="cta-btn">Get L2Cache for macOS</a>
   </div>
 </div>
