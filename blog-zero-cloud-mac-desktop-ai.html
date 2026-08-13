@@ -9,6 +9,7 @@
   <link rel="apple-touch-icon" href="icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="theme.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -17,32 +18,31 @@
       --text-muted: rgba(240,239,248,0.5); --text-dim: rgba(240,239,248,0.28);
       --mono: 'DM Mono', monospace; --serif: 'Fraunces', serif; --sans: 'DM Sans', sans-serif;
     }
-    body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; }
-    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; border-bottom: 1px solid var(--border); }
-    .nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    body { background: var(--bg) !important; color: var(--text) !important; font-family: var(--sans); line-height: 1.7; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; border-bottom: 1px solid var(--border) !important; background: rgba(13,12,26,0.92) !important; }
+    .nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text) !important; text-decoration: none; display: flex; align-items: center; gap: 10px; }
     .container { max-width: 720px; margin: 0 auto; padding: 80px 24px; min-height: 80vh; }
     .label { font-family: var(--mono); font-size: 12px; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: inline-block; }
-    h1 { font-family: var(--serif); font-size: 38px; font-weight: 700; line-height: 1.25; margin-bottom: 32px; color: var(--text); }
-    h2 { font-family: var(--serif); font-size: 26px; font-weight: 700; margin-top: 48px; margin-bottom: 16px; color: var(--text); }
-    h3 { font-family: var(--mono); font-size: 18px; color: var(--purple); margin-top: 32px; margin-bottom: 12px; }
-    p { font-size: 16px; color: rgba(240,239,248,0.7); margin-bottom: 24px; }
-    ul { font-size: 16px; color: rgba(240,239,248,0.7); margin-bottom: 24px; padding-left: 24px; }
-    li { margin-bottom: 8px; }
-    strong { color: var(--text); font-weight: 600; }
-    pre { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; overflow-x: auto; margin-bottom: 24px; border: 1px solid var(--border); }
-    code { font-family: var(--mono); font-size: 13px; color: #a197fd; }
-    pre code { color: var(--text); }
-    .quote-box { background: rgba(127,119,221,0.08); border-left: 3px solid var(--purple); padding: 20px; margin: 32px 0; border-radius: 0 8px 8px 0; }
-    .quote-box p { margin-bottom: 0; color: var(--text); font-style: italic; }
-    .cta-box { background: rgba(127,119,221,0.08); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
-    .cta-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
-    .cta-btn { display: inline-block; background: var(--purple); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
-    .cta-btn:hover { background: #5C52C8; }
-    footer { padding: 48px 24px; text-align: center; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-dim); }
-    footer a { color: var(--text-dim); text-decoration: none; margin: 0 12px; }
-    footer a:hover { color: var(--text-muted); }
+    h1 { font-family: var(--serif); font-size: 38px !important; font-weight: 700 !important; line-height: 1.25 !important; margin-bottom: 32px !important; color: #F0EFF8 !important; }
+    h2 { font-family: var(--serif); font-size: 26px !important; font-weight: 700 !important; margin-top: 48px; margin-bottom: 16px; color: #F0EFF8 !important; }
+    h3 { font-family: var(--mono); font-size: 18px !important; color: #7F77DD !important; margin-top: 32px; margin-bottom: 12px; }
+    p { font-size: 16px; color: rgba(240,239,248,0.75) !important; margin-bottom: 24px; }
+    ul, ol { font-size: 16px; color: rgba(240,239,248,0.75) !important; margin-bottom: 24px; padding-left: 24px; }
+    li { margin-bottom: 8px; color: rgba(240,239,248,0.75) !important; }
+    strong { color: #F0EFF8 !important; font-weight: 600; }
+    pre { background: #131126 !important; padding: 20px; border-radius: 10px; overflow-x: auto; margin-bottom: 24px; border: 1px solid rgba(127,119,221,0.25) !important; }
+    code { font-family: var(--mono); font-size: 13px; color: #a197fd !important; }
+    pre code { color: #e0ffe8 !important; }
+    .quote-box { background: rgba(127,119,221,0.08) !important; border-left: 3px solid #7F77DD !important; padding: 20px; margin: 32px 0; border-radius: 0 8px 8px 0; }
+    .quote-box p { margin-bottom: 0; color: #F0EFF8 !important; font-style: italic; }
+    .cta-box { background: rgba(127,119,221,0.08) !important; border: 1px solid rgba(127,119,221,0.3) !important; border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
+    .cta-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: #F0EFF8 !important; }
+    .cta-btn { display: inline-block; background: var(--purple) !important; color: white !important; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
+    .cta-btn:hover { background: #5C52C8 !important; }
+    footer { padding: 48px 24px; text-align: center; border-top: 1px solid var(--border) !important; font-size: 13px; color: var(--text-dim) !important; background: #0D0C1A !important; }
+    footer a { color: var(--text-dim) !important; text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: var(--text-muted) !important; }
   </style>
-  <link rel="stylesheet" href="theme.css">
   <link rel="canonical" href="https://l2cache.amvo.store/en/blog-zero-cloud-mac-desktop-ai">
 
   <meta property="og:type" content="article">
@@ -125,7 +125,7 @@ struct ClipClassificationOutput {
   <p>By defining typed structs with field-level guidance annotations, the on-device language model generates structured JSON matching our domain models directly, avoiding fragile regex parsing of free-form text responses.</p>
 
   <h2>2. Actor Isolation &amp; Sub-100ms Queue Architecture</h2>
-  <p>Clipboard polling in L2Cache occurs every 0.5 seconds on a background actor. If a new clipboard item is captured, we execute AI categorization asynchronously off the main thread using Swift Concurrency (`Task` and `actor` state isolation):</p>
+  <p>Clipboard polling in L2Cache occurs every 0.5 seconds on a background actor. If a new clipboard item is captured, we execute AI categorization asynchronously off the main thread using Swift Concurrency (<code>Task</code> and <code>actor</code> state isolation):</p>
 
 <pre><code>actor AIProcessingQueue {
     private let provider: AIService
@@ -150,28 +150,28 @@ struct ClipClassificationOutput {
   <p>Because the AI classification runs inside a background actor context at <code>.utility</code> task priority, the main UI thread remains completely unblocked. The floating panel opens in under 100ms regardless of whether an AI classification is actively processing in the background.</p>
 
   <h2>3. Multi-Pass Vision OCR off the Main Thread</h2>
-  <p>To support extracting text from terminal and IDE screenshots without UI lag, we built a background `VisionOCRService` actor that runs multi-pass image analysis using Apple's <code>Vision</code> framework:</p>
+  <p>To support extracting text from terminal and IDE screenshots without UI lag, we built a background <code>VisionOCRService</code> actor that runs multi-pass image analysis using Apple's <code>Vision</code> framework:</p>
 
   <ul>
-    <li><strong>Pass 1 (Barcodes &amp; QR Codes):</strong> `VNDetectBarcodesRequest` scans for QR payloads. If circular dot-matrix modules are detected, a high-contrast grayscale pass using `CIColorControls` + `CIUnsharpMask` binaraizes module edges for high recognition accuracy.</li>
-    <li><strong>Pass 2 (Text Recognition):</strong> `VNRecognizeTextRequest` configured with <code>recognitionLevel = .accurate</code> and custom developer vocabulary tokens (<code>["SQL", "API", "CLI", "JSON", "iOS"]</code>).</li>
-    <li><strong>Pass 3 (Privacy &amp; Scene Labeling):</strong> `VNClassifyImageRequest` and `VNDetectFaceRectanglesRequest` identify faces or sensitive image content.</li>
+    <li><strong>Pass 1 (Barcodes &amp; QR Codes):</strong> <code>VNDetectBarcodesRequest</code> scans for QR payloads. If circular dot-matrix modules are detected, a high-contrast grayscale pass using <code>CIColorControls</code> + <code>CIUnsharpMask</code> binarizes module edges for high recognition accuracy.</li>
+    <li><strong>Pass 2 (Text Recognition):</strong> <code>VNRecognizeTextRequest</code> configured with <code>recognitionLevel = .accurate</code> and custom developer vocabulary tokens (<code>["SQL", "API", "CLI", "JSON", "iOS"]</code>).</li>
+    <li><strong>Pass 3 (Privacy &amp; Scene Labeling):</strong> <code>VNClassifyImageRequest</code> and <code>VNDetectFaceRectanglesRequest</code> identify faces or sensitive image content.</li>
   </ul>
 
   <h2>4. Diagnostic Pipeline &amp; Graceful Fallback Cascading</h2>
   <p>On-device AI systems must handle runtime edge cases gracefully (e.g. older macOS versions, system language mismatches, or disabled system settings). L2Cache uses a multi-tier fallback cascade:</p>
 
-  <ol style="padding-left:24px; color:rgba(240,239,248,0.7); margin-bottom:24px;">
-    <li style="margin-bottom:8px;"><strong>Tier 1 (Sub-millisecond Heuristics):</strong> Fast regex pattern matching for JWT tokens, SQL queries, hex colors, and API keys.</li>
-    <li style="margin-bottom:8px;"><strong>Tier 2 (On-Device Apple Intelligence):</strong> `FoundationModels` inference on Apple Silicon NPU.</li>
-    <li style="margin-bottom:8px;"><strong>Tier 3 (Local Ollama / Self-Hosted LLMs):</strong> User-configurable local model endpoint.</li>
+  <ol>
+    <li><strong>Tier 1 (Sub-millisecond Heuristics):</strong> Fast regex pattern matching for JWT tokens, SQL queries, hex colors, and API keys.</li>
+    <li><strong>Tier 2 (On-Device Apple Intelligence):</strong> <code>FoundationModels</code> inference on Apple Silicon NPU.</li>
+    <li><strong>Tier 3 (Local Ollama / Self-Hosted LLMs):</strong> User-configurable local model endpoint.</li>
   </ol>
 
   <p>If Apple Intelligence is unavailable or returns an incomplete payload, the cascade automatically degrades to instant rule-based categorization without surfacing errors or breaking the user's flow.</p>
 
   <div class="cta-box">
     <div class="cta-title">Experience Fast, Native macOS AI</div>
-    <p style="font-size:14px; margin-bottom:20px; color:rgba(240,239,248,0.7)">Built natively with Swift Concurrency, FoundationModels, and Vision OCR. 100% private on-device compute.</p>
+    <p style="font-size:14px; margin-bottom:20px; color:rgba(240,239,248,0.7) !important">Built natively with Swift Concurrency, FoundationModels, and Vision OCR. 100% private on-device compute.</p>
     <a href="index.html" class="cta-btn">Get L2Cache for macOS</a>
   </div>
 </div>
