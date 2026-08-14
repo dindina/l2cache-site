@@ -29,9 +29,8 @@ APP_STORE_COUNTRIES = {
     "vi": "vn"
 }
 
-# Translations temporarily disabled. Serving English on all routes.
-# with open("locales.json", "r", encoding="utf-8") as f:
-#     TRANSLATIONS = json.load(f)
+with open("locales.json", "r", encoding="utf-8") as f:
+    TRANSLATIONS = json.load(f)
 
 HTML_FILES = ["index.html", "support.html", "privacy.html", "intelligence.html", "changelog.html", "clipboard-history-mac.html", "mac-command-history.html", "comparison.html", "developer-clipboard.html", "custom-actions.html", "jwt-decoder-mac.html", "json-formatter-mac.html", "regex-clipboard-mac.html", "screenshot-ocr-mac.html", "sql-test-data-generator.html", "sitemap.html", "blog.html", "blog-clipboard-automation-developer-workflows.html", "blog-regex-clipboard.html", "blog-sql-test-data.html", "blog-jwt-security.html", "blog-sqlite-fts5-hangs.html", "blog-swift-sqlite-concurrency.html", "blog-apple-intelligence-clipboard.html", "blog-developer-workflow-apple-intelligence.html", "blog-zero-cloud-mac-desktop-ai.html"]
 OUT_DIR = "out"
@@ -44,11 +43,11 @@ def get_language_switcher_html(current_lang):
         selected = "selected" if code == current_lang else ""
         options += f'<option value="{code}" {selected}>{name}</option>'
     
-    lang_codes = "|".join(LANGUAGES.keys())
+    lang_codes_js = str(list(LANGUAGES.keys()))
     
     switcher = f"""
     <div class="lang-switcher" style="margin-left: 20px;">
-        <select onchange="window.location.href = window.location.pathname.replace(/\\/({lang_codes})\\//, '/' + this.value + '/');" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; border-radius: 6px; font-size: 13px; font-family: var(--sans);">
+        <select onchange="let p=window.location.pathname.split('/').filter(Boolean); if({lang_codes_js}.includes(p[0])){{p[0]=this.value;}}else{{p.unshift(this.value);}} window.location.href='/' + p.join('/') + (p.length===1 ? '/' : '');" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; border-radius: 6px; font-size: 13px; font-family: var(--sans);">
             {options}
         </select>
     </div>
@@ -106,7 +105,12 @@ def build():
             with open(file, "r", encoding="utf-8") as f:
                 content = f.read()
 
-            # Translation replacement removed temporarily (serving English only)
+            # Translate content
+            if lang != "en" and lang in TRANSLATIONS:
+                sorted_keys = sorted(TRANSLATIONS[lang].keys(), key=len, reverse=True)
+                for en_str in sorted_keys:
+                    loc_str = TRANSLATIONS[lang][en_str]
+                    content = content.replace(en_str, loc_str)
                     
             # Localize screenshots if available
             if lang != "en":
@@ -141,10 +145,9 @@ def build():
             content = re.sub(r'(src|href)="screenshots/', r'\1="../screenshots/', content)
             content = content.replace('href="theme.css"', 'href="../theme.css"')
             
-            # Note: 
-            # 1. We keep <html lang="en"> (no replacement) because content is English.
-            # 2. We remove <meta name="google" content="notranslate"> so Chrome offers translation natively.
-            # 3. We remove broken hreflang tags since all pages are now duplicate English.
+            # Update html lang attribute
+            if lang != "en":
+                content = re.sub(r'<html lang="[^"]*"', f'<html lang="{lang}"', content)
 
             with open(os.path.join(lang_dir, file), "w", encoding="utf-8") as f:
                 f.write(content)
