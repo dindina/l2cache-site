@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Universal SQL Query Converter — SELECT ⇄ INSERT ⇄ UPDATE ⇄ DELETE | L2Cache</title>
+  <meta name="description" content="Convert any SQL query into SELECT, INSERT INTO, UPDATE, DELETE, and UPSERT statements simultaneously. 100% offline in your browser — zero database leaks." />
+  <meta name="keywords" content="sql converter, select to insert, select to update, insert to update, sql query converter online, convert select to insert statement, offline sql builder" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/sql-query-converter" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Universal SQL Query Converter",
+        "url": "https://l2cache.amvo.store/en/tools/sql-query-converter",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Can I convert a SELECT query into an INSERT or UPDATE statement?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The AST parser extracts the table name, selected column names, and WHERE conditions, generating corresponding INSERT INTO, UPDATE, DELETE, and UPSERT queries instantly."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which SQL dialects are supported?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The generated statements follow standard ANSI SQL compatible with PostgreSQL, MySQL, SQLite, Oracle, and Microsoft SQL Server."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is any database data or query sent to a remote server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The SQL tokenizer runs 100% in-browser in client memory. Your production table names and queries never touch an external server."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    .output-tabs-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #181824;
+      border: 1px solid #28283a;
+      border-radius: 10px;
+      padding: 6px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+    }
+    .out-tab-btn {
+      background: none;
+      border: none;
+      color: #888;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .out-tab-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
+    .out-tab-btn.active {
+      color: #000;
+      background: var(--purple);
+      box-shadow: 0 2px 8px rgba(0, 200, 150, 0.3);
+    }
+
+    .multi-output-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 768px) {
+      .multi-output-grid { grid-template-columns: 1fr; }
+    }
+    .grid-sql-card {
+      background: #111118;
+      border: 1px solid #28283a;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .grid-sql-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: #181824;
+      border-bottom: 1px solid #28283a;
+    }
+    .grid-sql-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      font-family: var(--mono);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .grid-sql-actions { display: flex; gap: 6px; }
+    .mini-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #ccc;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: var(--mono);
+      transition: all 0.15s;
+    }
+    .mini-btn:hover {
+      background: var(--purple);
+      color: #000;
+      border-color: var(--purple);
+    }
+    .grid-sql-view {
+      padding: 12px 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.6;
+      color: #00dfa8;
+      background: #09090e;
+      height: 180px;
+      overflow-y: auto;
+      white-space: pre;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Convert SQL statements bidirectionally. Zero database leaks.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">UNIVERSAL SQL CRUD ARCHITECT</span>
+      <h1>Universal SQL Query Converter: <em>SELECT ⇄ INSERT ⇄ UPDATE ⇄ DELETE</em></h1>
+      <p class="hero-sub">
+        Paste any SQL statement to immediately generate the corresponding 
+        <strong>SELECT, INSERT INTO, UPDATE, DELETE, and UPSERT</strong> queries in one unified view.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">🗄️</div>
+            <span class="tool-name-text">SQL CRUD Transformer</span>
+          </div>
+          <span class="tool-badge-pill" id="detected-sql-type">DETECTED: SELECT</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <!-- Source Input Box -->
+          <div class="tool-pane" style="margin-bottom: 20px;">
+            <div class="pane-label-row">
+              <span>Input SQL Statement (SELECT, INSERT, UPDATE, DELETE, or CREATE TABLE)</span>
+              <span id="source-sql-bytes" style="color:var(--purple); font-size: 11px;">0 bytes</span>
+            </div>
+            <textarea id="sql-input" class="tool-textarea" style="height: 140px; font-family: var(--mono); font-size: 13px;" oninput="transformSQL()" placeholder="Paste your SQL statement here...">SELECT id, email, full_name, role, status, updated_at
+FROM users
+WHERE status = 'active' AND role = 'admin';</textarea>
+          </div>
+
+          <!-- Controls & Presets -->
+          <div class="tool-controls" style="align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;">
+            <span style="font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase;">Presets:</span>
+            <button class="tbtn tbtn-ghost" onclick="loadSQLPreset('select')">🔍 Users SELECT</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSQLPreset('insert')">➕ Orders INSERT</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSQLPreset('update')">🔄 Products UPDATE</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSQLPreset('create')">🏗️ DDL CREATE TABLE</button>
+            <button class="tbtn tbtn-ghost" onclick="document.getElementById('sql-input').value=''; transformSQL();">✕ Clear</button>
+
+            <!-- Layout View Switcher -->
+            <div style="display: flex; gap: 6px; margin-left: auto;">
+              <button class="mini-btn active" id="layout-grid-btn" onclick="setLayout('grid')">🔲 Grid View (All 4)</button>
+              <button class="mini-btn" id="layout-tab-btn" onclick="setLayout('tab')">📑 Tabbed View</button>
+            </div>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-sqlconverter">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-sqlconverter">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+          <!-- Tabbed Mode Navigation -->
+          <div class="output-tabs-bar" id="tab-nav-bar" style="display: none;">
+            <button class="out-tab-btn active" onclick="switchActiveTab('select', this)">🔍 SELECT</button>
+            <button class="out-tab-btn" onclick="switchActiveTab('insert', this)">➕ INSERT INTO</button>
+            <button class="out-tab-btn" onclick="switchActiveTab('update', this)">🔄 UPDATE</button>
+            <button class="out-tab-btn" onclick="switchActiveTab('delete', this)">❌ DELETE</button>
+            <button class="out-tab-btn" onclick="switchActiveTab('upsert', this)">⚡ UPSERT</button>
+          </div>
+
+          <!-- Multi-Output SQL Grid Container -->
+          <div id="output-container" class="multi-output-grid">
+            
+            <!-- 1. SELECT Card -->
+            <div class="grid-sql-card" id="card-select">
+              <div class="grid-sql-header">
+                <span class="grid-sql-title">🔍 SELECT Query</span>
+                <div class="grid-sql-actions">
+                  <button class="mini-btn" onclick="copyCard('out-sql-select', 'SELECT')">📋 Copy</button>
+                  <button class="mini-btn" onclick="downloadCard('out-sql-select', 'query-select.sql')">💾 Download</button>
+                </div>
+              </div>
+              <div class="grid-sql-view" id="out-sql-select"></div>
+            </div>
+
+            <!-- 2. INSERT INTO Card -->
+            <div class="grid-sql-card" id="card-insert">
+              <div class="grid-sql-header">
+                <span class="grid-sql-title">➕ INSERT INTO Statement</span>
+                <div class="grid-sql-actions">
+                  <button class="mini-btn" onclick="copyCard('out-sql-insert', 'INSERT')">📋 Copy</button>
+                  <button class="mini-btn" onclick="downloadCard('out-sql-insert', 'query-insert.sql')">💾 Download</button>
+                </div>
+              </div>
+              <div class="grid-sql-view" id="out-sql-insert"></div>
+            </div>
+
+            <!-- 3. UPDATE Card -->
+            <div class="grid-sql-card" id="card-update">
+              <div class="grid-sql-header">
+                <span class="grid-sql-title">🔄 UPDATE Statement</span>
+                <div class="grid-sql-actions">
+                  <button class="mini-btn" onclick="copyCard('out-sql-update', 'UPDATE')">📋 Copy</button>
+                  <button class="mini-btn" onclick="downloadCard('out-sql-update', 'query-update.sql')">💾 Download</button>
+                </div>
+              </div>
+              <div class="grid-sql-view" id="out-sql-update"></div>
+            </div>
+
+            <!-- 4. DELETE Card -->
+            <div class="grid-sql-card" id="card-delete">
+              <div class="grid-sql-header">
+                <span class="grid-sql-title">❌ DELETE Statement</span>
+                <div class="grid-sql-actions">
+                  <button class="mini-btn" onclick="copyCard('out-sql-delete', 'DELETE')">📋 Copy</button>
+                  <button class="mini-btn" onclick="downloadCard('out-sql-delete', 'query-delete.sql')">💾 Download</button>
+                </div>
+              </div>
+              <div class="grid-sql-view" id="out-sql-delete"></div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Generate SQL queries from clipboard data on macOS with ⌘⇧V</h3>
+          <p>
+            Copy any JSON record, table schema, or CSV line. Press <strong>⌘⇧V</strong> in L2Cache to 
+            generate clean INSERT, UPDATE, or SELECT statements directly on your Mac.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Guide Content -->
+      <div class="article-body">
+        <h2>Why Developers Need Bidirectional SQL Converters</h2>
+        <p>
+          Backend engineers and database administrators write repetitive CRUD boilerplate daily:
+        </p>
+        <ul>
+          <li><strong>From SELECT to INSERT:</strong> Taking a column list from a query to generate migration seed files or fixture scripts.</li>
+          <li><strong>From INSERT to UPDATE:</strong> Converting bulk insert values into safe conditional update statements.</li>
+          <li><strong>From CREATE TABLE to SELECT/INSERT:</strong> Generating initial API query templates from new DDL schemas.</li>
+        </ul>
+        <p>
+          By parsing the AST tokens of your SQL statement in browser memory, this converter standardizes 
+          clause indentation, generates mock placeholder values, and builds all CRUD variations in one shot.
+        </p>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Does this tool support JOINs and subqueries?</div>
+          <div class="faq-a">Yes. The parser identifies the primary target table and maps qualified column names (e.g. users.id -> id) into clean INSERT and UPDATE fields.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Is my production query logged or transmitted?</div>
+          <div class="faq-a">No. All AST parsing occurs 100% in client-side JavaScript memory. Works completely offline in Airplane Mode.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="sql-formatter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🗄️</div><span class="tool-card-badge">Database</span></div>
+            <h3>SQL Query Prettifier</h3>
+            <p>Format and beautify SQL keywords.</p>
+          </a>
+          <a href="universal-data-converter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">⚡</div><span class="tool-card-badge">Super Tool</span></div>
+            <h3>Universal Data Converter</h3>
+            <p>Convert JSON, YAML, XML, and CSV.</p>
+          </a>
+          <a href="json-diff.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔀</div><span class="tool-card-badge">Data</span></div>
+            <h3>Semantic JSON Diff</h3>
+            <p>Compare two JSON objects side-by-side.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    let currentLayout = 'grid';
+    let activeTabId = 'select';
+
+    function parseSQLTokens(sql) {
+      const cleaned = sql.replace(/\/\*[\s\S]*?\*\/|--.*$/gm, '').trim();
+      let type = 'UNKNOWN';
+      let table = 'my_table';
+      let columns = [];
+      let whereClause = '';
+      let values = [];
+
+      // Detect Type
+      if (/^\s*SELECT\b/i.test(cleaned)) type = 'SELECT';
+      else if (/^\s*INSERT\s+INTO\b/i.test(cleaned)) type = 'INSERT';
+      else if (/^\s*UPDATE\b/i.test(cleaned)) type = 'UPDATE';
+      else if (/^\s*DELETE\s+FROM\b/i.test(cleaned)) type = 'DELETE';
+      else if (/^\s*CREATE\s+TABLE\b/i.test(cleaned)) type = 'CREATE';
+
+      // 1. Parse SELECT
+      if (type === 'SELECT') {
+        const fromMatch = cleaned.match(/\bFROM\s+([a-zA-Z0-9_`"\[\]]+)/i);
+        if (fromMatch) table = fromMatch[1].replace(/[`"\[\]]/g, '');
+
+        const selectMatch = cleaned.match(/^\s*SELECT\s+([\s\S]+?)\s+\bFROM\b/i);
+        if (selectMatch) {
+          columns = selectMatch[1].split(',').map(c => {
+            const trimmed = c.trim();
+            const asMatch = trimmed.match(/\bAS\s+([a-zA-Z0-9_]+)/i);
+            if (asMatch) return asMatch[1];
+            const dotParts = trimmed.split('.');
+            return dotParts[dotParts.length - 1].replace(/[`"\[\]]/g, '').trim();
+          }).filter(c => c && c !== '*');
+        }
+
+        const whereMatch = cleaned.match(/\bWHERE\s+([\s\S]+?)(?:\bORDER\b|\bGROUP\b|\bLIMIT\b|;|$)/i);
+        if (whereMatch) whereClause = whereMatch[1].trim();
+      }
+
+      // 2. Parse INSERT
+      else if (type === 'INSERT') {
+        const intoMatch = cleaned.match(/\bINSERT\s+INTO\s+([a-zA-Z0-9_`"\[\]]+)(?:\s*\(([\s\S]+?)\))?/i);
+        if (intoMatch) {
+          table = intoMatch[1].replace(/[`"\[\]]/g, '');
+          if (intoMatch[2]) {
+            columns = intoMatch[2].split(',').map(c => c.replace(/[`"\[\]]/g, '').trim()).filter(Boolean);
+          }
+        }
+        const valMatch = cleaned.match(/\bVALUES\s*\(([\s\S]+?)\)/i);
+        if (valMatch) {
+          values = valMatch[1].split(',').map(v => v.trim());
+        }
+      }
+
+      // 3. Parse UPDATE
+      else if (type === 'UPDATE') {
+        const updateMatch = cleaned.match(/\bUPDATE\s+([a-zA-Z0-9_`"\[\]]+)\s+SET\s+([\s\S]+?)(?:\bWHERE\b|;|$)/i);
+        if (updateMatch) {
+          table = updateMatch[1].replace(/[`"\[\]]/g, '');
+          const setPairs = updateMatch[2].split(',');
+          columns = setPairs.map(p => {
+            const eq = p.split('=');
+            return eq[0].replace(/[`"\[\]]/g, '').trim();
+          }).filter(Boolean);
+        }
+        const whereMatch = cleaned.match(/\bWHERE\s+([\s\S]+?)(?:;|$)/i);
+        if (whereMatch) whereClause = whereMatch[1].trim();
+      }
+
+      // 4. Parse CREATE TABLE
+      else if (type === 'CREATE') {
+        const createMatch = cleaned.match(/\bCREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?([a-zA-Z0-9_`"\[\]]+)\s*\(([\s\S]+)\)/i);
+        if (createMatch) {
+          table = createMatch[1].replace(/[`"\[\]]/g, '');
+          const lines = createMatch[2].split(',');
+          columns = lines.map(l => {
+            const words = l.trim().split(/\s+/);
+            const first = words[0].replace(/[`"\[\]]/g, '');
+            if (['PRIMARY', 'FOREIGN', 'KEY', 'CONSTRAINT', 'UNIQUE', 'CHECK'].includes(first.toUpperCase())) return null;
+            return first;
+          }).filter(Boolean);
+        }
+      }
+
+      if (columns.length === 0) {
+        columns = ['id', 'created_at', 'status', 'name'];
+      }
+
+      return { type, table, columns, whereClause, values };
+    }
+
+    function transformSQL() {
+      const raw = document.getElementById('sql-input').value;
+      document.getElementById('source-sql-bytes').textContent = new Blob([raw]).size + ' bytes';
+
+      const ast = parseSQLTokens(raw);
+      document.getElementById('detected-sql-type').textContent = `DETECTED: ${ast.type}`;
+
+      const tbl = ast.table || 'my_table';
+      const cols = ast.columns;
+      const colList = cols.join(', ');
+      const where = ast.whereClause ? `WHERE ${ast.whereClause}` : `WHERE id = 1001`;
+
+      // 1. Generated SELECT
+      const selectSQL = [
+        'SELECT',
+        cols.map(c => `  ${c}`).join(',\n'),
+        `FROM ${tbl}`,
+        `${where};`
+      ].join('\n');
+
+      // 2. Generated INSERT INTO
+      const mockVals = cols.map(c => {
+        if (/id$/i.test(c)) return '1001';
+        if (/price|amount|total|cost/i.test(c)) return '99.50';
+        if (/is_|has_|active/i.test(c)) return 'TRUE';
+        if (/date|created|updated|time/i.test(c)) return "NOW()";
+        return `'sample_${c}'`;
+      });
+      const insertSQL = [
+        `INSERT INTO ${tbl} (`,
+        cols.map(c => `  ${c}`).join(',\n'),
+        `) VALUES (`,
+        mockVals.map(v => `  ${v}`).join(',\n'),
+        `);`
+      ].join('\n');
+
+      // 3. Generated UPDATE
+      const updateSQL = [
+        `UPDATE ${tbl}`,
+        'SET',
+        cols.map((c, i) => `  ${c} = ${mockVals[i]}`).join(',\n'),
+        `${where};`
+      ].join('\n');
+
+      // 4. Generated DELETE
+      const deleteSQL = [
+        `DELETE FROM ${tbl}`,
+        `${where};`
+      ].join('\n');
+
+      document.getElementById('out-sql-select').textContent = selectSQL;
+      document.getElementById('out-sql-insert').textContent = insertSQL;
+      document.getElementById('out-sql-update').textContent = updateSQL;
+      document.getElementById('out-sql-delete').textContent = deleteSQL;
+
+      logLocalOp('SQL Query transform', raw.length);
+    }
+
+    function setLayout(mode) {
+      currentLayout = mode;
+      const container = document.getElementById('output-container');
+      const tabNav = document.getElementById('tab-nav-bar');
+      const gridBtn = document.getElementById('layout-grid-btn');
+      const tabBtn = document.getElementById('layout-tab-btn');
+
+      if (mode === 'grid') {
+        container.className = 'multi-output-grid';
+        tabNav.style.display = 'none';
+        gridBtn.classList.add('active');
+        tabBtn.classList.remove('active');
+        document.querySelectorAll('.grid-sql-card').forEach(c => c.style.display = 'flex');
+      } else {
+        container.className = '';
+        tabNav.style.display = 'flex';
+        gridBtn.classList.remove('active');
+        tabBtn.classList.add('active');
+        switchActiveTab(activeTabId);
+      }
+    }
+
+    function switchActiveTab(tabId, el) {
+      activeTabId = tabId;
+      if (el) {
+        document.querySelectorAll('.out-tab-btn').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
+      }
+      document.querySelectorAll('.grid-sql-card').forEach(c => c.style.display = 'none');
+      const activeCard = document.getElementById(`card-${tabId}`);
+      if (activeCard) activeCard.style.display = 'flex';
+    }
+
+    function copyCard(viewId, label) {
+      const text = document.getElementById(viewId).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(`✅ Copied ${label} query to clipboard!`);
+      });
+    }
+
+    function downloadCard(viewId, filename) {
+      const text = document.getElementById(viewId).textContent;
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(`💾 Downloaded ${filename}`);
+    }
+
+    function loadSQLPreset(type) {
+      if (type === 'select') {
+        document.getElementById('sql-input').value = `SELECT id, email, full_name, role, status, updated_at
+FROM users
+WHERE status = 'active' AND role = 'admin';`;
+      } else if (type === 'insert') {
+        document.getElementById('sql-input').value = `INSERT INTO orders (order_id, customer_id, total_amount, currency, status)
+VALUES (9001, 402, 149.99, 'USD', 'completed');`;
+      } else if (type === 'update') {
+        document.getElementById('sql-input').value = `UPDATE products
+SET price = 49.99, stock_quantity = 120, is_available = TRUE
+WHERE product_id = 882;`;
+      } else if (type === 'create') {
+        document.getElementById('sql-input').value = `CREATE TABLE subscriptions (
+  id INT PRIMARY KEY,
+  user_id INT NOT NULL,
+  plan_tier VARCHAR(50),
+  price DECIMAL(10,2),
+  is_active BOOLEAN,
+  expires_at TIMESTAMP
+);`;
+      }
+      transformSQL();
+    }
+
+    transformSQL();
+  </script>
+</body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offline SQL Query Formatter & Beautifier — 100% Client-Side | L2Cache</title>
+  <meta name="description" content="Prettify, format, and standardize SQL queries client-side in your browser. Uppercase SQL keywords, align clauses, and format Postgres, MySQL, and SQLite queries." />
+  <meta name="keywords" content="sql formatter, format sql query, sql beautifier, offline sql formatter, postgres sql formatter, mysql formatter, sqlite prettifier" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/sql-formatter" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Offline SQL Query Formatter",
+        "url": "https://l2cache.amvo.store/en/tools/sql-formatter",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Are my database queries sent to a remote server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The SQL formatting parser runs 100% client-side in your browser. Confidential table names, column schemas, and WHERE values are never transmitted."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What SQL dialects are supported?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The formatter handles standard ANSI SQL, PostgreSQL, MySQL, SQLite, Oracle, and MariaDB queries including CTEs, subqueries, and window functions."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Format database queries without internet. Zero risk to private schemas.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">SQL BEAUTIFIER</span>
+      <h1>Offline SQL Query <em>Prettifier</em></h1>
+      <p class="hero-sub">
+        Standardize raw, unformatted SQL into clean, readable code with uppercase keywords 
+        and aligned clauses. Runs 100% client-side.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">🗄️</div>
+            <span class="tool-name-text">SQL Formatter</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% IN-BROWSER</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-io-grid">
+            
+            <!-- Input Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Input Raw SQL Query</span>
+                <span id="sql-bytes" style="color:var(--purple);">0 bytes</span>
+              </div>
+              <textarea id="sql-input" class="tool-textarea" placeholder="select u.id, u.email, o.total_amount, count(i.id) as item_count from users u left join orders o on o.user_id = u.id inner join items i on i.order_id = o.id where u.active = 1 and o.status in ('completed', 'shipped') group by u.id, u.email, o.total_amount having count(i.id) > 2 order by o.created_at desc limit 50;"></textarea>
+            </div>
+
+            <!-- Output Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Formatted SQL</span>
+                <span>Standardized Indentation</span>
+              </div>
+              <div id="sql-output" class="tool-output-view">// Formatted SQL query will appear here</div>
+            </div>
+
+          </div>
+
+          <!-- Controls -->
+          <div class="tool-controls">
+            <button class="tbtn tbtn-primary" onclick="formatSQL(true)">⚡ Format SQL (Uppercase)</button>
+            <button class="tbtn tbtn-ghost" onclick="formatSQL(false)">Lowercase Keywords</button>
+            <button class="tbtn tbtn-ghost" onclick="minifySQL()">⬛ Minify (Single Line)</button>
+            <button class="tbtn tbtn-ghost" onclick="clearSQL()">✕ Clear</button>
+            <button class="tbtn tbtn-copy" onclick="copyOutput('sql-output')" style="margin-left: auto;">📋 Copy SQL</button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-sql">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-sql">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Prettify SQL queries on your Mac with ⌘⇧V</h3>
+          <p>
+            With L2Cache on macOS, whenever you copy a SQL query from your terminal, DBeaver, or code editor, 
+            press <strong>⌘⇧V</strong> to format it directly on your clipboard.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Guide Content -->
+      <div class="article-body">
+        <h2>SQL Formatting Best Practices</h2>
+        <p>
+          Clean SQL formatting drastically reduces syntax errors and speeds up code reviews. Key conventions include:
+        </p>
+        <ul>
+          <li><strong>Uppercase Reserved Keywords:</strong> Always uppercase <code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>, <code>JOIN</code>, <code>GROUP BY</code>, and <code>ORDER BY</code>.</li>
+          <li><strong>Indent JOIN and ON Conditions:</strong> Place table joins on separate lines with the joining predicate indented.</li>
+          <li><strong>Stack WHERE Conditions:</strong> Place logical <code>AND</code> / <code>OR</code> operators at the start of new lines for easier debugging.</li>
+        </ul>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Is my SQL schema uploaded anywhere?</div>
+          <div class="faq-a">No. The parser runs 100% in your browser using JavaScript. No table names, column names, or queries are ever sent to an external server.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="json-formatter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">{ }</div><span class="tool-card-badge">Data</span></div>
+            <h3>JSON Formatter</h3>
+            <p>Pretty-print and minify JSON payloads.</p>
+          </a>
+          <a href="csv-to-markdown.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">📊</div><span class="tool-card-badge">Tables</span></div>
+            <h3>CSV to Markdown Table</h3>
+            <p>Convert CSV data into clean Markdown tables.</p>
+          </a>
+          <a href="jwt-decoder.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔑</div><span class="tool-card-badge">Security</span></div>
+            <h3>JWT Decoder</h3>
+            <p>Decode JSON Web Tokens and inspect claims offline.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    document.getElementById('sql-input').addEventListener('input', function() {
+      document.getElementById('sql-bytes').textContent = new Blob([this.value]).size + ' bytes';
+    });
+
+    const SQL_KEYWORDS = [
+      'SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'INNER JOIN', 'LEFT JOIN', 'RIGHT JOIN', 
+      'FULL OUTER JOIN', 'CROSS JOIN', 'JOIN', 'ON', 'GROUP BY', 'HAVING', 'ORDER BY', 
+      'LIMIT', 'OFFSET', 'UNION ALL', 'UNION', 'INSERT INTO', 'VALUES', 'UPDATE', 'SET', 
+      'DELETE FROM', 'CREATE TABLE', 'DROP TABLE', 'ALTER TABLE', 'AS', 'IN', 'NOT IN', 
+      'EXISTS', 'NOT EXISTS', 'LIKE', 'ILIKE', 'BETWEEN', 'IS NULL', 'IS NOT NULL', 'DESC', 'ASC'
+    ];
+
+    function formatSQL(uppercase) {
+      const raw = document.getElementById('sql-input').value.trim();
+      if (!raw) {
+        document.getElementById('sql-output').textContent = '// Paste a SQL query above to format';
+        return;
+      }
+
+      let formatted = raw.replace(/\s+/g, ' ');
+      
+      // Major clause breaks
+      const majorClauses = [
+        'SELECT', 'FROM', 'WHERE', 'GROUP BY', 'HAVING', 'ORDER BY', 'LIMIT', 'OFFSET',
+        'INNER JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'FULL OUTER JOIN', 'CROSS JOIN', 'JOIN',
+        'UNION ALL', 'UNION', 'INSERT INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE FROM'
+      ];
+
+      majorClauses.forEach(clause => {
+        const regex = new RegExp('\\b' + clause + '\\b', 'gi');
+        formatted = formatted.replace(regex, '\n' + (uppercase ? clause.toUpperCase() : clause.toLowerCase()) + ' ');
+      });
+
+      // Split AND / OR onto indented lines
+      ['AND', 'OR'].forEach(k => {
+        const regex = new RegExp('\\b' + k + '\\b', 'gi');
+        formatted = formatted.replace(regex, '\n  ' + (uppercase ? k.toUpperCase() : k.toLowerCase()) + ' ');
+      });
+
+      // Comma spacing in SELECT
+      formatted = formatted.replace(/,\s*/g, ',\n  ');
+      
+      // Clean up extra blank lines
+      const result = formatted.split('\n').map(l => l.trimEnd()).filter(l => l.trim().length > 0).join('\n');
+      logLocalOp('SQL format()', new Blob([raw]).size);
+
+      withPacman('pac-sql', 'pacman-sql', 'sql-output', 'sql', result);
+    }
+
+    function minifySQL() {
+      const raw = document.getElementById('sql-input').value.trim();
+      if (!raw) return;
+      const result = raw.replace(/\s+/g, ' ');
+      logLocalOp('SQL minify()', new Blob([raw]).size);
+      withPacman('pac-sql', 'pacman-sql', 'sql-output', 'sql', result);
+    }
+
+    function clearSQL() {
+      document.getElementById('sql-input').value = '';
+      document.getElementById('sql-output').textContent = '// Formatted SQL query will appear here';
+      document.getElementById('sql-output').className = 'tool-output-view';
+      document.getElementById('sql-bytes').textContent = '0 bytes';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cURL to Fetch, Python, Swift & Go Converter — 100% Client-Side | L2Cache</title>
+  <meta name="description" content="Convert cURL commands to JavaScript Fetch, Axios, Python Requests, Go http, and Swift URLSession code instantly in your browser. 100% private." />
+  <meta name="keywords" content="curl to fetch, curl to python requests, curl to axios, curl to swift urlsession, curl converter online, offline curl converter" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/curl-converter" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "cURL Command to Code Converter",
+        "url": "https://l2cache.amvo.store/en/tools/curl-converter",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Are API tokens in my cURL command safe?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. This converter runs 100% client-side in your browser. Authorization headers, API keys, and query payloads never touch a server."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does L2Cache convert cURL on macOS?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "With L2Cache on macOS, copy any cURL from your browser's DevTools Network tab, press ⌘⇧V, and select 'Paste as Python' or 'Paste as Swift' directly into your editor."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Convert cURL commands to code locally. Your API keys remain private.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">API CODE GENERATOR</span>
+      <h1>cURL to <em>Fetch, Python & Swift</em></h1>
+      <p class="hero-sub">
+        Convert raw cURL commands from Chrome DevTools or terminal logs into clean, production-ready 
+        code for JavaScript, Python, Go, and Swift.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">⚡</div>
+            <span class="tool-name-text">cURL Syntax Converter</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% CLIENT-SIDE</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-io-grid">
+            
+            <!-- Input Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Input cURL Command</span>
+                <span id="curl-bytes" style="color:var(--purple);">0 bytes</span>
+              </div>
+              <textarea id="curl-input" class="tool-textarea" placeholder="curl -X POST https://api.example.com/v1/users \
+  -H 'Authorization: Bearer sec_key_9410' \
+  -H 'Content-Type: application/json' \
+  -d '{&quot;name&quot;:&quot;Alice&quot;,&quot;role&quot;:&quot;admin&quot;}'">curl -X POST https://api.example.com/v1/users \
+  -H 'Authorization: Bearer sec_key_9410' \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"Alice","role":"admin"}'</textarea>
+            </div>
+
+            <!-- Output Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Generated Code</span>
+                <span id="target-lang-label">JavaScript (Fetch)</span>
+              </div>
+              <div id="curl-output" class="tool-output-view">// Generated code will appear here</div>
+            </div>
+
+          </div>
+
+          <!-- Controls -->
+          <div class="tool-controls">
+            <button class="tbtn tbtn-primary" onclick="convertCurl('fetch')">🌐 JS Fetch</button>
+            <button class="tbtn tbtn-ghost" onclick="convertCurl('axios')">📦 Axios</button>
+            <button class="tbtn tbtn-ghost" onclick="convertCurl('python')">🐍 Python Requests</button>
+            <button class="tbtn tbtn-ghost" onclick="convertCurl('swift')">🍎 Swift URLSession</button>
+            <button class="tbtn tbtn-ghost" onclick="convertCurl('go')">🐹 Go http</button>
+            <button class="tbtn tbtn-copy" onclick="copyOutput('curl-output')" style="margin-left: auto;">📋 Copy Code</button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-curl">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-curl">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Paste cURL as Python or Swift on your Mac with ⌘⇧V</h3>
+          <p>
+            Copy any network request as cURL from Chrome DevTools. Press <strong>⌘⇧V</strong> in L2Cache and select 
+            'Paste as Python Requests' or 'Paste as Swift' directly on your clipboard.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">How do I copy cURL from Chrome or Safari?</div>
+          <div class="faq-a">Open Developer Tools (F12 or ⌘⌥I) → Go to the Network tab → Right-click any API request → Select 'Copy' → 'Copy as cURL'.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="jwt-decoder.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔑</div><span class="tool-card-badge">Security</span></div>
+            <h3>JWT Decoder</h3>
+            <p>Decode JSON Web Tokens and inspect claims offline.</p>
+          </a>
+          <a href="json-to-typescript.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">TS</div><span class="tool-card-badge">Types</span></div>
+            <h3>JSON to TypeScript</h3>
+            <p>Generate TypeScript types from JSON payloads.</p>
+          </a>
+          <a href="regex-tester.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🧪</div><span class="tool-card-badge">Regex</span></div>
+            <h3>Regex Tester</h3>
+            <p>Test and explain regular expressions with live highlights.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    document.getElementById('curl-input').addEventListener('input', function() {
+      document.getElementById('curl-bytes').textContent = new Blob([this.value]).size + ' bytes';
+    });
+
+    function parseCurl(str) {
+      let method = 'GET';
+      let url = '';
+      const headers = {};
+      let body = '';
+
+      // Normalize line breaks & escaped newlines
+      const clean = str.replace(/\\\r?\n/g, ' ').replace(/\r?\n/g, ' ').trim();
+      const tokens = clean.match(/(?:[^\s"']+|"[^"]*"|'[^']*')+/g) || [];
+
+      for (let i = 0; i < tokens.length; i++) {
+        let t = tokens[i];
+        if (t === '-X' || t === '--request') {
+          method = (tokens[++i] || 'GET').replace(/['"]/g, '').toUpperCase();
+        } else if (t === '-H' || t === '--header') {
+          const h = (tokens[++i] || '').replace(/^['"]|['"]$/g, '');
+          const colon = h.indexOf(':');
+          if (colon > 0) {
+            headers[h.substring(0, colon).trim()] = h.substring(colon + 1).trim();
+          }
+        } else if (t === '-d' || t === '--data' || t === '--data-raw' || t === '--data-binary') {
+          body = (tokens[++i] || '').replace(/^['"]|['"]$/g, '');
+          if (method === 'GET') method = 'POST';
+        } else if (t.startsWith('http://') || t.startsWith('https://') || t.startsWith("'http") || t.startsWith('"http')) {
+          url = t.replace(/^['"]|['"]$/g, '');
+        }
+      }
+
+      return { method, url: url || 'https://api.example.com/endpoint', headers, body };
+    }
+
+    function convertCurl(target) {
+      const raw = document.getElementById('curl-input').value.trim();
+      if (!raw) {
+        document.getElementById('curl-output').textContent = '// Paste a cURL command above to convert';
+        return;
+      }
+
+      const req = parseCurl(raw);
+      let result = '';
+
+      if (target === 'fetch') {
+        document.getElementById('target-lang-label').textContent = 'JavaScript (Fetch API)';
+        const opts = { method: req.method, headers: req.headers };
+        if (req.body) opts.body = req.body.startsWith('{') ? 'JSON.stringify(' + req.body + ')' : JSON.stringify(req.body);
+        result = `// JavaScript Fetch
+const response = await fetch('${req.url}', {
+  method: '${req.method}',
+  headers: ${JSON.stringify(req.headers, null, 4)},
+  ${req.body ? `body: JSON.stringify(${req.body})` : ''}
+});
+
+const data = await response.json();
+console.log(data);`;
+      } else if (target === 'axios') {
+        document.getElementById('target-lang-label').textContent = 'JavaScript (Axios)';
+        result = `// Axios
+import axios from 'axios';
+
+const response = await axios({
+  method: '${req.method.toLowerCase()}',
+  url: '${req.url}',
+  headers: ${JSON.stringify(req.headers, null, 4)},
+  ${req.body ? `data: ${req.body}` : ''}
+});
+
+console.log(response.data);`;
+      } else if (target === 'python') {
+        document.getElementById('target-lang-label').textContent = 'Python (Requests)';
+        result = `# Python Requests
+import requests
+import json
+
+url = "${req.url}"
+headers = ${JSON.stringify(req.headers, null, 4).replace(/true/g, 'True').replace(/false/g, 'False')}
+${req.body ? `payload = json.loads('''${req.body}''')\n` : ''}
+response = requests.${req.method.toLowerCase()}(
+    url,
+    headers=headers,
+    ${req.body ? 'json=payload' : ''}
+)
+
+print(response.json())`;
+      } else if (target === 'swift') {
+        document.getElementById('target-lang-label').textContent = 'Swift (URLSession)';
+        result = `// Swift URLSession (macOS / iOS)
+import Foundation
+
+guard let url = URL(string: "${req.url}") else { fatalError("Invalid URL") }
+var request = URLRequest(url: url)
+request.httpMethod = "${req.method}"
+${Object.entries(req.headers).map(([k, v]) => `request.setValue("${v}", forHTTPHeaderField: "${k}")`).join('\n')}
+${req.body ? `request.httpBody = """
+${req.body}
+""".data(using: .utf8)\n` : ''}
+let (data, response) = try await URLSession.shared.data(for: request)
+if let jsonString = String(data: data, encoding: .utf8) {
+    print(jsonString)
+}`;
+      } else if (target === 'go') {
+        document.getElementById('target-lang-label').textContent = 'Go (net/http)';
+        result = `// Go net/http
+package main
+
+import (
+    "fmt"
+    "io"
+    "net/http"
+    ${req.body ? `"strings"` : ''}
+)
+
+func main() {
+    client := &http.Client{}
+    ${req.body ? `reqBody := strings.NewReader(\`${req.body}\`)
+    req, _ := http.NewRequest("${req.method}", "${req.url}", reqBody)` : `req, _ := http.NewRequest("${req.method}", "${req.url}", nil)`}
+    
+    ${Object.entries(req.headers).map(([k, v]) => `req.Header.Set("${k}", "${v}")`).join('\n    ')}
+
+    resp, err := client.Do(req)
+    if err != nil { panic(err) }
+    defer resp.Body.Close()
+
+    body, _ := io.ReadAll(resp.Body)
+    fmt.Println(string(body))
+}`;
+      }
+
+      logLocalOp('cURL to ' + target, new Blob([raw]).size);
+      withPacman('pac-curl', 'pacman-curl', 'curl-output', 'ts', result);
+    }
+
+    // Default conversion on load
+    convertCurl('fetch');
+  </script>
+</body>
+</html>

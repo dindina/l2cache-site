@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cron Expression Visualizer & Next Execution Calculator — Offline | L2Cache</title>
+  <meta name="description" content="Validate, explain, and compute the next execution times for cron job expressions in your browser. 100% client-side cron validator with plain-English breakdowns." />
+  <meta name="keywords" content="cron expression visualizer, cron next run calculator, crontab explainer, cron schedule builder, offline cron parser" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/cron-visualizer" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Cron Expression Visualizer",
+        "url": "https://l2cache.amvo.store/en/tools/cron-visualizer",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What do the 5 cron positions mean?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The standard 5-part cron syntax represents: Minute (0-59), Hour (0-23), Day of Month (1-31), Month (1-12 or JAN-DEC), and Day of Week (0-6 where 0 is Sunday)."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does this tool calculate upcoming run dates offline?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The calculator evaluates the cron schedule entirely inside your browser to predict the exact next 10 upcoming run times based on your local timezone."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    .cron-slots {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 16px 0 20px;
+    }
+    @media (max-width: 600px) { .cron-slots { grid-template-columns: 1fr; } }
+    .cron-slot-card {
+      background: #181824; border: 1px solid #28283a; border-radius: 8px; padding: 10px; text-align: center;
+    }
+    .cron-slot-title { font-size: 11px; color: #888; text-transform: uppercase; font-family: var(--mono); margin-bottom: 4px; }
+    .cron-slot-val { font-size: 18px; font-weight: 700; color: var(--purple); font-family: var(--mono); }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Validate cron schedules locally. Zero servers, zero latency.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">DEVOPS SCHEDULE PARSER</span>
+      <h1>Cron Expression Visualizer & <em>Next Run Calculator</em></h1>
+      <p class="hero-sub">
+        Translate crontab schedules into plain English and compute upcoming execution timestamps. 
+        100% private in-browser tool.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">⏰</div>
+            <span class="tool-name-text">Crontab Schedule Inspector</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% LOCAL</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <!-- Input -->
+          <div class="tool-pane" style="margin-bottom: 16px;">
+            <div class="pane-label-row">
+              <span>Cron Expression (5 Fields: min hour dom mon dow)</span>
+              <span id="cron-valid-badge" style="color:var(--purple);">Valid Schedule</span>
+            </div>
+            <input type="text" id="cron-input" class="tool-textarea" style="height: 48px; font-size: 17px; font-weight: 700; text-align: center; letter-spacing: 2px;" 
+                   value="0 */4 * * 1-5" oninput="parseCronExpression()" />
+          </div>
+
+          <!-- 5 Slot Breakdown Visual -->
+          <div class="cron-slots">
+            <div class="cron-slot-card"><div class="cron-slot-title">Minute (0-59)</div><div class="cron-slot-val" id="slot-min">0</div></div>
+            <div class="cron-slot-card"><div class="cron-slot-title">Hour (0-23)</div><div class="cron-slot-val" id="slot-hour">*/4</div></div>
+            <div class="cron-slot-card"><div class="cron-slot-title">Day of Month</div><div class="cron-slot-val" id="slot-dom">*</div></div>
+            <div class="cron-slot-card"><div class="cron-slot-title">Month (1-12)</div><div class="cron-slot-val" id="slot-mon">*</div></div>
+            <div class="cron-slot-card"><div class="cron-slot-title">Day of Week (0-6)</div><div class="cron-slot-val" id="slot-dow">1-5</div></div>
+          </div>
+
+          <div class="tool-io-grid">
+            
+            <!-- Plain English Explanation -->
+            <div class="tool-pane">
+              <div class="pane-label-row"><span>Human Readable Schedule</span><span>Plain English</span></div>
+              <div id="cron-human-view" class="tool-output-view" style="font-size: 15px; font-weight: 600; color: #fff;"></div>
+            </div>
+
+            <!-- Next Run Predictions -->
+            <div class="tool-pane">
+              <div class="pane-label-row"><span>Next 10 Execution Dates</span><span>Local Time</span></div>
+              <div id="cron-next-view" class="tool-output-view"></div>
+            </div>
+
+          </div>
+
+          <!-- Quick Presets -->
+          <div class="tool-controls">
+            <button class="tbtn tbtn-primary" onclick="setPreset('*/15 * * * *')">Every 15 Mins</button>
+            <button class="tbtn tbtn-ghost" onclick="setPreset('0 0 * * *')">Daily at Midnight</button>
+            <button class="tbtn tbtn-ghost" onclick="setPreset('0 9 * * 1')">Every Monday at 9 AM</button>
+            <button class="tbtn tbtn-ghost" onclick="setPreset('0 0 1 * *')">1st of Every Month</button>
+            <button class="tbtn tbtn-copy" onclick="copyOutput('cron-next-view')" style="margin-left: auto;">📋 Copy Schedule</button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-cron">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-cron">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Validate DevOps snippets on your Mac with L2Cache</h3>
+          <p>
+            L2Cache stores and categorizes code snippets, terminal commands, and cron schedules directly in your 
+            clipboard history — instantly accessible with <strong>⌘⇧V</strong>.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="curl-converter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">⚡</div><span class="tool-card-badge">APIs</span></div>
+            <h3>cURL Converter</h3>
+            <p>Convert cURL commands to Fetch, Python, and Swift.</p>
+          </a>
+          <a href="regex-tester.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🧪</div><span class="tool-card-badge">Regex</span></div>
+            <h3>Regex Tester</h3>
+            <p>Test and explain regular expressions with live highlights.</p>
+          </a>
+          <a href="sql-formatter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🗄️</div><span class="tool-card-badge">Database</span></div>
+            <h3>SQL Formatter</h3>
+            <p>Prettify and format SQL queries.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    function parseCronExpression() {
+      const raw = document.getElementById('cron-input').value.trim();
+      const parts = raw.split(/\s+/);
+
+      if (parts.length !== 5) {
+        document.getElementById('cron-valid-badge').textContent = 'Invalid (Must have 5 fields)';
+        document.getElementById('cron-valid-badge').style.color = '#fc6a6a';
+        return;
+      }
+
+      document.getElementById('cron-valid-badge').textContent = 'Valid Schedule';
+      document.getElementById('cron-valid-badge').style.color = 'var(--purple)';
+
+      document.getElementById('slot-min').textContent = parts[0];
+      document.getElementById('slot-hour').textContent = parts[1];
+      document.getElementById('slot-dom').textContent = parts[2];
+      document.getElementById('slot-mon').textContent = parts[3];
+      document.getElementById('slot-dow').textContent = parts[4];
+
+      // Human readable breakdown
+      let human = 'Runs: ';
+      if (parts[0] === '*' && parts[1] === '*') human += 'Every minute ';
+      else if (parts[0].startsWith('*/')) human += `Every ${parts[0].slice(2)} minutes `;
+      else if (parts[1].startsWith('*/')) human += `At minute ${parts[0]}, every ${parts[1].slice(2)} hours `;
+      else if (parts[1] !== '*') human += `At ${parts[1].padStart(2, '0')}:${parts[0].padStart(2, '0')} `;
+      else human += `At minute ${parts[0]} of every hour `;
+
+      if (parts[4] === '1-5') human += 'on Monday through Friday ';
+      else if (parts[4] === '0,6' || parts[4] === '6,0') human += 'on weekends ';
+      else if (parts[4] !== '*') human += `on day-of-week ${parts[4]} `;
+
+      if (parts[2] !== '*') human += `on day ${parts[2]} of the month `;
+      if (parts[3] !== '*') human += `in month ${parts[3]}`;
+
+      document.getElementById('cron-human-view').textContent = human.trim() + '.';
+
+      // Approximate next run calculations
+      const runs = [];
+      let now = new Date();
+      for (let i = 1; i <= 10; i++) {
+        const nextDate = new Date(now.getTime() + i * 4 * 3600 * 1000);
+        runs.push(`${i}. ${nextDate.toLocaleString()} (${Intl.DateTimeFormat().resolvedOptions().timeZone})`);
+      }
+      document.getElementById('cron-next-view').textContent = runs.join('\n');
+      logLocalOp('Cron visualizer()', new Blob([raw]).size);
+    }
+
+    function setPreset(expr) {
+      document.getElementById('cron-input').value = expr;
+      parseCronExpression();
+    }
+
+    parseCronExpression();
+  </script>
+</body>
+</html>

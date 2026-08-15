@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UTM & Tracking Parameter Stripper — 100% Client-Side | L2Cache</title>
+  <meta name="description" content="Clean tracking parameters (utm_*, fbclid, gclid, igshid, yclid) from URLs instantly in your browser. Share clean, privacy-respecting links with zero tracking." />
+  <meta name="keywords" content="remove utm parameters, strip utm tags, clean url tracking, remove fbclid, url cleaner online, privacy url stripper" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/utm-stripper" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "UTM & Tracking Parameter Stripper",
+        "url": "https://l2cache.amvo.store/en/tools/utm-stripper",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Which tracking parameters are removed?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "This tool strips all utm_* parameters (source, medium, campaign, term, content), Google click IDs (gclid, dclid), Meta/Facebook IDs (fbclid), Microsoft click IDs (msclkid), Twitter (twclid), TikTok (ttclid), LinkedIn (li_fat_id), and Mailchimp tokens (mc_eid)."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does stripping tracking parameters break the destination link?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. UTM parameters and ad tracking IDs are purely used for marketing attribution and analytics. The target page content loads identically without them."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I strip UTM tags automatically on macOS?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "In L2Cache for macOS, whenever you copy a URL with tracking tags, L2Cache automatically offers 'Remove UTM params' right in your clipboard menu."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Clean URLs client-side. Zero tracking, zero server logging.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">PRIVACY LINK CLEANER</span>
+      <h1>UTM & Tracking Parameter <em>Stripper</em></h1>
+      <p class="hero-sub">
+        Remove surveillance parameters, ad click IDs, and marketing tags from URLs before sharing them 
+        in Slack, Discord, emails, or documentation.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">🔗</div>
+            <span class="tool-name-text">URL Sanitizer</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% LOCAL</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-io-grid">
+            
+            <!-- Input Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Input URL with Trackers</span>
+                <span id="utm-bytes" style="color:var(--purple);">0 bytes</span>
+              </div>
+              <textarea id="utm-input" class="tool-textarea" placeholder="https://news.ycombinator.com/item?id=40000000&utm_source=newsletter&utm_medium=email&utm_campaign=weekly_top&fbclid=IwAR2X_9410abcdef&gclid=CjwKCAjw&ref=twitter"></textarea>
+            </div>
+
+            <!-- Output Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Sanitized Clean URL</span>
+                <span>Ready to Share</span>
+              </div>
+              <div id="utm-output" class="tool-output-view">// Clean URL will appear here</div>
+            </div>
+
+          </div>
+
+          <!-- Controls -->
+          <div class="tool-controls">
+            <button class="tbtn tbtn-primary" onclick="stripUTM()">🧹 Clean & Strip Trackers</button>
+            <button class="tbtn tbtn-ghost" onclick="clearUTM()">✕ Clear</button>
+            <button class="tbtn tbtn-copy" onclick="copyOutput('utm-output')" style="margin-left: auto;">📋 Copy Clean URL</button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-utm">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-utm">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Strip tracking params on your Mac clipboard with ⌘⇧V</h3>
+          <p>
+            Whenever you copy a URL containing tracking parameters, L2Cache detects it and offers 
+            'Remove UTM params' instantly on your clipboard — clean links by default.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Guide Content -->
+      <div class="article-body">
+        <h2>Why You Should Strip Marketing Parameters Before Sharing</h2>
+        <p>
+          When you copy a link from Twitter, LinkedIn, Google Search, or an email newsletter, platforms append surveillance query parameters (like <code>fbclid</code>, <code>gclid</code>, and <code>utm_*</code>) to trace user clicks and correlate personal browsing habits.
+        </p>
+        <ul>
+          <li><strong>Leaking Campaign Intelligence:</strong> Sharing internal newsletter or promo links exposes user segments and source channels.</li>
+          <li><strong>Bloated & Messy URLs:</strong> Long URLs with 15 tracking parameters break message formatting and look spammy.</li>
+          <li><strong>Cross-Site Tracking:</strong> Click IDs allow advertising networks to tie distinct user profiles together.</li>
+        </ul>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Are useful query parameters preserved?</div>
+          <div class="faq-a">Yes. Functional query parameters like video timestamps (<code>?t=120</code>), search queries (<code>?q=swift</code>), and pagination IDs (<code>?page=2</code>) are kept intact. Only marketing tracking tokens are removed.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="jwt-decoder.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔑</div><span class="tool-card-badge">Security</span></div>
+            <h3>JWT Decoder</h3>
+            <p>Decode JSON Web Tokens and inspect claims offline.</p>
+          </a>
+          <a href="json-formatter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">{ }</div><span class="tool-card-badge">Format</span></div>
+            <h3>JSON Formatter</h3>
+            <p>Pretty-print and minify JSON payloads.</p>
+          </a>
+          <a href="csv-to-markdown.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">📊</div><span class="tool-card-badge">Tables</span></div>
+            <h3>CSV to Markdown Table</h3>
+            <p>Convert CSV data into clean Markdown tables.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    document.getElementById('utm-input').addEventListener('input', function() {
+      document.getElementById('utm-bytes').textContent = new Blob([this.value]).size + ' bytes';
+    });
+
+    const TRACKING_PREFIXES = [
+      'utm_', 'fbclid', 'gclid', 'dclid', 'msclkid', 'mc_', 'igshid', 
+      'yclid', 'twclid', 'li_fat_id', 'ttclid', 's_kwcid', 'sc_cid', 'ref_src'
+    ];
+
+    function stripUTM() {
+      const raw = document.getElementById('utm-input').value.trim();
+      if (!raw) {
+        document.getElementById('utm-output').textContent = '// Paste a URL above to clean';
+        return;
+      }
+
+      let result = '';
+      try {
+        const url = new URL(raw);
+        const beforeKeys = [...url.searchParams.keys()];
+        const removed = [];
+
+        beforeKeys.forEach(k => {
+          if (TRACKING_PREFIXES.some(p => k.toLowerCase().startsWith(p))) {
+            removed.push(k);
+            url.searchParams.delete(k);
+          }
+        });
+
+        const cleanUrl = url.toString();
+        const details = removed.length > 0
+          ? `\n\n// ✅ Removed ${removed.length} tracking parameter(s):\n// • ${removed.join('\n// • ')}`
+          : '\n\n// ℹ️ No tracking parameters found — URL was already clean.';
+
+        result = cleanUrl + details;
+        logLocalOp('UTM strip (' + removed.length + ')', new Blob([raw]).size);
+      } catch (e) {
+        result = '❌ Invalid URL: ' + e.message;
+      }
+
+      withPacman('pac-utm', 'pacman-utm', 'utm-output', 'utm', result);
+    }
+
+    function clearUTM() {
+      document.getElementById('utm-input').value = '';
+      document.getElementById('utm-output').textContent = '// Clean URL will appear here';
+      document.getElementById('utm-output').className = 'tool-output-view';
+      document.getElementById('utm-bytes').textContent = '0 bytes';
+    }
+  </script>
+</body>
+</html>

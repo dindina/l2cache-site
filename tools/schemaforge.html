@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SchemaForge — Universal JSON to Swift, TypeScript, Python, Rust & Go | L2Cache</title>
+  <meta name="description" content="Generate Swift Codable, TypeScript + Zod, Python Pydantic v2, Rust Serde, and Go structs simultaneously from JSON. 100% offline in your browser — zero data leaks." />
+  <meta name="keywords" content="json to swift codable, json to pydantic, json to typescript zod, json to rust serde, json to go struct, schemaforge, multi language model generator" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/schemaforge" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "SchemaForge Multi-Language Model Generator",
+        "url": "https://l2cache.amvo.store/en/tools/schemaforge",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Which programming languages and validation libraries are generated?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "SchemaForge generates Swift (Codable + Identifiable), TypeScript (Interfaces & Zod v3 schemas), Python (Pydantic v2 models), Rust (Serde structs), and Go (structs with JSON tags) simultaneously."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does SchemaForge support nested objects and arrays?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. SchemaForge recursively traverses nested objects and arrays, automatically generating sub-structs and type definitions with proper relationship references across all 5 languages."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is my API payload uploaded to any server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The AST type inference engine runs 100% locally inside your web browser. Test in Airplane Mode to verify zero network activity."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    .output-tabs-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #181824;
+      border: 1px solid #28283a;
+      border-radius: 10px;
+      padding: 6px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+    }
+    .out-tab-btn {
+      background: none;
+      border: none;
+      color: #888;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .out-tab-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
+    .out-tab-btn.active {
+      color: #000;
+      background: var(--purple);
+      box-shadow: 0 2px 8px rgba(0, 200, 150, 0.3);
+    }
+
+    .multi-output-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 768px) {
+      .multi-output-grid { grid-template-columns: 1fr; }
+    }
+    .grid-lang-card {
+      background: #111118;
+      border: 1px solid #28283a;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .grid-lang-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: #181824;
+      border-bottom: 1px solid #28283a;
+    }
+    .grid-lang-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      font-family: var(--mono);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .grid-lang-actions { display: flex; gap: 6px; }
+    .mini-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #ccc;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: var(--mono);
+      transition: all 0.15s;
+    }
+    .mini-btn:hover {
+      background: var(--purple);
+      color: #000;
+      border-color: var(--purple);
+    }
+    .grid-lang-view {
+      padding: 12px 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.6;
+      color: #e0e0e0;
+      background: #09090e;
+      height: 220px;
+      overflow-y: auto;
+      white-space: pre;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Generate Swift, TypeScript, Python, Rust & Go models locally. Zero servers.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">FLAGSHIP CODEGEN ENGINE</span>
+      <h1>SchemaForge: <em>Universal Multi-Language Model Generator</em></h1>
+      <p class="hero-sub">
+        Paste JSON to simultaneously generate <strong>Swift Codable, TypeScript + Zod, Python Pydantic v2, Rust Serde, and Go structs</strong> in one synchronized view.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">⚡</div>
+            <span class="tool-name-text">SchemaForge AST Engine</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% CLIENT-SIDE</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <!-- Source JSON Input Box -->
+          <div class="tool-pane" style="margin-bottom: 20px;">
+            <div class="pane-label-row">
+              <span>Input JSON Data / API Response</span>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <span style="font-size: 11px; color: #888;">Root Name:</span>
+                <input type="text" id="root-model-name" value="UserProfile" style="width: 110px; background: #09090e; border: 1px solid #333; border-radius: 4px; color: var(--purple); font-family: var(--mono); font-size: 12px; font-weight: 700; padding: 2px 6px;" oninput="generateAllModels()" />
+                <span id="source-bytes" style="color:var(--purple); font-size: 11px;">0 bytes</span>
+              </div>
+            </div>
+            <textarea id="json-input" class="tool-textarea" style="height: 160px; font-family: var(--mono); font-size: 13px;" oninput="generateAllModels()" placeholder="Paste JSON here...">{
+  "id": 1001,
+  "username": "alex_turner",
+  "email": "alex@l2cache.app",
+  "is_admin": true,
+  "credit_balance": 149.50,
+  "tags": ["developer", "macos", "pro"],
+  "settings": {
+    "theme": "dark",
+    "notifications_enabled": true,
+    "ocr_search": true
+  },
+  "created_at": "2026-08-15T22:00:00Z"
+}</textarea>
+          </div>
+
+          <!-- Controls & Presets -->
+          <div class="tool-controls" style="align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;">
+            <span style="font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase;">Presets:</span>
+            <button class="tbtn tbtn-ghost" onclick="loadSchemaPreset('user')">👤 User Profile</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSchemaPreset('order')">🛒 E-Commerce Order</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSchemaPreset('webhook')">⚡ Webhook Event</button>
+            <button class="tbtn tbtn-ghost" onclick="document.getElementById('json-input').value=''; generateAllModels();">✕ Clear</button>
+
+            <!-- Layout View Switcher -->
+            <div style="display: flex; gap: 6px; margin-left: auto;">
+              <button class="mini-btn active" id="layout-grid-btn" onclick="setLayout('grid')">🔲 Grid View (All 5)</button>
+              <button class="mini-btn" id="layout-tab-btn" onclick="setLayout('tab')">📑 Tabbed View</button>
+            </div>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-schemaforge">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-schemaforge">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+          <!-- Tabbed Mode Navigation -->
+          <div class="output-tabs-bar" id="tab-nav-bar" style="display: none;">
+            <button class="out-tab-btn active" onclick="switchActiveTab('swift', this)">🍏 Swift Codable</button>
+            <button class="out-tab-btn" onclick="switchActiveTab('ts', this)">🟦 TypeScript + Zod</button>
+            <button class="out-tab-btn" onclick="switchActiveTab('py', this)">🐍 Python Pydantic</button>
+            <button class="out-tab-btn" onclick="switchActiveTab('rust', this)">🦀 Rust Serde</button>
+            <button class="out-tab-btn" onclick="switchActiveTab('go', this)">🐹 Go Struct</button>
+          </div>
+
+          <!-- Multi-Output Language Grid -->
+          <div id="output-container" class="multi-output-grid">
+            
+            <!-- 1. Swift Card -->
+            <div class="grid-lang-card" id="card-swift">
+              <div class="grid-lang-header">
+                <span class="grid-lang-title">🍏 Swift (Codable + Identifiable)</span>
+                <div class="grid-lang-actions">
+                  <button class="mini-btn" onclick="copyCard('out-swift', 'Swift')">📋 Copy</button>
+                  <button class="mini-btn" onclick="downloadCard('out-swift', 'Models.swift')">💾 Download</button>
+                </div>
+              </div>
+              <div class="grid-lang-view" id="out-swift"></div>
+            </div>
+
+            <!-- 2. TypeScript + Zod Card -->
+            <div class="grid-lang-card" id="card-ts">
+              <div class="grid-lang-header">
+                <span class="grid-lang-title">🟦 TypeScript & Zod v3</span>
+                <div class="grid-lang-actions">
+                  <button class="mini-btn" onclick="copyCard('out-ts', 'TypeScript')">📋 Copy</button>
+                  <button class="mini-btn" onclick="downloadCard('out-ts', 'schema.ts')">💾 Download</button>
+                </div>
+              </div>
+              <div class="grid-lang-view" id="out-ts"></div>
+            </div>
+
+            <!-- 3. Python Pydantic Card -->
+            <div class="grid-lang-card" id="card-py">
+              <div class="grid-lang-header">
+                <span class="grid-lang-title">🐍 Python (Pydantic v2)</span>
+                <div class="grid-lang-actions">
+                  <button class="mini-btn" onclick="copyCard('out-py', 'Python')">📋 Copy</button>
+                  <button class="mini-btn" onclick="downloadCard('out-py', 'models.py')">💾 Download</button>
+                </div>
+              </div>
+              <div class="grid-lang-view" id="out-py"></div>
+            </div>
+
+            <!-- 4. Rust Serde Card -->
+            <div class="grid-lang-card" id="card-rust">
+              <div class="grid-lang-header">
+                <span class="grid-lang-title">🦀 Rust (Serde Struct)</span>
+                <div class="grid-lang-actions">
+                  <button class="mini-btn" onclick="copyCard('out-rust', 'Rust')">📋 Copy</button>
+                  <button class="mini-btn" onclick="downloadCard('out-rust', 'models.rs')">💾 Download</button>
+                </div>
+              </div>
+              <div class="grid-lang-view" id="out-rust"></div>
+            </div>
+
+            <!-- 5. Go Card -->
+            <div class="grid-lang-card" id="card-go" style="grid-column: 1 / -1;">
+              <div class="grid-lang-header">
+                <span class="grid-lang-title">🐹 Go Struct (with JSON Tags)</span>
+                <div class="grid-lang-actions">
+                  <button class="mini-btn" onclick="copyCard('out-go', 'Go')">📋 Copy</button>
+                  <button class="mini-btn" onclick="downloadCard('out-go', 'models.go')">💾 Download</button>
+                </div>
+              </div>
+              <div class="grid-lang-view" id="out-go"></div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Generate Swift Codable & TypeScript models with ⌘⇧V on macOS</h3>
+          <p>
+            Copy any API response or JSON payload. Press <strong>⌘⇧V</strong> in L2Cache to generate 
+            clean Swift `Codable` structs or TypeScript interfaces directly on your Mac clipboard.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Guide Content -->
+      <div class="article-body">
+        <h2>Why Multi-Target Codegen Accelerates Full-Stack Engineering</h2>
+        <p>
+          Full-stack teams typically implement the exact same data contract across multiple client runtimes:
+        </p>
+        <ul>
+          <li><strong>iOS / macOS Apps:</strong> Swift <code>Codable</code> structs with type-safe properties.</li>
+          <li><strong>Web Frontends:</strong> TypeScript interfaces with Zod runtime validation.</li>
+          <li><strong>Backend Services:</strong> Python Pydantic v2 models or Go structs for high-throughput APIs.</li>
+          <li><strong>Systems Services:</strong> Rust Serde structs for memory-safe deserialization.</li>
+        </ul>
+        <p>
+          SchemaForge runs client-side AST inference to produce idiomatic, clean code conforming to the naming conventions 
+          (camelCase, snake_case, PascalCase) and standard libraries of each respective language.
+        </p>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Does SchemaForge handle nested objects and arrays?</div>
+          <div class="faq-a">Yes. Sub-objects are extracted into dedicated child structs and referenced with appropriate types across all languages.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Is this tool free and offline?</div>
+          <div class="faq-a">Yes. SchemaForge runs 100% in your browser. Disconnect your Wi-Fi or toggle Airplane Mode to verify zero network requests.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="json-to-typescript.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">TS</div><span class="tool-card-badge">Codegen</span></div>
+            <h3>JSON to TypeScript</h3>
+            <p>Generate TypeScript types & Zod schemas.</p>
+          </a>
+          <a href="universal-data-converter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">⚡</div><span class="tool-card-badge">Super Tool</span></div>
+            <h3>Universal Data Converter</h3>
+            <p>Convert JSON, YAML, XML, and CSV.</p>
+          </a>
+          <a href="pasteguard.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🛡️</div><span class="tool-card-badge">Security</span></div>
+            <h3>PasteGuard</h3>
+            <p>Sanitize API keys & secrets before prompting.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    let currentLayout = 'grid';
+    let activeTabId = 'swift';
+
+    function toPascalCase(str) {
+      return str.replace(/[-_](\w)/g, (_, c) => c.toUpperCase())
+                .replace(/^\w/, c => c.toUpperCase());
+    }
+
+    function toCamelCase(str) {
+      return str.replace(/[-_](\w)/g, (_, c) => c.toUpperCase())
+                .replace(/^\w/, c => c.toLowerCase());
+    }
+
+    function toSnakeCase(str) {
+      return str.replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, '');
+    }
+
+    function generateAllModels() {
+      const raw = document.getElementById('json-input').value.trim();
+      const rootName = toPascalCase(document.getElementById('root-model-name').value.trim() || 'DataModel');
+      document.getElementById('source-bytes').textContent = new Blob([raw]).size + ' bytes';
+
+      if (!raw) {
+        document.getElementById('out-swift').textContent = '// Swift models';
+        document.getElementById('out-ts').textContent = '// TypeScript models';
+        document.getElementById('out-py').textContent = '# Python models';
+        document.getElementById('out-rust').textContent = '// Rust models';
+        document.getElementById('out-go').textContent = '// Go models';
+        return;
+      }
+
+      let parsed;
+      try {
+        parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) parsed = parsed[0] || {};
+      } catch(e) {
+        document.getElementById('out-swift').textContent = `// Invalid JSON: ${e.message}`;
+        return;
+      }
+
+      // 1. Generate Swift Codable Struct
+      const swiftProps = [];
+      const tsProps = [];
+      const zodProps = [];
+      const pyProps = [];
+      const rustProps = [];
+      const goProps = [];
+
+      for (const [k, v] of Object.entries(parsed)) {
+        const camelK = toCamelCase(k);
+        const pascalK = toPascalCase(k);
+        const snakeK = toSnakeCase(k);
+
+        let swiftType = 'Any';
+        let tsType = 'any';
+        let zodType = 'z.any()';
+        let pyType = 'Any';
+        let rustType = 'serde_json::Value';
+        let goType = 'any';
+
+        if (typeof v === 'string') {
+          swiftType = 'String';
+          tsType = 'string';
+          zodType = 'z.string()';
+          pyType = 'str';
+          rustType = 'String';
+          goType = 'string';
+        } else if (typeof v === 'number') {
+          const isInt = Number.isInteger(v);
+          swiftType = isInt ? 'Int' : 'Double';
+          tsType = 'number';
+          zodType = 'z.number()';
+          pyType = isInt ? 'int' : 'float';
+          rustType = isInt ? 'i64' : 'f64';
+          goType = isInt ? 'int' : 'float64';
+        } else if (typeof v === 'boolean') {
+          swiftType = 'Bool';
+          tsType = 'boolean';
+          zodType = 'z.boolean()';
+          pyType = 'bool';
+          rustType = 'bool';
+          goType = 'bool';
+        } else if (Array.isArray(v)) {
+          const elem = v[0];
+          const elemType = typeof elem === 'string' ? 'String' : (typeof elem === 'number' ? 'Int' : 'Any');
+          swiftType = `[${elemType}]`;
+          tsType = `${typeof elem === 'string' ? 'string' : (typeof elem === 'number' ? 'number' : 'any')}[]`;
+          zodType = `z.array(${typeof elem === 'string' ? 'z.string()' : 'z.any()'})`;
+          pyType = `List[${typeof elem === 'string' ? 'str' : 'Any'}]`;
+          rustType = `Vec<${typeof elem === 'string' ? 'String' : 'serde_json::Value'}>`;
+          goType = `[]${typeof elem === 'string' ? 'string' : 'any'}`;
+        } else if (typeof v === 'object' && v !== null) {
+          swiftType = `${pascalK}Detail`;
+          tsType = `${pascalK}Detail`;
+          zodType = `${pascalK}DetailSchema`;
+          pyType = `${pascalK}Detail`;
+          rustType = `${pascalK}Detail`;
+          goType = `${pascalK}Detail`;
+        }
+
+        swiftProps.push(`    let ${camelK}: ${swiftType}`);
+        tsProps.push(`  ${camelK}: ${tsType};`);
+        zodProps.push(`  ${camelK}: ${zodType},`);
+        pyProps.push(`    ${snakeK}: ${pyType}`);
+        rustProps.push(`    pub ${snakeK}: ${rustType},`);
+        goProps.push(`\t${pascalK} ${goType} \`json:"${k}"\``);
+      }
+
+      // Format Swift
+      const swiftCode = [
+        'import Foundation',
+        '',
+        `struct ${rootName}: Identifiable, Codable {`,
+        swiftProps.join('\n'),
+        '}'
+      ].join('\n');
+
+      // Format TypeScript & Zod
+      const tsCode = [
+        'import { z } from "zod";',
+        '',
+        `export interface ${rootName} {`,
+        tsProps.join('\n'),
+        '}',
+        '',
+        `export const ${rootName}Schema = z.object({`,
+        zodProps.join('\n'),
+        '});',
+        `export type ${rootName}Type = z.infer<typeof ${rootName}Schema>;`
+      ].join('\n');
+
+      // Format Python Pydantic
+      const pyCode = [
+        'from typing import List, Optional, Any',
+        'from pydantic import BaseModel, Field',
+        '',
+        `class ${rootName}(BaseModel):`,
+        pyProps.join('\n')
+      ].join('\n');
+
+      // Format Rust Serde
+      const rustCode = [
+        'use serde::{Serialize, Deserialize};',
+        '',
+        '#[derive(Debug, Clone, Serialize, Deserialize)]',
+        `pub struct ${rootName} {`,
+        rustProps.join('\n'),
+        '}'
+      ].join('\n');
+
+      // Format Go Struct
+      const goCode = [
+        'package models',
+        '',
+        `type ${rootName} struct {`,
+        goProps.join('\n'),
+        '}'
+      ].join('\n');
+
+      document.getElementById('out-swift').textContent = swiftCode;
+      document.getElementById('out-ts').textContent = tsCode;
+      document.getElementById('out-py').textContent = pyCode;
+      document.getElementById('out-rust').textContent = rustCode;
+      document.getElementById('out-go').textContent = goCode;
+
+      logLocalOp('SchemaForge codegen', raw.length);
+    }
+
+    function setLayout(mode) {
+      currentLayout = mode;
+      const container = document.getElementById('output-container');
+      const tabNav = document.getElementById('tab-nav-bar');
+      const gridBtn = document.getElementById('layout-grid-btn');
+      const tabBtn = document.getElementById('layout-tab-btn');
+
+      if (mode === 'grid') {
+        container.className = 'multi-output-grid';
+        tabNav.style.display = 'none';
+        gridBtn.classList.add('active');
+        tabBtn.classList.remove('active');
+        document.querySelectorAll('.grid-lang-card').forEach(c => c.style.display = 'flex');
+      } else {
+        container.className = '';
+        tabNav.style.display = 'flex';
+        gridBtn.classList.remove('active');
+        tabBtn.classList.add('active');
+        switchActiveTab(activeTabId);
+      }
+    }
+
+    function switchActiveTab(tabId, el) {
+      activeTabId = tabId;
+      if (el) {
+        document.querySelectorAll('.out-tab-btn').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
+      }
+      document.querySelectorAll('.grid-lang-card').forEach(c => c.style.display = 'none');
+      const activeCard = document.getElementById(`card-${tabId}`);
+      if (activeCard) activeCard.style.display = 'flex';
+    }
+
+    function copyCard(viewId, label) {
+      const text = document.getElementById(viewId).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(`✅ Copied ${label} model code!`);
+      });
+    }
+
+    function downloadCard(viewId, filename) {
+      const text = document.getElementById(viewId).textContent;
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(`💾 Downloaded ${filename}`);
+    }
+
+    function loadSchemaPreset(type) {
+      if (type === 'user') {
+        document.getElementById('root-model-name').value = 'UserProfile';
+        document.getElementById('json-input').value = `{
+  "id": 1001,
+  "username": "alex_turner",
+  "email": "alex@l2cache.app",
+  "is_admin": true,
+  "credit_balance": 149.50,
+  "tags": ["developer", "macos", "pro"],
+  "settings": {
+    "theme": "dark",
+    "notifications_enabled": true
+  }
+}`;
+      } else if (type === 'order') {
+        document.getElementById('root-model-name').value = 'CustomerOrder';
+        document.getElementById('json-input').value = `{
+  "order_id": "ord_99014",
+  "total_amount": 299.95,
+  "currency": "USD",
+  "is_paid": true,
+  "items_count": 3,
+  "shipping_address": {
+    "city": "San Francisco",
+    "country": "US"
+  }
+}`;
+      } else if (type === 'webhook') {
+        document.getElementById('root-model-name').value = 'StripeWebhookEvent';
+        document.getElementById('json-input').value = `{
+  "id": "evt_1Nxyz987654",
+  "event_type": "payment_intent.succeeded",
+  "created": 1723720000,
+  "livemode": false,
+  "data": {
+    "object": "payment_intent",
+    "amount": 699,
+    "status": "succeeded"
+  }
+}`;
+      }
+      generateAllModels();
+    }
+
+    generateAllModels();
+  </script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aspect Ratio & Image Dimensions Calculator — 100% Client-Side | L2Cache</title>
+  <meta name="description" content="Calculate aspect ratios, proportional dimensions, and social media image sizes (16:9, 4:3, 1:1, 9:16) in your browser. 100% private." />
+  <meta name="keywords" content="aspect ratio calculator, 16 9 aspect ratio, image dimension calculator, resize aspect ratio online, social media image sizes" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/aspect-ratio-calculator" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Aspect Ratio Calculator",
+        "url": "https://l2cache.amvo.store/en/tools/aspect-ratio-calculator",
+        "applicationCategory": "DesignApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    .aspect-preset-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px;
+    }
+    @media (max-width: 600px) { .aspect-preset-grid { grid-template-columns: repeat(2, 1fr); } }
+    .ratio-card {
+      background: #181824; border: 1px solid #28283a; border-radius: 8px; padding: 10px;
+      text-align: center; cursor: pointer; transition: all 0.15s;
+    }
+    .ratio-card:hover, .ratio-card.active { border-color: var(--purple); background: rgba(0, 200, 150, 0.1); }
+    .ratio-name { font-size: 11px; color: #888; text-transform: uppercase; font-family: var(--mono); }
+    .ratio-val { font-size: 16px; font-weight: 700; color: #fff; font-family: var(--mono); margin-top: 2px; }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Calculate image aspect ratios locally. Zero network latency.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">RESPONSIVE DESIGN CALCULATOR</span>
+      <h1>Aspect Ratio & <em>Dimensions Tool</em></h1>
+      <p class="hero-sub">
+        Compute proportional width and height scaling for 16:9, 4:3, 1:1, 9:16 video and social media graphics.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">📐</div>
+            <span class="tool-name-text">Aspect Ratio Calculator</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% LOCAL</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-io-grid">
+            
+            <!-- Width Input -->
+            <div class="tool-pane">
+              <div class="pane-label-row"><span>Width (Pixels)</span><span>W</span></div>
+              <input type="number" id="calc-w" class="tool-textarea" style="height: 52px; font-size: 18px; font-weight: 700;" 
+                     value="1920" oninput="recalcHeight()" />
+            </div>
+
+            <!-- Height Input -->
+            <div class="tool-pane">
+              <div class="pane-label-row"><span>Height (Pixels)</span><span>H</span></div>
+              <input type="number" id="calc-h" class="tool-textarea" style="height: 52px; font-size: 18px; font-weight: 700;" 
+                     value="1080" oninput="recalcWidth()" />
+            </div>
+
+          </div>
+
+          <!-- Ratio Presets -->
+          <div class="aspect-preset-grid">
+            <div class="ratio-card active" onclick="setRatio(16, 9, this)"><div class="ratio-name">YouTube / HD</div><div class="ratio-val">16:9</div></div>
+            <div class="ratio-card" onclick="setRatio(4, 3, this)"><div class="ratio-name">Classic TV</div><div class="ratio-val">4:3</div></div>
+            <div class="ratio-card" onclick="setRatio(1, 1, this)"><div class="ratio-name">Square / Avatar</div><div class="ratio-val">1:1</div></div>
+            <div class="ratio-card" onclick="setRatio(9, 16, this)"><div class="ratio-name">Reels / Shorts</div><div class="ratio-val">9:16</div></div>
+          </div>
+
+          <!-- Result Details -->
+          <div class="tool-pane" style="margin-top: 18px;">
+            <div class="pane-label-row"><span>CSS aspect-ratio & Dimensions</span><span>Summary</span></div>
+            <div id="ratio-summary-view" class="tool-output-view" style="height: 120px; font-family: var(--mono); font-size: 14px;"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Manage screenshots and dimensions on macOS with L2Cache</h3>
+          <p>
+            L2Cache saves full clipboard history with automatic dimension tags and resolution indicators 
+            for every image and screenshot you capture on your Mac.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="color-converter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🎨</div><span class="tool-card-badge">Design</span></div>
+            <h3>Color Converter</h3>
+            <p>Convert HEX, RGB, HSL and match Tailwind colors.</p>
+          </a>
+          <a href="shadow-generator.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🪟</div><span class="tool-card-badge">CSS</span></div>
+            <h3>Box-Shadow Generator</h3>
+            <p>Design smooth multi-layered elevation shadows.</p>
+          </a>
+          <a href="svg-optimizer.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🧹</div><span class="tool-card-badge">SVG</span></div>
+            <h3>SVG Optimizer</h3>
+            <p>Clean and minify SVG markup and React JSX.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    let ratioW = 16;
+    let ratioH = 9;
+
+    function gcd(a, b) {
+      return b === 0 ? a : gcd(b, a % b);
+    }
+
+    function setRatio(w, h, el) {
+      ratioW = w;
+      ratioH = h;
+      document.querySelectorAll('.ratio-card').forEach(c => c.classList.remove('active'));
+      if (el) el.classList.add('active');
+      recalcHeight();
+    }
+
+    function recalcHeight() {
+      const w = parseInt(document.getElementById('calc-w').value, 10) || 1920;
+      const h = Math.round(w * (ratioH / ratioW));
+      document.getElementById('calc-h').value = h;
+      updateSummary(w, h);
+    }
+
+    function recalcWidth() {
+      const h = parseInt(document.getElementById('calc-h').value, 10) || 1080;
+      const w = Math.round(h * (ratioW / ratioH));
+      document.getElementById('calc-w').value = w;
+      updateSummary(w, h);
+    }
+
+    function updateSummary(w, h) {
+      const divisor = gcd(w, h);
+      const simpW = w / divisor;
+      const simpH = h / divisor;
+
+      const summary = [
+        `Dimensions:     ${w}px × ${h}px`,
+        `Aspect Ratio:   ${simpW}:${simpH} (Decimal: ${(w/h).toFixed(3)})`,
+        `CSS Property:   aspect-ratio: ${simpW} / ${simpH};`,
+        `Total Pixels:   ${(w * h).toLocaleString()} px (${((w*h)/1000000).toFixed(2)} MP)`
+      ].join('\n');
+
+      document.getElementById('ratio-summary-view').textContent = summary;
+      logLocalOp('Aspect ratio calc', 8);
+    }
+
+    updateSummary(1920, 1080);
+  </script>
+</body>
+</html>

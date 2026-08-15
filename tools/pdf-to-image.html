@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDF to JPG & PNG Converter — 100% Client-Side & Private | L2Cache</title>
+  <meta name="description" content="Convert PDF pages to high-resolution PNG or JPG images directly in your browser. 100% offline & private — zero file uploads to any server." />
+  <meta name="keywords" content="pdf to jpg, pdf to png, convert pdf to image offline, high res pdf to image, extract images from pdf free" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/pdf-to-image" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <!-- Local PDF.js bundles for 100% offline execution -->
+  <script src="vendor/pdf.min.js"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Offline PDF to Image Converter",
+        "url": "https://l2cache.amvo.store/en/tools/pdf-to-image",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Are my PDF files uploaded to a remote server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The entire rendering process runs directly inside your browser memory using HTML5 Canvas and WebAssembly. Your documents never touch an external server."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What image formats and resolutions are supported?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You can export pages as PNG (lossless transparent) or JPG (standard quality) at 150 DPI or 300 DPI high-definition print resolutions."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    .pdf-dropzone {
+      border: 2px dashed rgba(0, 200, 150, 0.4);
+      background: #09090e;
+      border-radius: 16px;
+      padding: 36px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 20px;
+    }
+    .pdf-dropzone:hover, .pdf-dropzone.dragover {
+      border-color: var(--purple);
+      background: rgba(0, 200, 150, 0.05);
+    }
+    .drop-icon { font-size: 38px; margin-bottom: 10px; }
+    .drop-title { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .drop-sub { font-size: 13px; color: #888; }
+
+    .image-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .page-image-card {
+      background: #181824;
+      border: 1px solid #28283a;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px;
+      transition: all 0.15s ease;
+    }
+    .page-image-card:hover {
+      border-color: var(--purple);
+    }
+    .page-canvas-wrapper {
+      width: 100%;
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .page-canvas-wrapper canvas {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .page-card-meta {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ccc;
+    }
+    .page-dl-btn {
+      background: rgba(0, 200, 150, 0.15);
+      border: 1px solid rgba(0, 200, 150, 0.3);
+      color: var(--purple);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .page-dl-btn:hover {
+      background: var(--purple);
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Convert PDF pages to JPG/PNG images locally. Zero tracking.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">100% CLIENT-SIDE PDF RASTERIZER</span>
+      <h1>PDF to <em>JPG & PNG Converter</em></h1>
+      <p class="hero-sub">
+        Convert PDF document pages into high-resolution JPG or PNG images directly in your browser. 
+        Zero uploads, zero wait times — 100% private.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">🖼️</div>
+            <span class="tool-name-text">PDF to Image Rasterizer</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% IN-BROWSER</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <!-- Dropzone -->
+          <div class="pdf-dropzone" id="dropzone" onclick="document.getElementById('file-input').click()">
+            <input type="file" id="file-input" accept="application/pdf" style="display: none;" onchange="handleFileSelect(event)" />
+            <div class="drop-icon">📑</div>
+            <div class="drop-title" id="drop-title">Drop your PDF here, or click to browse</div>
+            <div class="drop-sub">Convert PDF pages to PNG or JPG images with custom DPI. Zero file uploads.</div>
+          </div>
+
+          <!-- Conversion Settings Bar -->
+          <div class="tool-controls" id="controls-bar" style="display: none; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 12px; font-weight: 700; color: #888; text-transform: uppercase;">Format:</span>
+              <select id="sel-format" class="tbtn tbtn-ghost" style="background: #181824; border: 1px solid #333; color: #fff; padding: 6px 12px;" onchange="reRenderAllPages()">
+                <option value="image/png">PNG (Lossless)</option>
+                <option value="image/jpeg">JPG (Compressed)</option>
+              </select>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 12px; font-weight: 700; color: #888; text-transform: uppercase;">Resolution:</span>
+              <select id="sel-dpi" class="tbtn tbtn-ghost" style="background: #181824; border: 1px solid #333; color: #fff; padding: 6px 12px;" onchange="reRenderAllPages()">
+                <option value="1.5">Standard (150 DPI)</option>
+                <option value="2.0">Crisp (200 DPI)</option>
+                <option value="3.0">Ultra HD Print (300 DPI)</option>
+              </select>
+            </div>
+
+            <button class="tbtn tbtn-primary" onclick="downloadAllImages()" style="margin-left: auto;">
+              📥 Download All Images
+            </button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-pdf2img">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-pdf2img">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+          <!-- Rendered Image Grid -->
+          <div class="image-preview-grid" id="image-grid"></div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ OCR and search screenshot images on your Mac with L2Cache</h3>
+          <p>
+            L2Cache saves every image and screenshot in your clipboard history with instant 
+            on-device OCR text search, allowing you to search text inside images with <strong>⌘⇧V</strong>.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Guide Content -->
+      <div class="article-body">
+        <h2>Why In-Browser PDF to Image Conversion is Safer</h2>
+        <p>
+          Converting confidential documents (invoices, pitch decks, resumes, signed contracts) into images 
+          is often required for presentations, social sharing, and documentation.
+        </p>
+        <p>
+          Traditional online image converters transmit your entire document across the internet to a third-party server. 
+          By rendering directly on an HTML5 Canvas inside your browser's V8 engine, your confidential files never leave your machine.
+        </p>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Can I convert multi-page PDFs?</div>
+          <div class="faq-a">Yes. Every page is rendered asynchronously into an individual image. You can download each page individually or click 'Download All Images'.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Is the conversion resolution high enough for printing?</div>
+          <div class="faq-a">Yes. Selecting 'Ultra HD Print (300 DPI)' renders at 3x scale, providing razor-sharp typography and crisp vector line art.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="image-to-pdf.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">📑</div><span class="tool-card-badge">PDF</span></div>
+            <h3>JPG/PNG to PDF</h3>
+            <p>Convert and merge multiple images into one PDF.</p>
+          </a>
+          <a href="pdf-page-remover.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">📑</div><span class="tool-card-badge">PDF</span></div>
+            <h3>PDF Page Remover</h3>
+            <p>Visually select and remove pages from PDFs.</p>
+          </a>
+          <a href="base64-image.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🖼️</div><span class="tool-card-badge">Data</span></div>
+            <h3>Base64 Image Tool</h3>
+            <p>Encode and decode image Data URIs.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'vendor/pdf.worker.min.js';
+    }
+
+    let loadedBuffer = null;
+    let currentPdfDoc = null;
+    let originalDocName = 'document';
+    const renderedImages = [];
+
+    const dropzone = document.getElementById('dropzone');
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => { dropzone.classList.remove('dragover'); });
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        loadPdfFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    function handleFileSelect(e) {
+      if (e.target.files && e.target.files.length > 0) {
+        loadPdfFile(e.target.files[0]);
+      }
+    }
+
+    async function loadPdfFile(file) {
+      if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+        alert('Please select a valid PDF document.');
+        return;
+      }
+
+      originalDocName = file.name.replace(/\.pdf$/i, '');
+      document.getElementById('drop-title').textContent = `Loaded: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+
+      loadedBuffer = await file.arrayBuffer();
+      document.getElementById('controls-bar').style.display = 'flex';
+      
+      await renderPdfPages();
+      logLocalOp('PDF to Image render', file.size);
+    }
+
+    async function renderPdfPages() {
+      if (!loadedBuffer) return;
+      const grid = document.getElementById('image-grid');
+      grid.innerHTML = '<div style="color:#888; font-family:var(--mono);">Rendering pages into canvas...</div>';
+      renderedImages.length = 0;
+
+      // Pac-Man Animation
+      const track = document.getElementById('pac-pdf2img');
+      const pacman = document.getElementById('pacman-pdf2img');
+      track.classList.add('running');
+      [...track.querySelectorAll('.pac-pellet,.pac-score,.pac-burst-star')].forEach(el => el.remove());
+
+      ['Vector Parse', 'Canvas 300DPI', 'Rasterizing', '🖼️ Done!'].forEach((lbl, i) => {
+        const el = document.createElement('span');
+        el.className = 'pac-pellet';
+        el.textContent = lbl;
+        el.style.left = (50 + i * 75) + 'px';
+        track.appendChild(el);
+      });
+
+      pacman.style.left = '-34px';
+      const DURATION = 900;
+      const trackW = track.offsetWidth || 400;
+      const start = performance.now();
+
+      function stepPac(now) {
+        const p = Math.min((now - start) / DURATION, 1);
+        pacman.style.left = (-34 + (trackW + 10) * p) + 'px';
+        if (p < 1) requestAnimationFrame(stepPac);
+        else {
+          track.classList.remove('running');
+          pacman.style.left = '-34px';
+        }
+      }
+      requestAnimationFrame(stepPac);
+
+      const scale = parseFloat(document.getElementById('sel-dpi').value) || 1.5;
+      const format = document.getElementById('sel-format').value;
+      const ext = format === 'image/jpeg' ? 'jpg' : 'png';
+
+      try {
+        const pdf = await pdfjsLib.getDocument({ data: loadedBuffer.slice(0) }).promise;
+        currentPdfDoc = pdf;
+        grid.innerHTML = '';
+
+        for (let num = 1; num <= pdf.numPages; num++) {
+          const page = await pdf.getPage(num);
+          const viewport = page.getViewport({ scale });
+
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+
+          // Fill white background for JPEG
+          if (format === 'image/jpeg') {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+          }
+
+          await page.render({ canvasContext: ctx, viewport }).promise;
+
+          const dataUrl = canvas.toDataURL(format, 0.92);
+          renderedImages.push({ page: num, dataUrl, ext });
+
+          // Card UI
+          const card = document.createElement('div');
+          card.className = 'page-image-card';
+          card.innerHTML = `
+            <div class="page-canvas-wrapper"></div>
+            <div class="page-card-meta">
+              <span>Page ${num}</span>
+              <a class="page-dl-btn" href="${dataUrl}" download="${originalDocName}-page-${num}.${ext}">
+                📥 Download ${ext.toUpperCase()}
+              </a>
+            </div>
+          `;
+          card.querySelector('.page-canvas-wrapper').appendChild(canvas);
+          grid.appendChild(card);
+        }
+
+        showToast(`✅ Rendered ${pdf.numPages} pages successfully!`);
+      } catch (err) {
+        grid.innerHTML = `<div style="color:#fc6a6a;">Error rendering PDF: ${err.message}</div>`;
+      }
+    }
+
+    function reRenderAllPages() {
+      renderPdfPages();
+    }
+
+    function downloadAllImages() {
+      if (renderedImages.length === 0) {
+        alert('Please load a PDF first.');
+        return;
+      }
+
+      renderedImages.forEach((img, idx) => {
+        setTimeout(() => {
+          const a = document.createElement('a');
+          a.href = img.dataUrl;
+          a.download = `${originalDocName}-page-${img.page}.${img.ext}`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }, idx * 250);
+      });
+
+      showToast(`📥 Downloading ${renderedImages.length} images...`);
+    }
+  </script>
+</body>
+</html>

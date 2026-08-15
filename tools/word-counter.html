@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Social Media Word & Character Counter — 100% Client-Side | L2Cache</title>
+  <meta name="description" content="Count words, characters, reading time, and check character limits for Twitter/X (280), LinkedIn (3000), and SEO titles offline in your browser." />
+  <meta name="keywords" content="word counter online, character counter, twitter character counter, linkedin post character counter, reading time calculator, offline word counter" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/word-counter" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Social Media Character & Word Counter",
+        "url": "https://l2cache.amvo.store/en/tools/word-counter",
+        "applicationCategory": "ProductivityApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    .metric-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px;
+    }
+    @media (max-width: 600px) { .metric-grid { grid-template-columns: repeat(2, 1fr); } }
+    .metric-card {
+      background: #181824; border: 1px solid #28283a; border-radius: 10px; padding: 14px; text-align: center;
+    }
+    .metric-val { font-size: 24px; font-weight: 800; color: var(--purple); font-family: var(--mono); }
+    .metric-lbl { font-size: 11px; color: #888; text-transform: uppercase; margin-top: 2px; }
+
+    /* Social limits bars */
+    .social-limits {
+      display: flex; flex-direction: column; gap: 12px; margin-top: 20px;
+    }
+    .limit-item {
+      background: #181824; border: 1px solid #28283a; border-radius: 8px; padding: 10px 14px;
+    }
+    .limit-header { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+    .limit-bar-bg { width: 100%; height: 6px; background: #28283a; border-radius: 3px; overflow: hidden; }
+    .limit-bar-fill { height: 100%; background: var(--purple); transition: width 0.15s ease; }
+    .limit-bar-fill.over { background: #fc6a6a; }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Count words & optimize post length locally. Zero tracking.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">CONTENT CREATOR COMPANION</span>
+      <h1>Social Media Word & <em>Character Counter</em></h1>
+      <p class="hero-sub">
+        Live word, character, and sentence counter with visual progress bars for X/Twitter, LinkedIn, Instagram, and SEO tags.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">📝</div>
+            <span class="tool-name-text">Text Analyzer</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% LOCAL</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <!-- Key Metrics -->
+          <div class="metric-grid">
+            <div class="metric-card"><div class="metric-val" id="cnt-words">0</div><div class="metric-lbl">Words</div></div>
+            <div class="metric-card"><div class="metric-val" id="cnt-chars">0</div><div class="metric-lbl">Characters</div></div>
+            <div class="metric-card"><div class="metric-val" id="cnt-sentences">0</div><div class="metric-lbl">Sentences</div></div>
+            <div class="metric-card"><div class="metric-val" id="cnt-read">0s</div><div class="metric-lbl">Reading Time</div></div>
+          </div>
+
+          <!-- Main Input -->
+          <div class="tool-pane">
+            <div class="pane-label-row"><span>Type or Paste Content</span><span>Live Analysis</span></div>
+            <textarea id="text-input" class="tool-textarea" style="height: 180px;" oninput="countText()" placeholder="Type or paste your social post, article draft, or copy here..."></textarea>
+          </div>
+
+          <!-- Social Limits Progress -->
+          <div class="social-limits">
+            
+            <div class="limit-item">
+              <div class="limit-header">
+                <span>🐦 X / Twitter Post</span>
+                <span id="lbl-twitter">0 / 280</span>
+              </div>
+              <div class="limit-bar-bg"><div class="limit-bar-fill" id="bar-twitter" style="width: 0%;"></div></div>
+            </div>
+
+            <div class="limit-item">
+              <div class="limit-header">
+                <span>💼 LinkedIn Post</span>
+                <span id="lbl-linkedin">0 / 3,000</span>
+              </div>
+              <div class="limit-bar-bg"><div class="limit-bar-fill" id="bar-linkedin" style="width: 0%;"></div></div>
+            </div>
+
+            <div class="limit-item">
+              <div class="limit-header">
+                <span>🔍 SEO Meta Title</span>
+                <span id="lbl-seo-title">0 / 60</span>
+              </div>
+              <div class="limit-bar-bg"><div class="limit-bar-fill" id="bar-seo-title" style="width: 0%;"></div></div>
+            </div>
+
+          </div>
+
+          <!-- Controls -->
+          <div class="tool-controls" style="margin-top: 18px;">
+            <button class="tbtn tbtn-primary" onclick="copyOutput('text-input')">📋 Copy Text</button>
+            <button class="tbtn tbtn-ghost" onclick="document.getElementById('text-input').value=''; countText();">✕ Clear</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Live word & character counts on your Mac clipboard with L2Cache</h3>
+          <p>
+            Whenever you copy any paragraph, article, or post on macOS, L2Cache displays instant word, 
+            character, and reading-time metrics right in your clipboard menu.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="markdown-to-rich-text.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">📋</div><span class="tool-card-badge">Writing</span></div>
+            <h3>Markdown to Rich Text</h3>
+            <p>Convert Markdown into clean formatted copy.</p>
+          </a>
+          <a href="title-capitalizer.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔠</div><span class="tool-card-badge">Copy</span></div>
+            <h3>Title Capitalizer</h3>
+            <p>Capitalize headlines in AP, Chicago, and APA styles.</p>
+          </a>
+          <a href="slug-generator.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔗</div><span class="tool-card-badge">SEO</span></div>
+            <h3>SEO Slug Generator</h3>
+            <p>Convert titles into clean URL slugs.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    function countText() {
+      const text = document.getElementById('text-input').value;
+      const chars = text.length;
+      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+      const sentences = text.trim() ? (text.match(/[^.!?]+[.!?]+/g) || []).length : 0;
+      const readSecs = Math.ceil((words / 200) * 60);
+
+      document.getElementById('cnt-words').textContent = words.toLocaleString();
+      document.getElementById('cnt-chars').textContent = chars.toLocaleString();
+      document.getElementById('cnt-sentences').textContent = sentences.toLocaleString();
+      document.getElementById('cnt-read').textContent = readSecs >= 60 ? `${Math.round(readSecs/60)}m` : `${readSecs}s`;
+
+      updateBar('twitter', chars, 280);
+      updateBar('linkedin', chars, 3000);
+      updateBar('seo-title', chars, 60);
+
+      logLocalOp('Word count', chars);
+    }
+
+    function updateBar(id, count, max) {
+      const pct = Math.min(100, (count / max) * 100);
+      const bar = document.getElementById(`bar-${id}`);
+      const lbl = document.getElementById(`lbl-${id}`);
+      
+      bar.style.width = pct + '%';
+      if (count > max) {
+        bar.classList.add('over');
+        lbl.textContent = `${count} / ${max} (${count - max} over limit)`;
+        lbl.style.color = '#fc6a6a';
+      } else {
+        bar.classList.remove('over');
+        lbl.textContent = `${count} / ${max}`;
+        lbl.style.color = '#ccc';
+      }
+    }
+
+    countText();
+  </script>
+</body>
+</html>

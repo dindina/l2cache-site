@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSON to TypeScript & Zod Schema Generator — Offline | L2Cache</title>
+  <meta name="description" content="Generate TypeScript interfaces and Zod validation schemas from JSON in your browser. Automatic type inference, nested objects, and optional fields. 100% private." />
+  <meta name="keywords" content="json to typescript, json to ts, json to zod schema, typescript interface generator, json to type, offline typescript generator" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/json-to-typescript" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "JSON to TypeScript & Zod Generator",
+        "url": "https://l2cache.amvo.store/en/tools/json-to-typescript",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How does type inference handle nested JSON objects?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The generator recursively traverses nested JSON objects and arrays, creating separate, cleanly named child interfaces for all nested records."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can this generate Zod schemas?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Click 'Generate Zod Schema' to create runtime type-validation code using z.object(), z.string(), z.number(), and z.infer."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I convert JSON to Swift or TypeScript on Mac?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "In L2Cache for macOS, copy any JSON response and select 'Paste as TypeScript' or 'Paste as Swift Codable' directly from your clipboard."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Generate TypeScript types & Zod schemas without internet. Zero data leaks.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">TYPESCRIPT CODEGEN</span>
+      <h1>JSON to TypeScript & <em>Zod Schema</em></h1>
+      <p class="hero-sub">
+        Transform API responses and JSON documents into strongly typed TypeScript interfaces 
+        and Zod runtime validation schemas instantly.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">TS</div>
+            <span class="tool-name-text">TypeScript Type Architect</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% IN-BROWSER</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-io-grid">
+            
+            <!-- Input Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Input JSON</span>
+                <span id="ts-bytes" style="color:var(--purple);">0 bytes</span>
+              </div>
+              <textarea id="ts-input" class="tool-textarea" placeholder='{
+  "id": "usr_9410",
+  "name": "Sarah Connor",
+  "email": "sarah@resistance.org",
+  "verified": true,
+  "stats": {
+    "logins": 42,
+    "lastLogin": 1723720000
+  },
+  "roles": ["admin", "developer"]
+}'></textarea>
+            </div>
+
+            <!-- Output Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Generated TypeScript / Zod</span>
+                <span>Type Definitions</span>
+              </div>
+              <div id="ts-output" class="tool-output-view">// TypeScript interfaces or Zod schemas will appear here</div>
+            </div>
+
+          </div>
+
+          <!-- Controls -->
+          <div class="tool-controls">
+            <button class="tbtn tbtn-primary" onclick="generateTS('interface')">⚡ TypeScript Interface</button>
+            <button class="tbtn tbtn-ghost" onclick="generateTS('type')">Type Alias</button>
+            <button class="tbtn tbtn-ghost" onclick="generateZod()">🛡️ Zod v3 Schema</button>
+            <button class="tbtn tbtn-ghost" onclick="clearTS()">✕ Clear</button>
+            <button class="tbtn tbtn-copy" onclick="copyOutput('ts-output')" style="margin-left: auto;">📋 Copy Code</button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-ts">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-ts">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Paste as TypeScript or Swift Codable on macOS</h3>
+          <p>
+            With L2Cache, whenever you copy an API payload on your Mac, press <strong>⌘⇧V</strong> and select 
+            'Paste as TypeScript' or 'Paste as Swift Codable' to generate types instantly on your clipboard.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Guide Content -->
+      <div class="article-body">
+        <h2>Why Strong Typing from JSON Matters</h2>
+        <p>
+          Frontend and full-stack developers constantly consume third-party API responses. Manually creating TypeScript interfaces is tedious and prone to typos, nullable field mismatches, and missed nested fields. 
+          Generating types directly from representative JSON ensures complete compile-time type safety across your codebase.
+        </p>
+
+        <h2>TypeScript Interfaces vs. Zod Schemas: Which Should You Use?</h2>
+        <ul>
+          <li><strong>TypeScript Interfaces:</strong> Zero runtime bundle overhead. Used strictly at compile time for IDE autocompletion and type-checking.</li>
+          <li><strong>Zod Schemas:</strong> Runtime schema validation. Ensures incoming API responses or user input actually match expected types before your application logic executes.</li>
+        </ul>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Are nested JSON objects supported?</div>
+          <div class="faq-a">Yes. Nested objects are automatically extracted into distinct, well-named child interfaces or schemas.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">How does the generator infer array types?</div>
+          <div class="faq-a">If an array contains primitive numbers, strings, or booleans, it generates <code>string[]</code> or <code>number[]</code>. For arrays of objects, it infers the unified schema of the items.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="json-formatter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">{ }</div><span class="tool-card-badge">Format</span></div>
+            <h3>JSON Formatter</h3>
+            <p>Pretty-print and minify JSON payloads.</p>
+          </a>
+          <a href="sql-formatter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🗄️</div><span class="tool-card-badge">Database</span></div>
+            <h3>SQL Formatter</h3>
+            <p>Prettify and format SQL queries.</p>
+          </a>
+          <a href="jwt-decoder.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔑</div><span class="tool-card-badge">Security</span></div>
+            <h3>JWT Decoder</h3>
+            <p>Decode JSON Web Tokens and inspect claims offline.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    document.getElementById('ts-input').addEventListener('input', function() {
+      document.getElementById('ts-bytes').textContent = new Blob([this.value]).size + ' bytes';
+    });
+
+    function capitalize(s) {
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    function inferType(val, keyName, extraTypes) {
+      if (val === null || val === undefined) return 'any';
+      if (typeof val === 'string') return 'string';
+      if (typeof val === 'number') return 'number';
+      if (typeof val === 'boolean') return 'boolean';
+      if (Array.isArray(val)) {
+        if (val.length === 0) return 'any[]';
+        const first = val[0];
+        if (typeof first === 'object' && first !== null) {
+          const childName = capitalize(keyName.replace(/s$/, '')) + 'Item';
+          extraTypes.push(buildInterface(childName, first, 'interface', extraTypes));
+          return childName + '[]';
+        }
+        return (typeof first) + '[]';
+      }
+      if (typeof val === 'object') {
+        const childName = capitalize(keyName);
+        extraTypes.push(buildInterface(childName, val, 'interface', extraTypes));
+        return childName;
+      }
+      return 'any';
+    }
+
+    function buildInterface(name, obj, kind, extraTypes) {
+      let lines = [kind === 'interface' ? `export interface ${name} {` : `export type ${name} = {`];
+      for (const [k, v] of Object.entries(obj)) {
+        const propType = inferType(v, k, extraTypes);
+        lines.push(`  ${k}: ${propType};`);
+      }
+      lines.push('}');
+      return lines.join('\n');
+    }
+
+    function generateTS(kind) {
+      const raw = document.getElementById('ts-input').value.trim();
+      if (!raw) {
+        document.getElementById('ts-output').textContent = '// Paste JSON above to generate TypeScript types';
+        return;
+      }
+      let result = '';
+      try {
+        const parsed = JSON.parse(raw);
+        const extra = [];
+        const main = buildInterface('RootObject', parsed, kind, extra);
+        result = [...extra.reverse(), main].join('\n\n');
+        logLocalOp('JSON to TS (' + kind + ')', new Blob([raw]).size);
+      } catch (e) {
+        result = '❌ Invalid JSON: ' + e.message;
+      }
+      withPacman('pac-ts', 'pacman-ts', 'ts-output', 'ts', result);
+    }
+
+    function inferZod(val, keyName, extraSchemas) {
+      if (val === null || val === undefined) return 'z.any()';
+      if (typeof val === 'string') return 'z.string()';
+      if (typeof val === 'number') return 'z.number()';
+      if (typeof val === 'boolean') return 'z.boolean()';
+      if (Array.isArray(val)) {
+        if (val.length === 0) return 'z.array(z.any())';
+        const first = val[0];
+        if (typeof first === 'object' && first !== null) {
+          const childName = capitalize(keyName.replace(/s$/, '')) + 'Schema';
+          extraSchemas.push(buildZodSchema(childName, first, extraSchemas));
+          return `z.array(${childName})`;
+        }
+        return `z.array(${inferZod(first, keyName, extraSchemas)})`;
+      }
+      if (typeof val === 'object') {
+        const childName = capitalize(keyName) + 'Schema';
+        extraSchemas.push(buildZodSchema(childName, val, extraSchemas));
+        return childName;
+      }
+      return 'z.any()';
+    }
+
+    function buildZodSchema(name, obj, extraSchemas) {
+      let lines = [`export const ${name} = z.object({`];
+      for (const [k, v] of Object.entries(obj)) {
+        lines.push(`  ${k}: ${inferZod(v, k, extraSchemas)},`);
+      }
+      lines.push('});');
+      return lines.join('\n');
+    }
+
+    function generateZod() {
+      const raw = document.getElementById('ts-input').value.trim();
+      if (!raw) return;
+      let result = '';
+      try {
+        const parsed = JSON.parse(raw);
+        const extra = [];
+        const main = buildZodSchema('RootSchema', parsed, extra);
+        result = [
+          "import { z } from 'zod';",
+          "",
+          ...extra.reverse(),
+          main,
+          "",
+          "export type RootType = z.infer<typeof RootSchema>;"
+        ].join('\n');
+        logLocalOp('JSON to Zod', new Blob([raw]).size);
+      } catch(e) {
+        result = '❌ Invalid JSON: ' + e.message;
+      }
+      withPacman('pac-ts', 'pacman-ts', 'ts-output', 'ts', result);
+    }
+
+    function clearTS() {
+      document.getElementById('ts-input').value = '';
+      document.getElementById('ts-output').textContent = '// TypeScript interfaces or Zod schemas will appear here';
+      document.getElementById('ts-output').className = 'tool-output-view';
+      document.getElementById('ts-bytes').textContent = '0 bytes';
+    }
+  </script>
+</body>
+</html>

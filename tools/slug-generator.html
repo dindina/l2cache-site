@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clean URL & SEO Slug Generator — 100% Client-Side | L2Cache</title>
+  <meta name="description" content="Generate clean, SEO-friendly URL slugs from blog post titles and strings. Strips special characters, converts accents, and handles custom separators offline." />
+  <meta name="keywords" content="slug generator, url slug generator, seo friendly slug, text to slug converter, offline slug generator" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/slug-generator" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Clean URL Slug Generator",
+        "url": "https://l2cache.amvo.store/en/tools/slug-generator",
+        "applicationCategory": "ProductivityApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Generate SEO URL slugs locally in your browser. Zero tracking.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">SEO URL ARCHITECT</span>
+      <h1>Clean URL & <em>SEO Slug Generator</em></h1>
+      <p class="hero-sub">
+        Transform messy headlines and article titles into clean, URL-safe permalinks for blogs, documentation, and web apps.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">🔗</div>
+            <span class="tool-name-text">URL Slug Engine</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% LOCAL</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-io-grid">
+            
+            <!-- Input Title -->
+            <div class="tool-pane">
+              <div class="pane-label-row"><span>Input Title or String</span><span>Article Header</span></div>
+              <textarea id="slug-input" class="tool-textarea" oninput="generateSlug('-')" placeholder="Enter title here...">10 Best Developer Tools for macOS in 2026: The Complete Privacy Guide!</textarea>
+            </div>
+
+            <!-- Generated Slug -->
+            <div class="tool-pane">
+              <div class="pane-label-row"><span>Generated SEO Slug</span><span>URL Safe</span></div>
+              <div id="slug-output" class="tool-output-view" style="font-size: 15px; font-weight: 700; color: #fff;"></div>
+            </div>
+
+          </div>
+
+          <!-- Controls -->
+          <div class="tool-controls">
+            <button class="tbtn tbtn-primary" onclick="generateSlug('-')">⚡ Kebab-Case (dash-separated)</button>
+            <button class="tbtn tbtn-ghost" onclick="generateSlug('_')">Snake_case (underscore)</button>
+            <button class="tbtn tbtn-copy" onclick="copyOutput('slug-output')" style="margin-left: auto;">📋 Copy Slug</button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-slug">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-slug">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Generate slugs directly on your Mac clipboard with ⌘⇧V</h3>
+          <p>
+            Copy any article title, press <strong>⌘⇧V</strong> in L2Cache, and choose 'Convert to URL Slug' 
+            to paste clean permalinks into markdown files or CMS editors.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="title-capitalizer.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔠</div><span class="tool-card-badge">Copy</span></div>
+            <h3>Title Capitalizer</h3>
+            <p>Capitalize headlines in AP, Chicago, and APA styles.</p>
+          </a>
+          <a href="word-counter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">📝</div><span class="tool-card-badge">Writing</span></div>
+            <h3>Word Counter</h3>
+            <p>Count words and check social limits.</p>
+          </a>
+          <a href="utm-stripper.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔗</div><span class="tool-card-badge">Web</span></div>
+            <h3>UTM Stripper</h3>
+            <p>Clean marketing trackers from copied URLs.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    function generateSlug(sep) {
+      const raw = document.getElementById('slug-input').value.trim();
+      if (!raw) return;
+
+      const slug = raw
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove accents
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '') // strip special chars
+        .trim()
+        .replace(/[\s_-]+/g, sep) // replace whitespace with separator
+        .replace(new RegExp(`^\\${sep}+|\\${sep}+$`, 'g'), ''); // trim leading/trailing sep
+
+      logLocalOp('Slug generate', slug.length);
+      withPacman('pac-slug', 'pacman-slug', 'slug-output', 'utm', slug);
+    }
+
+    generateSlug('-');
+  </script>
+</body>
+</html>

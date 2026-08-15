@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offline PDF Page Remover — 100% Client-Side & Private | L2Cache</title>
+  <meta name="description" content="Delete and remove pages from PDF files offline in your browser. Visual page grid, 1-click page removal, zero file uploads, and 100% privacy for confidential documents." />
+  <meta name="keywords" content="remove pages from pdf, delete pdf pages, offline pdf page remover, private pdf splitter, delete pages from pdf online free" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/pdf-page-remover" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <!-- Load local vendor bundles with reliable CDN fallback for 100% offline & online support -->
+  <script src="vendor/pdf-lib.min.js"></script>
+  <script>
+    if (!window.PDFLib) {
+      document.write('<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"><\/script>');
+    }
+  </script>
+  <script src="vendor/pdf.min.js"></script>
+  <script>
+    if (!window.pdfjsLib) {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"><\/script>');
+    }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Offline PDF Page Remover",
+        "url": "https://l2cache.amvo.store/en/tools/pdf-page-remover",
+        "applicationCategory": "ProductivityApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is my PDF uploaded to a server when deleting pages?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. This tool processes your PDF 100% client-side inside your browser using WebAssembly and Web Workers. Your PDF never leaves your computer."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I remove multiple pages or page ranges at once?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. You can click on individual visual page thumbnails to toggle deletion, or type page numbers and ranges (e.g. 1, 3, 5-8) into the quick-remove input."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does this tool retain original PDF quality and hyperlinks?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. PDF-lib extracts and re-packages the original vector streams, embedded fonts, and images without re-compressing or degrading resolution."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    /* PDF Dropzone */
+    .pdf-dropzone {
+      border: 2px dashed rgba(0, 200, 150, 0.4);
+      background: #09090e;
+      border-radius: 16px;
+      padding: 40px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 24px;
+    }
+    .pdf-dropzone:hover, .pdf-dropzone.dragover {
+      border-color: var(--purple);
+      background: rgba(0, 200, 150, 0.05);
+    }
+    .drop-icon { font-size: 40px; margin-bottom: 12px; }
+    .drop-title { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .drop-sub { font-size: 13px; color: #888; }
+
+    /* Visual Pages Grid */
+    .pdf-pages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+      max-height: 480px;
+      overflow-y: auto;
+      padding: 12px;
+      background: #09090e;
+      border-radius: 12px;
+      border: 1px solid #222;
+    }
+    .pdf-page-tile {
+      background: #181824;
+      border: 2px solid #28283a;
+      border-radius: 10px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .pdf-page-tile:hover {
+      border-color: var(--purple);
+      transform: translateY(-2px);
+    }
+    .pdf-page-tile.deleted {
+      border-color: #fc6a6a;
+      background: rgba(252, 106, 106, 0.1);
+      opacity: 0.55;
+    }
+    .pdf-page-tile canvas {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .page-tile-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-top: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: #aaa;
+    }
+    .delete-badge {
+      background: #fc6a6a;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: none;
+    }
+    .pdf-page-tile.deleted .delete-badge { display: inline-block; }
+    .pdf-page-tile.deleted .page-num { text-decoration: line-through; color: #fc6a6a; }
+
+    .delete-overlay-x {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 42px;
+      color: #fc6a6a;
+      display: none;
+      pointer-events: none;
+      text-shadow: 0 0 12px rgba(0,0,0,0.8);
+    }
+    .pdf-page-tile.deleted .delete-overlay-x { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Delete PDF pages locally. Your sensitive documents never leave your Mac.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">100% CLIENT-SIDE PDF PRIVACY</span>
+      <h1>Offline PDF <em>Page Remover</em></h1>
+      <p class="hero-sub">
+        Remove confidential or unwanted pages from PDF files with a visual page grid. 
+        Processed 100% inside your browser — zero servers, zero uploads, complete security.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">📄</div>
+            <span class="tool-name-text">PDF Page Manager</span>
+          </div>
+          <span class="tool-badge-pill" id="pdf-status-badge">🔒 100% IN-BROWSER</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <!-- Dropzone -->
+          <div class="pdf-dropzone" id="dropzone" onclick="document.getElementById('file-input').click()">
+            <input type="file" id="file-input" accept="application/pdf" style="display: none;" onchange="handleFileSelect(event)" />
+            <div class="drop-icon">📑</div>
+            <div class="drop-title" id="drop-title">Drop your PDF file here, or click to browse</div>
+            <div class="drop-sub">Processed entirely in your browser. Max file size: unlimited.</div>
+          </div>
+
+          <!-- Page Action Bar -->
+          <div id="pdf-actions-bar" style="display: none; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 13px; color: #888;">Quick Remove Range:</span>
+              <input type="text" id="range-input" placeholder="e.g. 1, 3, 5-8" 
+                     style="background: #09090e; border: 1px solid #333; color: #fff; padding: 6px 12px; border-radius: 6px; font-family: var(--mono); font-size: 12px; width: 140px; outline: none;" />
+              <button class="tbtn tbtn-ghost" onclick="applyRangeDelete()">Apply</button>
+              <button class="tbtn tbtn-ghost" onclick="resetDeletedPages()">Restore All</button>
+            </div>
+            <div style="font-family: var(--mono); font-size: 12px; color: var(--purple);" id="page-summary-text">
+              Total Pages: 0 | Removing: 0
+            </div>
+          </div>
+
+          <!-- Visual Pages Grid Container -->
+          <div class="pdf-pages-grid" id="pages-grid" style="display: none;"></div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-pdf">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-pdf">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+          <!-- Download Action Area -->
+          <div id="download-section" style="display: none; margin-top: 16px; text-align: right;">
+            <button class="tbtn tbtn-primary" onclick="exportModifiedPDF()" style="font-size: 14px; padding: 12px 24px;">
+              ⚡ Remove Selected Pages & Download PDF
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ OCR and extract data from PDFs on macOS with L2Cache</h3>
+          <p>
+            L2Cache provides on-device OCR and document search across your clipboard history — 
+            search scanned receipts, invoices, and documents without sending files to the cloud.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Guide Content -->
+      <div class="article-body">
+        <h2>The Danger of Uploading Sensitive PDFs to Web Converters</h2>
+        <p>
+          PDFs frequently contain highly confidential records: <strong>bank statements, tax filings (W-2s, 1099s), medical charts, employee contracts, and trade secrets</strong>. 
+          When you upload files to traditional online PDF tools (like Smallpdf or iLovePDF), your entire document is transmitted to a remote server, often stored in temporary buckets, and processed outside your legal jurisdiction.
+        </p>
+        <p>
+          <strong>How this tool works differently:</strong> This tool loads the WebAssembly binary of PDF.js and PDF-lib directly into your web browser's memory. All rendering, page extraction, and PDF compilation occurs on your local CPU. Turn off your Wi-Fi or enable Airplane Mode to verify: the tool functions with zero internet connectivity.
+        </p>
+
+        <h2>How to Remove Pages from a PDF in 3 Steps</h2>
+        <ol>
+          <li><strong>Select or Drag & Drop your PDF:</strong> The file is read locally in milliseconds.</li>
+          <li><strong>Click Unwanted Pages:</strong> A red ✕ and badge will mark pages scheduled for deletion. Click again to undo.</li>
+          <li><strong>Export New PDF:</strong> PDF-lib strips the selected pages and downloads a pristine, full-resolution PDF.</li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Is there a page count or file size limit?</div>
+          <div class="faq-a">Because processing happens in your local browser memory, files with 100+ pages are supported without artificial upload limits or subscriptions.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Are vector graphics and text layers preserved?</div>
+          <div class="faq-a">Yes. Unlike image-based tools that rasterize PDFs, PDF-lib copies original vector object trees, embedded fonts, and text layers without re-compression.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="jwt-decoder.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔑</div><span class="tool-card-badge">Security</span></div>
+            <h3>JWT Decoder</h3>
+            <p>Decode JSON Web Tokens and inspect claims offline.</p>
+          </a>
+          <a href="json-formatter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">{ }</div><span class="tool-card-badge">Data</span></div>
+            <h3>JSON Formatter</h3>
+            <p>Pretty-print and minify JSON payloads.</p>
+          </a>
+          <a href="csv-to-markdown.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">📊</div><span class="tool-card-badge">Tables</span></div>
+            <h3>CSV to Markdown Table</h3>
+            <p>Convert CSV data into clean Markdown tables.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    // Initialize PDF.js worker using local vendor bundle
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'vendor/pdf.worker.min.js';
+    }
+
+    let loadedPdfBytes = null;
+    let loadedPdfDoc = null;
+    let totalPagesCount = 0;
+    let deletedPageIndices = new Set(); // 0-indexed
+    let originalFileName = 'document.pdf';
+
+    // Drag & Drop Handlers
+    const dropzone = document.getElementById('dropzone');
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => { dropzone.classList.remove('dragover'); });
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        processPdfFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    function handleFileSelect(e) {
+      if (e.target.files && e.target.files.length > 0) {
+        processPdfFile(e.target.files[0]);
+      }
+    }
+
+    async function processPdfFile(file) {
+      if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+        alert('Please select a valid PDF file.');
+        return;
+      }
+
+      originalFileName = file.name;
+      document.getElementById('drop-title').textContent = `Loaded: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+      
+      const buffer = await file.arrayBuffer();
+      // Store a safe cloned Uint8Array that won't be detached by the PDF.js Web Worker
+      loadedPdfBytes = new Uint8Array(buffer.slice(0));
+      deletedPageIndices.clear();
+
+      try {
+        // Pass a distinct copy to PDF.js
+        const loadingTask = pdfjsLib.getDocument({ data: buffer.slice(0) });
+        loadedPdfDoc = await loadingTask.promise;
+        totalPagesCount = loadedPdfDoc.numPages;
+
+        renderPagesGrid();
+        document.getElementById('pdf-actions-bar').style.display = 'flex';
+        document.getElementById('pages-grid').style.display = 'grid';
+        document.getElementById('download-section').style.display = 'block';
+        updateSummary();
+        logLocalOp(`PDF load (${totalPagesCount} pages)`, file.size);
+      } catch (err) {
+        alert('Could not render PDF pages: ' + err.message);
+      }
+    }
+
+    async function renderPagesGrid() {
+      const container = document.getElementById('pages-grid');
+      container.innerHTML = '';
+
+      for (let i = 1; i <= totalPagesCount; i++) {
+        const tile = document.createElement('div');
+        tile.className = 'pdf-page-tile';
+        tile.id = `page-tile-${i}`;
+        tile.onclick = () => togglePageDelete(i - 1);
+
+        const canvas = document.createElement('canvas');
+        tile.appendChild(canvas);
+
+        const overlayX = document.createElement('div');
+        overlayX.className = 'delete-overlay-x';
+        overlayX.textContent = '✕';
+        tile.appendChild(overlayX);
+
+        const footer = document.createElement('div');
+        footer.className = 'page-tile-footer';
+        footer.innerHTML = `<span class="page-num">Page ${i}</span><span class="delete-badge">DELETED</span>`;
+        tile.appendChild(footer);
+
+        container.appendChild(tile);
+
+        // Render page thumbnail asynchronously
+        renderThumbnail(i, canvas);
+      }
+    }
+
+    async function renderThumbnail(pageNumber, canvas) {
+      const page = await loadedPdfDoc.getPage(pageNumber);
+      const viewport = page.getViewport({ scale: 0.35 });
+      const context = canvas.getContext('2d');
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+
+      await page.render({ canvasContext: context, viewport: viewport }).promise;
+    }
+
+    function togglePageDelete(pageIndex) {
+      if (deletedPageIndices.has(pageIndex)) {
+        deletedPageIndices.delete(pageIndex);
+        document.getElementById(`page-tile-${pageIndex + 1}`).classList.remove('deleted');
+      } else {
+        if (deletedPageIndices.size >= totalPagesCount - 1) {
+          alert('You cannot delete all pages. At least one page must remain.');
+          return;
+        }
+        deletedPageIndices.add(pageIndex);
+        document.getElementById(`page-tile-${pageIndex + 1}`).classList.add('deleted');
+      }
+      updateSummary();
+    }
+
+    function updateSummary() {
+      const count = deletedPageIndices.size;
+      const remaining = totalPagesCount - count;
+      document.getElementById('page-summary-text').textContent = 
+        `Total Pages: ${totalPagesCount} | Removing: ${count} | Keeping: ${remaining}`;
+    }
+
+    function applyRangeDelete() {
+      const raw = document.getElementById('range-input').value.trim();
+      if (!raw) return;
+
+      const parts = raw.split(',');
+      parts.forEach(part => {
+        part = part.trim();
+        if (part.includes('-')) {
+          const [start, end] = part.split('-').map(n => parseInt(n.trim(), 10));
+          if (!isNaN(start) && !isNaN(end)) {
+            for (let i = start; i <= end; i++) {
+              if (i >= 1 && i <= totalPagesCount && deletedPageIndices.size < totalPagesCount - 1) {
+                deletedPageIndices.add(i - 1);
+                const el = document.getElementById(`page-tile-${i}`);
+                if (el) el.classList.add('deleted');
+              }
+            }
+          }
+        } else {
+          const p = parseInt(part, 10);
+          if (!isNaN(p) && p >= 1 && p <= totalPagesCount && deletedPageIndices.size < totalPagesCount - 1) {
+            deletedPageIndices.add(p - 1);
+            const el = document.getElementById(`page-tile-${p}`);
+            if (el) el.classList.add('deleted');
+          }
+        }
+      });
+      updateSummary();
+    }
+
+    function resetDeletedPages() {
+      deletedPageIndices.clear();
+      document.querySelectorAll('.pdf-page-tile').forEach(t => t.classList.remove('deleted'));
+      updateSummary();
+    }
+
+    async function exportModifiedPDF() {
+      if (!loadedPdfBytes) return;
+      if (deletedPageIndices.size === 0) {
+        alert('Please select at least one page to remove.');
+        return;
+      }
+      if (deletedPageIndices.size >= totalPagesCount) {
+        alert('At least one page must remain.');
+        return;
+      }
+
+      // Pac-Man Animation
+      const deletedList = [...deletedPageIndices].map(i => `Page ${i + 1}`);
+      const labels = deletedList.slice(0, 6);
+      
+      const track = document.getElementById('pac-pdf');
+      const pacman = document.getElementById('pacman-pdf');
+      track.classList.add('running');
+      [...track.querySelectorAll('.pac-pellet,.pac-score,.pac-burst-star')].forEach(el => el.remove());
+
+      labels.forEach((lbl, i) => {
+        const el = document.createElement('span');
+        el.className = 'pac-pellet';
+        el.textContent = '🗑️ ' + lbl;
+        el.style.left = (50 + i * 55) + 'px';
+        track.appendChild(el);
+      });
+
+      // Animate Pac-Man
+      pacman.style.left = '-34px';
+      const DURATION = 1000;
+      const trackW = track.offsetWidth || 400;
+      const start = performance.now();
+
+      function stepPac(now) {
+        const p = Math.min((now - start) / DURATION, 1);
+        pacman.style.left = (-34 + (trackW + 10) * p) + 'px';
+        if (p < 1) requestAnimationFrame(stepPac);
+        else {
+          track.classList.remove('running');
+          pacman.style.left = '-34px';
+        }
+      }
+      requestAnimationFrame(stepPac);
+
+      // Perform PDF-lib extraction
+      try {
+        const lib = (typeof PDFLib !== 'undefined') ? PDFLib : window.PDFLib;
+        if (!lib || !lib.PDFDocument) {
+          throw new Error('PDFLib engine is still loading or unavailable. Please refresh and try again.');
+        }
+        const { PDFDocument } = lib;
+        const srcDoc = await PDFDocument.load(loadedPdfBytes.slice(0));
+        const outDoc = await PDFDocument.create();
+
+        const keepIndices = [];
+        for (let i = 0; i < totalPagesCount; i++) {
+          if (!deletedPageIndices.has(i)) {
+            keepIndices.push(i);
+          }
+        }
+
+        const copiedPages = await outDoc.copyPages(srcDoc, keepIndices);
+        copiedPages.forEach(page => outDoc.addPage(page));
+
+        const modifiedBytes = await outDoc.save();
+        
+        // Trigger Download
+        const blob = new Blob([modifiedBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const newName = originalFileName.replace(/\.pdf$/i, '') + '-modified.pdf';
+        a.download = newName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        showToast(`✅ Downloaded ${newName} (Removed ${deletedPageIndices.size} page(s))`);
+        logLocalOp(`PDF remove (${deletedPageIndices.size} pages removed)`, modifiedBytes.length);
+      } catch (err) {
+        alert('Failed to generate modified PDF: ' + err.message);
+      }
+    }
+  </script>
+</body>
+</html>

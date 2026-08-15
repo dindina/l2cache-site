@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SVG Optimizer & React JSX Cleaner — 100% Client-Side | L2Cache</title>
+  <meta name="description" content="Optimize, minify, and clean SVG code or convert SVGs to React JSX components in your browser. Strips editor junk from Illustrator and Figma. 100% private." />
+  <meta name="keywords" content="svg optimizer online, svg to react jsx, clean svg figma, minify svg, offline svg compressor" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/svg-optimizer" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "SVG Optimizer & JSX Cleaner",
+        "url": "https://l2cache.amvo.store/en/tools/svg-optimizer",
+        "applicationCategory": "DesignApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Clean SVG vector graphics locally. Zero servers, complete privacy.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">VECTOR ASSET OPTIMIZER</span>
+      <h1>SVG Optimizer & <em>React JSX Cleaner</em></h1>
+      <p class="hero-sub">
+        Strip bloated metadata from Figma & Illustrator SVGs, clean path precision, and convert into clean React JSX components.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">🧹</div>
+            <span class="tool-name-text">SVG Studio</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% CLIENT-SIDE</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-io-grid">
+            
+            <!-- Input SVG -->
+            <div class="tool-pane">
+              <div class="pane-label-row"><span>Input SVG Markup</span><span id="svg-in-bytes">0 bytes</span></div>
+              <textarea id="svg-input" class="tool-textarea" oninput="optimizeSVG()" placeholder="<svg width='100' height='100' ...>"><svg width="100" height="100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+  <!-- Generator: Figma / Illustrator -->
+  <g id="Icon/Check" sketch:type="MSLayerGroup">
+    <path d="M5 13L9 17L19 7" stroke="#00C896" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg></textarea>
+            </div>
+
+            <!-- Output SVG -->
+            <div class="tool-pane">
+              <div class="pane-label-row"><span>Clean Optimized Output</span><span id="svg-out-bytes" style="color:var(--purple);">0 bytes</span></div>
+              <div id="svg-output" class="tool-output-view">// Clean SVG or JSX will appear here</div>
+            </div>
+
+          </div>
+
+          <!-- Controls -->
+          <div class="tool-controls">
+            <button class="tbtn tbtn-primary" onclick="optimizeSVG()">⚡ Clean & Minify SVG</button>
+            <button class="tbtn tbtn-ghost" onclick="convertToReactJSX()">⚛️ Convert to React JSX</button>
+            <button class="tbtn tbtn-ghost" onclick="clearSVG()">✕ Clear</button>
+            <button class="tbtn tbtn-copy" onclick="copyOutput('svg-output')" style="margin-left: auto;">📋 Copy Result</button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-svg">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-svg">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Clean SVGs copied from Figma directly on your Mac clipboard</h3>
+          <p>
+            With L2Cache on macOS, copy SVG code from Figma or Sketch, press <strong>⌘⇧V</strong>, and select 
+            'Paste as Clean JSX' or 'Paste as Minified SVG' right into Xcode or VS Code.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="color-converter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🎨</div><span class="tool-card-badge">Design</span></div>
+            <h3>Color Converter</h3>
+            <p>Convert HEX, RGB, HSL and match Tailwind colors.</p>
+          </a>
+          <a href="shadow-generator.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🪟</div><span class="tool-card-badge">CSS</span></div>
+            <h3>Box-Shadow Generator</h3>
+            <p>Design smooth multi-layered elevation shadows.</p>
+          </a>
+          <a href="base64-image.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🖼️</div><span class="tool-card-badge">Image</span></div>
+            <h3>Base64 to Image</h3>
+            <p>Convert images to Data URIs offline.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    function optimizeSVG() {
+      const raw = document.getElementById('svg-input').value.trim();
+      document.getElementById('svg-in-bytes').textContent = new Blob([raw]).size + ' bytes';
+      if (!raw) return;
+
+      let clean = raw
+        .replace(/<!--[\s\S]*?-->/g, '') // strip comments
+        .replace(/xmlns:sketch="[^"]*"/g, '') // strip sketch
+        .replace(/sketch:type="[^"]*"/g, '')
+        .replace(/xmlns:serif="[^"]*"/g, '')
+        .replace(/serif:id="[^"]*"/g, '')
+        .replace(/\s+/g, ' ')
+        .replace(/>\s+</g, '><')
+        .trim();
+
+      document.getElementById('svg-out-bytes').textContent = new Blob([clean]).size + ' bytes';
+      const savings = Math.max(0, Math.round((1 - clean.length / raw.length) * 100));
+      logLocalOp(`SVG optimize (${savings}% saved)`, clean.length);
+
+      withPacman('pac-svg', 'pacman-svg', 'svg-output', 'ts', clean);
+    }
+
+    function convertToReactJSX() {
+      const raw = document.getElementById('svg-input').value.trim();
+      if (!raw) return;
+
+      let jsx = raw
+        .replace(/<!--[\s\S]*?-->/g, '')
+        .replace(/stroke-width=/g, 'strokeWidth=')
+        .replace(/stroke-linecap=/g, 'strokeLinecap=')
+        .replace(/stroke-linejoin=/g, 'strokeLinejoin=')
+        .replace(/stroke-dasharray=/g, 'strokeDasharray=')
+        .replace(/fill-rule=/g, 'fillRule=')
+        .replace(/clip-rule=/g, 'clipRule=')
+        .replace(/stop-color=/g, 'stopColor=')
+        .replace(/class=/g, 'className=');
+
+      const result = `export const Icon = (props: React.SVGProps<SVGSVGElement>) => (\n  ${jsx}\n);`;
+      logLocalOp('SVG to React JSX', result.length);
+      withPacman('pac-svg', 'pacman-svg', 'svg-output', 'ts', result);
+    }
+
+    function clearSVG() {
+      document.getElementById('svg-input').value = '';
+      document.getElementById('svg-output').textContent = '// Clean SVG or JSX will appear here';
+      document.getElementById('svg-in-bytes').textContent = '0 bytes';
+      document.getElementById('svg-out-bytes').textContent = '0 bytes';
+    }
+
+    optimizeSVG();
+  </script>
+</body>
+</html>

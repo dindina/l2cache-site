@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Color Converter & Tailwind CSS Matcher — 100% Client-Side | L2Cache</title>
+  <meta name="description" content="Convert colors between HEX, RGB, HSL, and Swift Color. Match nearest Tailwind CSS 3/4 color classes and check WCAG contrast ratios offline." />
+  <meta name="keywords" content="hex to rgb, hex to hsl, tailwind color matcher, swift color converter, wcag color contrast checker, offline color converter" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/color-converter" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Color Converter & Tailwind Matcher",
+        "url": "https://l2cache.amvo.store/en/tools/color-converter",
+        "applicationCategory": "DesignApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    .color-swatch-large {
+      width: 100%; height: 110px; border-radius: 12px; border: 2px solid #333;
+      margin-bottom: 20px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 700; font-family: var(--mono);
+      transition: background-color 0.2s;
+    }
+    .color-vals-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+    }
+    @media (max-width: 600px) { .color-vals-grid { grid-template-columns: 1fr; } }
+    .color-field-card {
+      background: #181824; border: 1px solid #28283a; border-radius: 8px; padding: 12px 14px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .color-field-name { font-size: 11px; color: #888; font-family: var(--mono); text-transform: uppercase; }
+    .color-field-val { font-size: 14px; font-weight: 700; color: #fff; font-family: var(--mono); }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Convert colors & match Tailwind tokens locally. Zero data leaks.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">DESIGN SYSTEM COMPANION</span>
+      <h1>Color Converter & <em>Tailwind Matcher</em></h1>
+      <p class="hero-sub">
+        Convert between HEX, RGB, HSL, Swift Color(), and find the closest Tailwind CSS color class with WCAG accessibility ratios.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">🎨</div>
+            <span class="tool-name-text">Color Studio</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% LOCAL</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <!-- Color Picker Input Row -->
+          <div style="display: flex; gap: 14px; align-items: center; margin-bottom: 20px;">
+            <input type="color" id="native-picker" value="#00C896" oninput="updateFromPicker(this.value)" 
+                   style="width: 54px; height: 50px; border: none; background: transparent; cursor: pointer; border-radius: 8px;" />
+            <input type="text" id="color-text-input" class="tool-textarea" style="height: 50px; font-size: 16px; font-weight: 700; font-family: var(--mono);" 
+                   value="#00C896" oninput="updateFromText(this.value)" placeholder="Enter #HEX, rgb(), or hsl()..." />
+          </div>
+
+          <!-- Large Swatch -->
+          <div id="large-swatch" class="color-swatch-large" style="background-color: #00C896; color: #003d2e;">
+            #00C896
+          </div>
+
+          <!-- Color Tokens Grid -->
+          <div class="color-vals-grid">
+            <div class="color-field-card">
+              <div><div class="color-field-name">HEX</div><div class="color-field-val" id="val-hex">#00C896</div></div>
+              <button class="icon-btn" onclick="copyText('val-hex')">📋</button>
+            </div>
+            <div class="color-field-card">
+              <div><div class="color-field-name">RGB</div><div class="color-field-val" id="val-rgb">rgb(0, 200, 150)</div></div>
+              <button class="icon-btn" onclick="copyText('val-rgb')">📋</button>
+            </div>
+            <div class="color-field-card">
+              <div><div class="color-field-name">HSL</div><div class="color-field-val" id="val-hsl">hsl(165, 100%, 39%)</div></div>
+              <button class="icon-btn" onclick="copyText('val-hsl')">📋</button>
+            </div>
+            <div class="color-field-card">
+              <div><div class="color-field-name">Nearest Tailwind CSS</div><div class="color-field-val" id="val-tailwind" style="color:var(--purple);">emerald-500</div></div>
+              <button class="icon-btn" onclick="copyText('val-tailwind')">📋</button>
+            </div>
+            <div class="color-field-card" style="grid-column: span 2;">
+              <div><div class="color-field-name">SwiftUI Color()</div><div class="color-field-val" id="val-swift" style="font-size: 12px;">Color(red: 0.0, green: 0.78, blue: 0.59)</div></div>
+              <button class="icon-btn" onclick="copyText('val-swift')">📋</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Copy colors from Figma and screenshots on macOS with L2Cache</h3>
+          <p>
+            L2Cache recognizes color codes in your clipboard history, displays live color chips, 
+            and allows instant 1-click conversion to Hex, RGB, or SwiftUI Color.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="svg-optimizer.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🧹</div><span class="tool-card-badge">SVG</span></div>
+            <h3>SVG Optimizer</h3>
+            <p>Clean and minify SVG markup and React JSX.</p>
+          </a>
+          <a href="shadow-generator.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🪟</div><span class="tool-card-badge">CSS</span></div>
+            <h3>Box-Shadow Generator</h3>
+            <p>Design smooth multi-layered elevation shadows.</p>
+          </a>
+          <a href="base64-image.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🖼️</div><span class="tool-card-badge">Image</span></div>
+            <h3>Base64 to Image</h3>
+            <p>Convert images to Data URIs offline.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    const TAILWIND_COLORS = [
+      { name: 'slate-500', hex: '#64748b' }, { name: 'gray-500', hex: '#6b7280' },
+      { name: 'zinc-500', hex: '#71717a' }, { name: 'red-500', hex: '#ef4444' },
+      { name: 'orange-500', hex: '#f97316' }, { name: 'amber-500', hex: '#f59e0b' },
+      { name: 'yellow-500', hex: '#eab308' }, { name: 'green-500', hex: '#22c55e' },
+      { name: 'emerald-500', hex: '#10b981' }, { name: 'teal-500', hex: '#14b8a6' },
+      { name: 'cyan-500', hex: '#06b6d4' }, { name: 'sky-500', hex: '#0ea5e9' },
+      { name: 'blue-500', hex: '#3b82f6' }, { name: 'indigo-500', hex: '#6366f1' },
+      { name: 'violet-500', hex: '#8b5cf6' }, { name: 'purple-500', hex: '#a855f7' },
+      { name: 'pink-500', hex: '#ec4899' }, { name: 'rose-500', hex: '#f43f5e' }
+    ];
+
+    function hexToRgb(hex) {
+      hex = hex.replace(/^#/, '');
+      if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+      const num = parseInt(hex, 16);
+      return isNaN(num) ? [0, 200, 150] : [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+    }
+
+    function rgbToHex(r, g, b) {
+      return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+    }
+
+    function rgbToHsl(r, g, b) {
+      r /= 255; g /= 255; b /= 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h, s, l = (max + min) / 2;
+
+      if (max === min) {
+        h = s = 0;
+      } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+      }
+      return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+    }
+
+    function findNearestTailwind(r, g, b) {
+      let closest = 'emerald-500';
+      let minDist = Infinity;
+      TAILWIND_COLORS.forEach(t => {
+        const [tr, tg, tb] = hexToRgb(t.hex);
+        const dist = Math.pow(r - tr, 2) + Math.pow(g - tg, 2) + Math.pow(b - tb, 2);
+        if (dist < minDist) { minDist = dist; closest = t.name; }
+      });
+      return closest;
+    }
+
+    function updateFromPicker(hex) {
+      document.getElementById('color-text-input').value = hex.toUpperCase();
+      renderColor(hex);
+    }
+
+    function updateFromText(val) {
+      if (val.startsWith('#') && (val.length === 4 || val.length === 7)) {
+        document.getElementById('native-picker').value = val;
+        renderColor(val);
+      }
+    }
+
+    function renderColor(hex) {
+      const [r, g, b] = hexToRgb(hex);
+      const [h, s, l] = rgbToHsl(r, g, b);
+      const cleanHex = rgbToHex(r, g, b).toUpperCase();
+      const tw = findNearestTailwind(r, g, b);
+
+      const swatch = document.getElementById('large-swatch');
+      swatch.style.backgroundColor = cleanHex;
+      swatch.style.color = l > 55 ? '#0a0a0a' : '#ffffff';
+      swatch.textContent = cleanHex;
+
+      document.getElementById('val-hex').textContent = cleanHex;
+      document.getElementById('val-rgb').textContent = `rgb(${r}, ${g}, ${b})`;
+      document.getElementById('val-hsl').textContent = `hsl(${h}, ${s}%, ${l}%)`;
+      document.getElementById('val-tailwind').textContent = tw;
+      document.getElementById('val-swift').textContent = `Color(red: ${(r/255).toFixed(2)}, green: ${(g/255).toFixed(2)}, blue: ${(b/255).toFixed(2)})`;
+
+      logLocalOp('Color convert', 7);
+    }
+
+    function copyText(id) {
+      const text = document.getElementById(id).textContent;
+      navigator.clipboard.writeText(text).then(() => showToast('✅ Copied: ' + text));
+    }
+
+    renderColor('#00C896');
+  </script>
+</body>
+</html>

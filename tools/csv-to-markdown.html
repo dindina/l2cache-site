@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSV to Markdown Table Converter — 100% Client-Side | L2Cache</title>
+  <meta name="description" content="Convert CSV and TSV spreadsheet data into clean GitHub & Dev.to Markdown tables. Automatic column alignment, quoted text handling, and zero server upload." />
+  <meta name="keywords" content="csv to markdown table, convert csv to markdown, tsv to markdown, excel to markdown table, markdown table generator" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/csv-to-markdown" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "CSV to Markdown Table Converter",
+        "url": "https://l2cache.amvo.store/en/tools/csv-to-markdown",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How does this tool handle commas inside quotes?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The parser correctly respects RFC 4180 CSV standard, keeping commas inside double quotes (e.g. \"Smith, John\") intact within single table cells."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I convert directly from Excel or Numbers?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. When you copy rows from Excel or Numbers, they are placed on your clipboard as tab-separated values (TSV), which this converter automatically detects."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Convert spreadsheets to Markdown tables locally. 100% private.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">TABLE TRANSFORMER</span>
+      <h1>CSV to <em>Markdown Table</em></h1>
+      <p class="hero-sub">
+        Convert comma-separated and tab-delimited spreadsheet data into clean, formatted 
+        Markdown tables ready for GitHub READMEs, Notion, and Dev.to articles.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">📊</div>
+            <span class="tool-name-text">CSV / TSV to Markdown Converter</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% CLIENT-SIDE</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-io-grid">
+            
+            <!-- Input Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Input CSV or Tab-Separated Data</span>
+                <span id="csv-bytes" style="color:var(--purple);">0 bytes</span>
+              </div>
+              <textarea id="csv-input" class="tool-textarea" placeholder="Feature, L2Cache, Built-in Spotlight
+History Limit, Unlimited, 1 Item
+On-Device AI, Yes (Local), No
+OCR Search, Yes, No
+Price, Free (Early Access), Free"></textarea>
+            </div>
+
+            <!-- Output Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Markdown Table Output</span>
+                <span>GitHub Flavored Markdown</span>
+              </div>
+              <div id="csv-output" class="tool-output-view">// Formatted Markdown table will appear here</div>
+            </div>
+
+          </div>
+
+          <!-- Controls -->
+          <div class="tool-controls">
+            <button class="tbtn tbtn-primary" onclick="convertCSV('left')">⚡ Convert to Markdown (Left Align)</button>
+            <button class="tbtn tbtn-ghost" onclick="convertCSV('center')">Center Align</button>
+            <button class="tbtn tbtn-ghost" onclick="convertToJSON()">Convert to JSON Array</button>
+            <button class="tbtn tbtn-ghost" onclick="clearCSV()">✕ Clear</button>
+            <button class="tbtn tbtn-copy" onclick="copyOutput('csv-output')" style="margin-left: auto;">📋 Copy Table</button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-csv">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-csv">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Convert tables to Markdown on your Mac clipboard with ⌘⇧V</h3>
+          <p>
+            Copy any table from Excel, Numbers, or web pages. L2Cache detects it and offers 
+            'Convert to Markdown Table' right on your clipboard — 100% offline.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Guide Content -->
+      <div class="article-body">
+        <h2>Markdown Table Syntax Quick Reference</h2>
+        <p>
+          Markdown tables use vertical pipes (<code>|</code>) to separate columns and hyphens (<code>-</code>) with optional colons (<code>:</code>) to define alignment:
+        </p>
+        <ul>
+          <li><code>| :--- |</code> : Left aligned column</li>
+          <li><code>| :---: |</code> : Center aligned column</li>
+          <li><code>| ---: |</code> : Right aligned column</li>
+        </ul>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Are spreadsheet cells uploaded to any server?</div>
+          <div class="faq-a">No. Conversion happens entirely within your web browser using JavaScript.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="json-formatter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">{ }</div><span class="tool-card-badge">Data</span></div>
+            <h3>JSON Formatter</h3>
+            <p>Pretty-print and minify JSON payloads.</p>
+          </a>
+          <a href="sql-formatter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🗄️</div><span class="tool-card-badge">Database</span></div>
+            <h3>SQL Formatter</h3>
+            <p>Prettify and format SQL queries.</p>
+          </a>
+          <a href="utm-stripper.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔗</div><span class="tool-card-badge">Privacy</span></div>
+            <h3>UTM Stripper</h3>
+            <p>Clean marketing trackers from copied URLs.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    document.getElementById('csv-input').addEventListener('input', function() {
+      document.getElementById('csv-bytes').textContent = new Blob([this.value]).size + ' bytes';
+    });
+
+    function parseCSVRows(text) {
+      const lines = text.trim().split(/\r?\n/);
+      if (lines.length === 0) return [];
+      const delimiter = lines[0].includes('\t') ? '\t' : ',';
+      
+      return lines.map(line => {
+        const row = [];
+        let cur = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+          const c = line[i];
+          if (c === '"') { inQuotes = !inQuotes; }
+          else if (c === delimiter && !inQuotes) { row.push(cur.trim()); cur = ''; }
+          else { cur += c; }
+        }
+        row.push(cur.trim());
+        return row;
+      });
+    }
+
+    function convertCSV(align) {
+      const raw = document.getElementById('csv-input').value.trim();
+      if (!raw) {
+        document.getElementById('csv-output').textContent = '// Paste CSV or TSV data above to convert';
+        return;
+      }
+
+      const rows = parseCSVRows(raw);
+      if (rows.length === 0) return;
+
+      const colCount = Math.max(...rows.map(r => r.length));
+      const colWidths = new Array(colCount).fill(3);
+
+      rows.forEach(r => {
+        for (let i = 0; i < colCount; i++) {
+          const val = r[i] || '';
+          if (val.length > colWidths[i]) colWidths[i] = val.length;
+        }
+      });
+
+      const header = rows[0];
+      const headerLine = '| ' + header.map((h, i) => (h || '').padEnd(colWidths[i])).join(' | ') + ' |';
+      
+      let sep = ':---';
+      if (align === 'center') sep = ':---:';
+      if (align === 'right') sep = '---:';
+
+      const separatorLine = '| ' + colWidths.map(w => sep.padEnd(Math.max(w, sep.length), '-')).join(' | ') + ' |';
+      
+      const bodyLines = rows.slice(1).map(r => {
+        const padded = [];
+        for (let i = 0; i < colCount; i++) {
+          padded.push((r[i] || '').padEnd(colWidths[i]));
+        }
+        return '| ' + padded.join(' | ') + ' |';
+      });
+
+      const result = [headerLine, separatorLine, ...bodyLines].join('\n');
+      logLocalOp('CSV to Markdown', new Blob([raw]).size);
+
+      withPacman('pac-csv', 'pacman-csv', 'csv-output', 'csv', result);
+    }
+
+    function convertToJSON() {
+      const raw = document.getElementById('csv-input').value.trim();
+      if (!raw) return;
+      const rows = parseCSVRows(raw);
+      if (rows.length < 2) return;
+      const headers = rows[0];
+      const list = rows.slice(1).map(r => {
+        const obj = {};
+        headers.forEach((h, i) => { obj[h || `col_${i}`] = r[i] || ''; });
+        return obj;
+      });
+      const result = JSON.stringify(list, null, 2);
+      logLocalOp('CSV to JSON', new Blob([raw]).size);
+      withPacman('pac-csv', 'pacman-csv', 'csv-output', 'csv', result);
+    }
+
+    function clearCSV() {
+      document.getElementById('csv-input').value = '';
+      document.getElementById('csv-output').textContent = '// Formatted Markdown table will appear here';
+      document.getElementById('csv-output').className = 'tool-output-view';
+      document.getElementById('csv-bytes').textContent = '0 bytes';
+    }
+  </script>
+</body>
+</html>

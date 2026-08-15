@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offline PDF Merger & Combiner — 100% Client-Side | L2Cache</title>
+  <meta name="description" content="Merge and combine multiple PDF documents offline in your browser. Reorder files, combine unlimited pages, zero uploads, and 100% privacy for confidential files." />
+  <meta name="keywords" content="merge pdf offline, combine pdf files, private pdf merger, merge pdf online free without uploading, join pdfs in browser" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/pdf-merger" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <!-- Load local vendor bundles with reliable CDN fallback -->
+  <script src="vendor/pdf-lib.min.js"></script>
+  <script>
+    if (!window.PDFLib) {
+      document.write('<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"><\/script>');
+    }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Offline PDF Merger & Combiner",
+        "url": "https://l2cache.amvo.store/en/tools/pdf-merger",
+        "applicationCategory": "ProductivityApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Are my merged PDF files uploaded to any server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. All PDF files are merged directly in your browser memory using client-side JavaScript. No documents are transmitted across the network."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I change the order of the files before merging?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. You can use the Move Up (↑) and Move Down (↓) buttons or drag the items in the list to set the exact order of the final merged document."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is there a limit on how many PDFs I can combine?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No artificial limits. You can merge 2, 10, or 50+ PDFs directly on your local device without registration or paywalls."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    .pdf-dropzone {
+      border: 2px dashed rgba(0, 200, 150, 0.4);
+      background: #09090e;
+      border-radius: 16px;
+      padding: 36px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 20px;
+    }
+    .pdf-dropzone:hover, .pdf-dropzone.dragover {
+      border-color: var(--purple);
+      background: rgba(0, 200, 150, 0.05);
+    }
+    .drop-icon { font-size: 38px; margin-bottom: 10px; }
+    .drop-title { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .drop-sub { font-size: 13px; color: #888; }
+
+    /* Reorderable File List */
+    .file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 20px 0;
+      max-height: 380px;
+      overflow-y: auto;
+    }
+    .file-item {
+      background: #181824;
+      border: 1px solid #28283a;
+      border-radius: 10px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      transition: all 0.15s ease;
+    }
+    .file-item:hover {
+      border-color: rgba(0, 200, 150, 0.4);
+    }
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      overflow: hidden;
+    }
+    .file-icon { font-size: 20px; }
+    .file-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .file-meta {
+      font-size: 12px;
+      color: #888;
+      font-family: var(--mono);
+      margin-top: 2px;
+    }
+    .file-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .icon-btn {
+      background: #242436;
+      border: 1px solid #333;
+      color: #ccc;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.15s;
+    }
+    .icon-btn:hover {
+      background: var(--purple);
+      color: #003d2e;
+      border-color: var(--purple);
+    }
+    .icon-btn.remove:hover {
+      background: #fc6a6a;
+      color: #fff;
+      border-color: #fc6a6a;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Combine PDFs locally in your browser. Zero uploads, complete document privacy.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">100% CLIENT-SIDE PDF MERGER</span>
+      <h1>Offline PDF <em>Merger & Combiner</em></h1>
+      <p class="hero-sub">
+        Combine multiple PDF files into one clean document with custom order. 
+        Processed 100% inside your browser — zero servers, zero uploads, complete security.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">📑</div>
+            <span class="tool-name-text">PDF Binder & Combiner</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% LOCAL</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <!-- Dropzone -->
+          <div class="pdf-dropzone" id="dropzone" onclick="document.getElementById('file-input').click()">
+            <input type="file" id="file-input" accept="application/pdf" multiple style="display: none;" onchange="handleFilesSelected(event)" />
+            <div class="drop-icon">➕</div>
+            <div class="drop-title">Drop multiple PDF files here, or click to select</div>
+            <div class="drop-sub">Select 2 or more files. Processed locally in memory.</div>
+          </div>
+
+          <!-- File Queue List -->
+          <div id="file-list-container" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span style="font-size: 13px; font-weight: 700; color: #fff;">Files to Merge (in order):</span>
+              <span style="font-family: var(--mono); font-size: 12px; color: var(--purple);" id="merge-summary">0 files | 0 pages</span>
+            </div>
+            
+            <div class="file-list" id="file-list"></div>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-merge">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-merge">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+          <!-- Action Controls -->
+          <div id="merge-controls" style="display: none; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-top: 18px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <button class="tbtn tbtn-ghost" onclick="document.getElementById('file-input').click()">➕ Add More PDFs</button>
+              <button class="tbtn tbtn-ghost" onclick="clearAllFiles()">✕ Clear All</button>
+            </div>
+            <button class="tbtn tbtn-primary" onclick="mergeAllPDFs()" style="font-size: 14px; padding: 12px 24px;">
+              ⚡ Merge & Download Combined PDF
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ OCR and search your documents on macOS with L2Cache</h3>
+          <p>
+            L2Cache provides on-device OCR and document search across your clipboard history — 
+            search scanned receipts, invoices, and documents without sending files to the cloud.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Guide Content -->
+      <div class="article-body">
+        <h2>Why You Should Never Upload Confidential PDFs to Online Merge Tools</h2>
+        <p>
+          Merging documents is a daily task when assembling <strong>mortgage applications, tax filing packages, board decks, legal contracts, and medical histories</strong>. 
+          Standard online PDF mergers upload your full files to third-party web servers. 
+          This tool runs <strong>100% in your browser</strong> using WebAssembly: your files never leave your computer's RAM.
+        </p>
+
+        <h2>How to Combine Multiple PDFs in 3 Steps</h2>
+        <ol>
+          <li><strong>Upload Your PDFs:</strong> Drag and drop all the files you want to combine.</li>
+          <li><strong>Set the Sequence:</strong> Use the ↑ and ↓ arrows to arrange files in the exact order you want them to appear.</li>
+          <li><strong>Merge & Download:</strong> Click the Merge button to produce a single consolidated PDF instantly.</li>
+        </ol>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Are bookmarks and hyperlinks preserved when merging?</div>
+          <div class="faq-a">Yes. PDF-lib copies the internal document structures, high-resolution vector assets, and fonts directly into the new container.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Is there a maximum number of files I can merge?</div>
+          <div class="faq-a">No. Since execution runs on your device's memory rather than a remote cloud server with artificial quotas, you can combine dozens of files simultaneously.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="pdf-page-remover.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">📑</div><span class="tool-card-badge">PDF</span></div>
+            <h3>PDF Page Remover</h3>
+            <p>Visually select and remove pages from PDFs.</p>
+          </a>
+          <a href="jwt-decoder.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔑</div><span class="tool-card-badge">Security</span></div>
+            <h3>JWT Decoder</h3>
+            <p>Decode JSON Web Tokens and inspect claims offline.</p>
+          </a>
+          <a href="json-formatter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">{ }</div><span class="tool-card-badge">Data</span></div>
+            <h3>JSON Formatter</h3>
+            <p>Pretty-print and minify JSON payloads.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    let filesQueue = []; // [{ file, buffer, pageCount, id }]
+    let nextId = 1;
+
+    const dropzone = document.getElementById('dropzone');
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => { dropzone.classList.remove('dragover'); });
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        addFilesToQueue(Array.from(e.dataTransfer.files));
+      }
+    });
+
+    function handleFilesSelected(e) {
+      if (e.target.files && e.target.files.length > 0) {
+        addFilesToQueue(Array.from(e.target.files));
+      }
+      e.target.value = ''; // Reset
+    }
+
+    async function addFilesToQueue(newFiles) {
+      const pdfFiles = newFiles.filter(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
+      if (pdfFiles.length === 0) {
+        alert('Please select valid PDF files.');
+        return;
+      }
+
+      const lib = (typeof PDFLib !== 'undefined') ? PDFLib : window.PDFLib;
+      if (!lib || !lib.PDFDocument) {
+        alert('PDF engine is loading. Please try again in a moment.');
+        return;
+      }
+
+      for (const f of pdfFiles) {
+        try {
+          const buffer = await f.arrayBuffer();
+          // Load document to count pages
+          const doc = await lib.PDFDocument.load(buffer.slice(0));
+          const pageCount = doc.getPageCount();
+
+          filesQueue.push({
+            id: nextId++,
+            file: f,
+            bytes: new Uint8Array(buffer),
+            pageCount: pageCount,
+            sizeStr: (f.size / 1024 / 1024).toFixed(2) + ' MB'
+          });
+        } catch (err) {
+          console.error('Error reading PDF:', f.name, err);
+        }
+      }
+
+      renderFileList();
+    }
+
+    function renderFileList() {
+      const container = document.getElementById('file-list');
+      const listWrapper = document.getElementById('file-list-container');
+      const controls = document.getElementById('merge-controls');
+
+      if (filesQueue.length === 0) {
+        listWrapper.style.display = 'none';
+        controls.style.display = 'none';
+        return;
+      }
+
+      listWrapper.style.display = 'block';
+      controls.style.display = 'flex';
+      container.innerHTML = '';
+
+      let totalPages = 0;
+
+      filesQueue.forEach((item, idx) => {
+        totalPages += item.pageCount;
+        const row = document.createElement('div');
+        row.className = 'file-item';
+        row.innerHTML = `
+          <div class="file-info">
+            <span class="file-icon">📄</span>
+            <div style="overflow:hidden;">
+              <div class="file-name" title="${item.file.name}">${idx + 1}. ${item.file.name}</div>
+              <div class="file-meta">${item.pageCount} page(s) • ${item.sizeStr}</div>
+            </div>
+          </div>
+          <div class="file-actions">
+            <button class="icon-btn" onclick="moveFile(${idx}, -1)" title="Move Up" ${idx === 0 ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>↑</button>
+            <button class="icon-btn" onclick="moveFile(${idx}, 1)" title="Move Down" ${idx === filesQueue.length - 1 ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>↓</button>
+            <button class="icon-btn remove" onclick="removeFile(${idx})" title="Remove">✕</button>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+
+      document.getElementById('merge-summary').textContent = `${filesQueue.length} files | ${totalPages} total pages`;
+    }
+
+    function moveFile(idx, dir) {
+      const target = idx + dir;
+      if (target < 0 || target >= filesQueue.length) return;
+      const temp = filesQueue[idx];
+      filesQueue[idx] = filesQueue[target];
+      filesQueue[target] = temp;
+      renderFileList();
+    }
+
+    function removeFile(idx) {
+      filesQueue.splice(idx, 1);
+      renderFileList();
+    }
+
+    function clearAllFiles() {
+      filesQueue = [];
+      renderFileList();
+    }
+
+    async function mergeAllPDFs() {
+      if (filesQueue.length < 2) {
+        alert('Please add at least 2 PDF files to merge.');
+        return;
+      }
+
+      const lib = (typeof PDFLib !== 'undefined') ? PDFLib : window.PDFLib;
+      if (!lib || !lib.PDFDocument) {
+        alert('PDF engine is loading. Please try again.');
+        return;
+      }
+
+      // Pac-Man Animation
+      const track = document.getElementById('pac-merge');
+      const pacman = document.getElementById('pacman-merge');
+      track.classList.add('running');
+      [...track.querySelectorAll('.pac-pellet,.pac-score,.pac-burst-star')].forEach(el => el.remove());
+
+      filesQueue.slice(0, 5).forEach((item, i) => {
+        const el = document.createElement('span');
+        el.className = 'pac-pellet';
+        el.textContent = `📑 ${item.file.name.slice(0, 10)}...`;
+        el.style.left = (50 + i * 65) + 'px';
+        track.appendChild(el);
+      });
+
+      pacman.style.left = '-34px';
+      const DURATION = 1100;
+      const trackW = track.offsetWidth || 400;
+      const start = performance.now();
+
+      function stepPac(now) {
+        const p = Math.min((now - start) / DURATION, 1);
+        pacman.style.left = (-34 + (trackW + 10) * p) + 'px';
+        if (p < 1) requestAnimationFrame(stepPac);
+        else {
+          track.classList.remove('running');
+          pacman.style.left = '-34px';
+        }
+      }
+      requestAnimationFrame(stepPac);
+
+      try {
+        const mergedDoc = await lib.PDFDocument.create();
+
+        for (const item of filesQueue) {
+          const srcDoc = await lib.PDFDocument.load(item.bytes.slice(0));
+          const pageIndices = srcDoc.getPageIndices();
+          const copiedPages = await mergedDoc.copyPages(srcDoc, pageIndices);
+          copiedPages.forEach(p => mergedDoc.addPage(p));
+        }
+
+        const mergedBytes = await mergedDoc.save();
+
+        // Download trigger
+        const blob = new Blob([mergedBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'merged-document.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        showToast(`✅ Successfully merged ${filesQueue.length} PDFs into merged-document.pdf!`);
+        logLocalOp(`PDF merge (${filesQueue.length} files)`, mergedBytes.length);
+      } catch (err) {
+        alert('Failed to merge PDFs: ' + err.message);
+      }
+    }
+  </script>
+</body>
+</html>

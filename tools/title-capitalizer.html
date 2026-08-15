@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Title & Headline Capitalizer (AP, Chicago, APA) — 100% Client-Side | L2Cache</title>
+  <meta name="description" content="Capitalize titles and headlines according to AP Style, Chicago Manual of Style, APA, and MLA formatting rules offline in your browser. 100% private." />
+  <meta name="keywords" content="title capitalizer, headline capitalization tool, ap style title case, chicago manual title capitalization, title case converter online" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/title-capitalizer" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Title & Headline Capitalizer",
+        "url": "https://l2cache.amvo.store/en/tools/title-capitalizer",
+        "applicationCategory": "ProductivityApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Format headlines & titles locally. Zero tracking.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">EDITORIAL COPY TOOLS</span>
+      <h1>Title & Headline <em>Capitalizer</em></h1>
+      <p class="hero-sub">
+        Automatically capitalize blog posts, news headlines, and book titles according to official AP, Chicago, and APA style rules.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">🔠</div>
+            <span class="tool-name-text">Editorial Title Architect</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% LOCAL</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-io-grid">
+            
+            <!-- Input Text -->
+            <div class="tool-pane">
+              <div class="pane-label-row"><span>Input Raw Title</span><span>Draft</span></div>
+              <textarea id="title-input" class="tool-textarea" oninput="capitalizeTitle('ap')" placeholder="Type your headline here...">why on-device ai and privacy are the future of developer tools</textarea>
+            </div>
+
+            <!-- Formatted Output -->
+            <div class="tool-pane">
+              <div class="pane-label-row"><span>Capitalized Result</span><span id="style-badge" style="color:var(--purple);">AP Style</span></div>
+              <div id="title-output" class="tool-output-view" style="font-size: 16px; font-weight: 700; color: #fff;"></div>
+            </div>
+
+          </div>
+
+          <!-- Controls -->
+          <div class="tool-controls">
+            <button class="tbtn tbtn-primary" onclick="capitalizeTitle('ap')">📰 AP Style</button>
+            <button class="tbtn tbtn-ghost" onclick="capitalizeTitle('chicago')">📚 Chicago Style</button>
+            <button class="tbtn tbtn-ghost" onclick="capitalizeTitle('apa')">🎓 APA Style</button>
+            <button class="tbtn tbtn-ghost" onclick="capitalizeTitle('sentence')">Sentence case</button>
+            <button class="tbtn tbtn-ghost" onclick="capitalizeTitle('upper')">UPPERCASE</button>
+            <button class="tbtn tbtn-copy" onclick="copyOutput('title-output')" style="margin-left: auto;">📋 Copy Title</button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-title">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-title">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Capitalize titles on your Mac with ⌘⇧V</h3>
+          <p>
+            With L2Cache on macOS, copy any headline, press <strong>⌘⇧V</strong>, and select 
+            'Capitalize (AP Style)' or 'Convert to Title Case' directly on your clipboard.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="slug-generator.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔗</div><span class="tool-card-badge">SEO</span></div>
+            <h3>SEO Slug Generator</h3>
+            <p>Convert titles into clean URL slugs.</p>
+          </a>
+          <a href="word-counter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">📝</div><span class="tool-card-badge">Writing</span></div>
+            <h3>Word Counter</h3>
+            <p>Count words and check social limits.</p>
+          </a>
+          <a href="markdown-to-rich-text.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">📋</div><span class="tool-card-badge">Writing</span></div>
+            <h3>Markdown to Rich Text</h3>
+            <p>Convert Markdown into formatted copy.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    const LOWERCASE_WORDS = new Set([
+      'a', 'an', 'and', 'as', 'at', 'but', 'by', 'for', 'in', 'nor', 'of', 'on', 'or', 'so', 'the', 'to', 'up', 'yet', 'via', 'with'
+    ]);
+
+    function capitalizeTitle(style) {
+      const raw = document.getElementById('title-input').value.trim();
+      if (!raw) return;
+
+      let result = '';
+
+      if (style === 'sentence') {
+        document.getElementById('style-badge').textContent = 'Sentence case';
+        result = raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
+      } else if (style === 'upper') {
+        document.getElementById('style-badge').textContent = 'UPPERCASE';
+        result = raw.toUpperCase();
+      } else {
+        document.getElementById('style-badge').textContent = `${style.toUpperCase()} Style`;
+        const words = raw.toLowerCase().split(/\s+/);
+        const transformed = words.map((w, i) => {
+          if (i === 0 || i === words.length - 1 || !LOWERCASE_WORDS.has(w)) {
+            return w.charAt(0).toUpperCase() + w.slice(1);
+          }
+          return w;
+        });
+        result = transformed.join(' ');
+      }
+
+      logLocalOp('Title capitalizer', result.length);
+      withPacman('pac-title', 'pacman-title', 'title-output', 'ts', result);
+    }
+
+    capitalizeTitle('ap');
+  </script>
+</body>
+</html>

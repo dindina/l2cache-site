@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Markdown to Rich Text & Formatted Copy — 100% Client-Side | L2Cache</title>
+  <meta name="description" content="Convert Markdown into formatted rich text with 1-click copy for Google Docs, Notion, Substack, Medium, and email newsletters. 100% offline & private." />
+  <meta name="keywords" content="markdown to rich text, copy markdown as formatted text, markdown to google docs, markdown to html converter, offline markdown renderer" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/markdown-to-rich-text" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Markdown to Rich Text Converter",
+        "url": "https://l2cache.amvo.store/en/tools/markdown-to-rich-text",
+        "applicationCategory": "ProductivityApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Convert Markdown to formatted text locally. Zero data leaks.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">MARKDOWN WRITING BRIDGE</span>
+      <h1>Markdown to <em>Rich Text Copy</em></h1>
+      <p class="hero-sub">
+        Convert Markdown from ChatGPT, Claude, or GitHub into formatted rich text ready to paste directly 
+        into Google Docs, Notion, Substack, and Email newsletters without broken asterisks.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">📋</div>
+            <span class="tool-name-text">Markdown Formatter</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% LOCAL</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-io-grid">
+            
+            <!-- Input Markdown -->
+            <div class="tool-pane">
+              <div class="pane-label-row"><span>Markdown Input</span><span>Raw Syntax</span></div>
+              <textarea id="md-input" class="tool-textarea" oninput="renderMarkdown()" placeholder="Type Markdown here..."># 🚀 L2Cache for macOS
+
+L2Cache is a **native clipboard manager** with on-device AI.
+
+### Key Features:
+- *Unlimited* clipboard history
+- **OCR text search** across screenshots
+- Smart transformations (JWT, JSON, SQL)
+- `100% offline` privacy guarantee
+
+> Never upload sensitive clipboard data to the cloud.</textarea>
+            </div>
+
+            <!-- Rendered Output -->
+            <div class="tool-pane">
+              <div class="pane-label-row"><span>Rich Formatted Preview</span><span>Ready to Paste</span></div>
+              <div id="md-preview" class="tool-output-view" style="background: #ffffff; color: #0a0a0a; font-family: var(--sans); font-size: 14px; line-height: 1.6;"></div>
+            </div>
+
+          </div>
+
+          <!-- Controls -->
+          <div class="tool-controls">
+            <button class="tbtn tbtn-primary" onclick="copyRichText()">📋 Copy as Formatted Rich Text</button>
+            <button class="tbtn tbtn-ghost" onclick="copyHTMLCode()">📄 Copy Clean HTML</button>
+            <button class="tbtn tbtn-ghost" onclick="document.getElementById('md-input').value=''; renderMarkdown();">✕ Clear</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Paste Markdown as Rich Text with ⌘⇧V on macOS</h3>
+          <p>
+            Copy any Markdown response from Claude or ChatGPT. Press <strong>⌘⇧V</strong> in L2Cache and select 
+            'Paste as Rich Formatted Text' to insert directly into Google Docs or Apple Mail.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="word-counter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">📝</div><span class="tool-card-badge">Writing</span></div>
+            <h3>Word Counter</h3>
+            <p>Count words and check social limits.</p>
+          </a>
+          <a href="title-capitalizer.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔠</div><span class="tool-card-badge">Copy</span></div>
+            <h3>Title Capitalizer</h3>
+            <p>Capitalize headlines in AP, Chicago, and APA styles.</p>
+          </a>
+          <a href="csv-to-markdown.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">📊</div><span class="tool-card-badge">Tables</span></div>
+            <h3>CSV to Markdown</h3>
+            <p>Convert tabular data into Markdown tables.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    function parseSimpleMarkdown(md) {
+      let html = md
+        .replace(/^### (.*$)/gim, '<h3 style="font-size:16px;font-weight:700;margin:12px 0 6px;">$1</h3>')
+        .replace(/^## (.*$)/gim, '<h2 style="font-size:20px;font-weight:800;margin:14px 0 8px;">$1</h2>')
+        .replace(/^# (.*$)/gim, '<h1 style="font-size:24px;font-weight:900;margin:16px 0 10px;">$1</h1>')
+        .replace(/^\> (.*$)/gim, '<blockquote style="border-left:3px solid #00C896;padding-left:10px;margin:10px 0;color:#555;font-style:italic;">$1</blockquote>')
+        .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/gim, '<em>$1</em>')
+        .replace(/`([^`]+)`/gim, '<code style="background:#eee;padding:2px 4px;border-radius:4px;font-family:monospace;font-size:12px;">$1</code>')
+        .replace(/^\- (.*$)/gim, '<li style="margin-left:20px;">$1</li>')
+        .replace(/\n\n/gim, '<p style="margin:8px 0;"></p>');
+      return html;
+    }
+
+    function renderMarkdown() {
+      const md = document.getElementById('md-input').value;
+      const html = parseSimpleMarkdown(md);
+      document.getElementById('md-preview').innerHTML = html;
+      logLocalOp('Markdown parse', md.length);
+    }
+
+    async function copyRichText() {
+      const preview = document.getElementById('md-preview');
+      const html = preview.innerHTML;
+      const text = preview.innerText;
+
+      try {
+        const blobHtml = new Blob([html], { type: 'text/html' });
+        const blobText = new Blob([text], { type: 'text/plain' });
+        const item = new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText });
+        await navigator.clipboard.write([item]);
+        showToast('✅ Copied as Formatted Rich Text!');
+      } catch (err) {
+        navigator.clipboard.writeText(text).then(() => showToast('✅ Copied as plain text'));
+      }
+    }
+
+    function copyHTMLCode() {
+      const html = document.getElementById('md-preview').innerHTML;
+      navigator.clipboard.writeText(html).then(() => showToast('✅ Copied HTML code!'));
+    }
+
+    renderMarkdown();
+  </script>
+</body>
+</html>

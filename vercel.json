@@ -13,7 +13,16 @@
       "permanent": true
     },
     {
-      "source": "/:page(privacy|support|intelligence|changelog|clipboard-history-mac|mac-command-history|comparison|developer-clipboard|custom-actions|jwt-decoder-mac|json-formatter-mac|regex-clipboard-mac|screenshot-ocr-mac|sql-test-data-generator|sitemap|blog|blog-clipboard-automation-developer-workflows|blog-regex-clipboard|blog-sql-test-data|blog-jwt-security|blog-sqlite-fts5-hangs|blog-swift-sqlite-concurrency|blog-apple-intelligence-clipboard|blog-developer-workflow-apple-intelligence|blog-zero-cloud-mac-desktop-ai|l2cache-vs-maccy|l2cache-vs-clipy|l2cache-vs-paste)",
+      "source": "/tools/:tool*",
+      "missing": [
+        { "type": "host", "value": "amvo.store" },
+        { "type": "host", "value": "www.amvo.store" }
+      ],
+      "destination": "/en/tools/:tool*",
+      "permanent": true
+    },
+    {
+      "source": "/:page(tools|privacy|support|intelligence|changelog|clipboard-history-mac|mac-command-history|comparison|developer-clipboard|custom-actions|jwt-decoder-mac|json-formatter-mac|regex-clipboard-mac|screenshot-ocr-mac|sql-test-data-generator|sitemap|blog|blog-clipboard-automation-developer-workflows|blog-regex-clipboard|blog-sql-test-data|blog-jwt-security|blog-sqlite-fts5-hangs|blog-swift-sqlite-concurrency|blog-apple-intelligence-clipboard|blog-developer-workflow-apple-intelligence|blog-zero-cloud-mac-desktop-ai|l2cache-vs-maccy|l2cache-vs-clipy|l2cache-vs-paste)",
       "missing": [
         { "type": "host", "value": "amvo.store" },
         { "type": "host", "value": "www.amvo.store" }

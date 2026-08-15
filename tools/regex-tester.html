@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Online Regex Tester & Explainer — 100% Client-Side | L2Cache</title>
+  <meta name="description" content="Test regular expressions with real-time match highlighting and plain-English token explanations. 100% private in-browser regex tester with zero server calls." />
+  <meta name="keywords" content="regex tester, regular expression tester online, regex explainer, test regex javascript, offline regex tool" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/regex-tester" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Regex Tester & Explainer",
+        "url": "https://l2cache.amvo.store/en/tools/regex-tester",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Are my regex patterns and test strings sent to a server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. All regular expression evaluations, match highlighting, and explanations execute purely in your browser via client-side JavaScript."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does L2Cache handle regex on macOS?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "L2Cache uses regex pattern matchers on your Mac clipboard to automatically categorize API keys, UUIDs, JWT tokens, hex colors, and emails without manual tagging."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    .match-highlight {
+      background: rgba(0, 200, 150, 0.35);
+      border-bottom: 2px solid var(--purple);
+      border-radius: 2px;
+      color: #fff;
+      font-weight: 700;
+    }
+    .regex-flags {
+      display: flex; gap: 8px; margin-top: 6px; font-family: var(--mono); font-size: 12px;
+    }
+    .flag-label {
+      background: #181824; border: 1px solid #333; padding: 3px 8px; border-radius: 4px;
+      cursor: pointer; display: flex; align-items: center; gap: 4px; color: #ccc;
+    }
+    .flag-label input { accent-color: var(--purple); }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Test regex patterns locally in your browser. Zero tracking, complete privacy.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">REGULAR EXPRESSION SUITE</span>
+      <h1>Interactive Regex Tester & <em>Visual Explainer</em></h1>
+      <p class="hero-sub">
+        Test regular expressions with real-time match highlighting and breakdown explanations. 
+        Runs 100% client-side with zero latency and zero data leakage.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">🧪</div>
+            <span class="tool-name-text">Regex Pattern Engine</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% IN-BROWSER</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <!-- Regex Pattern Input -->
+          <div class="tool-pane" style="margin-bottom: 16px;">
+            <div class="pane-label-row">
+              <span>Regular Expression Pattern</span>
+              <span id="regex-status" style="color:var(--purple);">Valid Pattern</span>
+            </div>
+            <input type="text" id="regex-pattern" class="tool-textarea" style="height: 48px; font-size: 15px;" 
+                   value="([a-zA-Z0-9_\.\+-]+)@([a-zA-Z0-9-]+\.[a-zA-Z0-9-\.]+)" oninput="runRegex()" />
+            <div class="regex-flags">
+              <label class="flag-label"><input type="checkbox" id="flag-g" checked onchange="runRegex()"> Global (g)</label>
+              <label class="flag-label"><input type="checkbox" id="flag-i" checked onchange="runRegex()"> Case Insensitive (i)</label>
+              <label class="flag-label"><input type="checkbox" id="flag-m" onchange="runRegex()"> Multiline (m)</label>
+            </div>
+          </div>
+
+          <div class="tool-io-grid">
+            
+            <!-- Test String Input -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Test String</span>
+                <span id="match-count" style="color:var(--purple);">0 Matches</span>
+              </div>
+              <textarea id="regex-test-string" class="tool-textarea" oninput="runRegex()" placeholder="Enter text to match against...">Contact our engineering team at dev-team@l2cache.app or support@amvo.store for early access feedback!</textarea>
+            </div>
+
+            <!-- Highlighted Matches View -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Match Highlighting & Match Groups</span>
+                <span>Visual Highlights</span>
+              </div>
+              <div id="regex-highlight-view" class="tool-output-view" style="color:#fff;"></div>
+            </div>
+
+          </div>
+
+          <!-- Controls -->
+          <div class="tool-controls">
+            <button class="tbtn tbtn-primary" onclick="loadSample('email')">✉️ Email Regex</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSample('uuid')">🆔 UUID Regex</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSample('url')">🔗 URL Regex</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSample('ip')">🌐 IPv4 Regex</button>
+            <button class="tbtn tbtn-copy" onclick="copyOutput('regex-highlight-view')" style="margin-left: auto;">📋 Copy Match Results</button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-regex">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-regex">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Native Regex clipboard filters on macOS with L2Cache</h3>
+          <p>
+            L2Cache uses native pattern matchers to categorize your clipboard history in real-time — 
+            search and filter by regex without uploading any clips to the cloud.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Guide Content -->
+      <div class="article-body">
+        <h2>Quick Regex Cheat Sheet</h2>
+        <ul>
+          <li><code>^</code> / <code>$</code> : Start and end of line anchors.</li>
+          <li><code>\d</code> / <code>\w</code> / <code>\s</code> : Matches digits, word characters, and whitespace.</li>
+          <li><code>+</code> / <code>*</code> / <code>?</code> : One or more, zero or more, and optional quantifier.</li>
+          <li><code>(?&lt;=...)</code> / <code>(?=...)</code> : Positive lookbehind and lookahead assertions.</li>
+        </ul>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="curl-converter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">⚡</div><span class="tool-card-badge">APIs</span></div>
+            <h3>cURL Converter</h3>
+            <p>Convert cURL to Fetch, Python, and Swift.</p>
+          </a>
+          <a href="jwt-decoder.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔑</div><span class="tool-card-badge">Security</span></div>
+            <h3>JWT Decoder</h3>
+            <p>Decode JSON Web Tokens and inspect claims offline.</p>
+          </a>
+          <a href="text-diff.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔀</div><span class="tool-card-badge">Code</span></div>
+            <h3>Text & Code Diff</h3>
+            <p>Compare text differences side-by-side.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function runRegex() {
+      const patternStr = document.getElementById('regex-pattern').value;
+      const testStr = document.getElementById('regex-test-string').value;
+      const highlightView = document.getElementById('regex-highlight-view');
+      const status = document.getElementById('regex-status');
+      const matchCount = document.getElementById('match-count');
+
+      let flags = '';
+      if (document.getElementById('flag-g').checked) flags += 'g';
+      if (document.getElementById('flag-i').checked) flags += 'i';
+      if (document.getElementById('flag-m').checked) flags += 'm';
+
+      if (!patternStr) {
+        highlightView.innerHTML = escapeHtml(testStr);
+        status.textContent = 'Empty Pattern';
+        matchCount.textContent = '0 Matches';
+        return;
+      }
+
+      try {
+        const re = new RegExp(patternStr, flags);
+        status.textContent = 'Valid Pattern';
+        status.style.color = 'var(--purple)';
+
+        let count = 0;
+        const matches = [];
+        let match;
+
+        if (flags.includes('g')) {
+          while ((match = re.exec(testStr)) !== null) {
+            matches.push({ index: match.index, text: match[0], groups: match.slice(1) });
+            count++;
+            if (re.lastIndex === match.index) re.lastIndex++;
+          }
+        } else {
+          match = re.exec(testStr);
+          if (match) {
+            matches.push({ index: match.index, text: match[0], groups: match.slice(1) });
+            count = 1;
+          }
+        }
+
+        matchCount.textContent = `${count} Match${count === 1 ? '' : 'es'}`;
+
+        // Build Highlighted HTML
+        let html = '';
+        let lastIdx = 0;
+
+        matches.forEach(m => {
+          html += escapeHtml(testStr.substring(lastIdx, m.index));
+          html += `<mark class="match-highlight">${escapeHtml(m.text)}</mark>`;
+          lastIdx = m.index + m.text.length;
+        });
+        html += escapeHtml(testStr.substring(lastIdx));
+
+        if (count > 0) {
+          html += '\n\n━━━━━━━━ MATCH DETAILS ━━━━━━━━\n';
+          matches.forEach((m, i) => {
+            html += `[Match ${i + 1}] "${m.text}" (Index ${m.index})\n`;
+            if (m.groups.length > 0) {
+              m.groups.forEach((g, gi) => {
+                html += `  └─ Group ${gi + 1}: "${g}"\n`;
+              });
+            }
+          });
+        }
+
+        highlightView.innerHTML = html;
+        logLocalOp('Regex test()', new Blob([testStr]).size);
+      } catch (e) {
+        status.textContent = 'Invalid Regex: ' + e.message;
+        status.style.color = '#fc6a6a';
+        highlightView.innerHTML = escapeHtml(testStr);
+      }
+    }
+
+    function loadSample(type) {
+      if (type === 'email') {
+        document.getElementById('regex-pattern').value = '([a-zA-Z0-9_\\.\\+-]+)@([a-zA-Z0-9-]+\\.[a-zA-Z0-9-\\.]+)';
+        document.getElementById('regex-test-string').value = 'Contact our engineering team at dev-team@l2cache.app or support@amvo.store for early access feedback!';
+      } else if (type === 'uuid') {
+        document.getElementById('regex-pattern').value = '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}';
+        document.getElementById('regex-test-string').value = 'Active sessions: 2f45c3eb-20f3-45a8-bf0a-f894cce52da3 and a98e0f11-0982-4112-9214-998811223344.';
+      } else if (type === 'url') {
+        document.getElementById('regex-pattern').value = 'https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)';
+        document.getElementById('regex-test-string').value = 'Visit https://l2cache.amvo.store/en/tools or read docs at https://github.com/dindina/L2Cache for details.';
+      } else if (type === 'ip') {
+        document.getElementById('regex-pattern').value = '\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b';
+        document.getElementById('regex-test-string').value = 'DNS servers: 1.1.1.1, 8.8.8.8, and local gateway 192.168.1.1.';
+      }
+      runRegex();
+    }
+
+    // Run on page load
+    runRegex();
+  </script>
+</body>
+</html>

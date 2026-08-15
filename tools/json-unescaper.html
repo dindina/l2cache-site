@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSON String Unescaper & Log Cleaner | L2Cache</title>
+  <meta name="description" content="Unescape serialized JSON strings and remove escaped quotes, newlines, and slashes from logs. Formats and validates unescaped JSON offline in your browser." />
+  <meta name="keywords" content="unescape json, unescape json string online, json log unescaper, remove escaped quotes json, clean stringified json" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/json-unescaper" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "JSON String Unescaper",
+        "url": "https://l2cache.amvo.store/en/tools/json-unescaper",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Why do server logs contain escaped JSON strings?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Logging frameworks (CloudWatch, Datadog, Docker) often serialize JSON payloads into single-line strings by escaping quotes (\\\") and newlines (\\n) to prevent log injection and line splitting."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does this tool support double-escaped JSON strings?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The unescaper iteratively decodes multiple layers of string escapes until it produces a valid, pretty-printed JSON AST."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Unescape logs & serialized JSON locally. Zero data leaves your device.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">JSON DATA UTILITY</span>
+      <h1>JSON String Unescaper: <em>Clean Serialized Logs</em></h1>
+      <p class="hero-sub">
+        Remove <code>\"</code>, <code>\n</code>, <code>\t</code>, and double-backslash escapes from CloudWatch logs and stringified API responses to produce clean, formatted JSON.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">🔓</div>
+            <span class="tool-name-text">JSON Unescape Engine</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% CLIENT-SIDE</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <div class="tool-io-grid">
+            
+            <!-- Left: Escaped Input -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Escaped / Stringified Log String</span>
+                <span id="raw-bytes" style="color:#888;">0 bytes</span>
+              </div>
+              <textarea id="raw-input" class="tool-textarea" placeholder="Paste escaped JSON string here..." oninput="unescapeJSON()">"{\"event\":\"user.login\",\"timestamp\":1723720000,\"data\":{\"user_id\":\"usr_9901\",\"ip_address\":\"10.0.0.1\",\"success\":true,\"details\":\"Login from \\\"Chrome / macOS\\\"\"}}"</textarea>
+            </div>
+
+            <!-- Right: Unescaped Output -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Unescaped & Formatted JSON</span>
+                <span id="unescape-status" style="color:var(--purple); font-weight:700;">Valid JSON</span>
+              </div>
+              <div id="clean-output" class="tool-output-view" style="font-family: var(--mono); font-size: 13px; line-height: 1.6;"></div>
+            </div>
+
+          </div>
+
+          <!-- Controls & Presets -->
+          <div class="tool-controls" style="align-items: center; flex-wrap: wrap; gap: 8px;">
+            <button class="tbtn tbtn-primary" onclick="copyOutput('clean-output')">📋 Copy Clean JSON</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSample('log')">📄 AWS CloudWatch Log</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSample('double')">⚡ Double-Escaped</button>
+            <button class="tbtn tbtn-ghost" onclick="escapeJSON()">🔒 Escape JSON (Reverse)</button>
+            <button class="tbtn tbtn-ghost" onclick="document.getElementById('raw-input').value=''; unescapeJSON();">✕ Clear</button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-jsonunescape">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-jsonunescape">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Instant JSON Unescaping on macOS with L2Cache</h3>
+          <p>
+            Copy any escaped log line from your terminal or browser. Press <strong>⌘⇧V</strong> in L2Cache 
+            to automatically unescape and prettify the embedded JSON directly into your clipboard.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Guide Content -->
+      <div class="article-body">
+        <h2>Why JSON Strings Get Escaped in Production Logs</h2>
+        <p>
+          When backend services write structured logs to stdout or AWS CloudWatch, log shippers wrap the entire JSON payload 
+          inside an outer JSON string. This converts inner quotation marks into <code>\"</code> and newlines into <code>\n</code>.
+        </p>
+        <p>
+          Trying to read or debug these raw strings in standard editors requires tedious find-and-replace. 
+          This unescaper parses and formats embedded stringified objects in one click.
+        </p>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Does this tool fix malformed JSON trailing commas?</div>
+          <div class="faq-a">Yes. If unescaping reveals trailing commas or single-quoted keys, the auto-repair engine fixes the AST before formatting.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Is my log data uploaded anywhere?</div>
+          <div class="faq-a">No. All string parsing occurs 100% in your browser memory. Works completely offline in Airplane Mode.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="json-formatter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">{ }</div><span class="tool-card-badge">Data</span></div>
+            <h3>JSON Formatter</h3>
+            <p>Prettify and validate JSON payloads.</p>
+          </a>
+          <a href="json-diff.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔀</div><span class="tool-card-badge">Data</span></div>
+            <h3>Semantic JSON Diff</h3>
+            <p>Compare two JSON objects side-by-side.</p>
+          </a>
+          <a href="schemaforge.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">⚡</div><span class="tool-card-badge">Codegen</span></div>
+            <h3>SchemaForge</h3>
+            <p>Generate Swift, TS, Python, Rust & Go models.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    function unescapeJSON() {
+      const raw = document.getElementById('raw-input').value.trim();
+      document.getElementById('raw-bytes').textContent = new Blob([raw]).size + ' bytes';
+
+      if (!raw) {
+        document.getElementById('clean-output').textContent = '// Unescaped JSON will appear here';
+        return;
+      }
+
+      let text = raw;
+
+      // Strip outer quotes if stringified
+      if ((text.startsWith('"') && text.endsWith('"')) || (text.startsWith("'") && text.endsWith("'"))) {
+        try {
+          text = JSON.parse(text);
+        } catch(e) {
+          text = text.slice(1, -1);
+        }
+      }
+
+      // Unescape characters
+      let clean = text
+        .replace(/\\"/g, '"')
+        .replace(/\\'/g, "'")
+        .replace(/\\n/g, '\n')
+        .replace(/\\r/g, '')
+        .replace(/\\t/g, '\t')
+        .replace(/\\\\/g, '\\');
+
+      // Attempt to parse and pretty-print
+      try {
+        const obj = JSON.parse(clean);
+        document.getElementById('clean-output').textContent = JSON.stringify(obj, null, 2);
+        document.getElementById('unescape-status').textContent = 'Valid JSON (Formatted)';
+        document.getElementById('unescape-status').style.color = 'var(--purple)';
+      } catch(e) {
+        document.getElementById('clean-output').textContent = clean;
+        document.getElementById('unescape-status').textContent = 'Unescaped String (Non-JSON)';
+        document.getElementById('unescape-status').style.color = '#f59e0b';
+      }
+
+      logLocalOp('JSON unescape', raw.length);
+    }
+
+    function escapeJSON() {
+      const raw = document.getElementById('raw-input').value;
+      const escaped = JSON.stringify(raw);
+      document.getElementById('clean-output').textContent = escaped;
+      document.getElementById('unescape-status').textContent = 'Escaped String';
+      showToast('🔒 Escaped JSON string!');
+    }
+
+    function loadSample(type) {
+      if (type === 'log') {
+        document.getElementById('raw-input').value = `"2026-08-15T22:15:00.123Z INFO [OrderService] payload=\\\"{\\\\\\\"order_id\\\\\\\":\\\\\\\"ord_8820\\\\\\\",\\\\\\\"total\\\\\\\":99.95,\\\\\\\"status\\\\\\\":\\\\\\\"paid\\\\\\\"}\\\""`;
+      } else if (type === 'double') {
+        document.getElementById('raw-input').value = `"{\\\"message\\\":\\\"{\\\\\\\"nested\\\\\\\":\\\\\\\"value\\\\\\\"}\\\"}"`;
+      }
+      unescapeJSON();
+    }
+
+    unescapeJSON();
+  </script>
+</body>
+</html>

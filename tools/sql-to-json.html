@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SQL DDL to JSON & Mock Data Generator | L2Cache</title>
+  <meta name="description" content="Convert SQL CREATE TABLE DDL schemas and INSERT queries into realistic JSON objects and test data arrays. 100% offline in your browser — zero database leaks." />
+  <meta name="keywords" content="sql to json, create table to json, sql ddl to json mock data, sql schema to json array, offline sql to json converter" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/sql-to-json" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "SQL to JSON Generator",
+        "url": "https://l2cache.amvo.store/en/tools/sql-to-json",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How does SQL to JSON conversion generate realistic mock data?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The engine inspects column names and SQL types (INT, VARCHAR, TIMESTAMP, BOOLEAN, DECIMAL) to produce realistic names, emails, prices, dates, and IDs formatted as valid JSON arrays."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is my SQL database schema uploaded anywhere?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The SQL tokenizer runs 100% inside client-side JavaScript memory. Works completely offline in Airplane Mode."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Convert SQL DDL to JSON fixtures locally. Zero data leaks.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">DATABASE & FIXTURES</span>
+      <h1>SQL to JSON: <em>DDL Schema to Mock Data</em></h1>
+      <p class="hero-sub">
+        Parse <code>CREATE TABLE</code> schemas and SQL statements to generate structured JSON fixture arrays and realistic API test mock payloads.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">🗄️</div>
+            <span class="tool-name-text">SQL Schema AST Engine</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% CLIENT-SIDE</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <div class="tool-io-grid">
+            
+            <!-- Left: SQL DDL Input -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>SQL DDL Schema / CREATE TABLE</span>
+                <span id="raw-bytes" style="color:#888;">0 bytes</span>
+              </div>
+              <textarea id="sql-input" class="tool-textarea" placeholder="Paste SQL CREATE TABLE statement here..." oninput="convertSqlToJson()">CREATE TABLE customers (
+  id INT PRIMARY KEY,
+  full_name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) UNIQUE,
+  account_balance DECIMAL(10,2),
+  is_verified BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);</textarea>
+            </div>
+
+            <!-- Right: JSON Mock Output -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Generated JSON Mock Array</span>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <span style="font-size: 11px; color: #888;">Count:</span>
+                  <select id="sel-mock-count" style="background: #09090e; border: 1px solid #333; color: #fff; font-size: 11px; border-radius: 4px;" onchange="convertSqlToJson()">
+                    <option value="2">2 Records</option>
+                    <option value="5" selected>5 Records</option>
+                    <option value="10">10 Records</option>
+                  </select>
+                </div>
+              </div>
+              <div id="json-output" class="tool-output-view" style="font-family: var(--mono); font-size: 13px; line-height: 1.6;"></div>
+            </div>
+
+          </div>
+
+          <!-- Controls & Actions -->
+          <div class="tool-controls" style="align-items: center; flex-wrap: wrap; gap: 8px;">
+            <button class="tbtn tbtn-primary" onclick="copyOutput('json-output')">📋 Copy JSON Mock Array</button>
+            <button class="tbtn tbtn-ghost" onclick="downloadJson()">💾 Download .json</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSample('orders')">🛒 Orders Table</button>
+            <button class="tbtn tbtn-ghost" onclick="document.getElementById('sql-input').value=''; convertSqlToJson();">✕ Clear</button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-sqltojson">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-sqltojson">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Generate mock data from clipboard on macOS with L2Cache</h3>
+          <p>
+            Copy any SQL table definition from DBeaver, TablePlus, or pgAdmin. Press <strong>⌘⇧V</strong> 
+            in L2Cache to generate realistic JSON fixtures directly in your paste menu.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Guide Content -->
+      <div class="article-body">
+        <h2>Why Converting SQL DDL to JSON Accelerates API Prototyping</h2>
+        <p>
+          When building full-stack applications, developers often design PostgreSQL or MySQL schemas first. 
+          Manually hand-crafting JSON fixtures or seed files for unit tests is tedious and error-prone.
+        </p>
+        <p>
+          This tool parses the column names and SQL types (e.g. <code>VARCHAR</code>, <code>DECIMAL</code>, <code>BOOLEAN</code>, <code>TIMESTAMP</code>) 
+          and generates realistic, valid JSON mock arrays ready for unit tests and frontend mocking.
+        </p>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Which SQL dialects are supported?</div>
+          <div class="faq-a">PostgreSQL, MySQL, SQLite, Oracle, and Microsoft SQL Server DDL syntax are all supported.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Is my database schema private?</div>
+          <div class="faq-a">Yes. Schema parsing occurs 100% in your browser. Disconnect Wi-Fi or test in Airplane Mode to verify zero network requests.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="sql-query-converter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🗄️</div><span class="tool-card-badge">Super Tool</span></div>
+            <h3>SQL Query Converter</h3>
+            <p>Convert SELECT to INSERT, UPDATE, DELETE.</p>
+          </a>
+          <a href="schemaforge.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">⚡</div><span class="tool-card-badge">Codegen</span></div>
+            <h3>SchemaForge</h3>
+            <p>Generate Swift, TS, Python, Rust & Go models.</p>
+          </a>
+          <a href="universal-data-converter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">⚡</div><span class="tool-card-badge">Super Tool</span></div>
+            <h3>Universal Data Converter</h3>
+            <p>Convert JSON, YAML, XML, and CSV.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    function parseColumnsFromDDL(sql) {
+      const cleaned = sql.replace(/\/\*[\s\S]*?\*\/|--.*$/gm, '').trim();
+      const match = cleaned.match(/\bCREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?([a-zA-Z0-9_`"\[\]]+)\s*\(([\s\S]+)\)/i);
+      
+      const columns = [];
+      if (match) {
+        const lines = match[2].split(',');
+        lines.forEach(line => {
+          const words = line.trim().split(/\s+/);
+          if (words.length >= 2) {
+            const name = words[0].replace(/[`"\[\]]/g, '');
+            const type = words[1].toUpperCase();
+            if (!['PRIMARY', 'FOREIGN', 'KEY', 'CONSTRAINT', 'UNIQUE', 'CHECK'].includes(name.toUpperCase())) {
+              columns.push({ name, type });
+            }
+          }
+        });
+      }
+
+      if (columns.length === 0) {
+        columns.push({ name: 'id', type: 'INT' });
+        columns.push({ name: 'name', type: 'VARCHAR' });
+        columns.push({ name: 'status', type: 'VARCHAR' });
+      }
+
+      return columns;
+    }
+
+    function generateMockValue(col, idx) {
+      const n = col.name.toLowerCase();
+      const t = col.type.toUpperCase();
+
+      if (n.includes('email')) return `user_${idx + 1}@example.com`;
+      if (n.includes('name')) return ['Alice Smith', 'Bob Jones', 'Charlie Brown', 'Diana Prince', 'Evan Wright'][idx % 5];
+      if (n.includes('phone')) return `+1-555-019${idx}`;
+      if (n.includes('balance') || n.includes('price') || n.includes('amount') || n.includes('cost') || t.includes('DECIMAL') || t.includes('FLOAT') || t.includes('NUMERIC')) {
+        return parseFloat((24.99 * (idx + 1)).toFixed(2));
+      }
+      if (n.includes('is_') || n.includes('has_') || n.includes('active') || n.includes('verified') || t.includes('BOOL')) {
+        return idx % 2 === 0;
+      }
+      if (n.includes('date') || n.includes('created') || n.includes('updated') || t.includes('TIME') || t.includes('DATE')) {
+        return new Date(Date.now() - idx * 86400000).toISOString();
+      }
+      if (n.includes('id') || t.includes('INT')) {
+        return 1000 + idx + 1;
+      }
+      return `${col.name}_val_${idx + 1}`;
+    }
+
+    function convertSqlToJson() {
+      const raw = document.getElementById('sql-input').value.trim();
+      const count = parseInt(document.getElementById('sel-mock-count').value, 10) || 5;
+      document.getElementById('raw-bytes').textContent = new Blob([raw]).size + ' bytes';
+
+      const columns = parseColumnsFromDDL(raw);
+      const records = [];
+
+      for (let i = 0; i < count; i++) {
+        const row = {};
+        columns.forEach(col => {
+          row[col.name] = generateMockValue(col, i);
+        });
+        records.push(row);
+      }
+
+      document.getElementById('json-output').textContent = JSON.stringify(records, null, 2);
+      logLocalOp('SQL to JSON generate', raw.length);
+    }
+
+    function downloadJson() {
+      const text = document.getElementById('json-output').textContent;
+      const blob = new Blob([text], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'mock_data.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('💾 Downloaded mock_data.json');
+    }
+
+    function loadSample(type) {
+      if (type === 'orders') {
+        document.getElementById('sql-input').value = `CREATE TABLE orders (
+  order_id INT PRIMARY KEY,
+  customer_id INT NOT NULL,
+  total_price DECIMAL(10,2),
+  payment_status VARCHAR(50),
+  is_delivered BOOLEAN,
+  order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);`;
+      }
+      convertSqlToJson();
+    }
+
+    convertSqlToJson();
+  </script>
+</body>
+</html>

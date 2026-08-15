@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smooth CSS Box-Shadow & Glassmorphism Generator — 100% Client-Side | L2Cache</title>
+  <meta name="description" content="Design multi-layered smooth box-shadows, UI elevation tokens, and frosted glass glassmorphism CSS in your browser. 100% private with instant Tailwind CSS copy." />
+  <meta name="keywords" content="css box shadow generator, smooth shadow generator, glassmorphism css generator, tailwind shadow generator, elevation css" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/shadow-generator" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "CSS Shadow & Glassmorphism Studio",
+        "url": "https://l2cache.amvo.store/en/tools/shadow-generator",
+        "applicationCategory": "DesignApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    .shadow-preview-stage {
+      width: 100%; height: 260px; border-radius: 16px; background: #f0f0eb;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px; transition: all 0.2s; position: relative; overflow: hidden;
+    }
+    .shadow-target-box {
+      width: 180px; height: 120px; background: #ffffff; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; color: #0a0a0a; font-size: 15px;
+      transition: all 0.2s ease;
+    }
+    .slider-row {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+      font-size: 13px; font-weight: 600; color: #ccc;
+    }
+    .slider-row input[type="range"] {
+      width: 60%; accent-color: var(--purple);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Generate CSS shadows & glassmorphism locally. Zero servers.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">UI ELEVATION & SHADOW STUDIO</span>
+      <h1>Smooth Box-Shadow & <em>Glassmorphism</em></h1>
+      <p class="hero-sub">
+        Design realistic multi-layer ambient box-shadows and frosted glass blur effects with instant CSS and Tailwind code copy.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">🪟</div>
+            <span class="tool-name-text">Shadow & Glass Studio</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% LOCAL</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <!-- Visual Preview Stage -->
+          <div class="shadow-preview-stage" id="preview-stage">
+            <div class="shadow-target-box" id="target-box">L2Cache Card</div>
+          </div>
+
+          <div class="tool-io-grid">
+            
+            <!-- Controls Pane -->
+            <div class="tool-pane" style="background: #181824; border: 1px solid #28283a; border-radius: 12px; padding: 18px;">
+              <div class="slider-row">
+                <span>Elevation (Blur):</span>
+                <input type="range" id="param-blur" min="0" max="64" value="24" oninput="updateShadow()" />
+              </div>
+              <div class="slider-row">
+                <span>Vertical Offset (Y):</span>
+                <input type="range" id="param-y" min="0" max="40" value="12" oninput="updateShadow()" />
+              </div>
+              <div class="slider-row">
+                <span>Shadow Opacity:</span>
+                <input type="range" id="param-opacity" min="5" max="60" value="15" oninput="updateShadow()" />
+              </div>
+              <div class="slider-row">
+                <span>Glass Blur (Frosted):</span>
+                <input type="range" id="param-glass" min="0" max="30" value="0" oninput="updateShadow()" />
+              </div>
+            </div>
+
+            <!-- Code Output Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row"><span>Generated CSS & Tailwind</span><span>Design Tokens</span></div>
+              <div id="shadow-css-view" class="tool-output-view" style="font-family: var(--mono); font-size: 13px;"></div>
+            </div>
+
+          </div>
+
+          <!-- Controls -->
+          <div class="tool-controls">
+            <button class="tbtn tbtn-primary" onclick="setShadowPreset('subtle')">Subtle Float</button>
+            <button class="tbtn tbtn-ghost" onclick="setShadowPreset('elevated')">Card Elevation</button>
+            <button class="tbtn tbtn-ghost" onclick="setShadowPreset('dramatic')">Deep Glow</button>
+            <button class="tbtn tbtn-ghost" onclick="setShadowPreset('glass')">Frosted Glass</button>
+            <button class="tbtn tbtn-copy" onclick="copyOutput('shadow-css-view')" style="margin-left: auto;">📋 Copy CSS</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Copy CSS design tokens directly to your Mac clipboard</h3>
+          <p>
+            L2Cache stores and categorizes CSS snippets, shadow tokens, and color values in your 
+            history for 1-click reuse across Figma, VS Code, and Xcode.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="color-converter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🎨</div><span class="tool-card-badge">Design</span></div>
+            <h3>Color Converter</h3>
+            <p>Convert HEX, RGB, HSL and match Tailwind colors.</p>
+          </a>
+          <a href="svg-optimizer.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🧹</div><span class="tool-card-badge">SVG</span></div>
+            <h3>SVG Optimizer</h3>
+            <p>Clean and minify SVG markup and React JSX.</p>
+          </a>
+          <a href="aspect-ratio-calculator.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">📐</div><span class="tool-card-badge">Layout</span></div>
+            <h3>Aspect Ratio Tool</h3>
+            <p>Compute responsive dimensions and crops.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    function updateShadow() {
+      const blur = document.getElementById('param-blur').value;
+      const y = document.getElementById('param-y').value;
+      const opacity = (document.getElementById('param-opacity').value / 100).toFixed(2);
+      const glass = document.getElementById('param-glass').value;
+
+      const shadowVal = `0 ${Math.round(y/2)}px ${Math.round(blur/2)}px rgba(0, 0, 0, ${(opacity*0.6).toFixed(2)}), 0 ${y}px ${blur}px rgba(0, 0, 0, ${opacity})`;
+      
+      const box = document.getElementById('target-box');
+      box.style.boxShadow = shadowVal;
+
+      if (glass > 0) {
+        box.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+        box.style.backdropFilter = `blur(${glass}px)`;
+        box.style.webkitBackdropFilter = `blur(${glass}px)`;
+        box.style.border = '1px solid rgba(255, 255, 255, 0.5)';
+      } else {
+        box.style.backgroundColor = '#ffffff';
+        box.style.backdropFilter = 'none';
+        box.style.webkitBackdropFilter = 'none';
+        box.style.border = 'none';
+      }
+
+      const css = [
+        '/* CSS Box Shadow */',
+        `box-shadow: ${shadowVal};`,
+        glass > 0 ? `background: rgba(255, 255, 255, 0.7);\nbackdrop-filter: blur(${glass}px);\n-webkit-backdrop-filter: blur(${glass}px);` : '',
+        '',
+        '/* Tailwind CSS equivalent */',
+        `shadow-[0_${y}px_${blur}px_rgba(0,0,0,${opacity})]`
+      ].filter(Boolean).join('\n');
+
+      document.getElementById('shadow-css-view').textContent = css;
+      logLocalOp('Shadow generate', 12);
+    }
+
+    function setShadowPreset(type) {
+      if (type === 'subtle') {
+        document.getElementById('param-blur').value = 16;
+        document.getElementById('param-y').value = 6;
+        document.getElementById('param-opacity').value = 10;
+        document.getElementById('param-glass').value = 0;
+      } else if (type === 'elevated') {
+        document.getElementById('param-blur').value = 32;
+        document.getElementById('param-y').value = 16;
+        document.getElementById('param-opacity').value = 18;
+        document.getElementById('param-glass').value = 0;
+      } else if (type === 'dramatic') {
+        document.getElementById('param-blur').value = 56;
+        document.getElementById('param-y').value = 28;
+        document.getElementById('param-opacity').value = 30;
+        document.getElementById('param-glass').value = 0;
+      } else if (type === 'glass') {
+        document.getElementById('param-blur').value = 24;
+        document.getElementById('param-y').value = 12;
+        document.getElementById('param-opacity').value = 12;
+        document.getElementById('param-glass').value = 16;
+      }
+      updateShadow();
+    }
+
+    updateShadow();
+  </script>
+</body>
+</html>

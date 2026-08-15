@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offline JWT Decoder & Token Inspector — 100% Client-Side | L2Cache</title>
+  <meta name="description" content="Decode JSON Web Tokens (JWT) safely and offline in your browser. Inspect header, payload, and claim expiration without sending tokens to any server. Free & private." />
+  <meta name="keywords" content="jwt decoder, decode jwt offline, jwt expiration checker, private jwt decoder, jwt claim inspector, l2cache jwt" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/jwt-decoder" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <!-- Dual JSON-LD Schema: WebApplication + FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Offline JWT Decoder & Token Inspector",
+        "url": "https://l2cache.amvo.store/en/tools/jwt-decoder",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is my JWT token sent to a server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. This decoder runs 100% client-side in your web browser using JavaScript. No tokens, headers, or payloads are transmitted or stored remotely."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I verify the JWT signature offline?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The tool decodes the Header and Payload without requiring a secret key. Signature verification checks whether the signature matches the payload when signed with your secret key locally."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I automatically decode JWTs from my Mac clipboard?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "With L2Cache on macOS, copied JWTs are detected automatically and show an instant decoded preview in your clipboard history with expiry indicators — 100% offline."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Hit the button → turn on Airplane Mode → decode tokens. Zero network calls.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">100% CLIENT-SIDE SECURITY</span>
+      <h1>Offline JWT Decoder & <em>Token Inspector</em></h1>
+      <p class="hero-sub">
+        Decode JSON Web Tokens locally in your browser. Inspect Header, Payload, and claim expiration 
+        without risking credential leaks to third-party web servers.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">🔑</div>
+            <span class="tool-name-text">JWT Inspector & Expiry Checker</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% IN-BROWSER</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-io-grid">
+            
+            <!-- Input Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Paste Encoded JWT Token</span>
+                <span id="jwt-bytes" style="color:var(--purple);">0 bytes</span>
+              </div>
+              <textarea id="jwt-input" class="tool-textarea" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFsaWNlIERldiIsImFkbWluIjp0cnVlLCJpYXQiOjE3MjM3MjAwMDAsImV4cCI6MTc4OTI1NjAwMH0.signature"></textarea>
+            </div>
+
+            <!-- Output Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Decoded Header & Payload</span>
+                <span>JSON Claims</span>
+              </div>
+              <div id="jwt-output" class="tool-output-view">// Decoded Header, Payload, and Expiry information will appear here</div>
+            </div>
+
+          </div>
+
+          <!-- Controls -->
+          <div class="tool-controls">
+            <button class="tbtn tbtn-primary" onclick="decodeJWT()">🔓 Decode JWT</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSampleJWT()">📄 Sample Token</button>
+            <button class="tbtn tbtn-ghost" onclick="clearJWT()">✕ Clear</button>
+            <button class="tbtn tbtn-copy" onclick="copyOutput('jwt-output')" style="margin-left: auto;">📋 Copy Decoded JSON</button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-jwt">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-jwt">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Decode JWTs automatically on your Mac clipboard</h3>
+          <p>
+            In L2Cache for macOS, whenever you copy a JWT, your clipboard history shows an instant decoded preview 
+            with expiry timers and claims — no browser tabs needed, 100% offline.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Guide Content -->
+      <div class="article-body">
+        <h2>How JSON Web Tokens (JWT) Work</h2>
+        <p>
+          A JSON Web Token (JWT, RFC 7519) is a compact, URL-safe means of transferring claims between two parties. 
+          A JWT consists of three parts separated by dots (<code>.</code>):
+        </p>
+        <ul>
+          <li><strong>Header:</strong> Specifies the cryptographic algorithm (e.g. <code>HS256</code>, <code>RS256</code>) and token type (<code>JWT</code>).</li>
+          <li><strong>Payload:</strong> Contains the claims (e.g. user ID, role, permissions, and expiration timestamp).</li>
+          <li><strong>Signature:</strong> Cryptographic hash of the Header and Payload, ensuring the token was not tampered with.</li>
+        </ul>
+
+        <h2>Standard JWT Claims Reference</h2>
+        <p>Here are the standard registered claim keys defined in RFC 7519:</p>
+        <ul>
+          <li><code>exp</code> (Expiration Time): Unix timestamp after which the token is invalid.</li>
+          <li><code>iat</code> (Issued At): Unix timestamp when the token was generated.</li>
+          <li><code>sub</code> (Subject): The principal ID (user ID, account UUID).</li>
+          <li><code>aud</code> (Audience): The recipient identity for whom the token was generated.</li>
+          <li><code>iss</code> (Issuer): The identity of the authorization server that issued the token.</li>
+        </ul>
+
+        <h2>Why You Should Never Paste Sensitive JWTs into Remote Web Decoders</h2>
+        <p>
+          Many online JWT decoders send tokens across the network to a remote backend server for parsing or analytics logging. 
+          If your JWT contains sensitive user emails, tenant IDs, admin roles, or session hashes, pasting it into an untrusted site creates a security exposure. 
+          This tool runs <strong>100% client-side</strong> in JavaScript: nothing is transmitted over the wire.
+        </p>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Is my JWT token stored or sent to a server?</div>
+          <div class="faq-a">No. All decoding and parsing happens purely in your web browser via client-side JavaScript. You can verify this by turning on Airplane Mode or checking the Network tab.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Can an expired JWT still be decoded?</div>
+          <div class="faq-a">Yes. Expiration does not encrypt the token. A JWT is Base64URL-encoded, not encrypted. Anyone holding the token can decode its payload, but an authorization server will reject expired tokens.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">How does L2Cache handle JWTs on macOS?</div>
+          <div class="faq-a">L2Cache runs native pattern detection on your clipboard. When a JWT is copied, L2Cache decodes the payload locally on your Mac and displays the expiry countdown in your history without any network round-trip.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="json-formatter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">{ }</div><span class="tool-card-badge">Data</span></div>
+            <h3>JSON Formatter</h3>
+            <p>Pretty-print and validate JSON payloads client-side.</p>
+          </a>
+          <a href="json-to-typescript.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">TS</div><span class="tool-card-badge">Types</span></div>
+            <h3>JSON to TypeScript</h3>
+            <p>Generate TypeScript types and Zod schemas from JSON.</p>
+          </a>
+          <a href="utm-stripper.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔗</div><span class="tool-card-badge">Privacy</span></div>
+            <h3>UTM Stripper</h3>
+            <p>Clean marketing trackers from copied URLs.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    document.getElementById('jwt-input').addEventListener('input', function() {
+      document.getElementById('jwt-bytes').textContent = new Blob([this.value]).size + ' bytes';
+    });
+
+    function b64urlDecode(str) {
+      str = str.replace(/-/g, '+').replace(/_/g, '/');
+      while (str.length % 4) str += '=';
+      try { return JSON.parse(decodeURIComponent(escape(atob(str)))); } 
+      catch(e) {
+        try { return JSON.parse(atob(str)); } catch(e2) { return null; }
+      }
+    }
+
+    function decodeJWT() {
+      const raw = document.getElementById('jwt-input').value.trim();
+      if (!raw) {
+        document.getElementById('jwt-output').textContent = '// Paste a JWT above to decode';
+        return;
+      }
+
+      const parts = raw.split('.');
+      let result = '';
+
+      if (parts.length !== 3) {
+        result = '❌ Invalid JWT format — expected 3 dot-separated sections (Header.Payload.Signature), found ' + parts.length;
+      } else {
+        const header = b64urlDecode(parts[0]);
+        const payload = b64urlDecode(parts[1]);
+
+        if (!header || !payload) {
+          result = '❌ Failed to decode token sections. Please check Base64URL encoding.';
+        } else {
+          const now = Math.floor(Date.now() / 1000);
+          let expInfo = '⚠️ No expiration (exp) claim present';
+          if (payload.exp) {
+            const diff = payload.exp - now;
+            if (diff > 0) {
+              const mins = Math.round(diff / 60);
+              const hrs = (diff / 3600).toFixed(1);
+              expInfo = `✅ VALID — Expires in ${mins}m (${hrs}h) [${new Date(payload.exp * 1000).toUTCString()}]`;
+            } else {
+              const agoMins = Math.round(Math.abs(diff) / 60);
+              expInfo = `❌ EXPIRED — ${agoMins} minutes ago [${new Date(payload.exp * 1000).toUTCString()}]`;
+            }
+          }
+
+          result = [
+            '━━━ HEADER: ALGORITHM & TOKEN TYPE ━━━',
+            JSON.stringify(header, null, 2),
+            '',
+            '━━━ PAYLOAD: DATA CLAIMS ━━━',
+            JSON.stringify(payload, null, 2),
+            '',
+            '━━━ EXPIRATION STATUS ━━━',
+            expInfo,
+            '',
+            '━━━ SIGNATURE ━━━',
+            parts[2] ? `[Signature present: ${parts[2].slice(0, 16)}...]` : '(none)',
+            '',
+            '🔒 Decoded 100% locally in your browser. Zero network transmission.'
+          ].join('\n');
+
+          logLocalOp('JWT decode()', new Blob([raw]).size);
+        }
+      }
+
+      withPacman('pac-jwt', 'pacman-jwt', 'jwt-output', 'jwt', result);
+    }
+
+    function loadSampleJWT() {
+      const sample = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFsaWNlIERldiIsImFkbWluIjp0cnVlLCJpYXQiOjE3MjM3MjAwMDAsImV4cCI6MTc4OTI1NjAwMH0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+      document.getElementById('jwt-input').value = sample;
+      document.getElementById('jwt-bytes').textContent = new Blob([sample]).size + ' bytes';
+      decodeJWT();
+    }
+
+    function clearJWT() {
+      document.getElementById('jwt-input').value = '';
+      document.getElementById('jwt-output').textContent = '// Decoded Header, Payload, and Expiry information will appear here';
+      document.getElementById('jwt-output').className = 'tool-output-view';
+      document.getElementById('jwt-bytes').textContent = '0 bytes';
+    }
+  </script>
+</body>
+</html>

@@ -83,12 +83,16 @@ def build():
     os.makedirs(L2CACHE_OUT_DIR)
 
     # Copy L2Cache assets
-    for asset in ["icon.png", "screenshots", "theme.css"]:
+    for asset in ["icon.png", "screenshots", "theme.css", "tools"]:
         if os.path.exists(asset):
             if os.path.isdir(asset):
                 shutil.copytree(asset, os.path.join(L2CACHE_OUT_DIR, asset))
             else:
                 shutil.copy(asset, os.path.join(L2CACHE_OUT_DIR, asset))
+
+    # Also copy tools into en/tools
+    if os.path.exists("tools"):
+        shutil.copytree("tools", os.path.join(L2CACHE_OUT_DIR, "en", "tools"))
                 
     # Copy amvo-store
     if os.path.exists("amvo-store"):
@@ -158,9 +162,6 @@ def build():
     with open(sitemap_path, "w", encoding="utf-8") as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
         f.write('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
-        # Translations are disabled, so submit only canonical English URLs.
-        # Add localized URLs only when they contain translated content, have
-        # self-referencing canonicals, and reciprocal hreflang annotations.
         for file in HTML_FILES:
             if not os.path.exists(file):
                 continue
@@ -169,7 +170,18 @@ def build():
             f.write('  <url>\n')
             f.write(f'    <loc>{url_path}</loc>\n')
             f.write('  </url>\n')
+            
+        # Add Tools to Sitemap
+        if os.path.exists("tools"):
+            tool_files = [f for f in sorted(os.listdir("tools")) if f.endswith('.html')]
+            for tf in tool_files:
+                clean_tf = "" if tf == "index.html" else f"/{tf.removesuffix('.html')}"
+                f.write('  <url>\n')
+                f.write(f'    <loc>{base_url}/en/tools{clean_tf}</loc>\n')
+                f.write('  </url>\n')
+                
         f.write('</urlset>\n')
+
         
 
     # Generate robots.txt

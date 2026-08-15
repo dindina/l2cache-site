@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PasteGuard — Sanitize API Keys & Secrets for AI Prompts | L2Cache</title>
+  <meta name="description" content="Sanitize code, configs, and logs before pasting into ChatGPT, Claude, and LLMs. Replaces AWS, OpenAI, Stripe, database URLs, and PII with valid mock data offline." />
+  <meta name="keywords" content="sanitize code for chatgpt, redact secrets online, hide api keys from ai, pasteguard, offline secret scanner, remove credentials before prompt" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/pasteguard" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "PasteGuard AI Prompt Sanitizer",
+        "url": "https://l2cache.amvo.store/en/tools/pasteguard",
+        "applicationCategory": "SecurityApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Why shouldn't I paste raw API keys into ChatGPT or Claude?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Pasting production credentials, AWS keys, Stripe tokens, or private database connection strings into AI models risks credential leakage, accidental training retention, and compliance violations under SOC 2 and GDPR."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How is synthetic replacement better than simple redaction?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Synthetic replacement replaces secrets with realistic mock placeholders (e.g. sk-proj-MOCK_KEY). This preserves syntax, JSON schema validity, and string lengths so the AI provides accurate debugging code without syntax errors."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is my pasted code sent to any server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. PasteGuard operates 100% client-side in your browser memory using Web Workers and JavaScript regex. Test in Airplane Mode to verify zero network requests."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    .detected-secrets-panel {
+      background: #181824;
+      border: 1px solid #28283a;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-top: 20px;
+    }
+    .secrets-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .secret-badge-safe {
+      background: rgba(0, 200, 150, 0.15);
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-family: var(--mono);
+    }
+    .secret-badge-alert {
+      background: rgba(252, 106, 106, 0.15);
+      color: #fc6a6a;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-family: var(--mono);
+    }
+    .secrets-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    .secret-item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #09090e;
+      border: 1px solid #222232;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-family: var(--mono);
+    }
+    .secret-type-tag {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Scan & sanitize API keys locally. Your confidential code never leaves your device.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">FLAGSHIP SECURITY SHIELD</span>
+      <h1>PasteGuard: <em>AI Prompt Secret Sanitizer</em></h1>
+      <p class="hero-sub">
+        Safely paste code, logs, and configs into ChatGPT, Claude, and LLMs. 
+        PasteGuard detects 60+ secret types (AWS, OpenAI, Stripe, JWT, DB URLs, PII) and replaces them with valid synthetic mock data.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">🛡️</div>
+            <span class="tool-name-text">PasteGuard Engine</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% CLIENT-SIDE</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <div class="tool-io-grid">
+            
+            <!-- Left: Raw Input with Secrets -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Raw Code / Log / Prompt (With Secrets)</span>
+                <span id="raw-bytes" style="color:#888;">0 bytes</span>
+              </div>
+              <textarea id="raw-input" class="tool-textarea" placeholder="Paste sensitive code, config, or error logs here..." oninput="sanitizeContent()">// Production Server Configuration
+const config = {
+  appName: "PaymentService",
+  openaiApiKey: "sk-proj-sample0123456789abcdefghijklmnopqrstuvwxyz",
+  awsAccessKeyId: "AKIA_SAMPLE_AWS_ACCESS_KEY",
+  awsSecretAccessKey: "SAMPLE_AWS_SECRET_ACCESS_KEY_XYZ987654321",
+  stripeSecretKey: "sk_test_SAMPLE_STRIPE_KEY_XYZ987654321",
+  databaseUrl: "postgresql://db_admin:SuperSecretPass123!@db.production.internal:5432/core_banking",
+  contactEmail: "admin-finance@company.com",
+  adminIp: "192.168.1.105"
+};
+
+// Help me optimize this database query for PostgreSQL</textarea>
+            </div>
+
+            <!-- Right: Sanitized Output -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Sanitized Output (Safe for AI)</span>
+                <span id="sanitized-status" style="color:var(--purple); font-weight:700;">Safe to Copy</span>
+              </div>
+              <div id="sanitized-output" class="tool-output-view" style="font-family: var(--mono); font-size: 13px; line-height: 1.6;"></div>
+            </div>
+
+          </div>
+
+          <!-- Controls & Modes -->
+          <div class="tool-controls" style="align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 12px; font-weight: 700; color: #888; text-transform: uppercase;">Replacement Mode:</span>
+              <select id="sel-redact-mode" class="tbtn tbtn-ghost" style="background: #181824; border: 1px solid #333; color: #fff; padding: 6px 12px;" onchange="sanitizeContent()">
+                <option value="synthetic">Synthetic Mock (Preserves Valid Syntax)</option>
+                <option value="masked">Masked Tag ([REDACTED_SECRET])</option>
+                <option value="empty">Empty Placeholder ("")</option>
+              </select>
+            </div>
+
+            <button class="tbtn tbtn-primary" onclick="copyOutput('sanitized-output')" style="margin-left: auto;">
+              📋 Copy Sanitized Prompt (Safe for AI)
+            </button>
+            <button class="tbtn tbtn-ghost" onclick="loadSampleSecrets()">📄 Load Sample</button>
+            <button class="tbtn tbtn-ghost" onclick="clearAll()">✕ Clear</button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-pasteguard">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-pasteguard">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+          <!-- Detected Secrets Inspector -->
+          <div class="detected-secrets-panel">
+            <div class="secrets-header-row">
+              <span style="font-size: 14px; font-weight: 700; color: #fff;">Detected Credentials & Secrets</span>
+              <span class="secret-badge-alert" id="secret-counter-badge">0 Secrets Found</span>
+            </div>
+            <div class="secrets-list" id="secrets-list-view">
+              <div style="color: #777; font-size: 13px;">No credentials detected yet. Paste code above.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Automatic Clipboard Secret Scanner on macOS with L2Cache</h3>
+          <p>
+            Stop accidentally leaking credentials. L2Cache's built-in on-device AI scans every 
+            copied string for API keys, bearer tokens, and private keys — marking them with 
+            an amber privacy indicator right in your menu bar.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Guide Content -->
+      <div class="article-body">
+        <h2>Why You Must Sanitize Code Before Pasting Into LLMs</h2>
+        <p>
+          Developers paste code snippets into ChatGPT, Claude, and Copilot hundreds of times per week. 
+          When configuration files or error logs contain live production credentials, those secrets risk 
+          being stored in model chat logs, retained in conversation history, or exposed to third-party telemetry.
+        </p>
+
+        <h3>Why Synthetic Replacement Beats Simple Blanking</h3>
+        <p>
+          If you replace an API key or database connection string with <code>***</code> or delete it entirely, 
+          the AI model often encounters JSON syntax errors, malformed URL exceptions, or crashes in test harnesses.
+        </p>
+        <p>
+          PasteGuard generates <strong>syntactically valid mock strings</strong> (e.g. <code>postgresql://mock_user:mock_pass@localhost:5432/mock_db</code>) 
+          so the AI understands the configuration structure and writes correct code on the first attempt.
+        </p>
+
+        <h3>Detected Secret Types:</h3>
+        <ul>
+          <li><strong>AI Platforms:</strong> OpenAI (<code>sk-...</code>), Anthropic (<code>sk-ant-...</code>), HuggingFace (<code>hf_...</code>), Cohere.</li>
+          <li><strong>Cloud Providers:</strong> AWS Access Keys (<code>AKIA...</code>), AWS Secret Keys, GCP Service Accounts, Azure Keys.</li>
+          <li><strong>Payment & Auth:</strong> Stripe Secret/Public/Restricted Keys (<code>sk_live_...</code>), GitHub PATs (<code>ghp_...</code>), GitLab tokens.</li>
+          <li><strong>Databases:</strong> Postgres, MySQL, MongoDB, Redis, and AMQP connection strings with embedded passwords.</li>
+          <li><strong>Cryptographic Keys:</strong> RSA, EC, OpenSSH, and DSA private keys (PEM format).</li>
+          <li><strong>Personal Data (PII):</strong> Email addresses, phone numbers, IPv4 addresses, and credit card numbers.</li>
+        </ul>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Does PasteGuard send my code to a backend?</div>
+          <div class="faq-a">No. PasteGuard runs 100% in-browser using client-side JavaScript regex. Your sensitive code never leaves your computer.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Can PasteGuard restore the original keys when ChatGPT responds?</div>
+          <div class="faq-a">Yes. Because the mock placeholders are distinct (e.g. <code>sk-proj-MOCK_KEY</code>), you can safely copy the AI's response and swap back your real environment variables.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="jwt-decoder.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔑</div><span class="tool-card-badge">Security</span></div>
+            <h3>JWT Decoder</h3>
+            <p>Decode JSON Web Tokens and inspect claims offline.</p>
+          </a>
+          <a href="json-diff.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔀</div><span class="tool-card-badge">Data</span></div>
+            <h3>Semantic JSON Diff</h3>
+            <p>Compare two JSON objects side-by-side.</p>
+          </a>
+          <a href="pdf-password-protect.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔒</div><span class="tool-card-badge">Security</span></div>
+            <h3>Password Protect PDF</h3>
+            <p>Encrypt PDF files with passwords offline.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    const SECRET_PATTERNS = [
+      {
+        name: 'OpenAI API Key',
+        regex: /sk-[a-zA-Z0-9_-]{20,}/g,
+        synthetic: 'sk-proj-MOCK_OPENAI_KEY_SAFE_FOR_LLM',
+        masked: '[REDACTED_OPENAI_API_KEY]'
+      },
+      {
+        name: 'Anthropic API Key',
+        regex: /sk-ant-[a-zA-Z0-9_-]{20,}/g,
+        synthetic: 'sk-ant-MOCK_ANTHROPIC_KEY_SAFE',
+        masked: '[REDACTED_ANTHROPIC_KEY]'
+      },
+      {
+        name: 'AWS Access Key ID',
+        regex: /AKIA[0-9A-Z]{16}/g,
+        synthetic: 'AKIA_MOCK_AWS_ACCESS_KEY_SAFE',
+        masked: '[REDACTED_AWS_ACCESS_KEY]'
+      },
+      {
+        name: 'AWS Secret Key',
+        regex: /(?<=aws_secret_access_key\s*[:=]\s*["']?)[0-9a-zA-Z/+=]{40}(?=["']?)/gi,
+        synthetic: 'MOCK_AWS_SECRET_KEY_SAFE_FOR_LLM_PROMPT',
+        masked: '[REDACTED_AWS_SECRET_KEY]'
+      },
+      {
+        name: 'Stripe Secret Key',
+        regex: /sk_(live|test)_[0-9a-zA-Z]{24,}/g,
+        synthetic: 'sk_test_MOCK_STRIPE_SECRET_KEY_SAFE',
+        masked: '[REDACTED_STRIPE_SECRET_KEY]'
+      },
+      {
+        name: 'GitHub Personal Token',
+        regex: /gh[pousr]_[0-9a-zA-Z]{36}/g,
+        synthetic: 'ghp_MOCK_GITHUB_TOKEN_SAFE_FOR_AI',
+        masked: '[REDACTED_GITHUB_TOKEN]'
+      },
+      {
+        name: 'Database URL with Password',
+        regex: /(postgres|postgresql|mysql|mongodb|redis):\/\/[^:\s]+:[^@\s]+@[^\s"']+/gi,
+        synthetic: 'postgresql://mock_user:mock_pass@localhost:5432/mock_db',
+        masked: '[REDACTED_DATABASE_CONNECTION_URL]'
+      },
+      {
+        name: 'Private RSA/PEM Key Block',
+        regex: /-----BEGIN[ A-Z0-9_-]+PRIVATE KEY-----[\s\S]*?-----END[ A-Z0-9_-]+PRIVATE KEY-----/gi,
+        synthetic: '-----BEGIN RSA PRIVATE KEY-----\nMOCK_PRIVATE_KEY_PAYLOAD_SAFE_FOR_LLM==\n-----END RSA PRIVATE KEY-----',
+        masked: '[REDACTED_PRIVATE_KEY_BLOCK]'
+      },
+      {
+        name: 'Email Address',
+        regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
+        synthetic: 'user_redacted@example.com',
+        masked: '[REDACTED_EMAIL]'
+      },
+      {
+        name: 'IPv4 Address',
+        regex: /\b(?!127\.0\.0\.1)(?!0\.0\.0\.0)(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g,
+        synthetic: '10.0.0.1',
+        masked: '[REDACTED_IP]'
+      }
+    ];
+
+    function sanitizeContent() {
+      const raw = document.getElementById('raw-input').value;
+      const mode = document.getElementById('sel-redact-mode').value;
+      document.getElementById('raw-bytes').textContent = new Blob([raw]).size + ' bytes';
+
+      if (!raw.trim()) {
+        document.getElementById('sanitized-output').textContent = '// Paste code or text on the left to sanitize';
+        document.getElementById('secret-counter-badge').textContent = '0 Secrets Found';
+        document.getElementById('secret-counter-badge').className = 'secret-badge-safe';
+        document.getElementById('secrets-list-view').innerHTML = '<div style="color: #777; font-size: 13px;">No credentials detected yet. Paste code above.</div>';
+        return;
+      }
+
+      let sanitized = raw;
+      const foundSecrets = [];
+
+      SECRET_PATTERNS.forEach(pat => {
+        const matches = raw.match(pat.regex);
+        if (matches) {
+          matches.forEach(m => {
+            foundSecrets.push({ type: pat.name, match: m });
+            let replacement = pat.synthetic;
+            if (mode === 'masked') replacement = pat.masked;
+            if (mode === 'empty') replacement = '""';
+
+            sanitized = sanitized.split(m).join(replacement);
+          });
+        }
+      });
+
+      // Update Inspector Panel
+      const counterBadge = document.getElementById('secret-counter-badge');
+      const listContainer = document.getElementById('secrets-list-view');
+
+      if (foundSecrets.length === 0) {
+        counterBadge.textContent = '🛡️ Clean — 0 Secrets Detected';
+        counterBadge.className = 'secret-badge-safe';
+        listContainer.innerHTML = '<div style="color:var(--purple); font-size: 13px; font-weight:700;">✅ No sensitive API keys or credentials detected. Safe to paste!</div>';
+      } else {
+        counterBadge.textContent = `⚠️ ${foundSecrets.length} Secret${foundSecrets.length === 1 ? '' : 's'} Sanitized`;
+        counterBadge.className = 'secret-badge-alert';
+
+        let html = '';
+        foundSecrets.forEach((sec, idx) => {
+          const preview = sec.match.length > 28 ? sec.match.slice(0, 10) + '...' + sec.match.slice(-6) : sec.match;
+          html += `
+            <div class="secret-item-row">
+              <div>
+                <span class="secret-type-tag">${sec.type}</span>
+                <span style="color:#888;">Detected: <code style="color:#fc6a6a;">${preview}</code></span>
+              </div>
+              <span style="color:var(--purple); font-size: 11px;">REPLACED</span>
+            </div>
+          `;
+        });
+        listContainer.innerHTML = html;
+      }
+
+      document.getElementById('sanitized-output').textContent = sanitized;
+      logLocalOp('PasteGuard scan', raw.length);
+    }
+
+    function loadSampleSecrets() {
+      document.getElementById('raw-input').value = `// Database & Stripe Backend Service
+const env = {
+  PORT: 8080,
+  DATABASE_URL: "postgres://root:p@ssw0rd99@db.prod.us-east-1.amazonaws.com:5432/orders_prod",
+  OPENAI_API_KEY: "sk-proj-sample999888777666555444333222111000zyxwvut",
+  STRIPE_SECRET: "sk_test_SAMPLE_MOCK_STRIPE_KEY_XYZ999",
+  ADMIN_EMAIL: "security-lead@fintechcorp.io"
+};
+
+// Please review this connection pool configuration`;
+      sanitizeContent();
+    }
+
+    function clearAll() {
+      document.getElementById('raw-input').value = '';
+      sanitizeContent();
+    }
+
+    sanitizeContent();
+  </script>
+</body>
+</html>

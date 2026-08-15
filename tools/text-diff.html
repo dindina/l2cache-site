@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Online Text & Code Diff Checker — 100% Client-Side | L2Cache</title>
+  <meta name="description" content="Compare text and code differences side-by-side or inline in your browser. Highlights additions, deletions, and character changes with zero server upload." />
+  <meta name="keywords" content="text diff online, code diff checker, compare two texts, side by side diff, offline diff tool" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/text-diff" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Text & Code Diff Checker",
+        "url": "https://l2cache.amvo.store/en/tools/text-diff",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is my text uploaded or stored during comparison?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The diff algorithm executes entirely inside your browser using client-side JavaScript."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    .diff-line-add { background: rgba(0, 200, 150, 0.18); color: #00dfa8; }
+    .diff-line-del { background: rgba(252, 106, 106, 0.18); color: #fc6a6a; }
+    .diff-line-eq { color: #888; }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Compare confidential code and text locally. Zero data leaks.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">CODE & TEXT COMPARISON</span>
+      <h1>Text & Code <em>Diff Checker</em></h1>
+      <p class="hero-sub">
+        Compare two text blocks or source files to instantly highlight additions, removals, and modifications.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">🔀</div>
+            <span class="tool-name-text">Diff Comparison Engine</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% CLIENT-SIDE</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-io-grid">
+            
+            <!-- Original Text -->
+            <div class="tool-pane">
+              <div class="pane-label-row"><span>Original Version</span><span>Left</span></div>
+              <textarea id="diff-orig" class="tool-textarea" oninput="runDiff()" placeholder="Original text...">function authenticate(user, password) {
+  const hash = sha256(password);
+  if (user.hash === hash) {
+    return true;
+  }
+  return false;
+}</textarea>
+            </div>
+
+            <!-- Modified Text -->
+            <div class="tool-pane">
+              <div class="pane-label-row"><span>Modified Version</span><span>Right</span></div>
+              <textarea id="diff-mod" class="tool-textarea" oninput="runDiff()" placeholder="Modified text...">async function authenticate(user, password) {
+  const hash = await bcrypt.hash(password, 12);
+  const isValid = await bcrypt.compare(hash, user.hash);
+  if (!isValid) {
+    throw new Error("Unauthorized");
+  }
+  return { success: true, token: createJWT(user) };
+}</textarea>
+            </div>
+
+          </div>
+
+          <!-- Comparison Result View -->
+          <div class="tool-pane" style="margin-top: 18px;">
+            <div class="pane-label-row"><span>Line-by-Line Diff Output</span><span id="diff-stats" style="color:var(--purple);">0 additions, 0 deletions</span></div>
+            <div id="diff-output-view" class="tool-output-view" style="height: 220px; font-family: var(--mono); font-size: 13px;"></div>
+          </div>
+
+          <!-- Controls -->
+          <div class="tool-controls">
+            <button class="tbtn tbtn-primary" onclick="runDiff()">⚡ Compute Diff</button>
+            <button class="tbtn tbtn-ghost" onclick="clearDiff()">✕ Clear</button>
+            <button class="tbtn tbtn-copy" onclick="copyOutput('diff-output-view')" style="margin-left: auto;">📋 Copy Diff</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Compare clips from your Mac clipboard history with L2Cache</h3>
+          <p>
+            L2Cache stores your full clipboard history so you can review previous revisions of code, 
+            snippets, and documents whenever you make accidental edits.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="regex-tester.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🧪</div><span class="tool-card-badge">Regex</span></div>
+            <h3>Regex Tester</h3>
+            <p>Test and explain regular expressions with live highlights.</p>
+          </a>
+          <a href="json-formatter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">{ }</div><span class="tool-card-badge">Format</span></div>
+            <h3>JSON Formatter</h3>
+            <p>Pretty-print and minify JSON payloads.</p>
+          </a>
+          <a href="curl-converter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">⚡</div><span class="tool-card-badge">APIs</span></div>
+            <h3>cURL Converter</h3>
+            <p>Convert cURL to Fetch, Python, and Swift.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    function escapeHtml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function runDiff() {
+      const origLines = document.getElementById('diff-orig').value.split('\n');
+      const modLines = document.getElementById('diff-mod').value.split('\n');
+      const out = document.getElementById('diff-output-view');
+
+      let html = '';
+      let adds = 0;
+      let dels = 0;
+
+      const maxLen = Math.max(origLines.length, modLines.length);
+
+      for (let i = 0; i < maxLen; i++) {
+        const o = origLines[i];
+        const m = modLines[i];
+
+        if (o === undefined) {
+          html += `<div class="diff-line-add">+ ${escapeHtml(m)}</div>`;
+          adds++;
+        } else if (m === undefined) {
+          html += `<div class="diff-line-del">- ${escapeHtml(o)}</div>`;
+          dels++;
+        } else if (o !== m) {
+          html += `<div class="diff-line-del">- ${escapeHtml(o)}</div>`;
+          html += `<div class="diff-line-add">+ ${escapeHtml(m)}</div>`;
+          adds++;
+          dels++;
+        } else {
+          html += `<div class="diff-line-eq">  ${escapeHtml(o)}</div>`;
+        }
+      }
+
+      out.innerHTML = html;
+      document.getElementById('diff-stats').textContent = `+${adds} addition${adds === 1 ? '' : 's'}, -${dels} deletion${dels === 1 ? '' : 's'}`;
+      logLocalOp('Text diff()', (document.getElementById('diff-orig').value + document.getElementById('diff-mod').value).length);
+    }
+
+    function clearDiff() {
+      document.getElementById('diff-orig').value = '';
+      document.getElementById('diff-mod').value = '';
+      document.getElementById('diff-output-view').innerHTML = '';
+      document.getElementById('diff-stats').textContent = '0 additions, 0 deletions';
+    }
+
+    runDiff();
+  </script>
+</body>
+</html>

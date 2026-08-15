@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offline JSON Formatter & Validator — 100% Client-Side | L2Cache</title>
+  <meta name="description" content="Format, pretty-print, minify, and validate JSON client-side in your browser. Auto-fix trailing commas and syntax errors. 100% private with zero server calls." />
+  <meta name="keywords" content="json formatter, pretty print json, offline json formatter, json validator, fix json syntax, minify json online" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/json-formatter" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Offline JSON Formatter & Validator",
+        "url": "https://l2cache.amvo.store/en/tools/json-formatter",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is my JSON data uploaded anywhere?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. This tool runs 100% client-side in your browser using pure JavaScript. Your JSON data is never transmitted to any server."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can this tool fix trailing commas in JSON?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The auto-repair feature removes invalid trailing commas, wraps unquoted keys, and standardizes quotes so malformed JSON becomes valid RFC 8259 JSON."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I format JSON instantly on macOS?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "With L2Cache, whenever you copy raw or minified JSON on macOS, press ⌘⇧V to format or minify it directly on your clipboard without switching apps."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Toggle Airplane Mode → format JSON. Zero server calls, zero lag.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">100% PRIVATE UTILITY</span>
+      <h1>Offline JSON Formatter & <em>Validator</em></h1>
+      <p class="hero-sub">
+        Pretty-print, minify, validate, and repair JSON payloads with zero latency. 
+        Processed entirely in your browser with complete privacy.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">{ }</div>
+            <span class="tool-name-text">JSON Playground</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% LOCAL</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-io-grid">
+            
+            <!-- Input Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Input JSON</span>
+                <span id="json-bytes" style="color:var(--purple);">0 bytes</span>
+              </div>
+              <textarea id="json-input" class="tool-textarea" placeholder='{"app":"L2Cache","version":1.2,"private":true,"features":["on-device ai","ocr search","smart actions"],}'></textarea>
+            </div>
+
+            <!-- Output Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Formatted Result</span>
+                <span>Structured Output</span>
+              </div>
+              <div id="json-output" class="tool-output-view">// Formatted or minified JSON will appear here</div>
+            </div>
+
+          </div>
+
+          <!-- Controls -->
+          <div class="tool-controls">
+            <button class="tbtn tbtn-primary" onclick="formatJSON(2)">⚡ Pretty Print (2 Spaces)</button>
+            <button class="tbtn tbtn-ghost" onclick="formatJSON(4)">4 Spaces</button>
+            <button class="tbtn tbtn-ghost" onclick="minifyJSON()">⬛ Minify</button>
+            <button class="tbtn tbtn-ghost" onclick="repairJSON()">🛠️ Auto-Repair</button>
+            <button class="tbtn tbtn-ghost" onclick="clearJSON()">✕ Clear</button>
+            <button class="tbtn tbtn-copy" onclick="copyOutput('json-output')" style="margin-left: auto;">📋 Copy Result</button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-json">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-json">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Format JSON on your Mac clipboard with ⌘⇧V</h3>
+          <p>
+            With L2Cache on macOS, whenever you copy minified or messy JSON, press <strong>⌘⇧V</strong> to format 
+            or minify it in place — 100% offline without opening a browser.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Guide Content -->
+      <div class="article-body">
+        <h2>What is JSON (JavaScript Object Notation)?</h2>
+        <p>
+          JSON (RFC 8259) is a standard text-based format for representing structured data based on JavaScript object syntax. 
+          It is commonly used for transmitting data in web applications, REST APIs, and configuration files.
+        </p>
+
+        <h2>Common JSON Syntax Pitfalls and How to Fix Them</h2>
+        <ul>
+          <li><strong>Trailing Commas:</strong> Standard JSON does not permit commas after the last array item or object key (e.g. <code>[1, 2,]</code> is invalid).</li>
+          <li><strong>Unquoted Keys:</strong> All object property names in JSON must be double-quoted strings (e.g. <code>{"id": 1}</code> vs <code>{id: 1}</code>).</li>
+          <li><strong>Single Quotes:</strong> Strings in standard JSON must use double quotes (<code>"</code>), not single quotes (<code>'</code>).</li>
+          <li><strong>Comments:</strong> Standard JSON does not support <code>//</code> or <code>/* */</code> comments. Use JSONC or JSON5 for comment-compatible formats.</li>
+        </ul>
+
+        <h2>Pretty-Printing vs. Minifying: When to Use Which</h2>
+        <p>
+          <strong>Pretty-printing</strong> formats JSON with indentation and newlines to maximize human readability during debugging and documentation. 
+          <strong>Minification</strong> strips all unnecessary whitespace to reduce byte payload size for high-throughput network APIs and LLM context windows.
+        </p>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Is my JSON data logged or sent to a server?</div>
+          <div class="faq-a">No. All formatting, minification, and validation occurs entirely in your browser using client-side JavaScript. Nothing is sent over the internet.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">What file size limits exist for this browser formatter?</div>
+          <div class="faq-a">Because this tool runs in your browser's V8/JavaScript engine without network upload overhead, it can handle multi-megabyte JSON payloads with sub-second performance.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">How does L2Cache format JSON on Mac?</div>
+          <div class="faq-a">L2Cache runs native Swift parsers on your macOS clipboard. When you copy JSON, you can format, minify, unescape, or convert it to TypeScript in one click from the clipboard floating panel.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="json-to-typescript.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">TS</div><span class="tool-card-badge">Types</span></div>
+            <h3>JSON to TypeScript</h3>
+            <p>Generate TypeScript types and Zod schemas from JSON.</p>
+          </a>
+          <a href="jwt-decoder.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔑</div><span class="tool-card-badge">Security</span></div>
+            <h3>JWT Decoder</h3>
+            <p>Decode JSON Web Tokens and inspect claims offline.</p>
+          </a>
+          <a href="csv-to-markdown.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">📊</div><span class="tool-card-badge">Tables</span></div>
+            <h3>CSV to Markdown Table</h3>
+            <p>Convert tabular data into clean Markdown tables.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    document.getElementById('json-input').addEventListener('input', function() {
+      document.getElementById('json-bytes').textContent = new Blob([this.value]).size + ' bytes';
+    });
+
+    function formatJSON(indent) {
+      const raw = document.getElementById('json-input').value.trim();
+      if (!raw) {
+        document.getElementById('json-output').textContent = '// Paste some JSON above to format';
+        return;
+      }
+      let result = '';
+      try {
+        const parsed = JSON.parse(raw);
+        result = JSON.stringify(parsed, null, indent);
+        logLocalOp('JSON format(' + indent + ')', new Blob([raw]).size);
+      } catch (e) {
+        result = '❌ Invalid JSON: ' + e.message + '\n\n💡 Tip: Try clicking "🛠️ Auto-Repair" to fix trailing commas or unquoted keys.';
+      }
+      withPacman('pac-json', 'pacman-json', 'json-output', 'json', result);
+    }
+
+    function minifyJSON() {
+      const raw = document.getElementById('json-input').value.trim();
+      if (!raw) return;
+      let result = '';
+      try {
+        const parsed = JSON.parse(raw);
+        result = JSON.stringify(parsed);
+        logLocalOp('JSON minify()', new Blob([raw]).size);
+      } catch (e) {
+        result = '❌ Invalid JSON: ' + e.message;
+      }
+      withPacman('pac-json', 'pacman-json', 'json-output', 'json', result);
+    }
+
+    function repairJSON() {
+      const raw = document.getElementById('json-input').value.trim();
+      if (!raw) return;
+      let cleaned = raw
+        .replace(/,\s*([\]}])/g, '$1') // remove trailing commas
+        .replace(/(['"])?([a-zA-Z0-9_]+)(['"])?\s*:/g, '"$2":') // ensure quoted keys
+        .replace(/'/g, '"'); // single to double quotes
+      let result = '';
+      try {
+        const parsed = JSON.parse(cleaned);
+        result = JSON.stringify(parsed, null, 2);
+        document.getElementById('json-input').value = result;
+        logLocalOp('JSON repair()', new Blob([raw]).size);
+      } catch(e) {
+        result = '❌ Could not fully repair JSON syntax automatically: ' + e.message;
+      }
+      withPacman('pac-json', 'pacman-json', 'json-output', 'json', result);
+    }
+
+    function clearJSON() {
+      document.getElementById('json-input').value = '';
+      document.getElementById('json-output').textContent = '// Formatted or minified JSON will appear here';
+      document.getElementById('json-output').className = 'tool-output-view';
+      document.getElementById('json-bytes').textContent = '0 bytes';
+    }
+  </script>
+</body>
+</html>

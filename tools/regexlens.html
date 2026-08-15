@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RegexLens — Visual Regex Flowchart & Plain English Explainer | L2Cache</title>
+  <meta name="description" content="Visualize regular expressions as interactive railroad flowcharts. Deconstruct capture groups, explain regex in plain English, and detect ReDoS vulnerabilities offline." />
+  <meta name="keywords" content="regex visualizer, regex flowchart, regex explainer plain english, redos checker online, regex railroad diagram, visualize regular expression" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/regexlens" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "RegexLens Visualizer & Explainer",
+        "url": "https://l2cache.amvo.store/en/tools/regexlens",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is a regular expression railroad diagram?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A railroad diagram (or syntax flowchart) visually represents the path a regex engine traverses when matching input strings, illustrating branches, capture groups, and repetitions as tracks."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is a ReDoS (Regular Expression Denial of Service) vulnerability?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "ReDoS occurs when an evil regex with nested quantifiers (e.g. (a+)+$) encounters a non-matching input, triggering exponential backtracking that locks the CPU at 100%."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    /* Visual Railroad Canvas */
+    .railroad-stage {
+      width: 100%;
+      min-height: 160px;
+      background: #09090e;
+      border: 1px solid #28283a;
+      border-radius: 12px;
+      padding: 24px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-x: auto;
+      gap: 12px;
+    }
+    .rr-node {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      background: #181824;
+      border: 1px solid #333348;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: #fff;
+      position: relative;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: all 0.15s ease;
+    }
+    .rr-node:hover { border-color: var(--purple); transform: translateY(-2px); }
+    .rr-node.start-end {
+      background: rgba(0, 200, 150, 0.15);
+      border-color: var(--purple);
+      color: var(--purple);
+      font-weight: 700;
+      border-radius: 100px;
+      padding: 6px 12px;
+    }
+    .rr-node.group {
+      border-color: #f59e0b;
+      background: rgba(245, 158, 11, 0.08);
+    }
+    .rr-node.quantifier {
+      border-color: #3b82f6;
+      background: rgba(59, 130, 246, 0.08);
+    }
+    .rr-node-type {
+      font-size: 9px;
+      text-transform: uppercase;
+      color: #888;
+      margin-top: 2px;
+    }
+    .rr-connector {
+      color: #555;
+      font-size: 16px;
+      user-select: none;
+    }
+
+    /* Explanation Accordion */
+    .explain-tree {
+      background: #181824;
+      border: 1px solid #28283a;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-top: 20px;
+    }
+    .explain-step-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid #222232;
+      font-size: 13px;
+    }
+    .explain-step-row:last-child { border-bottom: none; }
+    .explain-step-num {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(0, 200, 150, 0.15); color: var(--purple);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; font-family: var(--mono);
+      flex-shrink: 0; margin-top: 2px;
+    }
+    .explain-step-text { color: #ccc; line-height: 1.5; }
+    .explain-step-text code {
+      background: #09090e; color: #00dfa8; padding: 2px 6px; border-radius: 4px; font-family: var(--mono);
+    }
+
+    /* ReDoS Banner */
+    .redos-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--mono);
+    }
+    .redos-banner.safe { background: rgba(0, 200, 150, 0.1); border: 1px solid rgba(0, 200, 150, 0.3); color: var(--purple); }
+    .redos-banner.warning { background: rgba(252, 106, 106, 0.15); border: 1px solid #fc6a6a; color: #fc6a6a; }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Deconstruct & visualize regex patterns locally. Zero server latency.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">FLAGSHIP REGEX ARCHITECT</span>
+      <h1>RegexLens: <em>Visual Flowchart & Explainer</em></h1>
+      <p class="hero-sub">
+        Visualize regular expressions as interactive railroad flowcharts. Deconstruct capture groups, explain regex syntax in plain English, and detect catastrophic ReDoS vulnerabilities.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">🔬</div>
+            <span class="tool-name-text">RegexLens AST Engine</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% CLIENT-SIDE</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <!-- Regex Input Bar -->
+          <div class="tool-pane" style="margin-bottom: 16px;">
+            <div class="pane-label-row">
+              <span>Regular Expression Pattern</span>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <span style="font-size: 11px; color: #888;">Flags:</span>
+                <input type="text" id="regex-flags" value="gi" style="width: 50px; background: #09090e; border: 1px solid #333; border-radius: 4px; color: #fff; text-align: center; font-family: var(--mono); font-size: 13px;" oninput="visualizeRegex()" />
+              </div>
+            </div>
+            <input type="text" id="regex-input" class="tool-textarea" style="height: 48px; font-size: 16px; font-weight: 700; color: #00dfa8;" 
+                   value="^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,})$" oninput="visualizeRegex()" placeholder="Type regex here..." />
+          </div>
+
+          <!-- ReDoS Vulnerability Indicator -->
+          <div class="redos-banner safe" id="redos-status">
+            <span>🛡️ ReDoS Analysis: Safe (No catastrophic exponential backtracking detected)</span>
+          </div>
+
+          <!-- Visual Railroad Flowchart Stage -->
+          <div class="pane-label-row" style="margin-bottom: 6px;">
+            <span>Visual Railroad Flowchart</span>
+            <span style="color: var(--purple); font-size: 11px; font-family: var(--mono);">Interactive AST Nodes</span>
+          </div>
+          <div class="railroad-stage" id="railroad-stage"></div>
+
+          <!-- Presets -->
+          <div class="tool-controls" style="align-items: center; flex-wrap: wrap; gap: 8px;">
+            <button class="tbtn tbtn-primary" onclick="setPreset('email')">📧 Email</button>
+            <button class="tbtn tbtn-ghost" onclick="setPreset('url')">🔗 URL</button>
+            <button class="tbtn tbtn-ghost" onclick="setPreset('semver')">🏷️ SemVer</button>
+            <button class="tbtn tbtn-ghost" onclick="setPreset('date')">📅 ISO Date</button>
+            <button class="tbtn tbtn-ghost" onclick="setPreset('jwt')">🔑 JWT Token</button>
+            <button class="tbtn tbtn-ghost" onclick="setPreset('redos')">⚠️ ReDoS Test</button>
+            <button class="tbtn tbtn-copy" onclick="copyOutput('regex-input')" style="margin-left: auto;">📋 Copy Regex</button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-regexlens">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-regexlens">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+          <!-- Plain English Explanation Panel -->
+          <div class="explain-tree">
+            <div class="secrets-header-row">
+              <span style="font-size: 14px; font-weight: 700; color: #fff;">Plain-English Breakdown</span>
+              <span style="color: var(--purple); font-size: 12px; font-family: var(--mono);" id="explain-count">0 Steps</span>
+            </div>
+            <div id="explain-steps-list"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Instant Regex Playground on macOS with L2Cache</h3>
+          <p>
+            Copy any regex expression on your Mac. Press <strong>⌘⇧V</strong> in L2Cache to open the 
+            native Regex Playground with live match highlighting, capture group tree, and code generation.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Guide Content -->
+      <div class="article-body">
+        <h2>How RegexLens Deconstructs Complex Patterns</h2>
+        <p>
+          Regular expressions are notoriously difficult to read, debug, and maintain. 
+          A single missing escape character or greedy quantifier can break production authentication or create security vulnerabilities.
+        </p>
+
+        <h3>Understanding ReDoS (Catastrophic Backtracking)</h3>
+        <p>
+          When a regular expression contains nested repetition operators (such as <code>(a+)+$</code> or <code>(x|y+)+</code>), 
+          the regex engine must test every combinatorial branch when evaluating non-matching input strings. 
+          An input with just 30 characters can take <strong>over 1 billion iterations</strong>, locking the event loop and bringing servers down.
+        </p>
+        <p>
+          RegexLens scans for ambiguous overlapping branches and nested quantifiers in real time before you deploy your code to production.
+        </p>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Does RegexLens support all JavaScript regex features?</div>
+          <div class="faq-a">Yes. RegexLens parses lookaheads (?=), lookbehinds (?<=), non-capturing groups (?:), unicode property escapes, and named capture groups.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Is my regex evaluated locally?</div>
+          <div class="faq-a">Yes. All parsing and AST generation occurs 100% inside client-side JavaScript. Works completely in Airplane Mode.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="pasteguard.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🛡️</div><span class="tool-card-badge">Security</span></div>
+            <h3>PasteGuard</h3>
+            <p>Sanitize API keys & secrets for AI prompts.</p>
+          </a>
+          <a href="regex-tester.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🧪</div><span class="tool-card-badge">Developer</span></div>
+            <h3>Regex Tester</h3>
+            <p>Test regex patterns with match groups.</p>
+          </a>
+          <a href="curl-converter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">⚡</div><span class="tool-card-badge">Developer</span></div>
+            <h3>cURL Converter</h3>
+            <p>Convert cURL to Fetch, Python, Swift, Go.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    function parseRegexTokens(pattern) {
+      const tokens = [];
+      let i = 0;
+
+      if (pattern.startsWith('^')) {
+        tokens.push({ type: 'start', val: '^', desc: 'Asserts start of line / string' });
+        i++;
+      }
+
+      while (i < pattern.length) {
+        const char = pattern[i];
+
+        if (char === '$' && i === pattern.length - 1) {
+          tokens.push({ type: 'end', val: '$', desc: 'Asserts end of line / string' });
+          i++;
+          break;
+        }
+
+        if (char === '(') {
+          let depth = 1;
+          let j = i + 1;
+          while (j < pattern.length && depth > 0) {
+            if (pattern[j] === '\\') { j += 2; continue; }
+            if (pattern[j] === '(') depth++;
+            if (pattern[j] === ')') depth--;
+            j++;
+          }
+          const groupContent = pattern.slice(i, j);
+          tokens.push({ type: 'group', val: groupContent, desc: `Capture group matching: <code>${escapeHtml(groupContent)}</code>` });
+          i = j;
+          continue;
+        }
+
+        if (char === '[') {
+          let j = i + 1;
+          while (j < pattern.length && pattern[j] !== ']') {
+            if (pattern[j] === '\\') j++;
+            j++;
+          }
+          j++;
+          const classContent = pattern.slice(i, j);
+          tokens.push({ type: 'class', val: classContent, desc: `Character set matching any character in: <code>${escapeHtml(classContent)}</code>` });
+          i = j;
+          continue;
+        }
+
+        if (char === '\\') {
+          const esc = pattern.slice(i, i + 2);
+          let d = `Escaped character <code>${escapeHtml(esc)}</code>`;
+          if (esc === '\\d') d = 'Matches any digit (0-9)';
+          if (esc === '\\w') d = 'Matches any word character (A-Z, a-z, 0-9, _)';
+          if (esc === '\\s') d = 'Matches any whitespace character';
+          if (esc === '\\.') d = 'Matches a literal dot (.)';
+          tokens.push({ type: 'literal', val: esc, desc: d });
+          i += 2;
+          continue;
+        }
+
+        if (['+', '*', '?', '{'].includes(char)) {
+          let q = char;
+          let d = 'Quantifier';
+          if (char === '+') d = 'Matches 1 or more times (Greedy)';
+          if (char === '*') d = 'Matches 0 or more times (Greedy)';
+          if (char === '?') d = 'Matches 0 or 1 time (Optional)';
+          if (char === '{') {
+            const endQ = pattern.indexOf('}', i);
+            if (endQ !== -1) {
+              q = pattern.slice(i, endQ + 1);
+              d = `Matches specified count: <code>${q}</code>`;
+              i = endQ + 1;
+              tokens.push({ type: 'quantifier', val: q, desc: d });
+              continue;
+            }
+          }
+          tokens.push({ type: 'quantifier', val: q, desc: d });
+          i++;
+          continue;
+        }
+
+        tokens.push({ type: 'literal', val: char, desc: `Matches literal character '<strong>${escapeHtml(char)}</strong>'` });
+        i++;
+      }
+
+      return tokens;
+    }
+
+    function checkReDoS(pattern) {
+      const redosPatterns = [
+        /\([^\)]*[\+\*]\)[\+\*]/, // (a+)+ or (a*)*
+        /\([^\)]*\|[^\)]*\)[\+\*]/, // (a|a)+
+        /(\.\*){2,}/ // .*.*
+      ];
+      return redosPatterns.some(r => r.test(pattern));
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function visualizeRegex() {
+      const raw = document.getElementById('regex-input').value.trim();
+      const stage = document.getElementById('railroad-stage');
+      const stepsList = document.getElementById('explain-steps-list');
+      const redosBox = document.getElementById('redos-status');
+
+      if (!raw) {
+        stage.innerHTML = '<span style="color:#666; font-family:var(--mono);">Enter a regular expression above</span>';
+        stepsList.innerHTML = '';
+        return;
+      }
+
+      // ReDoS Check
+      const hasReDoS = checkReDoS(raw);
+      if (hasReDoS) {
+        redosBox.className = 'redos-banner warning';
+        redosBox.innerHTML = '⚠️ <strong>ReDoS Alert:</strong> Potential catastrophic exponential backtracking detected in nested quantifiers!';
+      } else {
+        redosBox.className = 'redos-banner safe';
+        redosBox.innerHTML = '🛡️ <strong>ReDoS Analysis:</strong> Safe (No catastrophic exponential backtracking detected)';
+      }
+
+      const tokens = parseRegexTokens(raw);
+      document.getElementById('explain-count').textContent = `${tokens.length} Node${tokens.length === 1 ? '' : 's'}`;
+
+      // Build Railroad Nodes
+      let stageHtml = '<div class="rr-node start-end">▶ Start</div>';
+      tokens.forEach((t, i) => {
+        stageHtml += '<div class="rr-connector">➔</div>';
+        stageHtml += `
+          <div class="rr-node ${t.type}">
+            <span>${escapeHtml(t.val)}</span>
+            <span class="rr-node-type">${t.type}</span>
+          </div>
+        `;
+      });
+      stageHtml += '<div class="rr-connector">➔</div><div class="rr-node start-end">🏁 Match</div>';
+      stage.innerHTML = stageHtml;
+
+      // Build Explanation Steps
+      let stepsHtml = '';
+      tokens.forEach((t, i) => {
+        stepsHtml += `
+          <div class="explain-step-row">
+            <div class="explain-step-num">${i + 1}</div>
+            <div class="explain-step-text"><strong>${escapeHtml(t.val)}</strong>: ${t.desc}</div>
+          </div>
+        `;
+      });
+      stepsList.innerHTML = stepsHtml;
+
+      logLocalOp('RegexLens visualize', raw.length);
+    }
+
+    function setPreset(type) {
+      if (type === 'email') {
+        document.getElementById('regex-input').value = '^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+)\\.([a-zA-Z]{2,})$';
+      } else if (type === 'url') {
+        document.getElementById('regex-input').value = '^(https?:\\/\\/)?(www\\.)?([a-zA-Z0-9.-]+)\\.([a-zA-Z]{2,})(\\/[\\w.-]*)*\\/?$';
+      } else if (type === 'semver') {
+        document.getElementById('regex-input').value = '^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?$';
+      } else if (type === 'date') {
+        document.getElementById('regex-input').value = '^(\\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$';
+      } else if (type === 'jwt') {
+        document.getElementById('regex-input').value = '^[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$';
+      } else if (type === 'redos') {
+        document.getElementById('regex-input').value = '^(([a-z])+)+$';
+      }
+      visualizeRegex();
+    }
+
+    visualizeRegex();
+  </script>
+</body>
+</html>

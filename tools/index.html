@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Developer, Designer & Creator Tools — 100% Client-Side | L2Cache</title>
+  <meta name="description" content="20+ free, ad-free utilities for developers, designers, and creators that run 100% offline in your browser. PDF mergers, regex testers, color converters, JWT decoders, and more." />
+  <meta name="keywords" content="free dev tools, offline developer tools, client side pdf merger, regex tester, color converter, jwt decoder, json formatter, l2cache tools" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Free In-Browser Utilities Suite — L2Cache",
+    "description": "20+ free, ad-free, 100% client-side developer, designer, and content creator utilities that run directly in your browser with zero server round-trips.",
+    "url": "https://l2cache.amvo.store/en/tools",
+    "publisher": {
+      "@type": "Organization",
+      "name": "L2Cache"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — try it yourself</div>
+        <div class="challenge-sub">Toggle Airplane Mode → use any tool. Zero network requests, 100% private.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html" class="active">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="../blog.html">Blog</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <div style="text-align: center; max-width: 780px; margin: 0 auto 36px;">
+        <span class="section-label">100% IN-BROWSER UTILITIES</span>
+        <h1>Developer & creator tools that <em>never touch</em> a server.</h1>
+        <p class="hero-sub" style="margin: 0 auto 28px;">
+          Fast, ad-free, private micro-tools powered by client-side WebAssembly & JavaScript. 
+          Your confidential tokens, PDF files, colors, and code never leave your device.
+        </p>
+
+        <!-- Search Box -->
+        <div style="position: relative; max-width: 480px; margin: 0 auto;">
+          <input type="text" id="tool-search" placeholder="Search tools (e.g. PDF, Regex, JWT, Color, cURL, Diff)..." 
+                 oninput="filterTools()"
+                 style="width: 100%; padding: 12px 18px 12px 42px; border-radius: 100px; border: 1px solid var(--border); font-family: var(--sans); font-size: 14px; background: #fff; outline: none; box-shadow: 0 4px 12px rgba(0,0,0,0.03);" />
+          <span style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 15px; color: #888;">🔍</span>
+        </div>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="filter-nav" style="justify-content: center;">
+        <button class="filter-btn active" onclick="setCategory('all', this)">All Tools (33)</button>
+        <button class="filter-btn" onclick="setCategory('dev', this)">👨‍💻 Developers</button>
+        <button class="filter-btn" onclick="setCategory('design', this)">🎨 Designers & UI</button>
+        <button class="filter-btn" onclick="setCategory('content', this)">✍️ Creators & Copy</button>
+        <button class="filter-btn" onclick="setCategory('pdf', this)">📑 PDF & Docs</button>
+        <button class="filter-btn" onclick="setCategory('data', this)">{ } Data & Code</button>
+      </div>
+
+      <!-- Tools Directory Grid -->
+      <div class="tools-grid" id="tools-container">
+
+        <!-- Flagship: Universal Data Converter (Super Tool) -->
+        <a href="universal-data-converter.html" class="tool-card-item" data-cat="data" data-keywords="universal data converter json to yaml yaml to json json to xml xml to json json to csv csv to json all in one omniformat">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">⚡</div>
+            <span class="tool-card-badge" style="background: rgba(0, 200, 150, 0.2); color: var(--purple);">⭐ Super Tool</span>
+          </div>
+          <h3>Universal Data Converter (OmniFormat)</h3>
+          <p>Paste JSON, YAML, XML, or CSV to simultaneously generate and synchronize all 4 formats in one screen. 100% offline.</p>
+        </a>
+
+        <!-- Flagship: Universal SQL Query Converter (Super Tool) -->
+        <a href="sql-query-converter.html" class="tool-card-item" data-cat="dev" data-keywords="sql query converter select to insert select to update insert to update delete create table ast">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">🗄️</div>
+            <span class="tool-card-badge" style="background: rgba(0, 200, 150, 0.2); color: var(--purple);">⭐ Super Tool</span>
+          </div>
+          <h3>Universal SQL Query Converter</h3>
+          <p>Convert any SQL query into SELECT, INSERT INTO, UPDATE, and DELETE statements simultaneously. 100% offline.</p>
+        </a>
+
+        <!-- Flagship: PasteGuard -->
+        <a href="pasteguard.html" class="tool-card-item" data-cat="dev" data-keywords="pasteguard sanitize secrets api keys hide credentials chatgpt claude llm prompt redact">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">🛡️</div>
+            <span class="tool-card-badge" style="background: rgba(0, 200, 150, 0.2); color: var(--purple);">⭐ Flagship</span>
+          </div>
+          <h3>PasteGuard — AI Prompt Secret Sanitizer</h3>
+          <p>Scans and replaces 60+ API key types (AWS, OpenAI, Stripe, DB URLs, PII) with synthetic mock data for AI prompts.</p>
+        </a>
+
+        <!-- Flagship: RegexLens -->
+        <a href="regexlens.html" class="tool-card-item" data-cat="dev" data-keywords="regexlens regex visualizer flowchart redos explainer plain english regular expression ast">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">🔬</div>
+            <span class="tool-card-badge" style="background: rgba(0, 200, 150, 0.2); color: var(--purple);">⭐ Flagship</span>
+          </div>
+          <h3>RegexLens — Visual Flowchart & Explainer</h3>
+          <p>Visualize regex patterns as interactive railroad diagrams, explain syntax in plain English, and detect ReDoS risks.</p>
+        </a>
+
+        <!-- Flagship: SchemaForge -->
+        <a href="schemaforge.html" class="tool-card-item" data-cat="dev" data-keywords="schemaforge json to swift codable json to pydantic json to typescript zod rust serde go struct model generator">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">⚡</div>
+            <span class="tool-card-badge" style="background: rgba(0, 200, 150, 0.2); color: var(--purple);">⭐ Flagship</span>
+          </div>
+          <h3>SchemaForge — Multi-Language Model Generator</h3>
+          <p>Generate Swift Codable, TypeScript + Zod, Python Pydantic v2, Rust Serde, and Go structs simultaneously from JSON.</p>
+        </a>
+
+        <!-- JSON String Unescaper -->
+        <a href="json-unescaper.html" class="tool-card-item" data-cat="data" data-keywords="json unescaper unescape log strings cloudwatch remove quotes clean stringified json">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">🔓</div>
+            <span class="tool-card-badge">Data</span>
+          </div>
+          <h3>JSON String Unescaper</h3>
+          <p>Unescape serialized CloudWatch logs and stringified JSON into clean, formatted JSON objects.</p>
+        </a>
+
+        <!-- JSON to YAML -->
+        <a href="json-to-yaml.html" class="tool-card-item" data-cat="data" data-keywords="json to yaml yaml to json convert config k8s kubernetes 2 space indentation">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">📄</div>
+            <span class="tool-card-badge">DevOps</span>
+          </div>
+          <h3>JSON to YAML Converter</h3>
+          <p>Bidirectional conversion between JSON and clean 2-space indented YAML configuration files.</p>
+        </a>
+
+        <!-- SQL to JSON -->
+        <a href="sql-to-json.html" class="tool-card-item" data-cat="dev" data-keywords="sql to json create table to json mock data generator ddl fixtures test payload">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">🗄️</div>
+            <span class="tool-card-badge">Database</span>
+          </div>
+          <h3>SQL DDL to JSON Mock Data</h3>
+          <p>Convert CREATE TABLE schemas and SQL statements into realistic JSON mock arrays for test fixtures.</p>
+        </a>
+
+        <!-- 1. PDF Page Remover -->
+        <a href="pdf-page-remover.html" class="tool-card-item" data-cat="pdf" data-keywords="pdf page remover delete pages split pdf extract private document">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">📑</div>
+            <span class="tool-card-badge">Popular</span>
+          </div>
+          <h3>PDF Page Remover</h3>
+          <p>Visually select and delete unwanted pages from confidential PDFs 100% offline in your browser.</p>
+        </a>
+
+        <!-- 2. PDF Merger -->
+        <a href="pdf-merger.html" class="tool-card-item" data-cat="pdf" data-keywords="pdf merger combine pdf join pdf files binder">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">➕</div>
+            <span class="tool-card-badge">Popular</span>
+          </div>
+          <h3>PDF Merger & Combiner</h3>
+          <p>Combine multiple PDF files into one consolidated document with custom order. 100% private.</p>
+        </a>
+
+        <!-- 3. Password Protect PDF -->
+        <a href="pdf-password-protect.html" class="tool-card-item" data-cat="pdf" data-keywords="password protect pdf encrypt pdf lock pdf password security">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">🔒</div>
+            <span class="tool-card-badge">Security</span>
+          </div>
+          <h3>Password Protect PDF</h3>
+          <p>Encrypt and lock sensitive PDF files with password protection directly in your browser. 100% private.</p>
+        </a>
+
+        <!-- 4. PDF to JPG/PNG -->
+        <a href="pdf-to-image.html" class="tool-card-item" data-cat="pdf" data-keywords="pdf to jpg pdf to png convert pdf to image rasterize high res">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">🖼️</div>
+            <span class="tool-card-badge">New</span>
+          </div>
+          <h3>PDF to JPG & PNG Converter</h3>
+          <p>Convert PDF pages to crisp high-DPI JPG or PNG images directly in your browser. 100% private.</p>
+        </a>
+
+        <!-- 5. JPG/PNG to PDF -->
+        <a href="image-to-pdf.html" class="tool-card-item" data-cat="pdf" data-keywords="jpg to pdf png to pdf combine photos to pdf image to pdf">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">📑</div>
+            <span class="tool-card-badge">New</span>
+          </div>
+          <h3>JPG & PNG to PDF Maker</h3>
+          <p>Convert and combine multiple JPG, PNG, and WebP images into a single PDF document. 100% offline.</p>
+        </a>
+
+        <!-- 3. Regex Tester -->
+        <a href="regex-tester.html" class="tool-card-item" data-cat="dev" data-keywords="regex tester regular expression match token explain highlight">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">🧪</div>
+            <span class="tool-card-badge">Developer</span>
+          </div>
+          <h3>Regex Tester & Explainer</h3>
+          <p>Test regular expressions with real-time match highlighting and plain-English token breakdowns.</p>
+        </a>
+
+        <!-- 4. cURL Converter -->
+        <a href="curl-converter.html" class="tool-card-item" data-cat="dev" data-keywords="curl converter fetch axios python requests swift urlsession go http">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">⚡</div>
+            <span class="tool-card-badge">Developer</span>
+          </div>
+          <h3>cURL to Code Converter</h3>
+          <p>Convert cURL commands to JavaScript Fetch, Axios, Python Requests, Go, and Swift URLSession.</p>
+        </a>
+
+        <!-- 5. Cron Visualizer -->
+        <a href="cron-visualizer.html" class="tool-card-item" data-cat="dev" data-keywords="cron visualizer next run calculator schedule crontab devops">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">⏰</div>
+            <span class="tool-card-badge">DevOps</span>
+          </div>
+          <h3>Cron Expression Visualizer</h3>
+          <p>Translate cron schedules into plain English and compute upcoming execution timestamps.</p>
+        </a>
+
+        <!-- 6. Text Diff -->
+        <a href="text-diff.html" class="tool-card-item" data-cat="dev" data-keywords="text diff code diff checker compare two texts side by side">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">🔀</div>
+            <span class="tool-card-badge">Developer</span>
+          </div>
+          <h3>Text & Code Diff Checker</h3>
+          <p>Compare two text blocks or code files side-by-side to highlight additions and deletions.</p>
+        </a>
+
+        <!-- 7. Color Converter -->
+        <a href="color-converter.html" class="tool-card-item" data-cat="design" data-keywords="color converter hex rgb hsl tailwind css color matcher swift color contrast">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">🎨</div>
+            <span class="tool-card-badge">Designer</span>
+          </div>
+          <h3>Color Studio & Tailwind Matcher</h3>
+          <p>Convert HEX, RGB, HSL, Swift Color(), and match nearest Tailwind CSS 3/4 color classes.</p>
+        </a>
+
+        <!-- 8. SVG Optimizer -->
+        <a href="svg-optimizer.html" class="tool-card-item" data-cat="design" data-keywords="svg optimizer react jsx cleaner minify svg figma sketch">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">🧹</div>
+            <span class="tool-card-badge">Designer</span>
+          </div>
+          <h3>SVG Optimizer & JSX Cleaner</h3>
+          <p>Strip bloated metadata from Figma & Illustrator SVGs and convert to clean React JSX.</p>
+        </a>
+
+        <!-- 9. Shadow Generator -->
+        <a href="shadow-generator.html" class="tool-card-item" data-cat="design" data-keywords="box shadow generator smooth shadow glassmorphism elevation tailwind css">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">🪟</div>
+            <span class="tool-card-badge">Designer</span>
+          </div>
+          <h3>Box-Shadow & Glassmorphism</h3>
+          <p>Design smooth multi-layered ambient shadows and frosted glass blur effects with CSS tokens.</p>
+        </a>
+
+        <!-- 10. Aspect Ratio Calculator -->
+        <a href="aspect-ratio-calculator.html" class="tool-card-item" data-cat="design" data-keywords="aspect ratio calculator dimensions 16 9 4 3 resize image social">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">📐</div>
+            <span class="tool-card-badge">Designer</span>
+          </div>
+          <h3>Aspect Ratio & Dimensions</h3>
+          <p>Compute proportional width and height scaling for 16:9, 4:3, 1:1, and 9:16 social media assets.</p>
+        </a>
+
+        <!-- 11. Word Counter -->
+        <a href="word-counter.html" class="tool-card-item" data-cat="content" data-keywords="word counter character counter twitter 280 linkedin character limit reading time">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">📝</div>
+            <span class="tool-card-badge">Creator</span>
+          </div>
+          <h3>Social Media Character Counter</h3>
+          <p>Live word and character counts with visual limit progress bars for X/Twitter, LinkedIn, and SEO.</p>
+        </a>
+
+        <!-- 12. Markdown to Rich Text -->
+        <a href="markdown-to-rich-text.html" class="tool-card-item" data-cat="content" data-keywords="markdown to rich text formatted text copy google docs notion substack email">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">📋</div>
+            <span class="tool-card-badge">Creator</span>
+          </div>
+          <h3>Markdown to Rich Text Copy</h3>
+          <p>Convert Markdown into formatted rich text ready to paste directly into Google Docs and emails.</p>
+        </a>
+
+        <!-- 13. Title Capitalizer -->
+        <a href="title-capitalizer.html" class="tool-card-item" data-cat="content" data-keywords="title capitalizer headline capitalization ap style chicago apa case converter">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">🔠</div>
+            <span class="tool-card-badge">Creator</span>
+          </div>
+          <h3>Title & Headline Capitalizer</h3>
+          <p>Automatically capitalize headlines according to AP, Chicago, and APA editorial style rules.</p>
+        </a>
+
+        <!-- 14. Slug Generator -->
+        <a href="slug-generator.html" class="tool-card-item" data-cat="content" data-keywords="slug generator url permalink clean seo slug text to slug">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">🔗</div>
+            <span class="tool-card-badge">SEO</span>
+          </div>
+          <h3>Clean URL & SEO Slug Generator</h3>
+          <p>Transform article titles into clean, URL-safe permalinks for blogs and documentation.</p>
+        </a>
+
+        <!-- 15. Base64 Image -->
+        <a href="base64-image.html" class="tool-card-item" data-cat="data" data-keywords="base64 to image image to base64 data uri png svg decode">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">🖼️</div>
+            <span class="tool-card-badge">Data</span>
+          </div>
+          <h3>Base64 Image Encoder & Decoder</h3>
+          <p>Convert PNG/JPG images to Base64 Data URI strings or decode Base64 into viewable images.</p>
+        </a>
+
+        <!-- 16. JWT Decoder -->
+        <a href="jwt-decoder.html" class="tool-card-item" data-cat="data" data-keywords="jwt json web token decode expiration claim secret">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">🔑</div>
+            <span class="tool-card-badge">Security</span>
+          </div>
+          <h3>JWT Decoder & Inspector</h3>
+          <p>Decodes Header and Payload, inspects claims, checks expiration with live remaining time.</p>
+        </a>
+
+        <!-- 17. JSON Formatter -->
+        <a href="json-formatter.html" class="tool-card-item" data-cat="data" data-keywords="json format prettify minify validate syntax fix">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">{ }</div>
+            <span class="tool-card-badge">Data</span>
+          </div>
+          <h3>JSON Formatter & Validator</h3>
+          <p>Pretty-print, minify, validate, and repair malformed JSON syntax directly in your browser.</p>
+        </a>
+
+        <!-- 18. JSON to TypeScript -->
+        <a href="json-to-typescript.html" class="tool-card-item" data-cat="data" data-keywords="json to typescript ts zod schema interface type">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">TS</div>
+            <span class="tool-card-badge">Codegen</span>
+          </div>
+          <h3>JSON to TypeScript & Zod</h3>
+          <p>Instantly infers types and generates clean TypeScript interfaces and Zod validation schemas.</p>
+        </a>
+
+        <!-- 19. SQL Formatter -->
+        <a href="sql-formatter.html" class="tool-card-item" data-cat="dev" data-keywords="sql query format prettify beautify postgres mysql sqlite">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">🗄️</div>
+            <span class="tool-card-badge">Database</span>
+          </div>
+          <h3>SQL Query Prettifier</h3>
+          <p>Formats SQL keywords, aligns clauses, and standardizes indentation for Postgres, MySQL & SQLite.</p>
+        </a>
+
+        <!-- 20. CSV to Markdown -->
+        <a href="csv-to-markdown.html" class="tool-card-item" data-cat="content" data-keywords="csv markdown table tsv spreadsheet convert github">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">📊</div>
+            <span class="tool-card-badge">Tables</span>
+          </div>
+          <h3>CSV to Markdown Table</h3>
+          <p>Converts comma or tab-delimited spreadsheet data into clean GitHub/Dev.to Markdown tables.</p>
+        </a>
+
+        <!-- 21. UTM Stripper -->
+        <a href="utm-stripper.html" class="tool-card-item" data-cat="content" data-keywords="utm stripper clean tracking url fbclid gclid parameters">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">🔗</div>
+            <span class="tool-card-badge">Privacy</span>
+          </div>
+          <h3>UTM & Tracking Stripper</h3>
+          <p>Removes marketing tracking parameters (utm_*, fbclid, gclid) for clean link sharing.</p>
+        </a>
+
+        <!-- 22. JSON Diff -->
+        <a href="json-diff.html" class="tool-card-item" data-cat="data" data-keywords="json diff compare json semantic diff changes add remove modify">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box">🔀</div>
+            <span class="tool-card-badge">New</span>
+          </div>
+          <h3>Semantic JSON Diff</h3>
+          <p>Compare two JSON objects side-by-side. Highlights additions, removals, and changes with key sorting.</p>
+        </a>
+
+      </div>
+
+      <!-- Contextual App Bridge Card -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Automate all 22+ transforms natively on macOS with ⌘⇧V</h3>
+          <p>
+            Stop jumping between browser tabs. L2Cache captures your clipboard history and offers 
+            these exact transforms with <strong>⌘⇧V</strong> — 100% offline, on-device AI.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Download for Mac — Free
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin: 0; font-size: 13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    let currentCat = 'all';
+
+    function setCategory(cat, btn) {
+      currentCat = cat;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      filterTools();
+    }
+
+    function filterTools() {
+      const q = (document.getElementById('tool-search').value || '').toLowerCase().trim();
+      const cards = document.querySelectorAll('.tool-card-item');
+
+      cards.forEach(card => {
+        const cat = card.getAttribute('data-cat');
+        const keywords = (card.getAttribute('data-keywords') || '') + ' ' + card.innerText.toLowerCase();
+        const matchesCat = (currentCat === 'all' || cat === currentCat);
+        const matchesSearch = !q || keywords.includes(q);
+
+        card.style.display = (matchesCat && matchesSearch) ? 'flex' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

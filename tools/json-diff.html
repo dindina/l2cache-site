@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offline JSON Diff & Comparison Tool — 100% Client-Side | L2Cache</title>
+  <meta name="description" content="Compare two JSON objects side-by-side with semantic diffing. Highlights added keys, removed values, and type changes offline in your browser. 100% private." />
+  <meta name="keywords" content="json diff, compare json online, semantic json diff, json comparison tool, diff json offline, compare two json files" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/json-diff" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Semantic JSON Diff & Comparison Tool",
+        "url": "https://l2cache.amvo.store/en/tools/json-diff",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How is semantic JSON diff different from regular text diff?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A semantic JSON diff parses both documents into structured objects. It can ignore key ordering (e.g. {a:1, b:2} equals {b:2, a:1}) and detect structural modifications, whereas text diffs report false mismatches due to line breaks or whitespace."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is my JSON data uploaded anywhere?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The entire recursive comparison runs 100% client-side in your browser. API responses with private customer data or credentials never touch a server."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    .diff-badge-added { background: rgba(0, 200, 150, 0.18); color: #00dfa8; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+    .diff-badge-removed { background: rgba(252, 106, 106, 0.18); color: #fc6a6a; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+    .diff-badge-modified { background: rgba(245, 158, 11, 0.18); color: #f59e0b; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+
+    .diff-tree-view {
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.7;
+      background: #09090e;
+      border: 1px solid #222;
+      border-radius: 10px;
+      padding: 16px;
+      overflow-y: auto;
+      max-height: 380px;
+      white-space: pre-wrap;
+    }
+    .diff-row {
+      padding: 3px 6px;
+      border-radius: 4px;
+      margin-bottom: 2px;
+    }
+    .diff-row.add { background: rgba(0, 200, 150, 0.12); color: #00dfa8; }
+    .diff-row.del { background: rgba(252, 106, 106, 0.12); color: #fc6a6a; }
+    .diff-row.mod { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+    .diff-row.same { color: #888; }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Compare JSON payloads locally. Zero tracking, complete API confidentiality.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">SEMANTIC DATA COMPARISON</span>
+      <h1>Semantic JSON <em>Diff Tool</em></h1>
+      <p class="hero-sub">
+        Compare two JSON objects side-by-side. Highlights additions, deletions, and value modifications with key-order normalization.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">{ }</div>
+            <span class="tool-name-text">JSON Diff Engine</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% CLIENT-SIDE</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-io-grid">
+            
+            <!-- Left: Original JSON -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Original JSON (v1 / Baseline)</span>
+                <span id="json-left-bytes" style="color:var(--purple);">0 bytes</span>
+              </div>
+              <textarea id="json-left" class="tool-textarea" placeholder="Paste original JSON..." oninput="computeJSONDiff()">{
+  "app": "L2Cache",
+  "version": 1.1,
+  "pricing": {
+    "model": "early-access",
+    "price": 0
+  },
+  "features": ["clipboard-history", "smart-paster"]
+}</textarea>
+            </div>
+
+            <!-- Right: Modified JSON -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Modified JSON (v2 / Target)</span>
+                <span id="json-right-bytes" style="color:var(--purple);">0 bytes</span>
+              </div>
+              <textarea id="json-right" class="tool-textarea" placeholder="Paste modified JSON..." oninput="computeJSONDiff()">{
+  "app": "L2Cache",
+  "version": 1.2,
+  "pricing": {
+    "model": "one-time",
+    "price": 6.99
+  },
+  "features": ["clipboard-history", "smart-paster", "ocr-search"],
+  "aiEngine": "Apple Intelligence"
+}</textarea>
+            </div>
+
+          </div>
+
+          <!-- Controls & Options -->
+          <div class="tool-controls" style="align-items: center;">
+            <button class="tbtn tbtn-primary" onclick="computeJSONDiff()">⚡ Compare JSON</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSampleDiff()">📄 Load Sample</button>
+            <button class="tbtn tbtn-ghost" onclick="swapInputs()">🔄 Swap</button>
+            <button class="tbtn tbtn-ghost" onclick="clearAllJSON()">✕ Clear</button>
+            
+            <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #ccc; cursor: pointer; margin-left: 8px;">
+              <input type="checkbox" id="opt-sort-keys" checked onchange="computeJSONDiff()" style="accent-color: var(--purple);" />
+              Sort keys alphabetically
+            </label>
+
+            <button class="tbtn tbtn-copy" onclick="copyOutput('diff-result-view')" style="margin-left: auto;">📋 Copy Diff Summary</button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-jsondiff">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-jsondiff">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+          <!-- Diff Results Area -->
+          <div class="tool-pane" style="margin-top: 20px;">
+            <div class="pane-label-row">
+              <span>Semantic Differences</span>
+              <span id="diff-summary-badge" style="color:var(--purple);">0 Changes</span>
+            </div>
+            <div id="diff-result-view" class="diff-tree-view">// Diff output will appear here</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Compare JSON payloads from your Mac clipboard with L2Cache</h3>
+          <p>
+            L2Cache saves your clipboard history so you can compare API responses, config files, 
+            and JSON records without switching between browser tabs — 100% offline on macOS.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Guide Content -->
+      <div class="article-body">
+        <h2>Why Text Diffs Fail on JSON</h2>
+        <p>
+          Comparing JSON documents with standard line-based diff utilities (like <code>git diff</code>) often creates false positives:
+        </p>
+        <ul>
+          <li><strong>Key Ordering:</strong> In JSON objects (RFC 8259), key order is unordered. <code>{"id":1, "name":"A"}</code> and <code>{"name":"A", "id":1}</code> are functionally identical, yet text diffs mark every line as changed.</li>
+          <li><strong>Formatting and Minification:</strong> A single-line minified JSON string compared against an indented one shows 100% difference in a raw text diff.</li>
+          <li><strong>Deep Type Mismatches:</strong> A semantic diff identifies when a field changes type (e.g. from <code>"123"</code> (string) to <code>123</code> (number)).</li>
+        </ul>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Are large JSON payloads supported?</div>
+          <div class="faq-a">Yes. Because the AST traversal runs inside your browser's V8 engine without network transfer, multi-megabyte payloads diff in under a second.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Can this tool compare arrays of objects?</div>
+          <div class="faq-a">Yes. The engine recursively traverses nested arrays, reporting added items, removed elements, and changed object properties at each index.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="json-formatter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">{ }</div><span class="tool-card-badge">Data</span></div>
+            <h3>JSON Formatter</h3>
+            <p>Pretty-print, validate, and repair JSON payloads.</p>
+          </a>
+          <a href="json-to-typescript.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">TS</div><span class="tool-card-badge">Codegen</span></div>
+            <h3>JSON to TypeScript</h3>
+            <p>Generate TypeScript types and Zod schemas from JSON.</p>
+          </a>
+          <a href="text-diff.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔀</div><span class="tool-card-badge">Code</span></div>
+            <h3>Text & Code Diff</h3>
+            <p>Compare raw text and code line-by-line.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    function escapeHtml(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function sortObjectKeys(obj) {
+      if (obj === null || typeof obj !== 'object') return obj;
+      if (Array.isArray(obj)) return obj.map(sortObjectKeys);
+      const sorted = {};
+      Object.keys(obj).sort().forEach(k => {
+        sorted[k] = sortObjectKeys(obj[k]);
+      });
+      return sorted;
+    }
+
+    function diffValues(path, v1, v2, results) {
+      if (v1 === undefined && v2 !== undefined) {
+        results.push({ type: 'add', path, val1: undefined, val2: v2 });
+        return;
+      }
+      if (v1 !== undefined && v2 === undefined) {
+        results.push({ type: 'del', path, val1: v1, val2: undefined });
+        return;
+      }
+      if (typeof v1 !== typeof v2) {
+        results.push({ type: 'mod', path, val1: v1, val2: v2, reason: 'Type changed' });
+        return;
+      }
+      if (typeof v1 !== 'object' || v1 === null || v2 === null) {
+        if (v1 !== v2) {
+          results.push({ type: 'mod', path, val1: v1, val2: v2 });
+        }
+        return;
+      }
+
+      if (Array.isArray(v1) && Array.isArray(v2)) {
+        const maxLen = Math.max(v1.length, v2.length);
+        for (let i = 0; i < maxLen; i++) {
+          diffValues(`${path}[${i}]`, v1[i], v2[i], results);
+        }
+        return;
+      }
+
+      const allKeys = new Set([...Object.keys(v1), ...Object.keys(v2)]);
+      allKeys.forEach(k => {
+        const nextPath = path ? `${path}.${k}` : k;
+        diffValues(nextPath, v1[k], v2[k], results);
+      });
+    }
+
+    function computeJSONDiff() {
+      const leftRaw = document.getElementById('json-left').value.trim();
+      const rightRaw = document.getElementById('json-right').value.trim();
+      const resultView = document.getElementById('diff-result-view');
+      const badge = document.getElementById('diff-summary-badge');
+
+      document.getElementById('json-left-bytes').textContent = new Blob([leftRaw]).size + ' bytes';
+      document.getElementById('json-right-bytes').textContent = new Blob([rightRaw]).size + ' bytes';
+
+      if (!leftRaw || !rightRaw) {
+        resultView.innerHTML = '<span style="color:#888;">// Paste both JSON documents above to compute differences</span>';
+        badge.textContent = '0 Changes';
+        return;
+      }
+
+      let obj1, obj2;
+      try { obj1 = JSON.parse(leftRaw); } catch(e) {
+        resultView.innerHTML = `<span style="color:#fc6a6a;">❌ Invalid JSON in Left box: ${escapeHtml(e.message)}</span>`;
+        return;
+      }
+      try { obj2 = JSON.parse(rightRaw); } catch(e) {
+        resultView.innerHTML = `<span style="color:#fc6a6a;">❌ Invalid JSON in Right box: ${escapeHtml(e.message)}</span>`;
+        return;
+      }
+
+      const sortKeys = document.getElementById('opt-sort-keys').checked;
+      if (sortKeys) {
+        obj1 = sortObjectKeys(obj1);
+        obj2 = sortObjectKeys(obj2);
+      }
+
+      const diffs = [];
+      diffValues('', obj1, obj2, diffs);
+
+      let adds = 0, dels = 0, mods = 0;
+      diffs.forEach(d => {
+        if (d.type === 'add') adds++;
+        if (d.type === 'del') dels++;
+        if (d.type === 'mod') mods++;
+      });
+
+      badge.textContent = `${diffs.length} Change${diffs.length === 1 ? '' : 's'} (+${adds}, -${dels}, ~${mods})`;
+
+      if (diffs.length === 0) {
+        resultView.innerHTML = '<div style="color:var(--purple); font-weight:700;">✅ Both JSON documents are semantically identical!</div>';
+        return;
+      }
+
+      let html = '<div style="margin-bottom:12px; font-weight:700; color:#fff;">Summary of Differences:</div>';
+      
+      diffs.forEach(d => {
+        if (d.type === 'add') {
+          html += `<div class="diff-row add">➕ [ADDED] <strong>${escapeHtml(d.path)}</strong>: <code>${escapeHtml(JSON.stringify(d.val2))}</code></div>`;
+        } else if (d.type === 'del') {
+          html += `<div class="diff-row del">➖ [REMOVED] <strong>${escapeHtml(d.path)}</strong> (was <code>${escapeHtml(JSON.stringify(d.val1))}</code>)</div>`;
+        } else if (d.type === 'mod') {
+          html += `<div class="diff-row mod">🔄 [CHANGED] <strong>${escapeHtml(d.path)}</strong>: <code>${escapeHtml(JSON.stringify(d.val1))}</code> → <code>${escapeHtml(JSON.stringify(d.val2))}</code></div>`;
+        }
+      });
+
+      resultView.innerHTML = html;
+      logLocalOp('JSON diff()', leftRaw.length + rightRaw.length);
+    }
+
+    function swapInputs() {
+      const l = document.getElementById('json-left').value;
+      const r = document.getElementById('json-right').value;
+      document.getElementById('json-left').value = r;
+      document.getElementById('json-right').value = l;
+      computeJSONDiff();
+    }
+
+    function loadSampleDiff() {
+      document.getElementById('json-left').value = JSON.stringify({
+        id: "usr_100",
+        name: "Dev Team",
+        role: "admin",
+        permissions: ["read", "write"],
+        active: true
+      }, null, 2);
+
+      document.getElementById('json-right').value = JSON.stringify({
+        id: "usr_100",
+        name: "Dev Team Lead",
+        role: "superadmin",
+        permissions: ["read", "write", "deploy"],
+        active: true,
+        lastLogin: 1723720000
+      }, null, 2);
+
+      computeJSONDiff();
+    }
+
+    function clearAllJSON() {
+      document.getElementById('json-left').value = '';
+      document.getElementById('json-right').value = '';
+      computeJSONDiff();
+    }
+
+    computeJSONDiff();
+  </script>
+</body>
+</html>

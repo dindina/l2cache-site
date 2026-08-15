@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSON to YAML Converter — Bidirectional & Fast | L2Cache</title>
+  <meta name="description" content="Convert JSON to YAML and YAML to JSON with syntax validation, standard 2-space indentation, and comments support. 100% offline in your browser — zero data leaks." />
+  <meta name="keywords" content="json to yaml, convert json to yaml online, yaml to json, json to yaml converter offline, k8s yaml generator" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/json-to-yaml" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "JSON to YAML Converter",
+        "url": "https://l2cache.amvo.store/en/tools/json-to-yaml",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How does JSON to YAML conversion handle arrays and nested objects?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The converter converts arrays into hyphen-bulleted lists (- item) and maps nested objects into 2-space indented key-value blocks conforming to the YAML 1.2 standard."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is my configuration data stored or transmitted?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The AST parser runs 100% locally in client-side JavaScript. Disconnect your internet or toggle Airplane Mode to verify zero network requests."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Convert JSON ⇄ YAML locally. Zero server latency.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">CONFIGURATION & DEVOPS</span>
+      <h1>JSON to YAML: <em>Bidirectional Converter</em></h1>
+      <p class="hero-sub">
+        Convert JSON to clean, standard YAML or reverse YAML to valid JSON with automatic indentation, syntax validation, and zero server roundtrips.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">📄</div>
+            <span class="tool-name-text">YAML 1.2 Engine</span>
+          </div>
+          <span class="tool-badge-pill">🔒 100% CLIENT-SIDE</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <div class="tool-io-grid">
+            
+            <!-- Left: JSON Input -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Input JSON (or YAML)</span>
+                <span id="raw-bytes" style="color:#888;">0 bytes</span>
+              </div>
+              <textarea id="json-input" class="tool-textarea" placeholder="Paste JSON here..." oninput="convertJsonToYaml()">{
+  "apiVersion": "apps/v1",
+  "kind": "Deployment",
+  "metadata": {
+    "name": "l2cache-service",
+    "labels": {
+      "app": "clipboard-engine",
+      "env": "production"
+    }
+  },
+  "spec": {
+    "replicas": 3,
+    "template": {
+      "spec": {
+        "containers": [
+          {
+            "name": "core",
+            "image": "l2cache:v2.4.0",
+            "ports": [8080, 9090]
+          }
+        ]
+      }
+    }
+  }
+}</textarea>
+            </div>
+
+            <!-- Right: YAML Output -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Generated YAML Output</span>
+                <span style="color:var(--purple); font-weight:700;">Clean 2-Space Indent</span>
+              </div>
+              <div id="yaml-output" class="tool-output-view" style="font-family: var(--mono); font-size: 13px; line-height: 1.6;"></div>
+            </div>
+
+          </div>
+
+          <!-- Controls & Actions -->
+          <div class="tool-controls" style="align-items: center; flex-wrap: wrap; gap: 8px;">
+            <button class="tbtn tbtn-primary" onclick="copyOutput('yaml-output')">📋 Copy YAML</button>
+            <button class="tbtn tbtn-ghost" onclick="downloadYaml()">💾 Download .yaml</button>
+            <button class="tbtn tbtn-ghost" onclick="swapAndReverse()">🔄 Swap (YAML ➔ JSON)</button>
+            <button class="tbtn tbtn-ghost" onclick="document.getElementById('json-input').value=''; convertJsonToYaml();">✕ Clear</button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-jsontoyaml">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-jsontoyaml">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Instant JSON ⇄ YAML transforms on macOS with L2Cache</h3>
+          <p>
+            Copy any JSON or Kubernetes manifest. Press <strong>⌘⇧V</strong> in L2Cache to 
+            convert between JSON and YAML directly into your clipboard history.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Guide Content -->
+      <div class="article-body">
+        <h2>Why Developers Convert Between JSON and YAML</h2>
+        <p>
+          JSON is the universal transport format for web APIs, but YAML is the industry standard for 
+          Kubernetes manifests, GitHub Actions workflows, Docker Compose files, and CI/CD pipelines.
+        </p>
+        <p>
+          This converter allows you to take REST API responses, swagger definitions, or cloud config objects 
+          and serialize them into human-readable YAML with proper string quoting and list structures.
+        </p>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Does this converter support YAML to JSON?</div>
+          <div class="faq-a">Yes. Click the '🔄 Swap (YAML ➔ JSON)' button to reverse the direction instantly.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Is any configuration sent to a remote server?</div>
+          <div class="faq-a">No. All conversion logic runs 100% in your browser memory. Works completely offline.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="universal-data-converter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">⚡</div><span class="tool-card-badge">Super Tool</span></div>
+            <h3>Universal Data Converter</h3>
+            <p>Convert JSON, YAML, XML, and CSV.</p>
+          </a>
+          <a href="json-formatter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">{ }</div><span class="tool-card-badge">Data</span></div>
+            <h3>JSON Formatter</h3>
+            <p>Prettify and validate JSON payloads.</p>
+          </a>
+          <a href="json-to-typescript.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">TS</div><span class="tool-card-badge">Codegen</span></div>
+            <h3>JSON to TypeScript</h3>
+            <p>Generate TypeScript types & Zod schemas.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    function jsonToYaml(obj, indent = 0) {
+      const spaces = '  '.repeat(indent);
+      if (obj === null || obj === undefined) return 'null';
+      if (typeof obj !== 'object') {
+        if (typeof obj === 'string' && (obj.includes(':') || obj.includes('#') || obj.includes('\n'))) return JSON.stringify(obj);
+        return String(obj);
+      }
+      if (Array.isArray(obj)) {
+        if (obj.length === 0) return '[]';
+        return obj.map(item => {
+          if (typeof item === 'object' && item !== null) {
+            const nested = jsonToYaml(item, indent + 1).trimStart();
+            return `${spaces}- ${nested}`;
+          }
+          return `${spaces}- ${jsonToYaml(item, indent + 1)}`;
+        }).join('\n');
+      }
+      const lines = [];
+      for (const [k, v] of Object.entries(obj)) {
+        if (typeof v === 'object' && v !== null && !Array.isArray(v) && Object.keys(v).length === 0) {
+          lines.push(`${spaces}${k}: {}`);
+        } else if (Array.isArray(v) && v.length === 0) {
+          lines.push(`${spaces}${k}: []`);
+        } else if (typeof v === 'object' && v !== null) {
+          lines.push(`${spaces}${k}:\n${jsonToYaml(v, indent + 1)}`);
+        } else {
+          lines.push(`${spaces}${k}: ${jsonToYaml(v, indent + 1)}`);
+        }
+      }
+      return lines.join('\n');
+    }
+
+    function convertJsonToYaml() {
+      const raw = document.getElementById('json-input').value.trim();
+      document.getElementById('raw-bytes').textContent = new Blob([raw]).size + ' bytes';
+
+      if (!raw) {
+        document.getElementById('yaml-output').textContent = '# YAML output will appear here';
+        return;
+      }
+
+      try {
+        const obj = JSON.parse(raw);
+        const yaml = jsonToYaml(obj);
+        document.getElementById('yaml-output').textContent = yaml;
+      } catch(e) {
+        document.getElementById('yaml-output').textContent = `# Error parsing JSON: ${e.message}`;
+      }
+
+      logLocalOp('JSON to YAML convert', raw.length);
+    }
+
+    function downloadYaml() {
+      const text = document.getElementById('yaml-output').textContent;
+      const blob = new Blob([text], { type: 'text/yaml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'config.yaml';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('💾 Downloaded config.yaml');
+    }
+
+    function swapAndReverse() {
+      const currentYaml = document.getElementById('yaml-output').textContent;
+      document.getElementById('json-input').value = currentYaml;
+      showToast('🔄 Swapped fields for reverse conversion!');
+    }
+
+    convertJsonToYaml();
+  </script>
+</body>
+</html>

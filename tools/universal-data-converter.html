@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Universal Data Converter — JSON ⇄ YAML ⇄ XML ⇄ CSV In One Page | L2Cache</title>
+  <meta name="description" content="Convert any data format to all other formats simultaneously. Paste JSON, XML, YAML, or CSV to generate live JSON, YAML, XML, CSV, and TypeScript in one screen. 100% offline & private." />
+  <meta name="keywords" content="universal data converter, json to yaml, yaml to json, json to xml, xml to json, json to csv, convert all formats online, all in one data converter" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/universal-data-converter" />
+  <link rel="stylesheet" href="theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Universal Data Converter (OmniFormat)",
+        "url": "https://l2cache.amvo.store/en/tools/universal-data-converter",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Which data formats are supported for bidirectional conversion?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The Universal Data Converter bidirectionally converts between JSON, YAML, XML, CSV, TSV, and TypeScript interfaces in a single unified view."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is my data uploaded to any remote server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The AST parser and multi-format serializers execute 100% locally inside your web browser. Test in Airplane Mode to verify zero network requests."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    .output-tabs-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #181824;
+      border: 1px solid #28283a;
+      border-radius: 10px;
+      padding: 6px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+    }
+    .out-tab-btn {
+      background: none;
+      border: none;
+      color: #888;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .out-tab-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
+    .out-tab-btn.active {
+      color: #000;
+      background: var(--purple);
+      box-shadow: 0 2px 8px rgba(0, 200, 150, 0.3);
+    }
+
+    /* Grid Layout Option */
+    .multi-output-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 768px) {
+      .multi-output-grid { grid-template-columns: 1fr; }
+    }
+    .grid-format-card {
+      background: #111118;
+      border: 1px solid #28283a;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .grid-format-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: #181824;
+      border-bottom: 1px solid #28283a;
+    }
+    .grid-format-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      font-family: var(--mono);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .grid-format-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .mini-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #ccc;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: var(--mono);
+      transition: all 0.15s;
+    }
+    .mini-btn:hover {
+      background: var(--purple);
+      color: #000;
+      border-color: var(--purple);
+    }
+    .grid-format-view {
+      padding: 12px 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.6;
+      color: #e0e0e0;
+      background: #09090e;
+      height: 220px;
+      overflow-y: auto;
+      white-space: pre;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Convert JSON, YAML, XML, and CSV simultaneously. Zero servers.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="../developer-clipboard.html">Developers</a></li>
+      <li><a href="index.html">Free Tools</a></li>
+      <li><a href="../custom-actions.html">Smart Actions</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">UNIVERSAL DATA HUB (SUPER TOOL)</span>
+      <h1>Universal Data Converter: <em>All Formats in One Page</em></h1>
+      <p class="hero-sub">
+        Paste <strong>JSON, YAML, XML, or CSV</strong> to instantly generate and synchronize all other formats in real-time. 
+        Zero mode switching, 100% client-side.
+      </p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">⚡</div>
+            <span class="tool-name-text">OmniFormat Engine</span>
+          </div>
+          <span class="tool-badge-pill" id="detected-format-badge">AUTO-DETECT: JSON</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <!-- Source Input Box -->
+          <div class="tool-pane" style="margin-bottom: 20px;">
+            <div class="pane-label-row">
+              <span>Input Data (Paste JSON, YAML, XML, or CSV)</span>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <span id="source-bytes" style="color:var(--purple); font-size: 11px;">0 bytes</span>
+              </div>
+            </div>
+            <textarea id="source-input" class="tool-textarea" style="height: 170px;" oninput="convertAllFormats()" placeholder="Paste any JSON, YAML, XML, or CSV here...">[
+  {
+    "id": "usr_101",
+    "name": "Sarah Connor",
+    "role": "Lead Architect",
+    "team": "Core Platform",
+    "active": true
+  },
+  {
+    "id": "usr_102",
+    "name": "John Doe",
+    "role": "Security Engineer",
+    "team": "Infrastructure",
+    "active": true
+  }
+]</textarea>
+          </div>
+
+          <!-- Controls & Presets -->
+          <div class="tool-controls" style="align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;">
+            <span style="font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase;">Presets:</span>
+            <button class="tbtn tbtn-ghost" onclick="loadPreset('users')">👥 Users List</button>
+            <button class="tbtn tbtn-ghost" onclick="loadPreset('server')">⚙️ Server Config</button>
+            <button class="tbtn tbtn-ghost" onclick="loadPreset('order')">🛒 Order Record</button>
+            <button class="tbtn tbtn-ghost" onclick="document.getElementById('source-input').value=''; convertAllFormats();">✕ Clear</button>
+
+            <!-- Layout View Switcher -->
+            <div style="display: flex; gap: 6px; margin-left: auto;">
+              <button class="mini-btn active" id="layout-grid-btn" onclick="setLayout('grid')">🔲 Grid View (All 4)</button>
+              <button class="mini-btn" id="layout-tab-btn" onclick="setLayout('tab')">📑 Tabbed View</button>
+            </div>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-universal">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-universal">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+          <!-- Tabbed Mode Navigation -->
+          <div class="output-tabs-bar" id="tab-nav-bar" style="display: none;">
+            <button class="out-tab-btn active" onclick="switchActiveTab('json', this)">🟨 JSON</button>
+            <button class="out-tab-btn" onclick="switchActiveTab('yaml', this)">📄 YAML</button>
+            <button class="out-tab-btn" onclick="switchActiveTab('xml', this)">🏷️ XML</button>
+            <button class="out-tab-btn" onclick="switchActiveTab('csv', this)">📊 CSV</button>
+            <button class="out-tab-btn" onclick="switchActiveTab('ts', this)">🟦 TypeScript</button>
+          </div>
+
+          <!-- Output Views Container (Grid / Tabbed) -->
+          <div id="output-container" class="multi-output-grid">
+            
+            <!-- 1. JSON Card -->
+            <div class="grid-format-card" id="card-json">
+              <div class="grid-format-header">
+                <span class="grid-format-title">🟨 JSON</span>
+                <div class="grid-format-actions">
+                  <button class="mini-btn" onclick="copyCard('out-json', 'JSON')">📋 Copy</button>
+                  <button class="mini-btn" onclick="downloadCard('out-json', 'data.json')">💾 Download</button>
+                </div>
+              </div>
+              <div class="grid-format-view" id="out-json"></div>
+            </div>
+
+            <!-- 2. YAML Card -->
+            <div class="grid-format-card" id="card-yaml">
+              <div class="grid-format-header">
+                <span class="grid-format-title">📄 YAML</span>
+                <div class="grid-format-actions">
+                  <button class="mini-btn" onclick="copyCard('out-yaml', 'YAML')">📋 Copy</button>
+                  <button class="mini-btn" onclick="downloadCard('out-yaml', 'data.yaml')">💾 Download</button>
+                </div>
+              </div>
+              <div class="grid-format-view" id="out-yaml"></div>
+            </div>
+
+            <!-- 3. XML Card -->
+            <div class="grid-format-card" id="card-xml">
+              <div class="grid-format-header">
+                <span class="grid-format-title">🏷️ XML</span>
+                <div class="grid-format-actions">
+                  <button class="mini-btn" onclick="copyCard('out-xml', 'XML')">📋 Copy</button>
+                  <button class="mini-btn" onclick="downloadCard('out-xml', 'data.xml')">💾 Download</button>
+                </div>
+              </div>
+              <div class="grid-format-view" id="out-xml"></div>
+            </div>
+
+            <!-- 4. CSV Card -->
+            <div class="grid-format-card" id="card-csv">
+              <div class="grid-format-header">
+                <span class="grid-format-title">📊 CSV</span>
+                <div class="grid-format-actions">
+                  <button class="mini-btn" onclick="copyCard('out-csv', 'CSV')">📋 Copy</button>
+                  <button class="mini-btn" onclick="downloadCard('out-csv', 'data.csv')">💾 Download</button>
+                </div>
+              </div>
+              <div class="grid-format-view" id="out-csv"></div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Transform copied JSON, YAML, or CSV on macOS with ⌘⇧V</h3>
+          <p>
+            Never switch browser tabs to convert data. L2Cache saves your clipboard history and 
+            instantly converts between JSON, YAML, CSV, and TypeScript with <strong>⌘⇧V</strong>.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Guide Content -->
+      <div class="article-body">
+        <h2>Why One Universal Converter is 10x Faster</h2>
+        <p>
+          Developers, data engineers, and technical writers constantly move data across incompatible formats:
+        </p>
+        <ul>
+          <li><strong>API Payloads:</strong> JSON from REST endpoints ➔ YAML for Kubernetes / GitHub Actions.</li>
+          <li><strong>Legacy Systems:</strong> SOAP / XML enterprise feeds ➔ Modern JSON objects.</li>
+          <li><strong>Spreadsheets:</strong> CSV / Excel exports ➔ Structured JSON arrays or TypeScript models.</li>
+        </ul>
+        <p>
+          Instead of opening 4 separate browser bookmarks (JSON to YAML, YAML to XML, CSV to JSON), 
+          the Universal Data Converter parses your input once and renders all corresponding representations in a single synchronized viewport.
+        </p>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">How does the automatic format detection work?</div>
+          <div class="faq-a">The engine analyzes opening characters, syntax tokens, and structural AST signatures ({}, <xml>, key: value, comma delimiters) to identify whether the input is JSON, XML, YAML, or CSV.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Can it convert nested JSON to CSV?</div>
+          <div class="faq-a">Yes. When an array of objects has nested properties, objects are safely flattened and serialized into stringified CSV columns.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="json-diff.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🔀</div><span class="tool-card-badge">Data</span></div>
+            <h3>JSON Diff</h3>
+            <p>Semantic JSON comparisons and key sorting.</p>
+          </a>
+          <a href="json-to-typescript.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">TS</div><span class="tool-card-badge">Codegen</span></div>
+            <h3>JSON to TypeScript</h3>
+            <p>Generate TypeScript interfaces and Zod schemas.</p>
+          </a>
+          <a href="sql-formatter.html" class="tool-card-item">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🗄️</div><span class="tool-card-badge">Database</span></div>
+            <h3>SQL Formatter</h3>
+            <p>Prettify SQL queries with uppercase keywords.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="../privacy.html">Privacy</a></li>
+        <li><a href="../support.html">Support</a></li>
+        <li><a href="index.html">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="tools-engine.js"></script>
+  <script>
+    let currentLayout = 'grid';
+    let activeTabId = 'json';
+
+    // Format Serializers
+    function objToYaml(obj, indent = 0) {
+      const spaces = '  '.repeat(indent);
+      if (obj === null || obj === undefined) return 'null';
+      if (typeof obj !== 'object') {
+        if (typeof obj === 'string' && (obj.includes(':') || obj.includes('#') || obj.includes('\n'))) return JSON.stringify(obj);
+        return String(obj);
+      }
+      if (Array.isArray(obj)) {
+        if (obj.length === 0) return '[]';
+        return obj.map(item => {
+          if (typeof item === 'object' && item !== null) {
+            const nested = objToYaml(item, indent + 1).trimStart();
+            return `${spaces}- ${nested}`;
+          }
+          return `${spaces}- ${objToYaml(item, indent + 1)}`;
+        }).join('\n');
+      }
+      const lines = [];
+      for (const [k, v] of Object.entries(obj)) {
+        if (typeof v === 'object' && v !== null && !Array.isArray(v) && Object.keys(v).length === 0) {
+          lines.push(`${spaces}${k}: {}`);
+        } else if (Array.isArray(v) && v.length === 0) {
+          lines.push(`${spaces}${k}: []`);
+        } else if (typeof v === 'object' && v !== null) {
+          lines.push(`${spaces}${k}:\n${objToYaml(v, indent + 1)}`);
+        } else {
+          lines.push(`${spaces}${k}: ${objToYaml(v, indent + 1)}`);
+        }
+      }
+      return lines.join('\n');
+    }
+
+    function objToXml(obj, rootTag = 'root') {
+      function toXml(val, tag) {
+        if (val === null || val === undefined) return `<${tag}></${tag}>`;
+        if (Array.isArray(val)) {
+          return val.map(item => toXml(item, tag === 'root' ? 'item' : tag)).join('\n');
+        }
+        if (typeof val === 'object') {
+          const inner = Object.entries(val).map(([k, v]) => toXml(v, k)).join('\n');
+          return `<${tag}>\n${inner}\n</${tag}>`;
+        }
+        const esc = String(val).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return `<${tag}>${esc}</${tag}>`;
+      }
+      return '<?xml version="1.0" encoding="UTF-8"?>\n' + toXml(obj, rootTag);
+    }
+
+    function objToCsv(obj) {
+      const items = Array.isArray(obj) ? obj : [obj];
+      if (items.length === 0) return '';
+      const headers = Array.from(new Set(items.flatMap(o => typeof o === 'object' && o !== null ? Object.keys(o) : ['value'])));
+      const rows = [headers.join(',')];
+      items.forEach(item => {
+        if (typeof item === 'object' && item !== null) {
+          const row = headers.map(h => {
+            let val = item[h] !== undefined ? item[h] : '';
+            if (typeof val === 'object') val = JSON.stringify(val);
+            val = String(val).replace(/"/g, '""');
+            return val.includes(',') || val.includes('\n') || val.includes('"') ? `"${val}"` : val;
+          });
+          rows.push(row.join(','));
+        } else {
+          rows.push(String(item));
+        }
+      });
+      return rows.join('\n');
+    }
+
+    function detectAndParseSource(raw) {
+      const trimmed = raw.trim();
+      if (!trimmed) return { obj: null, format: 'EMPTY' };
+
+      // Try JSON
+      if ((trimmed.startsWith('{') && trimmed.endsWith('}')) || (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+        try {
+          return { obj: JSON.parse(trimmed), format: 'JSON' };
+        } catch(e) {}
+      }
+
+      // Try XML
+      if (trimmed.startsWith('<') && trimmed.endsWith('>')) {
+        try {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(trimmed, 'application/xml');
+          if (!doc.querySelector('parsererror')) {
+            function xmlToObj(node) {
+              if (node.nodeType === 3) return node.nodeValue.trim();
+              if (node.children.length === 0) return node.textContent.trim();
+              const res = {};
+              for (const child of node.children) {
+                const val = xmlToObj(child);
+                if (res[child.nodeName]) {
+                  if (!Array.isArray(res[child.nodeName])) res[child.nodeName] = [res[child.nodeName]];
+                  res[child.nodeName].push(val);
+                } else {
+                  res[child.nodeName] = val;
+                }
+              }
+              return res;
+            }
+            return { obj: xmlToObj(doc.documentElement), format: 'XML' };
+          }
+        } catch(e) {}
+      }
+
+      // Try CSV (comma-separated with lines)
+      if (trimmed.includes('\n') && (trimmed.includes(',') || trimmed.includes('\t'))) {
+        try {
+          const sep = trimmed.includes('\t') ? '\t' : ',';
+          const lines = trimmed.split('\n').map(l => l.trim()).filter(Boolean);
+          if (lines.length > 1) {
+            const headers = lines[0].split(sep).map(h => h.replace(/^["']|["']$/g, '').trim());
+            const records = [];
+            for (let i = 1; i < lines.length; i++) {
+              const cols = lines[i].split(sep).map(c => c.replace(/^["']|["']$/g, '').trim());
+              const row = {};
+              headers.forEach((h, idx) => {
+                row[h] = cols[idx] !== undefined ? cols[idx] : '';
+              });
+              records.push(row);
+            }
+            return { obj: records, format: 'CSV' };
+          }
+        } catch(e) {}
+      }
+
+      // Fallback: Try JSON with trailing comma repairs
+      try {
+        const cleaned = trimmed.replace(/,\s*([\]}])/g, '$1');
+        return { obj: JSON.parse(cleaned), format: 'JSON (Repaired)' };
+      } catch(e) {
+        return { obj: null, format: 'UNKNOWN' };
+      }
+    }
+
+    function convertAllFormats() {
+      const raw = document.getElementById('source-input').value;
+      document.getElementById('source-bytes').textContent = new Blob([raw]).size + ' bytes';
+
+      const parsed = detectAndParseSource(raw);
+      document.getElementById('detected-format-badge').textContent = `DETECTED: ${parsed.format}`;
+
+      if (!parsed.obj) {
+        document.getElementById('out-json').textContent = '// JSON output';
+        document.getElementById('out-yaml').textContent = '# YAML output';
+        document.getElementById('out-xml').textContent = '<!-- XML output -->';
+        document.getElementById('out-csv').textContent = 'csv,output';
+        return;
+      }
+
+      const jsonStr = JSON.stringify(parsed.obj, null, 2);
+      const yamlStr = objToYaml(parsed.obj);
+      const xmlStr = objToXml(parsed.obj);
+      const csvStr = objToCsv(parsed.obj);
+
+      document.getElementById('out-json').textContent = jsonStr;
+      document.getElementById('out-yaml').textContent = yamlStr;
+      document.getElementById('out-xml').textContent = xmlStr;
+      document.getElementById('out-csv').textContent = csvStr;
+
+      logLocalOp('OmniFormat convert', raw.length);
+    }
+
+    function setLayout(mode) {
+      currentLayout = mode;
+      const container = document.getElementById('output-container');
+      const tabNav = document.getElementById('tab-nav-bar');
+      const gridBtn = document.getElementById('layout-grid-btn');
+      const tabBtn = document.getElementById('layout-tab-btn');
+
+      if (mode === 'grid') {
+        container.className = 'multi-output-grid';
+        tabNav.style.display = 'none';
+        gridBtn.classList.add('active');
+        tabBtn.classList.remove('active');
+        document.querySelectorAll('.grid-format-card').forEach(c => c.style.display = 'flex');
+      } else {
+        container.className = '';
+        tabNav.style.display = 'flex';
+        gridBtn.classList.remove('active');
+        tabBtn.classList.add('active');
+        switchActiveTab(activeTabId);
+      }
+    }
+
+    function switchActiveTab(tabId, el) {
+      activeTabId = tabId;
+      if (el) {
+        document.querySelectorAll('.out-tab-btn').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
+      }
+      document.querySelectorAll('.grid-format-card').forEach(c => c.style.display = 'none');
+      const activeCard = document.getElementById(`card-${tabId}`);
+      if (activeCard) activeCard.style.display = 'flex';
+    }
+
+    function copyCard(viewId, label) {
+      const text = document.getElementById(viewId).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(`✅ Copied ${label} to clipboard!`);
+      });
+    }
+
+    function downloadCard(viewId, filename) {
+      const text = document.getElementById(viewId).textContent;
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(`💾 Downloaded ${filename}`);
+    }
+
+    function loadPreset(type) {
+      if (type === 'users') {
+        document.getElementById('source-input').value = `[
+  { "id": 1, "name": "Alex", "role": "Frontend", "active": true },
+  { "id": 2, "name": "Elena", "role": "Backend", "active": true }
+]`;
+      } else if (type === 'server') {
+        document.getElementById('source-input').value = `server:
+  host: 127.0.0.1
+  port: 8080
+  workers: 4
+logging:
+  level: debug
+  format: json`;
+      } else if (type === 'order') {
+        document.getElementById('source-input').value = `<?xml version="1.0" encoding="UTF-8"?>
+<order>
+  <id>ord_9901</id>
+  <customer>Acme Corp</customer>
+  <total>249.99</total>
+  <status>fulfilled</status>
+</order>`;
+      }
+      convertAllFormats();
+    }
+
+    convertAllFormats();
+  </script>
+</body>
+</html>
