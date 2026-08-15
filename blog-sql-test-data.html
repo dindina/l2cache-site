@@ -83,13 +83,13 @@
 
 <div class="container">
   <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
-  <h1>Stop Writing Mock Data by Hand: Generate JSON from SQL using AI</h1>
+  <h1>Stop Writing Mock Data by Hand: Generate SQL Sample Data & Inserts in 1 Click</h1>
 
   <img src="screenshots/l2cache-sql-smart.gif" alt="SQL Mock Data Generator" class="blog-image" onerror="this.src='icon.png'">
 
-  <p>Setting up a testing environment is the most tedious part of building any new feature.</p>
+  <p>Setting up a testing environment or seeding local database tables is often the most tedious part of building any new feature.</p>
   
-  <p>You write a beautiful, perfectly normalized <code>CREATE TABLE</code> SQL statement for your new "User Profile" feature. Then, you realize you need to test the frontend UI. Now you have to sit there and manually type out a massive JSON array with fake names, fake emails, and fake timestamps just to see if your React component renders correctly.</p>
+  <p>You write a clean <code>CREATE TABLE</code> SQL statement for a new feature. Then, you need test rows. Now you have to sit there and manually type out dozens of <code>INSERT INTO</code> statements with fake names, fake emails, and timestamps just to test your queries and UI.</p>
 
   <div class="workflow-card legacy">
     <div class="workflow-header">
@@ -99,18 +99,18 @@
     <ul class="step-list">
       <li class="step-item"><span class="step-num legacy-num">1</span> <div>Copy the SQL schema from your database tool or migration file.</div></li>
       <li class="step-item"><span class="step-num legacy-num">2</span> <div>Switch context and open a browser tab.</div></li>
-      <li class="step-item"><span class="step-num legacy-num">3</span> <div>Open ChatGPT, Claude, or a random online formatter.</div></li>
-      <li class="step-item"><span class="step-num legacy-num">4</span> <div>Write a prompt like: <em>"Generate 5 rows of realistic mock JSON data for this schema."</em></div></li>
-      <li class="step-item"><span class="step-num legacy-num">5</span> <div>Copy the resulting JSON payload back into your IDE.</div></li>
+      <li class="step-item"><span class="step-num legacy-num">3</span> <div>Open ChatGPT, Claude, or a web tool.</div></li>
+      <li class="step-item"><span class="step-num legacy-num">4</span> <div>Write a prompt like: <em>"Generate 10 realistic SQL INSERT rows for this schema."</em></div></li>
+      <li class="step-item"><span class="step-num legacy-num">5</span> <div>Copy the resulting SQL inserts back into your database client.</div></li>
     </ul>
   </div>
 
   <p>It's a massive context switch that completely derails your flow state.</p>
 
-  <h2>The AI-Powered Clipboard Solution</h2>
-  <p>What if your clipboard could perform this transformation natively on your Mac?</p>
+  <h2>The Native SQL Power Tool for macOS</h2>
+  <p>What if your clipboard could perform these SQL transformations natively on your Mac with a single shortcut?</p>
 
-  <p>With <strong>L2Cache</strong>, your clipboard becomes a local, scriptable developer power tool. You can run "Custom Smart Actions" directly on whatever text is currently in your clipboard.</p>
+  <p>With <strong>L2Cache</strong>, whenever you copy SQL, pressing <code>Option + V</code> in any editor instantly brings up the <strong>SQL Smart Actions</strong> menu:</p>
 
   <div class="workflow-card">
     <div class="workflow-header">
@@ -119,17 +119,22 @@
     </div>
     <ul class="step-list">
       <li class="step-item"><span class="step-num new-num">1</span> <div><strong>Copy:</strong> Highlight your SQL schema in any editor (VS Code, Xcode, TablePlus) and hit <code>Cmd + C</code>.</div></li>
-      <li class="step-item"><span class="step-num new-num">2</span> <div><strong>Smart Action:</strong> Press <code>Option + V</code> in any editor to instantly bring up the Smart Actions menu.</div></li>
-      <li class="step-item"><span class="step-num new-num">3</span> <div><strong>Transform:</strong> Select <strong>"Generate Mock JSON"</strong>.</div></li>
-      <li class="step-item"><span class="step-num new-num">4</span> <div><strong>Done:</strong> The populated JSON array is streamed directly into your editor with zero context switching.</div></li>
+      <li class="step-item"><span class="step-num new-num">2</span> <div><strong>Smart Action:</strong> Press <code>Option + V</code> to instantly bring up the Smart Actions menu.</div></li>
+      <li class="step-item"><span class="step-num new-num">3</span> <div><strong>Transform:</strong> Select <strong>"Sample Data (SQL Inserts)"</strong>, <strong>"Sample Data (CSV)"</strong>, or <strong>"Sample Data (Markdown)"</strong>.</div></li>
+      <li class="step-item"><span class="step-num new-num">4</span> <div><strong>Done:</strong> The populated insert statements are streamed directly into your editor in sub-100ms.</div></li>
     </ul>
   </div>
 
-  <p>Behind the scenes, L2Cache detects the SQL schema you copied, applies the Smart Action transform, and streams the formatted JSON payload directly into your clipboard buffer in sub-100ms.</p>
+  <p>L2Cache includes a full suite of instant SQL Smart Actions directly from your clipboard:</p>
+  <ul style="margin-bottom: 24px; padding-left: 24px; color: var(--text);">
+    <li><strong>Format SQL &amp; Minify SQL:</strong> Clean up or compress complex multi-line queries.</li>
+    <li><strong>Extract Table Names &amp; Columns:</strong> Pull referenced tables and fields without manual parsing.</li>
+    <li><strong>Convert to App Code (ORM):</strong> Turn SQL tables directly into ORM entities.</li>
+    <li><strong>Convert to UPDATE / DELETE:</strong> Instantly generate mutation statements.</li>
+    <li><strong>Suggest Indexes &amp; Explain Query:</strong> Get on-device query performance insights.</li>
+  </ul>
 
-  <p>No browser tabs. No context switching. Just instant mock data formatted exactly how you need it.</p>
-
-  <p>Because L2Cache supports custom regex transforms and scriptable pipelines (Python, Ruby, Bash), you can customize the action to output CSVs, XML, or even Swift <code>structs</code> from the same SQL block.</p>
+  <p>No browser tabs. No context switching. Just instant, privacy-first SQL transforms on your Mac.</p>
 
   <div class="cta-box">
     <div class="cta-title">Try L2Cache for Mac</div>
