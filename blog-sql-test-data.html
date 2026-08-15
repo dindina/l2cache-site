@@ -24,12 +24,28 @@
     .label { font-family: var(--mono); font-size: 12px; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: inline-block; }
     h1 { font-family: var(--serif); font-size: 40px; font-weight: 700; line-height: 1.2; margin-bottom: 32px; color: var(--text); }
     h2 { font-family: var(--serif); font-size: 28px; font-weight: 700; margin-top: 48px; margin-bottom: 16px; color: var(--text); }
+    h3 { font-family: var(--serif); font-size: 20px; font-weight: 700; margin-top: 32px; margin-bottom: 12px; color: var(--text); }
     p { font-size: 16px; color: rgba(240,239,248,0.7); margin-bottom: 24px; }
-    ol { margin-bottom: 24px; padding-left: 24px; color: rgba(240,239,248,0.7); }
+    ol, ul { font-size: 16px; color: rgba(240,239,248,0.7); margin-bottom: 24px; padding-left: 24px; }
     li { margin-bottom: 8px; }
     code { font-family: var(--mono); font-size: 14px; background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; color: #a197fd; }
     strong { color: var(--text); font-weight: 600; }
     .blog-image { width: 100%; border-radius: 12px; border: 1px solid var(--border); margin: 32px 0; display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    
+    .workflow-card { background: rgba(127,119,221,0.06); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin: 28px 0; }
+    .workflow-card.legacy { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); }
+    .workflow-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .workflow-badge { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 6px; font-weight: 600; }
+    .workflow-badge.legacy-badge { background: rgba(255,100,100,0.15); color: #ff8b8b; border: 1px solid rgba(255,100,100,0.3); }
+    .workflow-badge.new-badge { background: rgba(0,200,150,0.15); color: #00e6a8; border: 1px solid rgba(0,200,150,0.3); }
+    .workflow-title { font-family: var(--serif); font-size: 20px; font-weight: 700; color: var(--text); margin: 0; }
+    
+    .step-list { list-style: none; padding: 0; margin: 0; }
+    .step-item { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; font-size: 15px; color: var(--text); line-height: 1.6; }
+    .step-num { font-family: var(--mono); font-size: 12px; font-weight: 700; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .step-num.legacy-num { background: rgba(255,255,255,0.1); color: var(--text-muted); }
+    .step-num.new-num { background: var(--purple); color: #fff; }
+    
     .cta-box { background: rgba(127,119,221,0.08); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
     .cta-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
     .cta-btn { display: inline-block; background: var(--purple); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
@@ -75,39 +91,49 @@
   
   <p>You write a beautiful, perfectly normalized <code>CREATE TABLE</code> SQL statement for your new "User Profile" feature. Then, you realize you need to test the frontend UI. Now you have to sit there and manually type out a massive JSON array with fake names, fake emails, and fake timestamps just to see if your React component renders correctly.</p>
 
-  <p>The standard workflow usually involves:</p>
-  <ol>
-    <li>Copying the SQL schema.</li>
-    <li>Opening a browser.</li>
-    <li>Loading up ChatGPT or Claude.</li>
-    <li>Writing a prompt like, <em>"Generate 5 rows of mock JSON data for this schema."</em></li>
-    <li>Copying the result back to your IDE.</li>
-  </ol>
+  <div class="workflow-card legacy">
+    <div class="workflow-header">
+      <span class="workflow-badge legacy-badge">Old Way</span>
+      <h3 class="workflow-title">The Slow Manual Workflow</h3>
+    </div>
+    <ul class="step-list">
+      <li class="step-item"><span class="step-num legacy-num">1</span> <div>Copy the SQL schema from your database tool or migration file.</div></li>
+      <li class="step-item"><span class="step-num legacy-num">2</span> <div>Switch context and open a browser tab.</div></li>
+      <li class="step-item"><span class="step-num legacy-num">3</span> <div>Open ChatGPT, Claude, or a random online formatter.</div></li>
+      <li class="step-item"><span class="step-num legacy-num">4</span> <div>Write a prompt like: <em>"Generate 5 rows of realistic mock JSON data for this schema."</em></div></li>
+      <li class="step-item"><span class="step-num legacy-num">5</span> <div>Copy the resulting JSON payload back into your IDE.</div></li>
+    </ul>
+  </div>
 
-  <p>It's a massive context switch that derails your focus.</p>
+  <p>It's a massive context switch that completely derails your flow state.</p>
 
-  <h2>The AI-Powered Clipboard</h2>
-  <p>What if your clipboard could just do the translation for you?</p>
+  <h2>The AI-Powered Clipboard Solution</h2>
+  <p>What if your clipboard could perform this transformation natively on your Mac?</p>
 
-  <p>With <strong>L2Cache</strong>, I built a clipboard manager that acts like a local, scriptable AI agent. It allows you to run "Custom Smart Actions" directly on whatever text is currently sitting in your clipboard.</p>
+  <p>With <strong>L2Cache</strong>, your clipboard becomes a local, scriptable developer power tool. You can run "Custom Smart Actions" directly on whatever text is currently in your clipboard.</p>
 
-  <p>Here is the new workflow:</p>
-  <ol>
-    <li>Highlight your SQL schema in your IDE and hit <code>Cmd + C</code>.</li>
-    <li>Hit <code>Option + V</code> to bring up the Smart Paste menu.</li>
-    <li>Select "Generate Mock JSON".</li>
-    <li>Paste the fully populated JSON array directly into your code.</li>
-  </ol>
+  <div class="workflow-card">
+    <div class="workflow-header">
+      <span class="workflow-badge new-badge">L2Cache Way</span>
+      <h3 class="workflow-title">The 1-Click Instant Workflow</h3>
+    </div>
+    <ul class="step-list">
+      <li class="step-item"><span class="step-num new-num">1</span> <div><strong>Copy:</strong> Highlight your SQL schema in your IDE and hit <code>Cmd + C</code>.</div></li>
+      <li class="step-item"><span class="step-num new-num">2</span> <div><strong>Invoke:</strong> Hit your shortcut to bring up the L2Cache floating panel.</div></li>
+      <li class="step-item"><span class="step-num new-num">3</span> <div><strong>Transform:</strong> Click <strong>"Generate Mock JSON"</strong> under Smart Actions.</div></li>
+      <li class="step-item"><span class="step-num new-num">4</span> <div><strong>Paste:</strong> Hit <code>Cmd + V</code> to paste the populated JSON array directly into your test suite.</div></li>
+    </ul>
+  </div>
 
-  <p>Behind the scenes, L2Cache takes the SQL schema you copied, wraps it in a predefined prompt, sends it to an LLM (either a local model via Ollama or a cloud model), and streams the resulting JSON back into your clipboard buffer.</p>
+  <p>Behind the scenes, L2Cache detects the SQL schema you copied, applies the Smart Action transform, and streams the formatted JSON payload directly into your clipboard buffer in sub-100ms.</p>
 
-  <p>No browser. No context switching. Just instant mock data formatted exactly how you need it.</p>
+  <p>No browser tabs. No context switching. Just instant mock data formatted exactly how you need it.</p>
 
-  <p>Because L2Cache allows you to write your own Custom Actions using Python, Ruby, or Bash, you can tweak the generation prompt to output CSVs, XML, or even Swift <code>structs</code> based on that same SQL block.</p>
+  <p>Because L2Cache supports custom regex transforms and scriptable pipelines (Python, Ruby, Bash), you can customize the action to output CSVs, XML, or even Swift <code>structs</code> from the same SQL block.</p>
 
   <div class="cta-box">
     <div class="cta-title">Try L2Cache for Mac</div>
-    <p>A completely native clipboard manager built specifically for developers.</p>
+    <p>A completely native, privacy-first developer memory layer built for macOS.</p>
     <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="cta-btn">Download Free Early Access</a>
   </div>
 </div>
