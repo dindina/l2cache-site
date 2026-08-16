@@ -39,12 +39,16 @@ AMVO_OUT_DIR = os.path.join(OUT_DIR, "amvo-store")
 
 # Clean, canonical site path for a source file (matches the deployed '/lang/...' slug).
 def build_page_clean_path(file):
+    # index.html is the site root -> '/en' (no trailing slash; Vercel stores it
+    # that way and it's the URL Google indexes). Everything else keeps its slug.
     return "" if file == "index.html" else file.removesuffix(".html")
 
 
 def localized_page(lang, file):
     """Absolute canonical URL for a page in a given locale."""
     clean = build_page_clean_path(file)
+    if file == "index.html":
+        return f"https://l2cache.amvo.store/{lang}"
     return f"https://l2cache.amvo.store/{lang}/{clean}"
 
 
@@ -242,13 +246,13 @@ def build():
                 continue
             clean = build_page_clean_path(file)
             f.write('  <url>\n')
-            f.write(f'    <loc>{base_url}/en/{clean}</loc>\n')
+            f.write(f'    <loc>{localized_page("en", file)}</loc>\n')
             # xhtml:link alternates for all locales (incl. self + x-default)
             for code in LANGUAGES.keys():
                 f.write(f'    <xhtml:link rel="alternate" hreflang="{code}" '
                         f'href="{localized_page(code, file)}" />\n')
             f.write(f'    <xhtml:link rel="alternate" hreflang="x-default" '
-                    f'href="{base_url}/en/{clean}" />\n')
+                    f'href="{localized_page("en", file)}" />\n')
             f.write('  </url>\n')
             
         # Add Tools to Sitemap

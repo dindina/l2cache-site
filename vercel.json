@@ -9,7 +9,7 @@
         { "type": "host", "value": "amvo.store" },
         { "type": "host", "value": "www.amvo.store" }
       ],
-      "destination": "/en/",
+      "destination": "/en",
       "permanent": true
     },
     {

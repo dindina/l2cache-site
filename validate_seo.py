@@ -48,7 +48,7 @@ ERRORS: list[str] = []
 
 def public_url(filename: str) -> str:
     if filename == "index.html":
-        return f"{SITE_URL}/en/"
+        return f"{SITE_URL}/en"
     return f"{SITE_URL}/en/{filename.removesuffix('.html')}"
 
 
