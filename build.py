@@ -37,6 +37,75 @@ OUT_DIR = "out"
 L2CACHE_OUT_DIR = os.path.join(OUT_DIR, "l2cache")
 AMVO_OUT_DIR = os.path.join(OUT_DIR, "amvo-store")
 
+# Clean, canonical site path for a source file (matches the deployed '/lang/...' slug).
+def build_page_clean_path(file):
+    return "" if file == "index.html" else file.removesuffix(".html")
+
+
+def localized_page(lang, file):
+    """Absolute canonical URL for a page in a given locale."""
+    clean = build_page_clean_path(file)
+    return f"https://l2cache.amvo.store/{lang}/{clean}"
+
+
+def hreflang_tags(file):
+    """Alternate-locale <link> block for a page across all LANGUAGES.
+    Self-referencing entry included so each page fully maps its locale set.
+    x-default points at English. Returns '' when the list would be empty."""
+    alts = []
+    for code in LANGUAGES.keys():
+        alts.append(
+            '    <link rel="alternate" hreflang="{}" href="{}" />'.format(
+                code, localized_page(code, file)
+            )
+        )
+    if not alts:
+        return ""
+    alts.append(
+        '    <link rel="alternate" hreflang="x-default" href="{}" />'.format(
+            localized_page("en", file)
+        )
+    )
+    return "\n" + "\n".join(alts)
+
+
+def rewrite_canonical(html, lang, file):
+    """Replace the hardcoded /en/ canonical with a self-referencing one for the
+    current locale, and append hreflang alternates right after it. Why this
+    matters: templates ship a single /en/ canonical; without rewriting, all
+    localized pages self-declare themselves duplicates of English (the GSC
+    'Duplicate without user-selected canonical' error). This gives each locale
+    its own canonical + reciprocal hreflang."""
+    canonical = localized_page(lang, file)
+    block = "  <link rel=\"canonical\" href=\"{}\" />{}".format(
+        canonical, hreflang_tags(file)
+    )
+    # Match the existing canonical tag regardless of trailing slash / quote style.
+    html, _ = re.subn(
+        r'\s*<link\s+rel="canonical"[^>]*/?>',
+        lambda m: block,
+        html,
+        count=1,
+    )
+    # Keep og:url / twitter:url in sync with the locale canonical (they are
+    # hardcoded to the /en/ URL in the source templates).
+    html = re.sub(
+        r'(<meta\s+property=\"og:url\"\s+content=\")[^\"]*(\".*?/?>)',
+        lambda m: f'{m.group(1)}{canonical}{m.group(2)}',
+        html,
+        count=1,
+        flags=re.IGNORECASE,
+    )
+    html = re.sub(
+        r'(<meta\s+name=\"twitter:url\"\s+content=\")[^\"]*(\".*?/?>)',
+        lambda m: f'{m.group(1)}{canonical}{m.group(2)}',
+        html,
+        count=1,
+        flags=re.IGNORECASE,
+    )
+    return html
+
+
 def get_language_switcher_html(current_lang):
     options = ""
     for code, name in LANGUAGES.items():
@@ -153,22 +222,34 @@ def build():
             if lang != "en":
                 content = re.sub(r'<html lang="[^"]*"', f'<html lang="{lang}"', content)
 
+            # SEO: self-referencing canonical for THIS locale + reciprocal hreflang.
+            # Prevents GSC 'Duplicate without user-selected canonical' for localized pages.
+            content = rewrite_canonical(content, lang, file)
+
             with open(os.path.join(lang_dir, file), "w", encoding="utf-8") as f:
                 f.write(content)
 
-    # Generate sitemap.xml
+    # Generate sitemap.xml (canonical URLs + reciprocal hreflang alternates for
+    # every locale, so Google treats localized pages as translations, not dupes).
     sitemap_path = os.path.join(L2CACHE_OUT_DIR, "sitemap.xml")
     base_url = "https://l2cache.amvo.store"
     with open(sitemap_path, "w", encoding="utf-8") as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-        f.write('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
+<<<<<<< HEAD
+        f.write('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n')
+        f.write('          xmlns:xhtml="http://www.w3.org/1999/xhtml">\n')
         for file in HTML_FILES:
             if not os.path.exists(file):
                 continue
-            clean_path = "" if file == "index.html" else file.removesuffix(".html")
-            url_path = f"{base_url}/en/{clean_path}"
+            clean = build_page_clean_path(file)
             f.write('  <url>\n')
-            f.write(f'    <loc>{url_path}</loc>\n')
+            f.write(f'    <loc>{base_url}/en/{clean}</loc>\n')
+            # xhtml:link alternates for all locales (incl. self + x-default)
+            for code in LANGUAGES.keys():
+                f.write(f'    <xhtml:link rel="alternate" hreflang="{code}" '
+                        f'href="{localized_page(code, file)}" />\n')
+            f.write(f'    <xhtml:link rel="alternate" hreflang="x-default" '
+                    f'href="{base_url}/en/{clean}" />\n')
             f.write('  </url>\n')
             
         # Add Tools to Sitemap
@@ -181,8 +262,6 @@ def build():
                 f.write('  </url>\n')
                 
         f.write('</urlset>\n')
-
-        
 
     # Generate robots.txt
     robots_path = os.path.join(L2CACHE_OUT_DIR, "robots.txt")

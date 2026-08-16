@@ -8,8 +8,18 @@ import re
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
+import importlib.util
 
 ROOT = Path(__file__).parent
+
+# Pages the build actually localizes (see build.py HTML_FILES). For these the
+# build now emits reciprocal hreflang + a self-referencing per-locale canonical,
+# so the "no hreflang" guard below must NOT apply to them. Pages outside this
+# set are English-only and must stay without hreflang.
+_build_spec = importlib.util.spec_from_file_location("l2cache_build", ROOT / "build.py")
+_build = importlib.util.module_from_spec(_build_spec)
+_build_spec.loader.exec_module(_build)  # type: ignore[arg-type]
+LOCALIZED_FILES = frozenset(_build.HTML_FILES) | frozenset(p.name for p in (ROOT / "l2cache-vs-*.html").parent.glob("l2cache-vs-*.html"))
 SITE_URL = "https://l2cache.amvo.store"
 PUBLIC_PAGES = [
     "index.html", "support.html", "privacy.html", "intelligence.html",
@@ -58,7 +68,7 @@ def validate_page(path: Path, expected_canonical: str) -> None:
         if matches != 1:
             ERRORS.append(f"{relative}: expected one {label}, found {matches}")
 
-    if "hreflang=" in source:
+    if "hreflang=" in source and path.name not in LOCALIZED_FILES:
         ERRORS.append(f"{relative}: hreflang must remain disabled while content is untranslated")
 
     for block in re.findall(
