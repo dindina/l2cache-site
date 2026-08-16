@@ -378,41 +378,153 @@ h1 em { font-style: italic; color: var(--purple); }
 .faq-q { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
 .faq-a { font-size: 15px; color: var(--text-muted); line-height: 1.6; }
 
-/* ── Related Tools Grid ── */
+/* ── Related & Main Tools Grid ── */
 .related-tools-section { margin: 56px 0; }
 .tools-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px; margin: 20px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 24px;
+  margin: 36px 0 60px;
 }
+@media (max-width: 640px) {
+  .tools-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
 .tool-card-item {
   background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 20px;
+  border: 1.5px solid var(--border);
+  border-radius: 18px;
+  padding: 26px 24px;
   text-decoration: none;
   color: inherit;
-  transition: all 0.2s ease;
-  display: flex; flex-direction: column; gap: 8px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
 }
 .tool-card-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--purple);
   border-color: var(--purple);
 }
-.tool-card-top { display: flex; align-items: center; justify-content: space-between; }
+
+/* Super Tool & Flagship Highlight Cards */
+.tool-card-item.card-super-tool {
+  border: 2px solid #00C896;
+  background: linear-gradient(180deg, #f0fdf7 0%, #ffffff 42%);
+  box-shadow: 0 6px 24px rgba(0, 200, 150, 0.12);
+}
+.tool-card-item.card-super-tool:hover {
+  box-shadow: 0 22px 48px rgba(0, 200, 150, 0.22);
+}
+
+.tool-card-item.card-flagship {
+  border: 2px solid #3b82f6;
+  background: linear-gradient(180deg, #f0f7ff 0%, #ffffff 42%);
+  box-shadow: 0 6px 24px rgba(59, 130, 246, 0.1);
+}
+.tool-card-item.card-flagship:hover {
+  box-shadow: 0 22px 48px rgba(59, 130, 246, 0.22);
+  border-color: #2563eb;
+}
+
+.tool-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
 .tool-card-icon-box {
-  width: 34px; height: 34px; border-radius: 8px;
-  background: rgba(0, 200, 150, 0.1);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px; color: var(--purple);
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #f4f4f0;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
 }
+.tool-card-item:hover .tool-card-icon-box {
+  transform: scale(1.08);
+}
+
 .tool-card-badge {
-  font-size: 10px; font-weight: 700; text-transform: uppercase;
-  color: #00a87f; background: rgba(0, 200, 150, 0.12);
-  padding: 2px 7px; border-radius: 100px; font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 100px;
+  font-family: var(--mono);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
 }
-.tool-card-item h3 { font-size: 16px; font-weight: 700; color: #0a0a0a; margin: 0; }
-.tool-card-item p { font-size: 13px; color: var(--text-muted); line-height: 1.4; margin: 0; }
+
+/* SUPER TOOL BADGE — Ultra High-Contrast Mint/Emerald */
+.badge-super {
+  background: #00C896 !important;
+  color: #002e21 !important;
+  border: 1px solid #00a87f !important;
+  font-weight: 900 !important;
+  box-shadow: 0 3px 12px rgba(0, 200, 150, 0.45) !important;
+}
+
+/* FLAGSHIP BADGE — Electric Blue High-Contrast */
+.badge-flagship {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+  border: 1px solid #2563eb !important;
+  font-weight: 900 !important;
+  box-shadow: 0 3px 12px rgba(59, 130, 246, 0.4) !important;
+}
+
+/* POPULAR BADGE — Dark High-Contrast */
+.badge-popular {
+  background: #0a0a0a !important;
+  color: #ffffff !important;
+  border: 1px solid #333 !important;
+}
+
+/* SECURITY BADGE — Amber/Red */
+.badge-security {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  border: 1px solid #fcd34d !important;
+}
+
+.tool-card-badge:not(.badge-super):not(.badge-flagship):not(.badge-popular):not(.badge-security) {
+  background: #f0f0ec;
+  color: #444;
+  border: 1px solid #e0e0dc;
+}
+
+.tool-card-item h3 {
+  font-size: 19px;
+  font-weight: 800;
+  color: #0a0a0a;
+  margin: 4px 0 2px;
+  letter-spacing: -0.3px;
+  line-height: 1.3;
+}
+
+.tool-card-item p {
+  font-size: 14.5px;
+  color: #555550;
+  line-height: 1.55;
+  margin: 0;
+}
 
 /* ── Footer ── */
 footer {
