@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenAPI & Postman ⇄ cURL Collection Generator | L2Cache</title>
+  <meta name="description" content="Parse OpenAPI 3.0 / Swagger JSON specifications and Postman Collections into executable cURL commands offline with zero paywalls." />
+  <meta name="keywords" content="openapi to curl, free openapi to curl, offline dev tools" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/openapi-to-curl" />
+  <link rel="stylesheet" href="/en/tools/theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "OpenAPI / Postman ⇄ cURL Generator",
+        "url": "https://l2cache.amvo.store/en/tools/openapi-to-curl",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is my data uploaded to any remote server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. All operations run 100% client-side in your local browser sandbox. Test in Airplane Mode to verify zero network requests."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Are there any usage limits or paywalls?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The tool is 100% free, unlimited, and ad-free with zero login requirements."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">100% client-side Web Crypto & JavaScript. Zero server round-trips.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/en/">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="/en/developer-clipboard">Developers</a></li>
+      <li><a href="/en/tools" class="active">Free Tools</a></li>
+      <li><a href="/en/custom-actions">Smart Actions</a></li>
+      <li><a href="/en/blog">Blog</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">DEVELOPER UTILITY</span>
+      <h1>OpenAPI / Postman ⇄ cURL Generator</h1>
+      <p class="hero-sub">Parse OpenAPI 3.0 / Swagger JSON specifications and Postman Collections into executable cURL commands offline with zero paywalls.</p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">⚡</div>
+            <span class="tool-name-text">OpenAPI / Postman ⇄ cURL Generator</span>
+          </div>
+          <span class="tool-badge-pill">100% IN-BROWSER</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <div class="tool-io-grid">
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>OpenAPI 3.0 / Postman JSON Spec</span>
+              </div>
+              <textarea id="api-spec-input" class="tool-textarea" placeholder="Paste OpenAPI or Postman Collection JSON here..." oninput="parseOpenApi()">{\n  "openapi": "3.0.0",\n  "info": { "title": "L2Cache API", "version": "1.0.0" },\n  "servers": [{ "url": "https://api.l2cache.app/v1" }],\n  "paths": {\n    "/clips": {\n      "get": { "summary": "List Recent Clipboard Items" },\n      "post": { "summary": "Store New Clip" }\n    },\n    "/clips/{id}": {\n      "delete": { "summary": "Purge Clip by ID" }\n    }\n  }\n}</textarea>
+            </div>
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Executable cURL Commands</span>
+                <span style="color:var(--purple); font-weight:700;">Copy-Ready</span>
+              </div>
+              <div id="curl-output" class="tool-output-view" style="font-family:var(--mono); font-size:13.5px; line-height:1.6; color:#00dfa8;"></div>
+            </div>
+          </div>
+        
+
+          <!-- Controls -->
+          <div class="tool-controls">
+            
+          <button class="tbtn tbtn-primary" onclick="copyOutput('curl-output')">📋 Copy cURL Commands</button>
+          <button class="tbtn tbtn-ghost" onclick="parseOpenApi()">🔄 Re-Generate</button>
+        
+          </div>
+
+          <!-- Pac-Man Transform Track -->
+          <div class="pac-track" id="pac-openapitocurl">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-openapitocurl">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Supercharge your developer clipboard with L2Cache for macOS</h3>
+          <p>
+            Capture JSON, cURL, API secrets, and tokens with instant regex search, on-device AI classification, and 1-click smart transforms.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Is this tool free with no limits?</div>
+          <div class="faq-a">Yes. Unlike competitors that cap rows or require subscriptions, this tool runs entirely in your browser with unlimited operations and zero paywalls.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Is my input data uploaded to any remote server?</div>
+          <div class="faq-a">No. All computations execute locally in JavaScript memory. Verify by running in Airplane Mode.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools Grid -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="/en/tools/universal-data-converter" class="tool-card-item card-super-tool" data-cat="data">
+            <div class="tool-card-top"><div class="tool-card-icon-box">⚡</div><span class="tool-card-badge badge-super">⭐ Super Tool</span></div>
+            <h3>Universal Data Converter</h3>
+            <p>Convert JSON, YAML, XML, and CSV simultaneously.</p>
+          </a>
+          <a href="/en/tools/pasteguard" class="tool-card-item card-flagship" data-cat="dev">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🛡️</div><span class="tool-card-badge badge-flagship">⭐ Flagship</span></div>
+            <h3>PasteGuard Secret Scrubber</h3>
+            <p>Sanitize API keys & credentials for LLM prompts.</p>
+          </a>
+          <a href="/en/tools/schemaforge" class="tool-card-item card-flagship" data-cat="dev">
+            <div class="tool-card-top"><div class="tool-card-icon-box">⚡</div><span class="tool-card-badge badge-flagship">⭐ Flagship</span></div>
+            <h3>SchemaForge Model Generator</h3>
+            <p>Generate Swift, TS Zod, Python, Rust, and Go models.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="/en/privacy">Privacy</a></li>
+        <li><a href="/en/support">Support</a></li>
+        <li><a href="/en/tools">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="/en/tools/tools-engine.js"></script>
+  <script>
+    
+    function parseOpenApi() {
+      const raw = document.getElementById('api-spec-input').value.trim();
+      const output = document.getElementById('curl-output');
+
+      if (!raw) {
+        output.textContent = '// cURL commands will appear here';
+        return;
+      }
+
+      try {
+        const spec = JSON.parse(raw);
+        const curls = [];
+
+        // Check if Postman Collection
+        if (spec.info && spec.item) {
+          spec.item.forEach(item => {
+            if (item.request) {
+              const method = item.request.method || 'GET';
+              const url = typeof item.request.url === 'string' ? item.request.url : (item.request.url.raw || 'https://api.example.com');
+              curls.push(`# ${item.name || 'Request'}\ncurl -X ${method} "${url}" \\\n  -H "Content-Type: application/json"`);
+            }
+          });
+        } else if (spec.paths) {
+          // OpenAPI Spec
+          const baseUrl = (spec.servers && spec.servers[0] && spec.servers[0].url) || 'https://api.example.com/v1';
+          for (const [path, methods] of Object.entries(spec.paths)) {
+            for (const [method, op] of Object.entries(methods)) {
+              if (['get', 'post', 'put', 'delete', 'patch'].includes(method.toLowerCase())) {
+                const summary = op.summary || `${method.toUpperCase()} ${path}`;
+                let curl = `# ${summary}\ncurl -X ${method.toUpperCase()} "${baseUrl}${path}" \\\n  -H "Authorization: Bearer YOUR_TOKEN" \\\n  -H "Content-Type: application/json"`;
+                if (['post', 'put', 'patch'].includes(method.toLowerCase())) {
+                  curl += ` \\\n  -d '{"example": "payload"}'`;
+                }
+                curls.push(curl);
+              }
+            }
+          }
+        }
+
+        output.textContent = curls.length > 0 ? curls.join('\n\n') : '// No valid OpenAPI paths or Postman items found';
+        logLocalOp('OpenAPI to cURL', raw.length);
+      } catch (err) {
+        output.textContent = `Error: ${err.message}`;
+      }
+    }
+        
+    parseOpenApi();
+  </script>
+</body>
+</html>

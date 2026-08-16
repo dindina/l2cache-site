@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Realistic Mock Data Generator — Unlimited JSON & CSV Fake Data | L2Cache</title>
+  <meta name="description" content="Generate unlimited rows of realistic mock data with zero paywalls or row limits. Generate names, emails, addresses, UUIDs, dates, and avatars into JSON, CSV, or SQL." />
+  <meta name="keywords" content="mock data generator, free mock data generator, offline dev tools" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/mock-data-generator" />
+  <link rel="stylesheet" href="/en/tools/theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Realistic Mock Data Generator",
+        "url": "https://l2cache.amvo.store/en/tools/mock-data-generator",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is my data uploaded to any remote server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. All operations run 100% client-side in your local browser sandbox. Test in Airplane Mode to verify zero network requests."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Are there any usage limits or paywalls?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The tool is 100% free, unlimited, and ad-free with zero login requirements."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">100% client-side Web Crypto & JavaScript. Zero server round-trips.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/en/">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="/en/developer-clipboard">Developers</a></li>
+      <li><a href="/en/tools" class="active">Free Tools</a></li>
+      <li><a href="/en/custom-actions">Smart Actions</a></li>
+      <li><a href="/en/blog">Blog</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">DEVELOPER UTILITY</span>
+      <h1>Realistic Mock Data Generator</h1>
+      <p class="hero-sub">Generate unlimited rows of realistic mock data with zero paywalls or row limits. Generate names, emails, addresses, UUIDs, dates, and avatars into JSON, CSV, or SQL.</p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">🎲</div>
+            <span class="tool-name-text">Realistic Mock Data Generator</span>
+          </div>
+          <span class="tool-badge-pill">100% IN-BROWSER</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <div style="display:flex; gap:14px; margin-bottom:16px; align-items:center; flex-wrap:wrap;">
+            <div>
+              <label style="font-size:12px; font-weight:700; color:#888; text-transform:uppercase; font-family:var(--mono);">Row Count:</label>
+              <select id="mock-row-count" class="tool-select" onchange="generateData()" style="padding:6px 12px; border-radius:6px; background:#181824; color:#fff; border:1px solid #333; font-family:var(--mono);">
+                <option value="10">10 Rows</option>
+                <option value="50" selected>50 Rows</option>
+                <option value="250">250 Rows</option>
+                <option value="1000">1,000 Rows</option>
+                <option value="5000">5,000 Rows (No Paywall)</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:12px; font-weight:700; color:#888; text-transform:uppercase; font-family:var(--mono);">Output Format:</label>
+              <select id="mock-format" class="tool-select" onchange="generateData()" style="padding:6px 12px; border-radius:6px; background:#181824; color:#fff; border:1px solid #333; font-family:var(--mono);">
+                <option value="json" selected>JSON Array</option>
+                <option value="csv">CSV Spreadsheet</option>
+                <option value="sql">SQL INSERT Statements</option>
+              </select>
+            </div>
+            <span id="out-stats" style="margin-left:auto; font-size:12px; color:var(--purple); font-family:var(--mono);"></span>
+          </div>
+          <div class="tool-pane">
+            <div class="pane-label-row">
+              <span>Generated Dataset</span>
+              <span style="color:var(--purple); font-weight:700;">100% Client-Side In-Memory</span>
+            </div>
+            <div id="mock-output-code" class="tool-output-view" style="height:440px; font-family:var(--mono); font-size:13.5px; line-height:1.6; color:#00dfa8;"></div>
+          </div>
+        
+
+          <!-- Controls -->
+          <div class="tool-controls">
+            
+          <button class="tbtn tbtn-primary" onclick="copyOutput('mock-output-code')">📋 Copy Data</button>
+          <button class="tbtn tbtn-ghost" onclick="downloadMockData()">💾 Download File</button>
+          <button class="tbtn tbtn-ghost" onclick="generateData()">🎲 Re-Roll Data</button>
+        
+          </div>
+
+          <!-- Pac-Man Transform Track -->
+          <div class="pac-track" id="pac-mockdatagenerator">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-mockdatagenerator">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Supercharge your developer clipboard with L2Cache for macOS</h3>
+          <p>
+            Capture JSON, cURL, API secrets, and tokens with instant regex search, on-device AI classification, and 1-click smart transforms.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Is this tool free with no limits?</div>
+          <div class="faq-a">Yes. Unlike competitors that cap rows or require subscriptions, this tool runs entirely in your browser with unlimited operations and zero paywalls.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Is my input data uploaded to any remote server?</div>
+          <div class="faq-a">No. All computations execute locally in JavaScript memory. Verify by running in Airplane Mode.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools Grid -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="/en/tools/universal-data-converter" class="tool-card-item card-super-tool" data-cat="data">
+            <div class="tool-card-top"><div class="tool-card-icon-box">⚡</div><span class="tool-card-badge badge-super">⭐ Super Tool</span></div>
+            <h3>Universal Data Converter</h3>
+            <p>Convert JSON, YAML, XML, and CSV simultaneously.</p>
+          </a>
+          <a href="/en/tools/pasteguard" class="tool-card-item card-flagship" data-cat="dev">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🛡️</div><span class="tool-card-badge badge-flagship">⭐ Flagship</span></div>
+            <h3>PasteGuard Secret Scrubber</h3>
+            <p>Sanitize API keys & credentials for LLM prompts.</p>
+          </a>
+          <a href="/en/tools/schemaforge" class="tool-card-item card-flagship" data-cat="dev">
+            <div class="tool-card-top"><div class="tool-card-icon-box">⚡</div><span class="tool-card-badge badge-flagship">⭐ Flagship</span></div>
+            <h3>SchemaForge Model Generator</h3>
+            <p>Generate Swift, TS Zod, Python, Rust, and Go models.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="/en/privacy">Privacy</a></li>
+        <li><a href="/en/support">Support</a></li>
+        <li><a href="/en/tools">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="/en/tools/tools-engine.js"></script>
+  <script>
+    
+    const FIRST_NAMES = ['Alex', 'Emma', 'Liam', 'Olivia', 'Noah', 'Ava', 'Ethan', 'Sophia', 'Lucas', 'Mia', 'Mason', 'Isabella', 'Logan', 'Harper', 'James', 'Evelyn'];
+    const LAST_NAMES = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson'];
+    const DOMAINS = ['gmail.com', 'outlook.com', 'apple.com', 'stripe.com', 'github.com', 'enterprise.io', 'acme.org'];
+    const CITIES = ['San Francisco', 'New York', 'London', 'Berlin', 'Tokyo', 'Sydney', 'Toronto', 'Singapore', 'Austin', 'Zurich'];
+    const ROLES = ['Frontend Engineer', 'Security Lead', 'Product Manager', 'Data Scientist', 'VP Engineering', 'DevOps Architect', 'UI/UX Designer'];
+
+    function generateData() {
+      const count = parseInt(document.getElementById('mock-row-count').value, 10) || 50;
+      const fmt = document.getElementById('mock-format').value;
+      
+      const rows = [];
+      for (let i = 1; i <= count; i++) {
+        const fn = FIRST_NAMES[Math.floor(Math.random() * FIRST_NAMES.length)];
+        const ln = LAST_NAMES[Math.floor(Math.random() * LAST_NAMES.length)];
+        const domain = DOMAINS[Math.floor(Math.random() * DOMAINS.length)];
+        const city = CITIES[Math.floor(Math.random() * CITIES.length)];
+        const role = ROLES[Math.floor(Math.random() * ROLES.length)];
+        const uuid = 'usr_' + Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 6);
+        const age = Math.floor(Math.random() * 40) + 22;
+        const salary = Math.floor(Math.random() * 110000) + 75000;
+        const email = `${fn.toLowerCase()}.${ln.toLowerCase()}@${domain}`;
+        const active = Math.random() > 0.15;
+        
+        rows.push({ id: i, uuid, name: `${fn} ${ln}`, email, role, city, age, salary, isActive: active });
+      }
+
+      let out = '';
+      if (fmt === 'json') {
+        out = JSON.stringify(rows, null, 2);
+      } else if (fmt === 'csv') {
+        const headers = Object.keys(rows[0]);
+        out = headers.join(',') + '\n' + rows.map(r => headers.map(h => typeof r[h] === 'string' && r[h].includes(',') ? `"${r[h]}"` : r[h]).join(',')).join('\n');
+      } else if (fmt === 'sql') {
+        out = rows.map(r => `INSERT INTO users (id, uuid, name, email, role, city, age, salary, is_active) VALUES (${r.id}, '${r.uuid}', '${r.name.replace("'", "''")}', '${r.email}', '${r.role}', '${r.city}', ${r.age}, ${r.salary}, ${r.isActive ? 1 : 0});`).join('\n');
+      }
+
+      document.getElementById('mock-output-code').textContent = out;
+      document.getElementById('out-stats').textContent = `${count} rows generated (${new Blob([out]).size} bytes)`;
+      logLocalOp('Mock Data generation', out.length);
+    }
+        
+    
+    function downloadMockData() {
+      const fmt = document.getElementById('mock-format').value;
+      const text = document.getElementById('mock-output-code').textContent;
+      const ext = fmt === 'sql' ? 'sql' : (fmt === 'csv' ? 'csv' : 'json');
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `mock_data_${Date.now()}.${ext}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('💾 Downloaded mock data file');
+    }
+    generateData();
+        
+  </script>
+</body>
+</html>

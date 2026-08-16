@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Excel Formula Language & Locale Translator | L2Cache</title>
+  <meta name="description" content="Translate Excel formulas between English (US/UK), German (DE), French (FR), Spanish (ES), and Italian (IT) locales with argument separator mapping." />
+  <meta name="keywords" content="excel formula translator, free excel formula translator, offline dev tools" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/excel-formula-translator" />
+  <link rel="stylesheet" href="/en/tools/theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Excel Formula Locale Translator",
+        "url": "https://l2cache.amvo.store/en/tools/excel-formula-translator",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is my data uploaded to any remote server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. All operations run 100% client-side in your local browser sandbox. Test in Airplane Mode to verify zero network requests."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Are there any usage limits or paywalls?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The tool is 100% free, unlimited, and ad-free with zero login requirements."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">100% client-side Web Crypto & JavaScript. Zero server round-trips.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/en/">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="/en/developer-clipboard">Developers</a></li>
+      <li><a href="/en/tools" class="active">Free Tools</a></li>
+      <li><a href="/en/custom-actions">Smart Actions</a></li>
+      <li><a href="/en/blog">Blog</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">DEVELOPER UTILITY</span>
+      <h1>Excel Formula Locale Translator</h1>
+      <p class="hero-sub">Translate Excel formulas between English (US/UK), German (DE), French (FR), Spanish (ES), and Italian (IT) locales with argument separator mapping.</p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">📊</div>
+            <span class="tool-name-text">Excel Formula Locale Translator</span>
+          </div>
+          <span class="tool-badge-pill">100% IN-BROWSER</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <div style="display:flex; gap:16px; margin-bottom:14px; align-items:center;">
+            <div>
+              <label style="font-size:12px; font-weight:700; color:#888; font-family:var(--mono);">TRANSLATE TO LOCALE:</label>
+              <select id="target-locale" onchange="translateFormula()" style="padding:6px 12px; border-radius:6px; background:#181824; color:#fff; border:1px solid #333; font-family:var(--mono);">
+                <option value="de" selected>German (DE) — e.g. SVERWEIS, WENN</option>
+                <option value="fr">French (FR) — e.g. RECHERCHEV, SI</option>
+                <option value="es">Spanish (ES) — e.g. CONSULTAV, SUMA</option>
+                <option value="it">Italian (IT) — e.g. CERCA.VERT, SE</option>
+                <option value="en">English (US/UK) — e.g. VLOOKUP, IF</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="tool-io-grid">
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Input Formula</span>
+              </div>
+              <textarea id="formula-input" class="tool-textarea" placeholder="Paste formula e.g. =IF(VLOOKUP(A2, B2:D10, 3, FALSE)>100, SUM(C2:C10), 0)" oninput="translateFormula()">=IF(VLOOKUP(A2, B2:D100, 3, FALSE) > 1000, SUM(C2:C100), AVERAGE(D2:D100))</textarea>
+            </div>
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Localized Formula</span>
+                <span style="color:var(--purple); font-weight:700;">Formula Engine</span>
+              </div>
+              <div id="formula-output" class="tool-output-view" style="font-family:var(--mono); font-size:14.5px; line-height:1.6; color:#00dfa8;"></div>
+            </div>
+          </div>
+        
+
+          <!-- Controls -->
+          <div class="tool-controls">
+            
+          <button class="tbtn tbtn-primary" onclick="copyOutput('formula-output')">📋 Copy Localized Formula</button>
+          <button class="tbtn tbtn-ghost" onclick="translateFormula()">🔄 Re-Translate</button>
+        
+          </div>
+
+          <!-- Pac-Man Transform Track -->
+          <div class="pac-track" id="pac-excelformulatranslator">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-excelformulatranslator">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Supercharge your developer clipboard with L2Cache for macOS</h3>
+          <p>
+            Capture JSON, cURL, API secrets, and tokens with instant regex search, on-device AI classification, and 1-click smart transforms.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Is this tool free with no limits?</div>
+          <div class="faq-a">Yes. Unlike competitors that cap rows or require subscriptions, this tool runs entirely in your browser with unlimited operations and zero paywalls.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Is my input data uploaded to any remote server?</div>
+          <div class="faq-a">No. All computations execute locally in JavaScript memory. Verify by running in Airplane Mode.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools Grid -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="/en/tools/universal-data-converter" class="tool-card-item card-super-tool" data-cat="data">
+            <div class="tool-card-top"><div class="tool-card-icon-box">⚡</div><span class="tool-card-badge badge-super">⭐ Super Tool</span></div>
+            <h3>Universal Data Converter</h3>
+            <p>Convert JSON, YAML, XML, and CSV simultaneously.</p>
+          </a>
+          <a href="/en/tools/pasteguard" class="tool-card-item card-flagship" data-cat="dev">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🛡️</div><span class="tool-card-badge badge-flagship">⭐ Flagship</span></div>
+            <h3>PasteGuard Secret Scrubber</h3>
+            <p>Sanitize API keys & credentials for LLM prompts.</p>
+          </a>
+          <a href="/en/tools/schemaforge" class="tool-card-item card-flagship" data-cat="dev">
+            <div class="tool-card-top"><div class="tool-card-icon-box">⚡</div><span class="tool-card-badge badge-flagship">⭐ Flagship</span></div>
+            <h3>SchemaForge Model Generator</h3>
+            <p>Generate Swift, TS Zod, Python, Rust, and Go models.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="/en/privacy">Privacy</a></li>
+        <li><a href="/en/support">Support</a></li>
+        <li><a href="/en/tools">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="/en/tools/tools-engine.js"></script>
+  <script>
+    
+    const FORMULA_MAP = {
+      'VLOOKUP': { de: 'SVERWEIS', fr: 'RECHERCHEV', es: 'CONSULTAV', it: 'CERCA.VERT' },
+      'HLOOKUP': { de: 'WVERWEIS', fr: 'RECHERCHEH', es: 'CONSULTAH', it: 'CERCA.ORIZZ' },
+      'XLOOKUP': { de: 'XVERWEIS', fr: 'XLOOKUP', es: 'BUSCARX', it: 'CERCA.X' },
+      'IF': { de: 'WENN', fr: 'SI', es: 'SI', it: 'SE' },
+      'IFS': { de: 'WENNS', fr: 'SI.CONDITIONS', es: 'SI.CONJUNTO', it: 'PIÙ.SE' },
+      'SUM': { de: 'SUMME', fr: 'SOMME', es: 'SUMA', it: 'SOMMA' },
+      'AVERAGE': { de: 'MITTELWERT', fr: 'MOYENNE', es: 'PROMEDIO', it: 'MEDIA' },
+      'COUNT': { de: 'ANZAHL', fr: 'NB', es: 'CONTAR', it: 'CONTA.NUMERI' },
+      'COUNTIF': { de: 'ZÄHLENWENN', fr: 'NB.SI', es: 'CONTAR.SI', it: 'CONTA.SE' },
+      'INDEX': { de: 'INDEX', fr: 'INDEX', es: 'INDICE', it: 'INDICE' },
+      'MATCH': { de: 'VERGLEICH', fr: 'EQUIV', es: 'COINCIDIR', it: 'CONFRONTA' }
+    };
+
+    function translateFormula() {
+      const raw = document.getElementById('formula-input').value.trim();
+      const targetLang = document.getElementById('target-locale').value;
+      const output = document.getElementById('formula-output');
+
+      if (!raw) {
+        output.textContent = '// Translated formula will appear here';
+        return;
+      }
+
+      let translated = raw;
+      for (const [eng, langs] of Object.entries(FORMULA_MAP)) {
+        if (targetLang === 'en') {
+          for (const locName of Object.values(langs)) {
+            const re = new RegExp(`\\b${locName}\\b`, 'gi');
+            translated = translated.replace(re, eng);
+          }
+        } else {
+          const localized = langs[targetLang] || eng;
+          const re = new RegExp(`\\b${eng}\\b`, 'gi');
+          translated = translated.replace(re, localized);
+        }
+      }
+
+      // Handle European semicolon argument separator
+      if (['de', 'fr', 'es', 'it'].includes(targetLang)) {
+        translated = translated.replace(/,(?=[^"]*(?:"[^"]*"[^"]*)*$)/g, ';');
+      } else {
+        translated = translated.replace(/;(?=[^"]*(?:"[^"]*"[^"]*)*$)/g, ',');
+      }
+
+      output.textContent = translated;
+      logLocalOp('Formula translation', raw.length);
+    }
+        
+    translateFormula();
+  </script>
+</body>
+</html>

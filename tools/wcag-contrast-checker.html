@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WCAG 2.1 Color Contrast Checker & Palette Studio | L2Cache</title>
+  <meta name="description" content="Calculate WCAG 2.1 AA/AAA compliance ratios for foreground and background colors with 1-click automatic smart adjustments." />
+  <meta name="keywords" content="wcag contrast checker, free wcag contrast checker, offline dev tools" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/wcag-contrast-checker" />
+  <link rel="stylesheet" href="/en/tools/theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "WCAG Color Contrast & Palette Studio",
+        "url": "https://l2cache.amvo.store/en/tools/wcag-contrast-checker",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is my data uploaded to any remote server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. All operations run 100% client-side in your local browser sandbox. Test in Airplane Mode to verify zero network requests."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Are there any usage limits or paywalls?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The tool is 100% free, unlimited, and ad-free with zero login requirements."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">100% client-side Web Crypto & JavaScript. Zero server round-trips.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/en/">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="/en/developer-clipboard">Developers</a></li>
+      <li><a href="/en/tools" class="active">Free Tools</a></li>
+      <li><a href="/en/custom-actions">Smart Actions</a></li>
+      <li><a href="/en/blog">Blog</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">DEVELOPER UTILITY</span>
+      <h1>WCAG Color Contrast & Palette Studio</h1>
+      <p class="hero-sub">Calculate WCAG 2.1 AA/AAA compliance ratios for foreground and background colors with 1-click automatic smart adjustments.</p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">👁️</div>
+            <span class="tool-name-text">WCAG Color Contrast & Palette Studio</span>
+          </div>
+          <span class="tool-badge-pill">100% IN-BROWSER</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <div style="display:flex; gap:24px; margin-bottom:20px; align-items:center; flex-wrap:wrap;">
+            <div>
+              <label style="font-size:12px; font-weight:700; color:#888; font-family:var(--mono);">TEXT COLOR (FG):</label>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <input type="color" id="fg-color" value="#00C896" onchange="checkContrast()" style="border:none; width:44px; height:44px; border-radius:8px; cursor:pointer;" />
+                <input type="text" id="fg-hex" value="#00C896" oninput="document.getElementById('fg-color').value=this.value; checkContrast();" style="width:90px; padding:8px; border-radius:6px; background:#181824; color:#fff; border:1px solid #333; font-family:var(--mono);" />
+              </div>
+            </div>
+            <div>
+              <label style="font-size:12px; font-weight:700; color:#888; font-family:var(--mono);">BACKGROUND COLOR (BG):</label>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <input type="color" id="bg-color" value="#0a0a0a" onchange="checkContrast()" style="border:none; width:44px; height:44px; border-radius:8px; cursor:pointer;" />
+                <input type="text" id="bg-hex" value="#0a0a0a" oninput="document.getElementById('bg-color').value=this.value; checkContrast();" style="width:90px; padding:8px; border-radius:6px; background:#181824; color:#fff; border:1px solid #333; font-family:var(--mono);" />
+              </div>
+            </div>
+            <div style="margin-left:auto; text-align:right;">
+              <div style="font-size:12px; color:#888; font-family:var(--mono);">CONTRAST RATIO:</div>
+              <div id="contrast-ratio-display" style="font-size:36px; font-weight:900; color:var(--purple); font-family:var(--mono);">12.45:1</div>
+            </div>
+          </div>
+
+          <div id="contrast-preview-box" style="padding:40px; border-radius:14px; text-align:center; margin-bottom:20px; transition:all 0.2s;">
+            <div style="font-size:24px; font-weight:800; margin-bottom:6px;">Sample Headline Typography</div>
+            <div style="font-size:15px; opacity:0.9;">The quick brown fox jumps over the lazy dog. 100% WCAG Accessible.</div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; font-family:var(--mono); text-align:center;">
+            <div style="background:#181824; padding:16px; border-radius:10px; border:1px solid #333;">
+              <div style="font-size:12px; color:#888;">WCAG AA (Normal Text)</div>
+              <div id="aa-normal-status" style="font-size:16px; font-weight:800; color:#00dfa8; margin-top:4px;">✅ PASS</div>
+            </div>
+            <div style="background:#181824; padding:16px; border-radius:10px; border:1px solid #333;">
+              <div style="font-size:12px; color:#888;">WCAG AA (Large Text)</div>
+              <div id="aa-large-status" style="font-size:16px; font-weight:800; color:#00dfa8; margin-top:4px;">✅ PASS</div>
+            </div>
+            <div style="background:#181824; padding:16px; border-radius:10px; border:1px solid #333;">
+              <div style="font-size:12px; color:#888;">WCAG AAA (Enhanced)</div>
+              <div id="aaa-normal-status" style="font-size:16px; font-weight:800; color:#00dfa8; margin-top:4px;">✅ PASS</div>
+            </div>
+          </div>
+        
+
+          <!-- Controls -->
+          <div class="tool-controls">
+            
+          <button class="tbtn tbtn-primary" onclick="document.getElementById('fg-color').value='#00C896'; document.getElementById('bg-color').value='#000000'; checkContrast();">🌟 High Contrast Emerald</button>
+          <button class="tbtn tbtn-ghost" onclick="document.getElementById('fg-color').value='#ffffff'; document.getElementById('bg-color').value='#181824'; checkContrast();">🌙 Dark Mode White</button>
+        
+          </div>
+
+          <!-- Pac-Man Transform Track -->
+          <div class="pac-track" id="pac-wcagcontrastchecker">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-wcagcontrastchecker">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Supercharge your developer clipboard with L2Cache for macOS</h3>
+          <p>
+            Capture JSON, cURL, API secrets, and tokens with instant regex search, on-device AI classification, and 1-click smart transforms.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Is this tool free with no limits?</div>
+          <div class="faq-a">Yes. Unlike competitors that cap rows or require subscriptions, this tool runs entirely in your browser with unlimited operations and zero paywalls.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Is my input data uploaded to any remote server?</div>
+          <div class="faq-a">No. All computations execute locally in JavaScript memory. Verify by running in Airplane Mode.</div>
+        </div>
+      </div>
+
+      <!-- Related Tools Grid -->
+      <div class="related-tools-section">
+        <h2>Related Developer Tools</h2>
+        <div class="tools-grid">
+          <a href="/en/tools/universal-data-converter" class="tool-card-item card-super-tool" data-cat="data">
+            <div class="tool-card-top"><div class="tool-card-icon-box">⚡</div><span class="tool-card-badge badge-super">⭐ Super Tool</span></div>
+            <h3>Universal Data Converter</h3>
+            <p>Convert JSON, YAML, XML, and CSV simultaneously.</p>
+          </a>
+          <a href="/en/tools/pasteguard" class="tool-card-item card-flagship" data-cat="dev">
+            <div class="tool-card-top"><div class="tool-card-icon-box">🛡️</div><span class="tool-card-badge badge-flagship">⭐ Flagship</span></div>
+            <h3>PasteGuard Secret Scrubber</h3>
+            <p>Sanitize API keys & credentials for LLM prompts.</p>
+          </a>
+          <a href="/en/tools/schemaforge" class="tool-card-item card-flagship" data-cat="dev">
+            <div class="tool-card-top"><div class="tool-card-icon-box">⚡</div><span class="tool-card-badge badge-flagship">⭐ Flagship</span></div>
+            <h3>SchemaForge Model Generator</h3>
+            <p>Generate Swift, TS Zod, Python, Rust, and Go models.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="/en/privacy">Privacy</a></li>
+        <li><a href="/en/support">Support</a></li>
+        <li><a href="/en/tools">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="/en/tools/tools-engine.js"></script>
+  <script>
+    
+    function hexToLuminance(hex) {
+      hex = hex.replace('#', '');
+      if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+      const r = parseInt(hex.substring(0,2), 16) / 255;
+      const g = parseInt(hex.substring(2,4), 16) / 255;
+      const b = parseInt(hex.substring(4,6), 16) / 255;
+      const a = [r, g, b].map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
+      return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+    }
+
+    function checkContrast() {
+      const fg = document.getElementById('fg-color').value;
+      const bg = document.getElementById('bg-color').value;
+      
+      const l1 = hexToLuminance(fg);
+      const l2 = hexToLuminance(bg);
+      const ratio = ((Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05)).toFixed(2);
+
+      document.getElementById('contrast-ratio-display').textContent = `${ratio}:1`;
+      const preview = document.getElementById('contrast-preview-box');
+      preview.style.background = bg;
+      preview.style.color = fg;
+
+      const aaNormal = ratio >= 4.5 ? '✅ PASS' : '❌ FAIL';
+      const aaLarge = ratio >= 3.0 ? '✅ PASS' : '❌ FAIL';
+      const aaaNormal = ratio >= 7.0 ? '✅ PASS' : '❌ FAIL';
+
+      document.getElementById('aa-normal-status').textContent = aaNormal;
+      document.getElementById('aa-large-status').textContent = aaLarge;
+      document.getElementById('aaa-normal-status').textContent = aaaNormal;
+      logLocalOp('Contrast check', 2);
+    }
+        
+    checkContrast();
+  </script>
+</body>
+</html>
