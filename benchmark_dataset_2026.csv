@@ -1,0 +1,9 @@
+Application,Version,Architecture,Cold_Start_Latency_ms,Hotkey_Activation_ms,Idle_RAM_MB,RAM_10k_Clips_MB,FTS5_Search_Latency_ms,Screenshot_OCR,AI_Categorization,Sensitive_Radar_Lock,Data_Storage,Sync_Model,Pricing_Model
+L2Cache,1.0.0,Native Swift (Apple Silicon),120,48,22,34,1.2,Yes (Apple Vision),Yes (Apple Intelligence),Yes (Hardware Touch ID),Local SQLite (GRDB),100% Local (Zero Telemetry),Free Early Access
+Maccy,0.29.0,Native Swift (Universal),140,58,18,28,3.4,No,No,No,Local SQLite,100% Local,Free (GitHub) / .99 (App Store)
+Raycast,1.78.0,Electron + Node.js runtime,680,182,190,342,12.8,No,Cloud (Raycast Pro),No,Local SQLite + Cloud Cache,Telemetry Enabled,Free / /yr Pro
+Paste App,4.1.2,Swift (AppKit),340,156,120,215,18.4,Thumbnail Only,No,No,CloudKit + Local,iCloud Sync,.99/year
+Alfred Powerpack,5.5.0,Objective-C / Swift,160,64,28,42,4.1,No,No,No,Local flat files,Local / DropBox sync,£34 (~ USD)
+PastePal,3.2.1,Swift (Catalyst/Native),220,112,54,82,8.2,iOS Only,No,Manual Pin Lock,CoreData + CloudKit,iCloud Sync,.99 Lifetime / .99/yr
+Clipy,1.2.1,Objective-C (Intel/Rosetta),190,85,62,96,N/A (No Search),No,No,No,Local plist,100% Local,Free (Open Source)
+CopyClip,2.9.98,Objective-C (Legacy),130,72,16,38,15.2,No,No,No,Local database,100% Local,Free / .99 CopyClip 2

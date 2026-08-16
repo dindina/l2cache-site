@@ -32,7 +32,7 @@ APP_STORE_COUNTRIES = {
 with open("locales.json", "r", encoding="utf-8") as f:
     TRANSLATIONS = json.load(f)
 
-HTML_FILES = ["index.html", "support.html", "privacy.html", "intelligence.html", "changelog.html", "clipboard-history-mac.html", "mac-command-history.html", "comparison.html", "developer-clipboard.html", "custom-actions.html", "jwt-decoder-mac.html", "json-formatter-mac.html", "regex-clipboard-mac.html", "screenshot-ocr-mac.html", "sql-test-data-generator.html", "sitemap.html", "blog.html", "blog-clipboard-automation-developer-workflows.html", "blog-regex-clipboard.html", "blog-sql-test-data.html", "blog-jwt-security.html", "blog-sqlite-fts5-hangs.html", "blog-swift-sqlite-concurrency.html", "blog-apple-intelligence-clipboard.html", "blog-developer-workflow-apple-intelligence.html", "blog-zero-cloud-mac-desktop-ai.html"]
+HTML_FILES = ["index.html", "support.html", "privacy.html", "intelligence.html", "changelog.html", "clipboard-history-mac.html", "mac-command-history.html", "comparison.html", "benchmark.html", "developer-clipboard.html", "custom-actions.html", "jwt-decoder-mac.html", "json-formatter-mac.html", "regex-clipboard-mac.html", "screenshot-ocr-mac.html", "sql-test-data-generator.html", "sitemap.html", "blog.html", "blog-clipboard-automation-developer-workflows.html", "blog-regex-clipboard.html", "blog-sql-test-data.html", "blog-jwt-security.html", "blog-sqlite-fts5-hangs.html", "blog-swift-sqlite-concurrency.html", "blog-apple-intelligence-clipboard.html", "blog-developer-workflow-apple-intelligence.html", "blog-zero-cloud-mac-desktop-ai.html"]
 OUT_DIR = "out"
 L2CACHE_OUT_DIR = os.path.join(OUT_DIR, "l2cache")
 AMVO_OUT_DIR = os.path.join(OUT_DIR, "amvo-store")
@@ -83,7 +83,7 @@ def build():
     os.makedirs(L2CACHE_OUT_DIR)
 
     # Copy L2Cache assets
-    for asset in ["icon.png", "screenshots", "theme.css", "tools"]:
+    for asset in ["icon.png", "screenshots", "theme.css", "tools", "benchmark_dataset_2026.csv"]:
         if os.path.exists(asset):
             if os.path.isdir(asset):
                 shutil.copytree(asset, os.path.join(L2CACHE_OUT_DIR, asset))
