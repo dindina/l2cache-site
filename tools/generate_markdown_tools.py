@@ -213,13 +213,14 @@ The rapid adoption of on-device AI algorithms has significantly reduced cloud la
   <p>Local SQLite databases combined with Apple Intelligence models provide instant search with zero data leakage.</p>
 </main>""",
         "faq_q1": "How does Webpage to Markdown remove clutter?",
-        "faq_a1": "The reader parser eliminates <nav>, <header>, <footer>, <aside>, <script>, and advertisement blocks, keeping only the core article content and code blocks.",
+        "faq_a1": "The reader parser eliminates navigation, headers, footers, aside panels, scripts, and advertisement blocks, keeping only the core article content and code blocks.",
         "faq_q2": "Are image links and code blocks preserved?",
-        "faq_a2": "Yes. All markdown image links (![alt](url)) and code blocks (```language ... ```) are preserved exactly as in the original article."
+        "faq_a2": "Yes. All markdown image links and code blocks are preserved exactly as in the original article."
     }
 ]
 
 def generate_tool_page(t):
+    sample_safe = t['sample_input'].replace('\\', '\\\\').replace('`', '\\`')
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -555,7 +556,7 @@ def generate_tool_page(t):
     }}
 
     function loadSample() {{
-      document.getElementById('src-input').value = `{t['sample_input'].replace('`', '\\`')}`;
+      document.getElementById('src-input').value = `{sample_safe}`;
       runConversion();
     }}
 
