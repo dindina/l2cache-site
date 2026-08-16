@@ -531,6 +531,16 @@
       transform: translateY(-2px);
     }
 
+    /* Developer demos are portrait app recordings (800x1143). Keep them
+       readable without letting a full-width GIF take over the page. */
+    .developer-demo-gif {
+      display: block;
+      width: min(100%, 360px);
+      height: auto;
+      margin: 0 auto;
+      border-top: 1px solid var(--border);
+    }
+
     .feature-icon {
       width: 44px; height: 44px;
       border-radius: 12px;
@@ -1227,7 +1237,7 @@
         <h3 style="color:var(--text);font-size:19px;font-weight:600;margin-bottom:10px;">Decode JWTs & Format JSON</h3>
         <p style="color:var(--text-muted);font-size:14px;line-height:1.6;margin-bottom:20px;">Click any raw JWT or minified JSON to instantly decode and format it on-device. No more pasting into random browser tabs.</p>
       </div>
-      <img src="screenshots/l2cache-jwt.gif" alt="Format JSON and Decode JWT" style="width:100%; display:block; border-top:1px solid var(--border);"/>
+      <img src="screenshots/l2cache-jwt.gif" alt="Format JSON and Decode JWT" class="developer-demo-gif"/>
     </div>
 
     <div class="feature-card reveal" style="padding:0; overflow:hidden;">
@@ -1235,7 +1245,7 @@
         <h3 style="color:var(--text);font-size:19px;font-weight:600;margin-bottom:10px;">OCR for Stack Traces</h3>
         <p style="color:var(--text-muted);font-size:14px;line-height:1.6;margin-bottom:20px;">Someone sent a screenshot of an error? Copy it. L2Cache extracts the text instantly using Apple's Vision framework.</p>
       </div>
-      <img src="screenshots/l2cache-ocr.gif" alt="Extract text from screenshot OCR" style="width:100%; display:block; border-top:1px solid var(--border);"/>
+      <img src="screenshots/l2cache-ocr.gif" alt="Extract text from screenshot OCR" class="developer-demo-gif"/>
     </div>
 
     <div class="feature-card reveal" style="padding:0; overflow:hidden;">
@@ -1243,7 +1253,7 @@
         <h3 style="color:var(--text);font-size:19px;font-weight:600;margin-bottom:10px;">Terminal History</h3>
         <p style="color:var(--text-muted);font-size:14px;line-height:1.6;margin-bottom:20px;">L2Cache detects terminal output and automatically extracts the root command (like docker, git, or npm) to tag your clips, making it easy to filter, find, and replay your past commands.</p>
       </div>
-      <img src="screenshots/terminal-history.gif" alt="Terminal Command History" style="width:100%; display:block; border-top:1px solid var(--border);"/>
+      <img src="screenshots/terminal-history.gif" alt="Terminal Command History" class="developer-demo-gif"/>
     </div>
 
     <div class="feature-card reveal" style="padding:0; overflow:hidden;">
@@ -1251,7 +1261,7 @@
         <h3 style="color:var(--text);font-size:19px;font-weight:600;margin-bottom:10px;">AI Data Generation</h3>
         <p style="color:var(--text-muted);font-size:14px;line-height:1.6;margin-bottom:20px;">Select a SQL schema or Swift struct and run an AI prompt directly inside the clipboard to generate mock data instantly.</p>
       </div>
-      <img src="screenshots/l2cache-sql-smart.gif" alt="AI SQL Data Generation" style="width:100%; display:block; border-top:1px solid var(--border);"/>
+      <img src="screenshots/l2cache-sql-smart.gif" alt="AI SQL Data Generation" class="developer-demo-gif"/>
     </div>
     <div class="feature-card reveal" style="padding:0; overflow:hidden;">
       <div style="padding:28px 28px 0;">
@@ -1261,7 +1271,7 @@
         </div>
         <p style="color:var(--text-muted);font-size:14px;line-height:1.6;margin-bottom:20px;">L2Cache lets you create custom actions in Bash or Ruby. Target actions dynamically based on content types like SQL, Docker, YAML, or GraphQL. Format, fetch, or filter copied text entirely on-device.</p>
       </div>
-      <img src="screenshots/custom-smart-actions.gif" alt="L2Cache Custom Actions Shell Script Editor" style="width:100%; display:block; border-top:1px solid var(--border);"/>
+      <img src="screenshots/custom-smart-actions.gif" alt="L2Cache Custom Actions Shell Script Editor" class="developer-demo-gif"/>
     </div>
   </div>
 </section>
