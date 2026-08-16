@@ -143,13 +143,13 @@
             
             <!-- Plain English Explanation -->
             <div class="tool-pane">
-              <div class="pane-label-row"><span>Human Readable Schedule</span><span>Plain English</span></div>
+              <div class="pane-label-row"><span>Human Readable Schedule</span><span>Plain English</span> <button class="pane-copy-btn" onclick="copyOutput('cron-human-view')">📋 Copy</button></div>
               <div id="cron-human-view" class="tool-output-view" style="font-size: 15px; font-weight: 600; color: #fff;"></div>
             </div>
 
             <!-- Next Run Predictions -->
             <div class="tool-pane">
-              <div class="pane-label-row"><span>Next 10 Execution Dates</span><span>Local Time</span></div>
+              <div class="pane-label-row"><span>Next 10 Execution Dates</span><span>Local Time</span> <button class="pane-copy-btn" onclick="copyOutput('cron-next-view')">📋 Copy</button></div>
               <div id="cron-next-view" class="tool-output-view"></div>
             </div>
 
