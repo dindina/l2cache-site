@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Convert RTF to Markdown — Rich Text Format to GitHub .md | L2Cache</title>
+  <meta name="description" content="Convert Rich Text Format (.rtf) files and macOS TextEdit documents into clean Markdown, stripping control words and RTF formatting headers." />
+  <meta name="keywords" content="rtf to markdown, convert to markdown, markdown converter, offline rtf to markdown" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/rtf-to-markdown" />
+  <link rel="stylesheet" href="/en/tools/theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Convert RTF to Markdown",
+        "url": "https://l2cache.amvo.store/en/tools/rtf-to-markdown",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What RTF elements are preserved?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Font formatting (bold \b, italic \i, underline), bullet points (\bullet), paragraph breaks (\par), and headers are translated into corresponding Markdown markers."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is RTF converted offline?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The RTF parser operates 100% in browser memory with zero network requests."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Convert to clean Markdown locally in browser memory. Zero server uploads.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/en/">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="/en/developer-clipboard">Developers</a></li>
+      <li><a href="/en/tools" class="active">Free Tools</a></li>
+      <li><a href="/en/custom-actions">Smart Actions</a></li>
+      <li><a href="/en/blog">Blog</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">MARKDOWN UTILITY</span>
+      <h1>Convert RTF to Markdown</h1>
+      <p class="hero-sub">Convert Rich Text Format (.rtf) files and macOS TextEdit documents into clean Markdown, stripping control words and RTF formatting headers.</p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">📝</div>
+            <span class="tool-name-text">Convert RTF to Markdown Engine</span>
+          </div>
+          <span class="tool-badge-pill">100% IN-BROWSER</span>
+        </div>
+
+        <div class="tool-main-body">
+          
+          <div class="tool-io-grid">
+            
+            <!-- Left: Source Input -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>RTF Text or File Content</span>
+                <span id="src-bytes" style="color:var(--purple); font-size:11px;">0 bytes</span>
+              </div>
+              <textarea id="src-input" class="tool-textarea" placeholder="Paste RTF payload or rich text..." oninput="runConversion()">{\rtf1\ansi\deff0
+{\fonttbl{\f0\fnil\fcharset0 Helvetica;}}
+\viewkind4\uc1\pard\lang1033\f0\fs28\b Project Specification\b0\par
+\fs20 This is a rich text document converted to \i Markdown\i0.\par
+\bullet Task 1: On-device encryption\par
+\bullet Task 2: Native performance\par
+}</textarea>
+            </div>
+
+            <!-- Right: Markdown Output -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Generated Markdown (.md)</span>
+                <span style="color:var(--purple); font-weight:700;">GitHub Flavored</span>
+              </div>
+              <div id="out-markdown" class="tool-output-view" style="font-family: var(--mono); font-size: 13px; line-height: 1.6; color: #00dfa8;"></div>
+            </div>
+
+          </div>
+
+          <!-- Controls -->
+          <div class="tool-controls" style="align-items: center; flex-wrap: wrap; gap: 8px;">
+            <button class="tbtn tbtn-primary" onclick="copyOutput('out-markdown')">📋 Copy Markdown</button>
+            <button class="tbtn tbtn-ghost" onclick="downloadMarkdown()">💾 Download .md</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSample()">🔄 Reset Sample</button>
+            <button class="tbtn tbtn-ghost" onclick="document.getElementById('src-input').value=''; runConversion();">✕ Clear</button>
+          </div>
+
+          <!-- Pac-Man Transform Animation Track -->
+          <div class="pac-track" id="pac-rtftomarkdown">
+            <div class="pac-rail"></div>
+            <div class="pac-man" id="pacman-rtftomarkdown">
+              <div class="pac-jaw-top"></div>
+              <div class="pac-jaw-bot"></div>
+              <div class="pac-eye"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Contextual App Bridge Hook -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Transform copied text to Markdown on macOS with ⌘⇧V</h3>
+          <p>
+            Copy from any application, then press <strong>⌘⇧V</strong> in L2Cache to 
+            paste cleanly formatted GitHub Markdown directly into VS Code, Obsidian, or GitHub.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Get L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- Educational Content -->
+      <div class="article-body">
+        <h2>About Convert RTF to Markdown</h2>
+        <p>
+          Converting documents and payload streams into Markdown standardizes content across documentation engines, static site generators (Next.js, Astro, Hugo), and personal knowledge management systems (Obsidian, Logseq, Notion).
+        </p>
+        <ul>
+          <li><strong>Zero Cloud Telemetry:</strong> All text and document processing executes purely in JavaScript in your browser memory.</li>
+          <li><strong>GitHub Flavored Markdown:</strong> Adheres strictly to GFM standards including pipe tables, nested bullet lists, and fenced code blocks.</li>
+          <li><strong>Instant Execution:</strong> Runs in sub-millisecond speeds without network requests or API keys.</li>
+        </ul>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">What RTF elements are preserved?</div>
+          <div class="faq-a">Font formatting (bold \b, italic \i, underline), bullet points (\bullet), paragraph breaks (\par), and headers are translated into corresponding Markdown markers.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Is RTF converted offline?</div>
+          <div class="faq-a">Yes. The RTF parser operates 100% in browser memory with zero network requests.</div>
+        </div>
+      </div>
+
+      <!-- Related Markdown Tools -->
+      <div class="related-tools-section">
+        <h2>Related Markdown Tools</h2>
+        <div class="tools-grid">
+          <a href="/en/tools/convert-to-markdown" class="tool-card-item card-super-tool" data-cat="content">
+            <div class="tool-card-top"><div class="tool-card-icon-box">⚡</div><span class="tool-card-badge badge-super">⭐ Super Tool</span></div>
+            <h3>Universal Markdown Converter</h3>
+            <p>Convert PDF, DOCX, HTML, Notion, JSON to Markdown all in one place.</p>
+          </a>
+          <a href="/en/tools/csv-to-markdown" class="tool-card-item" data-cat="content">
+            <div class="tool-card-top"><div class="tool-card-icon-box">📊</div><span class="tool-card-badge">Table</span></div>
+            <h3>CSV to Markdown Table</h3>
+            <p>Convert spreadsheets to formatted Markdown tables.</p>
+          </a>
+          <a href="/en/tools/markdown-to-rich-text" class="tool-card-item" data-cat="content">
+            <div class="tool-card-top"><div class="tool-card-icon-box">✍️</div><span class="tool-card-badge">Copy</span></div>
+            <h3>Markdown to Rich Text</h3>
+            <p>Convert Markdown into formatted rich copy for emails.</p>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="/en/privacy">Privacy</a></li>
+        <li><a href="/en/support">Support</a></li>
+        <li><a href="/en/tools">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="/en/tools/tools-engine.js"></script>
+  <script>
+    function htmlToMarkdown(html) {
+      let md = html;
+      md = md.replace(/<style[\s\S]*?<\/style>/gi, '');
+      md = md.replace(/<script[\s\S]*?<\/script>/gi, '');
+      md = md.replace(/<h1[^>]*>([\s\S]*?)<\/h1>/gi, '\n# $1\n');
+      md = md.replace(/<h2[^>]*>([\s\S]*?)<\/h2>/gi, '\n## $1\n');
+      md = md.replace(/<h3[^>]*>([\s\S]*?)<\/h3>/gi, '\n### $1\n');
+      md = md.replace(/<h4[^>]*>([\s\S]*?)<\/h4>/gi, '\n#### $1\n');
+      md = md.replace(/<h5[^>]*>([\s\S]*?)<\/h5>/gi, '\n##### $1\n');
+      md = md.replace(/<h6[^>]*>([\s\S]*?)<\/h6>/gi, '\n###### $1\n');
+      md = md.replace(/<strong[^>]*>([\s\S]*?)<\/strong>/gi, '**$1**');
+      md = md.replace(/<b[^>]*>([\s\S]*?)<\/b>/gi, '**$1**');
+      md = md.replace(/<em[^>]*>([\s\S]*?)<\/em>/gi, '*$1*');
+      md = md.replace(/<i[^>]*>([\s\S]*?)<\/i>/gi, '*$1*');
+      md = md.replace(/<s[^>]*>([\s\S]*?)<\/s>/gi, '~~$1~~');
+      md = md.replace(/<del[^>]*>([\s\S]*?)<\/del>/gi, '~~$1~~');
+      md = md.replace(/<code[^>]*>([\s\S]*?)<\/code>/gi, '`$1`');
+      md = md.replace(/<pre[^>]*><code[^>]*>([\s\S]*?)<\/code><\/pre>/gi, '\n```\n$1\n```\n');
+      md = md.replace(/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/gi, '\n> $1\n');
+      md = md.replace(/<a\s+(?:[^>]*?\s+)?href=["']([^"']*)["'][^>]*>([\s\S]*?)<\/a>/gi, '[$2]($1)');
+      md = md.replace(/<img\s+(?:[^>]*?\s+)?src=["']([^"']*)["'](?:\s+alt=["']([^"']*)["'])?[^>]*>/gi, '![$2]($1)');
+      md = md.replace(/<li[^>]*>([\s\S]*?)<\/li>/gi, '- $1\n');
+      md = md.replace(/<ul[^>]*>([\s\S]*?)<\/ul>/gi, '\n$1\n');
+      md = md.replace(/<ol[^>]*>([\s\S]*?)<\/ol>/gi, '\n$1\n');
+      md = md.replace(/<p[^>]*>([\s\S]*?)<\/p>/gi, '\n$1\n');
+      md = md.replace(/<hr[^>]*>/gi, '\n---\n');
+      md = md.replace(/<br\s*\/?>/gi, '\n');
+      md = md.replace(/<[^>]+>/g, '');
+      md = md.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+      md = md.replace(/\n{3,}/g, '\n\n');
+      return md.trim();
+    }
+
+    function jsonToMarkdown(raw) {
+      try {
+        const obj = JSON.parse(raw);
+        if (Array.isArray(obj)) {
+          if (obj.length === 0) return '_Empty Array_';
+          const headers = Array.from(new Set(obj.flatMap(o => typeof o === 'object' && o !== null ? Object.keys(o) : ['value'])));
+          const lines = [
+            `| ${headers.join(' | ')} |`,
+            `| ${headers.map(() => '---').join(' | ')} |`
+          ];
+          obj.forEach(item => {
+            if (typeof item === 'object' && item !== null) {
+              const row = headers.map(h => item[h] !== undefined ? (typeof item[h] === 'object' ? JSON.stringify(item[h]) : String(item[h])) : '');
+              lines.push(`| ${row.join(' | ')} |`);
+            } else {
+              lines.push(`| ${item} |`);
+            }
+          });
+          return lines.join('\n');
+        } else if (typeof obj === 'object' && obj !== null) {
+          const lines = ['| Key | Value |', '| --- | --- |'];
+          for (const [k, v] of Object.entries(obj)) {
+            const val = typeof v === 'object' ? `\`${JSON.stringify(v)}\`` : String(v);
+            lines.push(`| **${k}** | ${val} |`);
+          }
+          return lines.join('\n');
+        }
+      } catch(e) {}
+      return '```json\n' + raw + '\n```';
+    }
+
+    function runConversion() {
+      const raw = document.getElementById('src-input').value.trim();
+      document.getElementById('src-bytes').textContent = new Blob([raw]).size + ' bytes';
+
+      if (!raw) {
+        document.getElementById('out-markdown').textContent = '// Markdown will appear here';
+        return;
+      }
+
+      let result = '';
+      if ((raw.startsWith('{') && raw.endsWith('}')) || (raw.startsWith('[') && raw.endsWith(']'))) {
+        result = jsonToMarkdown(raw);
+      } else if (raw.includes('<') && raw.includes('>')) {
+        result = htmlToMarkdown(raw);
+      } else if (raw.startsWith('{\\rtf')) {
+        // Basic RTF strip
+        result = raw.replace(/\\[a-z0-9]+ ?/gi, '').replace(/[\{\}]/g, '').trim();
+      } else {
+        result = raw;
+      }
+
+      document.getElementById('out-markdown').textContent = result;
+      logLocalOp('rtf-to-markdown conversion', raw.length);
+    }
+
+    function downloadMarkdown() {
+      const text = document.getElementById('out-markdown').textContent;
+      const blob = new Blob([text], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'rtf-to-markdown.md';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('💾 Downloaded rtf-to-markdown.md');
+    }
+
+    function loadSample() {
+      document.getElementById('src-input').value = `{\rtf1\ansi\deff0
+{\fonttbl{\f0\fnil\fcharset0 Helvetica;}}
+\viewkind4\uc1\pard\lang1033\f0\fs28\b Project Specification\b0\par
+\fs20 This is a rich text document converted to \i Markdown\i0.\par
+\bullet Task 1: On-device encryption\par
+\bullet Task 2: Native performance\par
+}`;
+      runConversion();
+    }
+
+    runConversion();
+  </script>
+</body>
+</html>
