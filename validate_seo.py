@@ -24,7 +24,8 @@ SITE_URL = "https://l2cache.amvo.store"
 PUBLIC_PAGES = [
     "index.html", "support.html", "privacy.html", "intelligence.html",
     "changelog.html", "clipboard-history-mac.html", "mac-command-history.html",
-    "comparison.html", "developer-clipboard.html", "custom-actions.html",
+    "comparison.html", "benchmark.html", "best-mac-clipboard-managers.html",
+    "clipboard-privacy-report.html", "developer-clipboard.html", "custom-actions.html",
     "jwt-decoder-mac.html", "json-formatter-mac.html", "regex-clipboard-mac.html",
     "screenshot-ocr-mac.html", "sql-test-data-generator.html", "sitemap.html",
     "blog.html", "blog-clipboard-automation-developer-workflows.html",
@@ -32,9 +33,16 @@ PUBLIC_PAGES = [
     "blog-jwt-security.html", "blog-sqlite-fts5-hangs.html",
     "blog-swift-sqlite-concurrency.html", "blog-apple-intelligence-clipboard.html",
     "blog-developer-workflow-apple-intelligence.html",
-    "blog-zero-cloud-mac-desktop-ai.html", "l2cache-vs-maccy.html",
-    "l2cache-vs-clipy.html", "l2cache-vs-paste.html",
+    "blog-zero-cloud-mac-desktop-ai.html",
 ]
+
+# Comparison pages are generated (generate_comparisons.py) and can grow over
+# time; discover them from disk rather than hardcoding each slug.
+import glob as _glob
+PUBLIC_PAGES += sorted(_glob.glob(str(ROOT / "l2cache-vs-*.html")))
+PUBLIC_PAGES = [p.split("/")[-1] for p in PUBLIC_PAGES]
+PUBLIC_PAGES = [p for p in PUBLIC_PAGES if p.endswith(".html")]
+
 ERRORS: list[str] = []
 
 
@@ -88,8 +96,20 @@ def validate_sitemap() -> None:
     namespace = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
     urls = [node.text for node in tree.findall("s:url/s:loc", namespace)]
     expected = [public_url(filename) for filename in PUBLIC_PAGES]
-    if urls != expected:
+    # Tool pages are also built into /en/tools and included in the sitemap.
+    # (tools/index.html maps to /en/tools itself, so no extra bare entry needed.)
+    if (ROOT / "tools").is_dir():
+        for tf in sorted(ROOT.glob("tools/*.html")):
+            clean = "" if tf.name == "index.html" else f"/{tf.stem}"
+            expected.append(f"{SITE_URL}/en/tools{clean}")
+    if sorted(urls) != sorted(expected):
         ERRORS.append("out/l2cache/sitemap.xml: URLs do not match canonical English pages")
+        missing = set(expected) - set(urls)
+        extra = set(urls) - set(expected)
+        if missing:
+            ERRORS.append(f"  missing {len(missing)}: {sorted(missing)[:3]}...")
+        if extra:
+            ERRORS.append(f"  extra {len(extra)}: {sorted(extra)[:3]}...")
     if any(url and url.endswith(".html") for url in urls):
         ERRORS.append("out/l2cache/sitemap.xml: contains non-canonical .html URLs")
 

@@ -235,7 +235,6 @@ def build():
     base_url = "https://l2cache.amvo.store"
     with open(sitemap_path, "w", encoding="utf-8") as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-<<<<<<< HEAD
         f.write('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n')
         f.write('          xmlns:xhtml="http://www.w3.org/1999/xhtml">\n')
         for file in HTML_FILES:
