@@ -1,8 +1,12 @@
+#!/usr/bin/env python3
 import os
 import json
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 def load_template():
-    with open("/Users/dinesh/tech/l2cache-site/comparison-template.html", "r", encoding="utf-8") as f:
+    template_path = os.path.join(BASE_DIR, "comparison-template.html")
+    with open(template_path, "r", encoding="utf-8") as f:
         return f.read()
 
 def get_row_category(feature_name):
@@ -49,7 +53,7 @@ def format_comp_cell(text):
 
 def generate_pages():
     template = load_template()
-    json_path = "/Users/dinesh/tech/l2cache-site/comparisons_data.json"
+    json_path = os.path.join(BASE_DIR, "comparisons_data.json")
     with open(json_path, "r", encoding="utf-8") as f:
         competitors = json.load(f)
 
@@ -62,29 +66,29 @@ def generate_pages():
             l2_formatted = format_l2cache_cell(l2)
             comp_formatted = format_comp_cell(comp)
 
-            matrix_rows += f"""          <tr data-cat="{cat}">
+            matrix_rows += f'''          <tr data-cat="{cat}">
             <td><strong>{feature}</strong></td>
             <td class="col-l2-win">{l2_formatted}</td>
             <td>{comp_formatted}</td>
-          </tr>\n"""
+          </tr>\n'''
 
         adv_html = ""
         for icon, title, desc in data["advantages"]:
-            adv_html += f"""    <div class="advantage-card">
+            adv_html += f'''    <div class="advantage-card">
       <div class="advantage-header">
         <div class="advantage-icon-box">{icon}</div>
         <h3>{title}</h3>
       </div>
       <p>{desc}</p>
-    </div>\n"""
+    </div>\n'''
 
         faq_html = ""
         faq_schema_items = []
         for q, a in data["faqs"]:
-            faq_html += f"""      <div class="faq-item">
+            faq_html += f'''      <div class="faq-item">
         <div class="faq-q">❓ {q}</div>
         <div class="faq-a">{a}</div>
-      </div>\n"""
+      </div>\n'''
             faq_schema_items.append({
                 "@type": "Question",
                 "name": q,
@@ -94,13 +98,11 @@ def generate_pages():
                 }
             })
 
-        faq_schema_json = f"""  <script type="application/ld+json">
-{json.dumps({
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": faq_schema_items
-}, indent=4)}
-  </script>"""
+        faq_schema_json = '  <script type="application/ld+json">\n' + json.dumps({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": faq_schema_items
+        }, indent=4) + '\n  </script>'
 
         page_html = template
         page_html = page_html.replace("{{seo_title}}", data["seo_title"])
@@ -113,7 +115,7 @@ def generate_pages():
         page_html = page_html.replace("{{faq_schema_json}}", faq_schema_json)
         page_html = page_html.replace("{{faq_html}}", faq_html)
 
-        out_file = f"/Users/dinesh/tech/l2cache-site/l2cache-vs-{slug}.html"
+        out_file = os.path.join(BASE_DIR, f"l2cache-vs-{slug}.html")
         with open(out_file, "w", encoding="utf-8") as f:
             f.write(page_html)
         print(f"Generated rich comparison page: {out_file}")
