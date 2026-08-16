@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MongoDB Query Formatter & Shell Inspector — Prettify Mongoose & PyMongo Queries | L2Cache</title>
+  <meta name="description" content="Format, validate, and inspect MongoDB queries, aggregation pipelines, and Mongoose filters into clean, indented JSON with operator syntax highlighting." />
+  <meta name="keywords" content="mongodb query formatter, database & nosql, offline developer tool" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/mongodb-query-formatter" />
+  <link rel="stylesheet" href="/en/tools/theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "MongoDB Query Formatter & Shell Inspector",
+        "description": "Format, validate, and inspect MongoDB queries, aggregation pipelines, and Mongoose filters into clean, indented JSON with operator syntax highlighting.",
+        "url": "https://l2cache.amvo.store/en/tools/mongodb-query-formatter",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Can this format unquoted MongoDB shell objects and ObjectId()?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The inspector automatically converts MongoDB shell data types like ObjectId('...'), ISODate('...'), and NumberLong() into standard JSON and pretty-prints them."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is my MongoDB database data private?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Formatting happens 100% in browser JavaScript memory. No query filters, database names, or parameters are sent across the network."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">No network requests. Zero telemetry. 100% private in-browser tool.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/en/">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="/en/developer-clipboard">Developers</a></li>
+      <li><a href="/en/tools" class="active">Free Tools (63)</a></li>
+      <li><a href="/en/benchmark">Benchmark 2026</a></li>
+      <li><a href="/en/blog">Blog</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">DATABASE & NOSQL</span>
+      <h1>MongoDB Query Formatter & Shell Inspector</h1>
+      <p class="hero-sub">Format, validate, and inspect MongoDB queries, aggregation pipelines, and Mongoose filters into clean, indented JSON with operator syntax highlighting.</p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">⚙️</div>
+            <span class="tool-name-text">MongoDB Query Formatter & Shell Inspector</span>
+          </div>
+          <span class="tool-badge-pill">100% Client-Side Engine</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-grid-2col">
+            
+            <!-- Source Input Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Raw MongoDB Query or Shell Payload</span>
+              </div>
+              <textarea id="src-input" class="tool-textarea" placeholder="Paste MongoDB query like db.users.find({ status: 'active', age: { $gte: 21 } }).sort({ createdAt: -1 }) ..." oninput="runConversion()"></textarea>
+            </div>
+
+            <!-- Output Preview Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Generated Output</span>
+                <button class="pane-copy-btn" onclick="copyOutput('out-result')">📋 Copy</button>
+              </div>
+              <div id="out-result" class="tool-output-view" style="font-family:var(--mono); font-size:13.5px; line-height:1.6; color:#00684c; background:#f4fdfa; border:1px solid #c7f0e3;">// Output will appear here</div>
+            </div>
+
+          </div>
+
+          <!-- Controls Bar -->
+          <div class="tool-controls" style="align-items:center;">
+            <button class="tbtn tbtn-primary" onclick="runConversion()">⚡ Run / Format</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSample()">📋 Load Sample</button>
+            <button class="tbtn tbtn-ghost" onclick="document.getElementById('src-input').value=''; runConversion();">✕ Clear</button>
+            
+          </div>
+        </div>
+      </div>
+
+      <!-- App Bridge CTA Banner -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Automate developer transformations instantly on macOS</h3>
+          <p>
+            Copy from any terminal, browser, or database and press <strong>⌘⇧V</strong> in L2Cache to format code, mask API secrets, and search past snippets with on-device Apple Intelligence.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Download L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- FAQ Accordion -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">❓ Can this format unquoted MongoDB shell objects and ObjectId()?</div>
+          <div class="faq-a">Yes. The inspector automatically converts MongoDB shell data types like ObjectId('...'), ISODate('...'), and NumberLong() into standard JSON and pretty-prints them.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">❓ Is my MongoDB database data private?</div>
+          <div class="faq-a">Yes. Formatting happens 100% in browser JavaScript memory. No query filters, database names, or parameters are sent across the network.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache 📋</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="/en/privacy">Privacy</a></li>
+        <li><a href="/en/support">Support</a></li>
+        <li><a href="/en/benchmark">Benchmark 2026</a></li>
+        <li><a href="/en/tools">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="/en/tools/tools-engine.js"></script>
+  <script>
+    
+    function runConversion() {
+      const raw = document.getElementById('src-input').value.trim();
+      if (!raw) {
+        document.getElementById('out-result').textContent = '// Formatted MongoDB query will appear here';
+        return;
+      }
+      try {
+        let clean = raw.replace(/^db\.[a-zA-Z0-9_-]+\.[a-zA-Z]+\(/, '').replace(/\);?$/, '');
+        // Replace ObjectId and ISODate
+        clean = clean.replace(/ObjectId\((['"][a-f0-9]+['"])\)/g, '$1')
+                     .replace(/ISODate\((['"][^'"]+['"])\)/g, '$1')
+                     .replace(/NumberLong\((['"]?[0-9]+['"]?)\)/g, '$1');
+        // If it's valid JS object or JSON
+        let parsed;
+        try {
+          parsed = JSON.parse(clean);
+        } catch(e) {
+          // Eval safely in function constructor
+          parsed = (new Function('return (' + clean + ')'))();
+        }
+        const formatted = JSON.stringify(parsed, null, 2);
+        document.getElementById('out-result').textContent = formatted;
+        logLocalOp('mongodb format', raw.length);
+      } catch(err) {
+        // Fallback: smart indentation
+        document.getElementById('out-result').textContent = '// Cleaned Query Structure:\n' + raw.replace(/\{/g, '{\n  ').replace(/\}/g, '\n}').replace(/,/g, ',\n  ');
+      }
+    }
+        
+
+    function loadSample() {
+      document.getElementById('src-input').value = `db.orders.aggregate([
+  { $match: { status: "completed", total: { $gte: 100 } } },
+  { $group: { _id: "$customer_id", totalSpent: { $sum: "$total" }, orderCount: { $sum: 1 } } },
+  { $sort: { totalSpent: -1 } },
+  { $project: { customer_id: "$_id", totalSpent: 1, orderCount: 1, _id: 0 } }
+])`;
+      runConversion();
+    }
+
+    runConversion();
+  </script>
+</body>
+</html>

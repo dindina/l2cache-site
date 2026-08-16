@@ -1,0 +1,593 @@
+import os
+import json
+
+LIGHT_TEMPLATE = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{{seo_title}} | L2Cache</title>
+  <meta name="description" content="{{seo_description}}"/>
+  <link rel="canonical" href="{{canonical_url}}"/>
+  <link rel="icon" type="image/png" href="../icon.png"/>
+  <link rel="apple-touch-icon" href="../icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap" rel="stylesheet"/>
+
+  <!-- Structured Schema for SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "{{seo_title}}",
+    "description": "{{seo_description}}",
+    "author": { "@type": "Organization", "name": "L2Cache Labs" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "L2Cache",
+      "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" }
+    },
+    "image": "https://l2cache.amvo.store/icon.png",
+    "mainEntityOfPage": "{{canonical_url}}",
+    "datePublished": "2026-08-01",
+    "dateModified": "2026-08-16"
+  }
+  </script>
+
+  {{faq_schema_json}}
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple:      #00C896;
+      --purple-dark: #00a87f;
+      --purple-deep: #003d2e;
+      --pink:        #00C896;
+      --bg:          #f7f7f5;
+      --bg-card:     #ffffff;
+      --bg-alt:      #eeeeea;
+      --border:      #e4e4e0;
+      --border-dark: #d0d0c8;
+      --text:        #0a0a0a;
+      --text-muted:  #4a4a45;
+      --text-dim:    #76766e;
+      --mono:        "DM Mono", "SFMono-Regular", Menlo, monospace;
+      --serif:       "Playfair Display", Georgia, serif;
+      --sans:        "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.65;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Subtle background noise */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: 0.6;
+    }
+
+    /* ── Sticky Offline Challenge Bar ── */
+    #offline-challenge-bar {
+      position: sticky; top: 0; z-index: 999;
+      background: #ffffff; border-bottom: 1px solid var(--border);
+      padding: 10px 24px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      font-size: 13px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+    .challenge-left { display: flex; align-items: center; gap: 12px; }
+    .challenge-icon { font-size: 20px; }
+    .challenge-title { font-weight: 700; color: #0a0a0a; }
+    .challenge-title em { font-style: normal; color: var(--purple-dark); font-weight: 800; }
+    .challenge-sub { color: var(--text-muted); font-size: 12px; }
+    #offline-toggle-btn {
+      background: #f0f0ec; border: 1px solid var(--border);
+      color: #0a0a0a; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; gap: 6px;
+      transition: all 0.2s;
+    }
+    #offline-toggle-btn:hover { background: var(--purple); color: #002e21; border-color: var(--purple); }
+
+    /* ── Navigation ── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 48px;
+      background: rgba(247, 247, 245, 0.94); backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 48px; z-index: 100;
+    }
+    .nav-logo {
+      font-family: var(--sans); font-size: 18px; font-weight: 800;
+      color: #0a0a0a; text-decoration: none; display: flex; align-items: center; gap: 10px;
+    }
+    .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+    .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; transition: color 0.2s; }
+    .nav-links a:hover { color: #000; }
+    .nav-cta {
+      background: #0a0a0a !important; color: #ffffff !important;
+      padding: 9px 20px; border-radius: 10px; font-weight: 800 !important;
+      transition: transform 0.15s, background 0.2s !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    }
+    .nav-cta:hover { background: #222 !important; transform: translateY(-1px); }
+
+    /* ── Page Layout ── */
+    .article-wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 60px 24px 100px;
+      position: relative; z-index: 1;
+    }
+
+    .hero-badge-row {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 18px;
+    }
+    .badge-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 100px;
+      font-family: var(--mono); font-size: 12px; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      background: rgba(0, 200, 150, 0.12); color: #007a5a;
+      border: 1px solid rgba(0, 200, 150, 0.3);
+    }
+    .badge-versus {
+      font-family: var(--mono); font-size: 12px; font-weight: 700;
+      color: var(--text-dim); text-transform: uppercase;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(34px, 5.5vw, 54px);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #0a0a0a;
+      margin-bottom: 20px;
+    }
+    h1 span.hl {
+      color: #007a5a;
+    }
+    h1 em.comp-hl {
+      font-style: italic;
+      color: #dc2626;
+    }
+
+    .lede {
+      font-size: 20px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      max-width: 880px;
+      margin-bottom: 28px;
+    }
+
+    .byline-bar {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;
+      padding: 16px 20px; border-radius: 12px;
+      background: #ffffff; border: 1px solid var(--border);
+      font-family: var(--mono); font-size: 13px; color: var(--text-dim);
+      margin-bottom: 48px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+    }
+    .byline-bar span strong { color: #0a0a0a; }
+
+    /* ── SHIFT BANNER: 3 Reasons to Switch ── */
+    .switch-cards-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px; margin: 36px 0 54px;
+    }
+    .switch-card {
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
+      padding: 26px 24px;
+      position: relative; overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .switch-card:hover {
+      transform: translateY(-3px);
+      border-color: #00C896;
+      box-shadow: 0 12px 28px rgba(0, 200, 150, 0.15);
+    }
+    .switch-card-icon {
+      font-size: 30px; margin-bottom: 14px; display: inline-block;
+    }
+    .switch-card h3 {
+      font-size: 18.5px; font-weight: 800; color: #0a0a0a; margin-bottom: 8px;
+    }
+    .switch-card p {
+      font-size: 14.5px; color: var(--text-muted); line-height: 1.6; margin: 0;
+    }
+
+    /* ── RICH COMPARISON TABLE ── */
+    .table-header-ctrls {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+      margin-bottom: 18px;
+    }
+    .table-title-area h2 {
+      font-size: 26px; font-weight: 800; color: #0a0a0a; letter-spacing: -0.01em;
+    }
+    .table-filter-pills {
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .tfilter-btn {
+      background: #ffffff; border: 2px solid var(--border);
+      color: var(--text-muted); padding: 8px 18px; border-radius: 100px;
+      font-size: 13.5px; font-weight: 700; cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      transition: all 0.18s;
+    }
+    .tfilter-btn:hover { border-color: #00C896; color: #000; }
+    .tfilter-btn.active {
+      background: #0a0a0a !important; color: #ffffff !important; border-color: #0a0a0a !important; font-weight: 800;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    }
+
+    .matrix-table-wrap {
+      overflow-x: auto;
+      border-radius: 18px;
+      border: 1.5px solid var(--border);
+      background: #ffffff;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.05);
+      margin-bottom: 60px;
+    }
+
+    table.matrix-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      text-align: left;
+      font-size: 14.5px;
+    }
+
+    table.matrix-table th {
+      padding: 18px 24px;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+      border-bottom: 2px solid var(--border);
+      background: #f7f7f4;
+    }
+    table.matrix-table th.col-feature { width: 34%; color: #555550; }
+    table.matrix-table th.col-l2cache {
+      width: 33%;
+      background: #e6faf4;
+      border-left: 2px solid #00C896;
+      border-right: 2px solid #00C896;
+      color: #00684c;
+      font-size: 16px;
+    }
+    table.matrix-table th.col-comp {
+      width: 33%;
+      color: #333330;
+    }
+
+    table.matrix-table td {
+      padding: 18px 24px;
+      border-bottom: 1px solid #ededeb;
+      vertical-align: middle;
+      line-height: 1.55;
+      color: #222220;
+    }
+    table.matrix-table tr:hover td {
+      background: #fafaf8;
+    }
+
+    /* Winner L2Cache Column Highlight */
+    table.matrix-table td.col-l2-win {
+      background: #f4fdfa;
+      border-left: 2px solid #00C896;
+      border-right: 2px solid #00C896;
+      font-weight: 700;
+      color: #004d39;
+    }
+    table.matrix-table tr:hover td.col-l2-win {
+      background: #e8f9f3;
+    }
+    table.matrix-table tr:last-child td { border-bottom: none; }
+
+    /* Badge & Smiley Styles */
+    .rich-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 13px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+    .badge-win-emerald {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+    }
+    .badge-win-gold {
+      background: #fefce8;
+      border: 1px solid #fde047;
+      color: #854d0e;
+    }
+    .badge-loss-red {
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      color: #9f1239;
+    }
+    .badge-neutral {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #334155;
+    }
+
+    /* ── ADVANTAGES SECTION ── */
+    .advantage-card {
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
+      padding: 32px 30px;
+      margin-bottom: 24px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+      transition: all 0.2s;
+    }
+    .advantage-card:hover {
+      border-color: #00C896;
+      box-shadow: 0 10px 30px rgba(0, 200, 150, 0.12);
+    }
+    .advantage-header {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 14px;
+    }
+    .advantage-icon-box {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: rgba(0, 200, 150, 0.14); border: 1px solid rgba(0, 200, 150, 0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .advantage-header h3 {
+      font-size: 21px; font-weight: 800; color: #0a0a0a;
+    }
+    .advantage-card p {
+      font-size: 16px; color: var(--text-muted); line-height: 1.7; margin: 0;
+    }
+
+    /* ── CONVERSION CTA BOX ── */
+    .shift-cta-box {
+      background: #ffffff;
+      border: 2.5px solid #00C896;
+      border-radius: 24px;
+      padding: 48px 40px;
+      margin: 64px 0 54px;
+      text-align: center;
+      box-shadow: 0 16px 48px rgba(0, 200, 150, 0.16);
+      position: relative; overflow: hidden;
+    }
+    .shift-cta-box h2 {
+      font-family: var(--serif);
+      font-size: 32px; font-weight: 800; color: #0a0a0a; margin-bottom: 14px;
+    }
+    .shift-cta-box p {
+      font-size: 18px; color: #444440; max-width: 580px; margin: 0 auto 30px; line-height: 1.6;
+    }
+    .cta-download-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: #0a0a0a; color: #ffffff;
+      padding: 16px 36px; border-radius: 14px;
+      text-decoration: none; font-weight: 800; font-size: 17px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      transition: all 0.2s;
+    }
+    .cta-download-btn:hover {
+      transform: scale(1.03);
+      background: #222;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+    .cta-guarantee-note {
+      font-size: 13px; color: var(--text-dim); margin-top: 18px; font-family: var(--mono);
+    }
+
+    /* ── FAQ SECTION ── */
+    .faq-section { margin-top: 60px; }
+    .faq-section h2 { font-family: var(--serif); font-size: 28px; font-weight: 800; color: #0a0a0a; margin-bottom: 24px; }
+    .faq-item {
+      background: #ffffff; border: 1.5px solid var(--border);
+      border-radius: 16px; padding: 22px 26px; margin-bottom: 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+    }
+    .faq-q { font-size: 18px; font-weight: 700; color: #0a0a0a; margin-bottom: 8px; }
+    .faq-a { font-size: 15.5px; color: var(--text-muted); line-height: 1.65; }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 48px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;
+      background: #f2f2ee;
+    }
+    .footer-brand { font-weight: 800; color: #0a0a0a; }
+    .footer-links { display: flex; gap: 24px; list-style: none; }
+    .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; transition: color 0.2s; }
+    .footer-links a:hover { color: #000; }
+
+    @media (max-width: 768px) {
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      .article-wrap { padding: 40px 16px 80px; }
+      table.matrix-table { font-size: 13px; }
+      table.matrix-table th, table.matrix-table td { padding: 14px 16px; }
+      .shift-cta-box { padding: 32px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">100% on-device privacy guarantee. No cloud telemetry.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+  </div>
+
+  <!-- Nav -->
+  <nav>
+    <a href="/en/" class="nav-logo">
+      <img src="../icon.png" width="32" height="32" alt="L2Cache" style="border-radius:8px"/>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="/en/developer-clipboard">Developers</a></li>
+      <li><a href="/en/tools">Free Tools (56)</a></li>
+      <li><a href="/en/benchmark">Benchmark 2026</a></li>
+      <li><a href="/en/blog">Blog</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta" target="_blank" rel="noopener">🍎 Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <article class="article-wrap">
+    
+    <!-- Hero Header -->
+    <div class="hero-badge-row">
+      <span class="badge-pill">⚡ Side-by-Side Comparison</span>
+      <span class="badge-versus">L2Cache vs. {{competitor_name}}</span>
+    </div>
+
+    <h1>
+      <span class="hl">L2Cache</span> vs. <em class="comp-hl">{{competitor_name}}</em>
+    </h1>
+    <p class="lede">{{intro_paragraph}}</p>
+
+    <div class="byline-bar">
+      <span>🔬 Tested & Published: <strong>August 2026 (macOS 15 Sequoia / Sonoma)</strong></span>
+      <span>⚡ Performance: <strong>Apple Silicon Native (M-Series)</strong></span>
+    </div>
+
+    <!-- Shift Highlights: 3 Reasons to Switch -->
+    <div class="switch-cards-grid">
+      <div class="switch-card">
+        <span class="switch-card-icon">🧠</span>
+        <h3>On-Device Apple Intelligence</h3>
+        <p>Search semantic concepts ('that docker error') and extract text from screenshot images via native OCR without cloud round-trips.</p>
+      </div>
+      <div class="switch-card">
+        <span class="switch-card-icon">🛡️</span>
+        <h3>Touch ID Credential Radar</h3>
+        <p>Automatically scans and masks API keys (OpenAI, AWS, Stripe) and passwords behind hardware Touch ID biometric authentication.</p>
+      </div>
+      <div class="switch-card">
+        <span class="switch-card-icon">🎁</span>
+        <h3>Zero Subscription Fees</h3>
+        <p>100% free during early access. Everyone who installs today keeps all features, OCR, and AI updates permanently free for life.</p>
+      </div>
+    </div>
+
+    <!-- Comparison Table Header & Filter Tabs -->
+    <div class="table-header-ctrls">
+      <div class="table-title-area">
+        <h2>⚔️ Comprehensive Feature Matrix</h2>
+      </div>
+      <div class="table-filter-pills">
+        <button class="tfilter-btn active" onclick="filterMatrix('all', this)">🌟 All Features</button>
+        <button class="tfilter-btn" onclick="filterMatrix('ai', this)">🧠 AI & OCR</button>
+        <button class="tfilter-btn" onclick="filterMatrix('security', this)">🛡️ Privacy & Speed</button>
+        <button class="tfilter-btn" onclick="filterMatrix('pricing', this)">💰 Pricing</button>
+      </div>
+    </div>
+
+    <!-- Matrix Table Container -->
+    <div class="matrix-table-wrap">
+      <table class="matrix-table" id="comparison-table">
+        <thead>
+          <tr>
+            <th class="col-feature">Capability & Feature</th>
+            <th class="col-l2cache">⚡ L2Cache (Modern Native)</th>
+            <th class="col-comp">📦 {{competitor_name}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{comparison_table_rows}}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Key Differences Cards -->
+    <h2 style="font-family: var(--serif); font-size: 28px; font-weight: 800; color: #0a0a0a; margin: 48px 0 24px;">💡 Deep-Dive: Why Developers Shift to L2Cache</h2>
+    {{l2cache_advantages_html}}
+
+    <!-- High-Impact Shift CTA Card -->
+    <div class="shift-cta-box">
+      <h2>Ready to Upgrade Your Mac Clipboard?</h2>
+      <p>
+        Experience sub-50ms panel activation, on-device Apple Intelligence OCR search, and Touch ID key security. Free during early access.
+      </p>
+      <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="cta-download-btn" target="_blank" rel="noopener">
+        🍎 Download L2Cache Free on Mac App Store
+      </a>
+      <div class="cta-guarantee-note">
+        ✨ macOS 13+ · Universal Binary (M1/M2/M3/M4 & Intel) · Zero Credit Card Required
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="faq-section">
+      <h2>Frequently Asked Questions</h2>
+      {{faq_html}}
+    </div>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-brand">L2Cache 📋</div>
+    <ul class="footer-links">
+      <li><a href="/en/">Home</a></li>
+      <li><a href="/en/benchmark">Benchmark 2026</a></li>
+      <li><a href="/en/tools">Free Tools</a></li>
+      <li><a href="/en/privacy">Privacy</a></li>
+      <li><a href="/en/support">Support</a></li>
+    </ul>
+    <p style="font-size:12px; color:var(--text-dim); margin:0;">© 2026 Amvotech · 100% On-Device Mac Intelligence</p>
+  </footer>
+
+  <script src="../tools/tools-engine.js"></script>
+  <script>
+    function filterMatrix(category, btn) {
+      document.querySelectorAll('.tfilter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const rows = document.querySelectorAll('#comparison-table tbody tr');
+      rows.forEach(r => {
+        const cat = r.getAttribute('data-cat') || 'all';
+        if (category === 'all' || cat.includes(category)) {
+          r.style.display = '';
+        } else {
+          r.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>"""
+
+# Write updated template to l2cache-site
+template_path = "/Users/dinesh/tech/l2cache-site/comparison-template.html"
+with open(template_path, "w", encoding="utf-8") as f:
+    f.write(LIGHT_TEMPLATE)
+
+print("Updated comparison-template.html with clean light theme matching the rest of the site!")

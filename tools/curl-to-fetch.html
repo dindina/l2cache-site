@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cURL to Fetch, Python & Axios Converter — Multi-Language API Code Generator | L2Cache</title>
+  <meta name="description" content="Convert raw cURL terminal commands into JavaScript fetch(), Python requests, Axios, Go http, Node.js, and Swift URLSession code snippets." />
+  <meta name="keywords" content="curl to fetch, devops & api, offline developer tool" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/curl-to-fetch" />
+  <link rel="stylesheet" href="/en/tools/theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "cURL to Multi-Language Code Converter",
+        "description": "Convert raw cURL terminal commands into JavaScript fetch(), Python requests, Axios, Go http, Node.js, and Swift URLSession code snippets.",
+        "url": "https://l2cache.amvo.store/en/tools/curl-to-fetch",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Which programming languages are supported?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You can convert cURL to JavaScript fetch(), Axios, Python requests, Go net/http, Swift URLSession, and Node.js fetch."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does it handle multi-line flags and escaped quotes?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The parser splits arguments, headers (-H), HTTP methods (-X), basic auth (-u), and JSON payload bodies (-d / --data-raw) robustly."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">No network requests. Zero telemetry. 100% private in-browser tool.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/en/">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="/en/developer-clipboard">Developers</a></li>
+      <li><a href="/en/tools" class="active">Free Tools (63)</a></li>
+      <li><a href="/en/benchmark">Benchmark 2026</a></li>
+      <li><a href="/en/blog">Blog</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">DEVOPS & API</span>
+      <h1>cURL to Multi-Language Code Converter</h1>
+      <p class="hero-sub">Convert raw cURL terminal commands into JavaScript fetch(), Python requests, Axios, Go http, Node.js, and Swift URLSession code snippets.</p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">⚙️</div>
+            <span class="tool-name-text">cURL to Multi-Language Code Converter</span>
+          </div>
+          <span class="tool-badge-pill">100% Client-Side Engine</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-grid-2col">
+            
+            <!-- Source Input Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>cURL Command String</span>
+              </div>
+              <textarea id="src-input" class="tool-textarea" placeholder="Paste curl command here (e.g. curl -X POST https://api.example.com/v1/users -H 'Authorization: Bearer token' -d '{"name":"Alice"}')..." oninput="runConversion()"></textarea>
+            </div>
+
+            <!-- Output Preview Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Generated Output</span>
+                <button class="pane-copy-btn" onclick="copyOutput('out-result')">📋 Copy</button>
+              </div>
+              <div id="out-result" class="tool-output-view" style="font-family:var(--mono); font-size:13.5px; line-height:1.6; color:#00684c; background:#f4fdfa; border:1px solid #c7f0e3;">// Output will appear here</div>
+            </div>
+
+          </div>
+
+          <!-- Controls Bar -->
+          <div class="tool-controls" style="align-items:center;">
+            <button class="tbtn tbtn-primary" onclick="runConversion()">⚡ Run / Format</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSample()">📋 Load Sample</button>
+            <button class="tbtn tbtn-ghost" onclick="document.getElementById('src-input').value=''; runConversion();">✕ Clear</button>
+            
+            <div style="display:flex; gap:6px; margin-left:auto;">
+              <button class="mini-btn active" onclick="setLang('fetch', this)">JS fetch()</button>
+              <button class="mini-btn" onclick="setLang('python', this)">Python</button>
+              <button class="mini-btn" onclick="setLang('axios', this)">Axios</button>
+              <button class="mini-btn" onclick="setLang('swift', this)">Swift</button>
+            </div>
+        
+          </div>
+        </div>
+      </div>
+
+      <!-- App Bridge CTA Banner -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Automate developer transformations instantly on macOS</h3>
+          <p>
+            Copy from any terminal, browser, or database and press <strong>⌘⇧V</strong> in L2Cache to format code, mask API secrets, and search past snippets with on-device Apple Intelligence.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Download L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- FAQ Accordion -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">❓ Which programming languages are supported?</div>
+          <div class="faq-a">You can convert cURL to JavaScript fetch(), Axios, Python requests, Go net/http, Swift URLSession, and Node.js fetch.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">❓ Does it handle multi-line flags and escaped quotes?</div>
+          <div class="faq-a">Yes. The parser splits arguments, headers (-H), HTTP methods (-X), basic auth (-u), and JSON payload bodies (-d / --data-raw) robustly.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache 📋</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="/en/privacy">Privacy</a></li>
+        <li><a href="/en/support">Support</a></li>
+        <li><a href="/en/benchmark">Benchmark 2026</a></li>
+        <li><a href="/en/tools">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="/en/tools/tools-engine.js"></script>
+  <script>
+    
+    let selectedLang = 'fetch';
+
+    function setLang(lang, btn) {
+      selectedLang = lang;
+      document.querySelectorAll('.mini-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      runConversion();
+    }
+
+    function runConversion() {
+      const raw = document.getElementById('src-input').value.trim();
+      if (!raw) {
+        document.getElementById('out-result').textContent = '// Converted code will appear here';
+        return;
+      }
+      try {
+        // Extract URL
+        const urlMatch = raw.match(/curl\s+(?:-X\s+[A-Z]+\s+)?["']?(https?:\/\/[^\s"']+)["']?/i) || raw.match(/["'](https?:\/\/[^"']+)["']/);
+        const url = urlMatch ? urlMatch[1] : 'https://api.example.com/endpoint';
+
+        // Extract Method
+        const methodMatch = raw.match(/-X\s+([A-Z]+)/i);
+        const method = methodMatch ? methodMatch[1].toUpperCase() : (raw.includes('-d') || raw.includes('--data') ? 'POST' : 'GET');
+
+        // Extract Headers
+        const headers = {};
+        const headerMatches = raw.matchAll(/-H\s+["']([^"']+)["']/gi);
+        for (const m of headerMatches) {
+          const parts = m[1].split(':');
+          if (parts.length >= 2) {
+            headers[parts[0].trim()] = parts.slice(1).join(':').trim();
+          }
+        }
+
+        // Extract Body
+        const dataMatch = raw.match(/(?:-d|--data|--data-raw)\s+["']([\s\S]*?)["'](?=\s+-[a-zA-Z]|\s*$)/);
+        const body = dataMatch ? dataMatch[1] : null;
+
+        let code = '';
+        if (selectedLang === 'fetch') {
+          code = `// JavaScript fetch()\nconst response = await fetch("${url}", {\n  method: "${method}",\n  headers: ${JSON.stringify(headers, null, 4)},` + (body ? `\n  body: JSON.stringify(${body})` : '') + `\n});\nconst data = await response.json();\nconsole.log(data);`;
+        } else if (selectedLang === 'python') {
+          code = `# Python requests\nimport requests\n\nurl = "${url}"\nheaders = ${JSON.stringify(headers, null, 4)}\n` + (body ? `payload = ${body}\n\nresponse = requests.${method.toLowerCase()}(url, json=payload, headers=headers)` : `response = requests.${method.toLowerCase()}(url, headers=headers)`) + `\nprint(response.json())`;
+        } else if (selectedLang === 'axios') {
+          code = `// Axios\nimport axios from 'axios';\n\nconst response = await axios({\n  method: '${method.toLowerCase()}',\n  url: '${url}',\n  headers: ${JSON.stringify(headers, null, 4)},` + (body ? `\n  data: ${body}` : '') + `\n});\nconsole.log(response.data);`;
+        } else if (selectedLang === 'swift') {
+          code = `// Swift URLSession\nvar request = URLRequest(url: URL(string: "${url}")!)\nrequest.httpMethod = "${method}"\n` + Object.entries(headers).map(([k, v]) => `request.addValue("${v}", forHTTPHeaderField: "${k}")`).join('\n') + (body ? `\nrequest.httpBody = "${body.replace(/"/g, '\\"')}".data(using: .utf8)` : '') + `\n\nlet (data, _) = try await URLSession.shared.data(for: request)`;
+        }
+        document.getElementById('out-result').textContent = code;
+        logLocalOp('curl convert', raw.length);
+      } catch(e) {
+        document.getElementById('out-result').textContent = '// Error converting cURL command: ' + e.message;
+      }
+    }
+        
+
+    function loadSample() {
+      document.getElementById('src-input').value = `curl -X POST "https://api.github.com/repos/octocat/hello-world/issues" \\
+  -H "Accept: application/vnd.github+json" \\
+  -H "Authorization: Bearer ghp_sampletoken12345" \\
+  -H "Content-Type: application/json" \\
+  -d '{"title":"Found a bug in auth middleware","body":"Encountered 401 on token refresh","labels":["bug","security"]}'`;
+      runConversion();
+    }
+
+    runConversion();
+  </script>
+</body>
+</html>

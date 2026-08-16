@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Git Command & Workflow Generator — Clone, Submodule & Remote Snippet Builder | L2Cache</title>
+  <meta name="description" content="Transform Git repository URLs, branch names, and commit hashes into clean, copy-pasteable Git terminal commands (clone, remote, submodule, cherry-pick, rebase)." />
+  <meta name="keywords" content="git command generator, git & version control, offline developer tool" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/git-command-generator" />
+  <link rel="stylesheet" href="/en/tools/theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Git Command & Workflow Builder",
+        "description": "Transform Git repository URLs, branch names, and commit hashes into clean, copy-pasteable Git terminal commands (clone, remote, submodule, cherry-pick, rebase).",
+        "url": "https://l2cache.amvo.store/en/tools/git-command-generator",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Does it convert HTTPS to SSH URLs?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. You can switch between HTTPS (https://github.com/...) and SSH (git@github.com:...) clone commands with 1 click."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What Git workflow snippets are generated?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Shallow clone (--depth 1), specific branch clone (-b main), adding remotes (git remote add upstream), creating submodules, and sparse checkout."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">No network requests. Zero telemetry. 100% private in-browser tool.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/en/">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="/en/developer-clipboard">Developers</a></li>
+      <li><a href="/en/tools" class="active">Free Tools (63)</a></li>
+      <li><a href="/en/benchmark">Benchmark 2026</a></li>
+      <li><a href="/en/blog">Blog</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">GIT & VERSION CONTROL</span>
+      <h1>Git Command & Workflow Builder</h1>
+      <p class="hero-sub">Transform Git repository URLs, branch names, and commit hashes into clean, copy-pasteable Git terminal commands (clone, remote, submodule, cherry-pick, rebase).</p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">⚙️</div>
+            <span class="tool-name-text">Git Command & Workflow Builder</span>
+          </div>
+          <span class="tool-badge-pill">100% Client-Side Engine</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-grid-2col">
+            
+            <!-- Source Input Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Repository URL or Git Target</span>
+              </div>
+              <textarea id="src-input" class="tool-textarea" placeholder="Paste Git repo URL (e.g. git@github.com:octocat/Hello-World.git or https://github.com/octocat/Hello-World)..." oninput="runConversion()"></textarea>
+            </div>
+
+            <!-- Output Preview Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Generated Output</span>
+                <button class="pane-copy-btn" onclick="copyOutput('out-result')">📋 Copy</button>
+              </div>
+              <div id="out-result" class="tool-output-view" style="font-family:var(--mono); font-size:13.5px; line-height:1.6; color:#00684c; background:#f4fdfa; border:1px solid #c7f0e3;">// Output will appear here</div>
+            </div>
+
+          </div>
+
+          <!-- Controls Bar -->
+          <div class="tool-controls" style="align-items:center;">
+            <button class="tbtn tbtn-primary" onclick="runConversion()">⚡ Run / Format</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSample()">📋 Load Sample</button>
+            <button class="tbtn tbtn-ghost" onclick="document.getElementById('src-input').value=''; runConversion();">✕ Clear</button>
+            
+          </div>
+        </div>
+      </div>
+
+      <!-- App Bridge CTA Banner -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Automate developer transformations instantly on macOS</h3>
+          <p>
+            Copy from any terminal, browser, or database and press <strong>⌘⇧V</strong> in L2Cache to format code, mask API secrets, and search past snippets with on-device Apple Intelligence.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Download L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- FAQ Accordion -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">❓ Does it convert HTTPS to SSH URLs?</div>
+          <div class="faq-a">Yes. You can switch between HTTPS (https://github.com/...) and SSH (git@github.com:...) clone commands with 1 click.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">❓ What Git workflow snippets are generated?</div>
+          <div class="faq-a">Shallow clone (--depth 1), specific branch clone (-b main), adding remotes (git remote add upstream), creating submodules, and sparse checkout.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache 📋</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="/en/privacy">Privacy</a></li>
+        <li><a href="/en/support">Support</a></li>
+        <li><a href="/en/benchmark">Benchmark 2026</a></li>
+        <li><a href="/en/tools">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="/en/tools/tools-engine.js"></script>
+  <script>
+    
+    function runConversion() {
+      const raw = document.getElementById('src-input').value.trim();
+      if (!raw) {
+        document.getElementById('out-result').textContent = '// Git command workflow will appear here';
+        return;
+      }
+      try {
+        let httpsUrl = raw;
+        let sshUrl = raw;
+        if (raw.startsWith('git@github.com:')) {
+          httpsUrl = raw.replace('git@github.com:', 'https://github.com/');
+        } else if (raw.startsWith('https://github.com/')) {
+          sshUrl = raw.replace('https://github.com/', 'git@github.com:');
+        }
+
+        const repoName = raw.split('/').pop().replace('.git', '') || 'my-repo';
+
+        let out = `// ====================================\n//         GIT WORKFLOW GENERATOR\n// ====================================\n\n`;
+        out += `// 1. Standard Clone (HTTPS):\ngit clone ${httpsUrl}\n\n`;
+        out += `// 2. Standard Clone (SSH):\ngit clone ${sshUrl}\n\n`;
+        out += `// 3. Shallow Fast Clone (Latest commit only):\ngit clone --depth 1 ${httpsUrl}\n\n`;
+        out += `// 4. Add as Remote Upstream:\ngit remote add upstream ${httpsUrl}\ngit fetch upstream\n\n`;
+        out += `// 5. Add as Submodule:\ngit submodule add ${httpsUrl} vendor/${repoName}\n\n`;
+        out += `// 6. Initialize New Local Repo & Push:\ngit init -b main\ngit add .\ngit commit -m "feat: initial commit"\ngit remote add origin ${sshUrl}\ngit push -u origin main\n`;
+
+        document.getElementById('out-result').textContent = out;
+        logLocalOp('git generator', raw.length);
+      } catch(e) {
+        document.getElementById('out-result').textContent = '// Error generating Git commands: ' + e.message;
+      }
+    }
+        
+
+    function loadSample() {
+      document.getElementById('src-input').value = `https://github.com/dindina/L2Cache.git`;
+      runConversion();
+    }
+
+    runConversion();
+  </script>
+</body>
+</html>

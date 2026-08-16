@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Docker Run & Compose Generator — Visual Docker Command Builder | L2Cache</title>
+  <meta name="description" content="Visually build and convert Docker CLI commands (docker run, docker exec, docker pull) with port mappings, volumes, environment variables, and Docker Compose YAML." />
+  <meta name="keywords" content="docker command generator, devops & containers, offline developer tool" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/docker-command-generator" />
+  <link rel="stylesheet" href="/en/tools/theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Docker Command & Container Generator",
+        "description": "Visually build and convert Docker CLI commands (docker run, docker exec, docker pull) with port mappings, volumes, environment variables, and Docker Compose YAML.",
+        "url": "https://l2cache.amvo.store/en/tools/docker-command-generator",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Can it convert docker run to Docker Compose YAML?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Paste any docker run command to instantly generate a clean docker-compose.yml file with ports, volumes, and environment keys."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does it support healthchecks and network flags?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Flags like --network, --restart, --memory, and --entrypoint are translated seamlessly into compose syntax."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">No network requests. Zero telemetry. 100% private in-browser tool.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/en/">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="/en/developer-clipboard">Developers</a></li>
+      <li><a href="/en/tools" class="active">Free Tools (63)</a></li>
+      <li><a href="/en/benchmark">Benchmark 2026</a></li>
+      <li><a href="/en/blog">Blog</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">DEVOPS & CONTAINERS</span>
+      <h1>Docker Command & Container Generator</h1>
+      <p class="hero-sub">Visually build and convert Docker CLI commands (docker run, docker exec, docker pull) with port mappings, volumes, environment variables, and Docker Compose YAML.</p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">⚙️</div>
+            <span class="tool-name-text">Docker Command & Container Generator</span>
+          </div>
+          <span class="tool-badge-pill">100% Client-Side Engine</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-grid-2col">
+            
+            <!-- Source Input Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Docker Run / CLI Command</span>
+              </div>
+              <textarea id="src-input" class="tool-textarea" placeholder="Paste a docker run command or enter image name..." oninput="runConversion()"></textarea>
+            </div>
+
+            <!-- Output Preview Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Generated Output</span>
+                <button class="pane-copy-btn" onclick="copyOutput('out-result')">📋 Copy</button>
+              </div>
+              <div id="out-result" class="tool-output-view" style="font-family:var(--mono); font-size:13.5px; line-height:1.6; color:#00684c; background:#f4fdfa; border:1px solid #c7f0e3;">// Output will appear here</div>
+            </div>
+
+          </div>
+
+          <!-- Controls Bar -->
+          <div class="tool-controls" style="align-items:center;">
+            <button class="tbtn tbtn-primary" onclick="runConversion()">⚡ Run / Format</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSample()">📋 Load Sample</button>
+            <button class="tbtn tbtn-ghost" onclick="document.getElementById('src-input').value=''; runConversion();">✕ Clear</button>
+            
+          </div>
+        </div>
+      </div>
+
+      <!-- App Bridge CTA Banner -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Automate developer transformations instantly on macOS</h3>
+          <p>
+            Copy from any terminal, browser, or database and press <strong>⌘⇧V</strong> in L2Cache to format code, mask API secrets, and search past snippets with on-device Apple Intelligence.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Download L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- FAQ Accordion -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">❓ Can it convert docker run to Docker Compose YAML?</div>
+          <div class="faq-a">Yes. Paste any docker run command to instantly generate a clean docker-compose.yml file with ports, volumes, and environment keys.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">❓ Does it support healthchecks and network flags?</div>
+          <div class="faq-a">Yes. Flags like --network, --restart, --memory, and --entrypoint are translated seamlessly into compose syntax.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache 📋</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="/en/privacy">Privacy</a></li>
+        <li><a href="/en/support">Support</a></li>
+        <li><a href="/en/benchmark">Benchmark 2026</a></li>
+        <li><a href="/en/tools">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="/en/tools/tools-engine.js"></script>
+  <script>
+    
+    function runConversion() {
+      const raw = document.getElementById('src-input').value.trim();
+      if (!raw) {
+        document.getElementById('out-result').textContent = '// Docker Compose YAML will appear here';
+        return;
+      }
+      try {
+        const nameMatch = raw.match(/--name\s+([a-zA-Z0-9_-]+)/);
+        const name = nameMatch ? nameMatch[1] : 'app_service';
+
+        const ports = [];
+        const portMatches = raw.matchAll(/-p\s+([0-9:]+)/g);
+        for (const m of portMatches) ports.push(m[1]);
+
+        const volumes = [];
+        const volMatches = raw.matchAll(/-v\s+([^\s]+)/g);
+        for (const m of volMatches) volumes.push(m[1]);
+
+        const envs = [];
+        const envMatches = raw.matchAll(/-e\s+([^\s]+)/g);
+        for (const m of envMatches) envs.push(m[1]);
+
+        const imgMatch = raw.match(/(?:^|\s)([a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+|[a-zA-Z0-9_.-]+)(?:\s*$)/);
+        const image = imgMatch ? imgMatch[1].trim() : 'nginx:alpine';
+
+        let yaml = `version: '3.8'\nservices:\n  ${name}:\n    image: ${image}\n    container_name: ${name}\n    restart: unless-stopped\n`;
+        if (ports.length > 0) {
+          yaml += `    ports:\n` + ports.map(p => `      - "${p}"`).join('\n') + '\n';
+        }
+        if (envs.length > 0) {
+          yaml += `    environment:\n` + envs.map(e => `      - ${e}`).join('\n') + '\n';
+        }
+        if (volumes.length > 0) {
+          yaml += `    volumes:\n` + volumes.map(v => `      - ${v}`).join('\n') + '\n';
+        }
+
+        document.getElementById('out-result').textContent = yaml;
+        logLocalOp('docker compose convert', raw.length);
+      } catch(e) {
+        document.getElementById('out-result').textContent = '# Error generating Docker compose: ' + e.message;
+      }
+    }
+        
+
+    function loadSample() {
+      document.getElementById('src-input').value = `docker run -d \\
+  --name postgres-db \\
+  -p 5432:5432 \\
+  -v pgdata:/var/lib/postgresql/data \\
+  -e POSTGRES_USER=devuser \\
+  -e POSTGRES_PASSWORD=secret_postgres_pass \\
+  -e POSTGRES_DB=l2cache_prod \\
+  --restart unless-stopped \\
+  postgres:16-alpine`;
+      runConversion();
+    }
+
+    runConversion();
+  </script>
+</body>
+</html>

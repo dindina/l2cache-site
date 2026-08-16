@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AWS ARN Parser & Deep-Link Deconstructor — Break Down Amazon Resource Names | L2Cache</title>
+  <meta name="description" content="Deconstruct Amazon Resource Names (ARN) into Partition, Service, Region, Account ID, and Resource Type with direct 1-click AWS Management Console URLs." />
+  <meta name="keywords" content="aws arn parser, cloud & aws, offline developer tool" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/aws-arn-parser" />
+  <link rel="stylesheet" href="/en/tools/theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "AWS ARN Deconstructor & Validator",
+        "description": "Deconstruct Amazon Resource Names (ARN) into Partition, Service, Region, Account ID, and Resource Type with direct 1-click AWS Management Console URLs.",
+        "url": "https://l2cache.amvo.store/en/tools/aws-arn-parser",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What ARN formats are supported?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "All AWS ARN standard formats across S3, IAM, Lambda, DynamoDB, SQS, SNS, ECS, RDS, and API Gateway are parsed according to AWS specification."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does it validate ARN syntax?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. It checks the 6 standard ARN colon components (arn:partition:service:region:account-id:resource) and flags formatting errors."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">No network requests. Zero telemetry. 100% private in-browser tool.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/en/">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="/en/developer-clipboard">Developers</a></li>
+      <li><a href="/en/tools" class="active">Free Tools (63)</a></li>
+      <li><a href="/en/benchmark">Benchmark 2026</a></li>
+      <li><a href="/en/blog">Blog</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">CLOUD & AWS</span>
+      <h1>AWS ARN Deconstructor & Validator</h1>
+      <p class="hero-sub">Deconstruct Amazon Resource Names (ARN) into Partition, Service, Region, Account ID, and Resource Type with direct 1-click AWS Management Console URLs.</p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">⚙️</div>
+            <span class="tool-name-text">AWS ARN Deconstructor & Validator</span>
+          </div>
+          <span class="tool-badge-pill">100% Client-Side Engine</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-grid-2col">
+            
+            <!-- Source Input Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>AWS ARN String</span>
+              </div>
+              <textarea id="src-input" class="tool-textarea" placeholder="Paste AWS ARN (e.g. arn:aws:s3:::my-production-bucket/logs/)..." oninput="runConversion()"></textarea>
+            </div>
+
+            <!-- Output Preview Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Generated Output</span>
+                <button class="pane-copy-btn" onclick="copyOutput('out-result')">📋 Copy</button>
+              </div>
+              <div id="out-result" class="tool-output-view" style="font-family:var(--mono); font-size:13.5px; line-height:1.6; color:#00684c; background:#f4fdfa; border:1px solid #c7f0e3;">// Output will appear here</div>
+            </div>
+
+          </div>
+
+          <!-- Controls Bar -->
+          <div class="tool-controls" style="align-items:center;">
+            <button class="tbtn tbtn-primary" onclick="runConversion()">⚡ Run / Format</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSample()">📋 Load Sample</button>
+            <button class="tbtn tbtn-ghost" onclick="document.getElementById('src-input').value=''; runConversion();">✕ Clear</button>
+            
+          </div>
+        </div>
+      </div>
+
+      <!-- App Bridge CTA Banner -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Automate developer transformations instantly on macOS</h3>
+          <p>
+            Copy from any terminal, browser, or database and press <strong>⌘⇧V</strong> in L2Cache to format code, mask API secrets, and search past snippets with on-device Apple Intelligence.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Download L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- FAQ Accordion -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">❓ What ARN formats are supported?</div>
+          <div class="faq-a">All AWS ARN standard formats across S3, IAM, Lambda, DynamoDB, SQS, SNS, ECS, RDS, and API Gateway are parsed according to AWS specification.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">❓ Does it validate ARN syntax?</div>
+          <div class="faq-a">Yes. It checks the 6 standard ARN colon components (arn:partition:service:region:account-id:resource) and flags formatting errors.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache 📋</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="/en/privacy">Privacy</a></li>
+        <li><a href="/en/support">Support</a></li>
+        <li><a href="/en/benchmark">Benchmark 2026</a></li>
+        <li><a href="/en/tools">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="/en/tools/tools-engine.js"></script>
+  <script>
+    
+    function runConversion() {
+      const raw = document.getElementById('src-input').value.trim();
+      if (!raw) {
+        document.getElementById('out-result').textContent = '// ARN breakdown will appear here';
+        return;
+      }
+      try {
+        const parts = raw.split(':');
+        if (parts.length < 6 || parts[0] !== 'arn') {
+          document.getElementById('out-result').textContent = '❌ Invalid AWS ARN format. Expected arn:partition:service:region:account-id:resource';
+          return;
+        }
+        const partition = parts[1] || 'aws';
+        const service   = parts[2] || '';
+        const region    = parts[3] || '(global)';
+        const account   = parts[4] || '(none)';
+        const resource  = parts.slice(5).join(':');
+
+        const consoleUrl = region !== '(global)' 
+          ? `https://${region}.console.aws.amazon.com/${service}/home?region=${region}#` 
+          : `https://console.aws.amazon.com/${service}/home#`;
+
+        const report = `======================================\n       AWS ARN DECONSTRUCTOR\n======================================\n\n• Partition:   ${partition}\n• Service:     ${service.toUpperCase()} (${service})\n• Region:      ${region}\n• Account ID:  ${account}\n• Resource ID: ${resource}\n\n🔗 Direct Console URL:\n${consoleUrl}\n\nJSON Breakdown:\n` + JSON.stringify({ partition, service, region, accountId: account, resourceId: resource, consoleUrl }, null, 2);
+
+        document.getElementById('out-result').textContent = report;
+        logLocalOp('aws arn parse', raw.length);
+      } catch(e) {
+        document.getElementById('out-result').textContent = '❌ Error parsing ARN: ' + e.message;
+      }
+    }
+        
+
+    function loadSample() {
+      document.getElementById('src-input').value = `arn:aws:iam::123456789012:role/service-role/AWSLambdaBasicExecutionRole-prod-sync`;
+      runConversion();
+    }
+
+    runConversion();
+  </script>
+</body>
+</html>

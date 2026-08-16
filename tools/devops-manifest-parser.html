@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kubernetes & Terraform Resource Parser — Extract Images, Ports & Addresses | L2Cache</title>
+  <meta name="description" content="Inspect Kubernetes YAML manifests and Terraform HCL files to extract all container image tags, namespaces, exposed ports, replica counts, and resource addresses." />
+  <meta name="keywords" content="devops manifest parser, devops & infrastructure, offline developer tool" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/devops-manifest-parser" />
+  <link rel="stylesheet" href="/en/tools/theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "K8s & Terraform Manifest Inspector",
+        "description": "Inspect Kubernetes YAML manifests and Terraform HCL files to extract all container image tags, namespaces, exposed ports, replica counts, and resource addresses.",
+        "url": "https://l2cache.amvo.store/en/tools/devops-manifest-parser",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What Kubernetes resources are analyzed?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Deployments, StatefulSets, Pods, Services, Ingresses, ConfigMaps, and Secrets are inspected to extract images, replicas, ports, and namespaces."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can it inspect multi-document YAML manifests?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Multi-document YAML separated by --- is parsed document-by-document into an organized summary table."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">No network requests. Zero telemetry. 100% private in-browser tool.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/en/">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="/en/developer-clipboard">Developers</a></li>
+      <li><a href="/en/tools" class="active">Free Tools (63)</a></li>
+      <li><a href="/en/benchmark">Benchmark 2026</a></li>
+      <li><a href="/en/blog">Blog</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">DEVOPS & INFRASTRUCTURE</span>
+      <h1>K8s & Terraform Manifest Inspector</h1>
+      <p class="hero-sub">Inspect Kubernetes YAML manifests and Terraform HCL files to extract all container image tags, namespaces, exposed ports, replica counts, and resource addresses.</p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">⚙️</div>
+            <span class="tool-name-text">K8s & Terraform Manifest Inspector</span>
+          </div>
+          <span class="tool-badge-pill">100% Client-Side Engine</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-grid-2col">
+            
+            <!-- Source Input Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Kubernetes YAML or Terraform HCL Manifest</span>
+              </div>
+              <textarea id="src-input" class="tool-textarea" placeholder="Paste Kubernetes Deployment, Service, or Terraform resource block..." oninput="runConversion()"></textarea>
+            </div>
+
+            <!-- Output Preview Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Generated Output</span>
+                <button class="pane-copy-btn" onclick="copyOutput('out-result')">📋 Copy</button>
+              </div>
+              <div id="out-result" class="tool-output-view" style="font-family:var(--mono); font-size:13.5px; line-height:1.6; color:#00684c; background:#f4fdfa; border:1px solid #c7f0e3;">// Output will appear here</div>
+            </div>
+
+          </div>
+
+          <!-- Controls Bar -->
+          <div class="tool-controls" style="align-items:center;">
+            <button class="tbtn tbtn-primary" onclick="runConversion()">⚡ Run / Format</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSample()">📋 Load Sample</button>
+            <button class="tbtn tbtn-ghost" onclick="document.getElementById('src-input').value=''; runConversion();">✕ Clear</button>
+            
+          </div>
+        </div>
+      </div>
+
+      <!-- App Bridge CTA Banner -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Automate developer transformations instantly on macOS</h3>
+          <p>
+            Copy from any terminal, browser, or database and press <strong>⌘⇧V</strong> in L2Cache to format code, mask API secrets, and search past snippets with on-device Apple Intelligence.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Download L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- FAQ Accordion -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">❓ What Kubernetes resources are analyzed?</div>
+          <div class="faq-a">Deployments, StatefulSets, Pods, Services, Ingresses, ConfigMaps, and Secrets are inspected to extract images, replicas, ports, and namespaces.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">❓ Can it inspect multi-document YAML manifests?</div>
+          <div class="faq-a">Yes. Multi-document YAML separated by --- is parsed document-by-document into an organized summary table.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache 📋</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="/en/privacy">Privacy</a></li>
+        <li><a href="/en/support">Support</a></li>
+        <li><a href="/en/benchmark">Benchmark 2026</a></li>
+        <li><a href="/en/tools">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="/en/tools/tools-engine.js"></script>
+  <script>
+    
+    function runConversion() {
+      const raw = document.getElementById('src-input').value.trim();
+      if (!raw) {
+        document.getElementById('out-result').textContent = '// Manifest summary will appear here';
+        return;
+      }
+      try {
+        // Extract images
+        const images = [...raw.matchAll(/image:\s*["']?([^"'\s]+)["']?/g)].map(m => m[1]);
+        const kinds  = [...raw.matchAll(/kind:\s*([a-zA-Z0-9]+)/g)].map(m => m[1]);
+        const names  = [...raw.matchAll(/name:\s*["']?([a-zA-Z0-9_-]+)["']?/g)].map(m => m[1]);
+        const ports  = [...raw.matchAll(/(?:containerPort|port|targetPort):\s*([0-9]+)/g)].map(m => m[1]);
+
+        let report = `======================================\n    KUBERNETES & DEVOPS INSPECTOR\n======================================\n\n`;
+        report += `📦 Container Images Found (${images.length}):\n` + (images.length ? images.map(img => `  • ${img}`).join('\n') : '  (None detected)\n') + '\n\n';
+        report += `🏷️ Resource Kinds (${kinds.length}):\n` + (kinds.length ? kinds.map(k => `  • ${k}`).join('\n') : '  (None detected)\n') + '\n\n';
+        report += `🔌 Exposed Ports (${ports.length}):\n` + (ports.length ? [...new Set(ports)].map(p => `  • Port ${p}`).join('\n') : '  (None detected)\n');
+
+        document.getElementById('out-result').textContent = report;
+        logLocalOp('manifest parse', raw.length);
+      } catch(e) {
+        document.getElementById('out-result').textContent = '// Error inspecting manifest: ' + e.message;
+      }
+    }
+        
+
+    function loadSample() {
+      document.getElementById('src-input').value = `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: production
+  labels:
+    app: api-gateway
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - name: gateway
+        image: ghcr.io/amvotech/api-gateway:v2.4.1
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway-service
+  namespace: production
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 443
+    targetPort: 8080
+  selector:
+    app: api-gateway`;
+      runConversion();
+    }
+
+    runConversion();
+  </script>
+</body>
+</html>

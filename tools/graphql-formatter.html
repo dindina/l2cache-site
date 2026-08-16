@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GraphQL Formatter & Schema Prettifier — Indent Queries, Mutations & Variables | L2Cache</title>
+  <meta name="description" content="Format and prettify GraphQL queries, mutations, subscriptions, fragments, and schemas with intelligent indentation and variable extraction." />
+  <meta name="keywords" content="graphql formatter, api & graphql, offline developer tool" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/graphql-formatter" />
+  <link rel="stylesheet" href="/en/tools/theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "GraphQL Query & Schema Prettifier",
+        "description": "Format and prettify GraphQL queries, mutations, subscriptions, fragments, and schemas with intelligent indentation and variable extraction.",
+        "url": "https://l2cache.amvo.store/en/tools/graphql-formatter",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Does it format GraphQL fragments and directives?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Queries with inline fragments (... on User), named fragments, and directives (@include, @skip) are parsed with clean hierarchical indentation."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can it extract inline variables?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The tool identifies variable declarations like ($userId: ID!) and provides a ready-to-use JSON variables template."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">No network requests. Zero telemetry. 100% private in-browser tool.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/en/">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="/en/developer-clipboard">Developers</a></li>
+      <li><a href="/en/tools" class="active">Free Tools (63)</a></li>
+      <li><a href="/en/benchmark">Benchmark 2026</a></li>
+      <li><a href="/en/blog">Blog</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">API & GRAPHQL</span>
+      <h1>GraphQL Query & Schema Prettifier</h1>
+      <p class="hero-sub">Format and prettify GraphQL queries, mutations, subscriptions, fragments, and schemas with intelligent indentation and variable extraction.</p>
+
+      <!-- Tool Workspace -->
+      <div class="tool-workspace">
+        <div class="tool-header-bar">
+          <div class="tool-title-group">
+            <div class="tool-icon-pill">⚙️</div>
+            <span class="tool-name-text">GraphQL Query & Schema Prettifier</span>
+          </div>
+          <span class="tool-badge-pill">100% Client-Side Engine</span>
+        </div>
+
+        <div class="tool-main-body">
+          <div class="tool-grid-2col">
+            
+            <!-- Source Input Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>GraphQL Query or Schema</span>
+              </div>
+              <textarea id="src-input" class="tool-textarea" placeholder="Paste minified or raw GraphQL query here..." oninput="runConversion()"></textarea>
+            </div>
+
+            <!-- Output Preview Pane -->
+            <div class="tool-pane">
+              <div class="pane-label-row">
+                <span>Generated Output</span>
+                <button class="pane-copy-btn" onclick="copyOutput('out-result')">📋 Copy</button>
+              </div>
+              <div id="out-result" class="tool-output-view" style="font-family:var(--mono); font-size:13.5px; line-height:1.6; color:#00684c; background:#f4fdfa; border:1px solid #c7f0e3;">// Output will appear here</div>
+            </div>
+
+          </div>
+
+          <!-- Controls Bar -->
+          <div class="tool-controls" style="align-items:center;">
+            <button class="tbtn tbtn-primary" onclick="runConversion()">⚡ Run / Format</button>
+            <button class="tbtn tbtn-ghost" onclick="loadSample()">📋 Load Sample</button>
+            <button class="tbtn tbtn-ghost" onclick="document.getElementById('src-input').value=''; runConversion();">✕ Clear</button>
+            
+          </div>
+        </div>
+      </div>
+
+      <!-- App Bridge CTA Banner -->
+      <div class="app-bridge-card">
+        <div class="app-bridge-content">
+          <h3>⚡ Automate developer transformations instantly on macOS</h3>
+          <p>
+            Copy from any terminal, browser, or database and press <strong>⌘⇧V</strong> in L2Cache to format code, mask API secrets, and search past snippets with on-device Apple Intelligence.
+          </p>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="app-bridge-btn">
+          🍎 Download L2Cache for Mac
+        </a>
+      </div>
+
+      <!-- FAQ Accordion -->
+      <div class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">❓ Does it format GraphQL fragments and directives?</div>
+          <div class="faq-a">Yes. Queries with inline fragments (... on User), named fragments, and directives (@include, @skip) are parsed with clean hierarchical indentation.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">❓ Can it extract inline variables?</div>
+          <div class="faq-a">Yes. The tool identifies variable declarations like ($userId: ID!) and provides a ready-to-use JSON variables template.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <div class="footer-brand">L2Cache 📋</div>
+      <p style="margin:0;font-size:13px;">100% Private, On-Device Clipboard Manager for macOS.</p>
+      <ul class="footer-links">
+        <li><a href="/en/privacy">Privacy</a></li>
+        <li><a href="/en/support">Support</a></li>
+        <li><a href="/en/benchmark">Benchmark 2026</a></li>
+        <li><a href="/en/tools">Free Tools</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="/en/tools/tools-engine.js"></script>
+  <script>
+    
+    function runConversion() {
+      const raw = document.getElementById('src-input').value.trim();
+      if (!raw) {
+        document.getElementById('out-result').textContent = '// Formatted GraphQL query will appear here';
+        return;
+      }
+      try {
+        let formatted = '';
+        let indent = 0;
+        const tokens = raw.replace(/\s+/g, ' ').replace(/\s*([{}(),:])\s*/g, '$1').split('');
+        for (let i = 0; i < tokens.length; i++) {
+          const char = tokens[i];
+          if (char === '{') {
+            formatted += ' {\n' + '  '.repeat(++indent);
+          } else if (char === '}') {
+            formatted += '\n' + '  '.repeat(--indent) + '}';
+            if (i + 1 < tokens.length && tokens[i+1] !== '}') formatted += '\n' + '  '.repeat(indent);
+          } else if (char === ',') {
+            formatted += ', ';
+          } else if (char === ':') {
+            formatted += ': ';
+          } else if (char === ' ' && (tokens[i-1] === '{' || tokens[i+1] === '}')) {
+            // skip extra space
+          } else {
+            formatted += char;
+          }
+        }
+        // Extract variables
+        const varMatches = raw.match(/\$[a-zA-Z0-9_]+:\s*[a-zA-Z0-9_!=\[\]]+/g);
+        let varHeader = '';
+        if (varMatches && varMatches.length > 0) {
+          const varObj = {};
+          varMatches.forEach(v => {
+            const name = v.split(':')[0].replace('$', '').trim();
+            varObj[name] = "value";
+          });
+          varHeader = '// --- Suggested JSON Variables ---\n' + JSON.stringify(varObj, null, 2) + '\n\n// --- Formatted Query ---\n';
+        }
+        document.getElementById('out-result').textContent = varHeader + formatted;
+        logLocalOp('graphql format', raw.length);
+      } catch(e) {
+        document.getElementById('out-result').textContent = raw;
+      }
+    }
+        
+
+    function loadSample() {
+      document.getElementById('src-input').value = `query GetUserProfile($userId:ID!,$includeOrders:Boolean=false){user(id:$userId){id name email avatarUrl orders(limit:10)@include(if:$includeOrders){id total status createdAt items{sku quantity price}}preferences{theme notifications{email push}}}}`;
+      runConversion();
+    }
+
+    runConversion();
+  </script>
+</body>
+</html>
