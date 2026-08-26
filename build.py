@@ -36,6 +36,31 @@ HTML_FILES = ["index.html", "support.html", "privacy.html", "intelligence.html",
 OUT_DIR = "out"
 L2CACHE_OUT_DIR = os.path.join(OUT_DIR, "l2cache")
 AMVO_OUT_DIR = os.path.join(OUT_DIR, "amvo-store")
+VERCEL_ANALYTICS_TAG = '<script defer src="/_vercel/insights/script.js"></script>'
+
+
+def inject_vercel_analytics(root_dir):
+    """Add Vercel Web Analytics once to every generated L2Cache HTML page."""
+    for current_dir, _, files in os.walk(root_dir):
+        for filename in files:
+            if not filename.endswith(".html"):
+                continue
+
+            path = os.path.join(current_dir, filename)
+            with open(path, "r", encoding="utf-8") as f:
+                content = f.read()
+
+            if VERCEL_ANALYTICS_TAG in content:
+                continue
+            if "</head>" not in content:
+                print(f"Warning: analytics not injected; missing </head>: {path}")
+                continue
+
+            content = content.replace(
+                "</head>", f"  {VERCEL_ANALYTICS_TAG}\n</head>", count=1
+            )
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(content)
 
 # Clean, canonical site path for a source file (matches the deployed '/lang/...' slug).
 def build_page_clean_path(file):
@@ -272,6 +297,10 @@ def build():
         f.write("User-agent: *\n")
         f.write("Allow: /\n\n")
         f.write(f"Sitemap: {base_url}/sitemap.xml\n")
+
+    # Cover localized pages and copied static tools with one shared analytics
+    # tag. The endpoint is served by Vercel after Web Analytics is enabled.
+    inject_vercel_analytics(L2CACHE_OUT_DIR)
 
     # We let Vercel handle the root redirect to /en/ so it doesn't conflict with amvo.store routing
 
