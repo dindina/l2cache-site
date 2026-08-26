@@ -57,7 +57,7 @@ def inject_vercel_analytics(root_dir):
                 continue
 
             content = content.replace(
-                "</head>", f"  {VERCEL_ANALYTICS_TAG}\n</head>", count=1
+                "</head>", f"  {VERCEL_ANALYTICS_TAG}\n</head>", 1
             )
             with open(path, "w", encoding="utf-8") as f:
                 f.write(content)
