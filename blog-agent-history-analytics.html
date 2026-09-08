@@ -38,7 +38,7 @@
     .feature-card h3 { font-family: var(--serif); font-size: 20px; font-weight: 700; color: #FFFFFF !important; margin-top: 0; margin-bottom: 8px; }
     .feature-card p { font-size: 15px; margin-bottom: 0; color: #D1CFEA !important; }
     .screenshot-box { margin: 36px 0; text-align: center; }
-    .screenshot-img { width: 100%; max-width: 720px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+    .screenshot-img { width: 100%; max-width: 760px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
     .screenshot-caption { font-family: var(--mono); font-size: 13px; color: #9C98C2; margin-top: 12px; }
     .cta-box { background: rgba(127,119,221,0.12); border: 1px solid rgba(127,119,221,0.4); border-radius: 16px; padding: 36px; text-align: center; margin-top: 64px; }
     .cta-title { font-size: 22px; font-weight: 700; margin-bottom: 16px; color: #FFFFFF !important; }
@@ -55,7 +55,7 @@
   <meta property="og:url" content="https://l2cache.amvo.store/en/blog-agent-history-analytics">
   <meta property="og:title" content="Tracking Claude Code &amp; Codex Sessions: How AI Agent History &amp; Token Analytics Supercharge macOS Development">
   <meta property="og:description" content="Learn how tracking local Claude Code and Codex CLI agent sessions, token usage, prompt cache hit ratios, and session replay inside L2Cache helps software engineers debug AI coding workflows.">
-  <meta property="og:image" content="https://l2cache.amvo.store/screenshots/screenshot-10-terminal-history.png">
+  <meta property="og:image" content="https://l2cache.amvo.store/screenshots/agent-history1.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="L2Cache AI Agent History and Token Analytics UI">
@@ -63,7 +63,7 @@
   <meta name="twitter:url" content="https://l2cache.amvo.store/en/blog-agent-history-analytics">
   <meta name="twitter:title" content="Tracking Claude Code &amp; Codex Sessions: How AI Agent History &amp; Token Analytics Supercharge macOS Development">
   <meta name="twitter:description" content="Learn how tracking local Claude Code and Codex CLI agent sessions, token usage, prompt cache hit ratios, and session replay inside L2Cache helps software engineers debug AI coding workflows.">
-  <meta name="twitter:image" content="https://l2cache.amvo.store/screenshots/screenshot-10-terminal-history.png">
+  <meta name="twitter:image" content="https://l2cache.amvo.store/screenshots/agent-history1.jpg">
 
   <script type="application/ld+json">
   {
@@ -104,8 +104,8 @@
   </div>
 
   <div class="screenshot-box">
-    <img src="screenshots/terminal-history.gif" alt="L2Cache AI Agent History &amp; 1-Click Terminal Session Replay Demo" class="screenshot-img"/>
-    <div class="screenshot-caption">Figure 1: L2Cache floating panel surfacing Claude Code &amp; Codex session summaries, token breakdown, and 1-click terminal resumption.</div>
+    <img src="screenshots/agent-history1.jpg" alt="L2Cache AI Agent History &amp; Token Analytics Dashboard" class="screenshot-img"/>
+    <div class="screenshot-caption">Figure 1: L2Cache floating panel surfacing Claude Code &amp; Codex session summaries, token consumption, prompt cache hit ratios, and 1-click terminal resumption.</div>
   </div>
 
   <h2>1. Unified Session Capture &amp; Token Analytics</h2>
@@ -128,11 +128,6 @@
     <p>Sort past sessions by <strong>Recent Activity</strong>, <strong>Total Tokens</strong>, <strong>Prompt Cache Hits</strong>, or <strong>Runtime Duration</strong>. Filter sessions by provider (Claude vs. Codex) or search through full conversation histories instantly with SQLite FTS5 fast search.</p>
   </div>
 
-  <div class="screenshot-box">
-    <img src="screenshots/screenshot-10-terminal-history.png" alt="L2Cache Agent History Analytics Dashboard" class="screenshot-img"/>
-    <div class="screenshot-caption">Figure 2: Inspecting token consumption, prompt cache hit ratios, and git working directories across sessions.</div>
-  </div>
-
   <h2>2. 1-Click Terminal Session Replay &amp; Resume</h2>
   <p>One of the most frustrating parts of using CLI agents is resuming a session after switching terminals or closing a window. Previously, developers had to manually locate session UUIDs or inspect raw logs to run CLI commands:</p>
 
@@ -153,6 +148,11 @@ codex resume session_2026_09_08_build
 
   <p>L2Cache's <strong>Repository Knowledge Graph</strong> bridge converts transient agent discoveries into permanent repository documentation:</p>
 
+  <div class="screenshot-box">
+    <img src="screenshots/agent-history2.jpg" alt="L2Cache Repository Knowledge Graph Gotchas Dashboard" class="screenshot-img"/>
+    <div class="screenshot-caption">Figure 2: L2Cache Repository Knowledge Graph surfacing discovered gotchas, fragile components, and 1-click promotion to AGENTS.md.</div>
+  </div>
+
 <pre><code># Example AGENTS.md rule promoted from agent session #a85fd1e8
 ## AppKit &amp; SwiftUI Concurrency Rules
 - guard `view.window != nil` before displaying popovers in async tasks to prevent EXC_BAD_ACCESS.
@@ -164,11 +164,6 @@ codex resume session_2026_09_08_build
     <li><strong>1-Click Promotion to AGENTS.md</strong>: Review extracted constraints and click <em>"Promote to AGENTS.md"</em> to write the rule directly into your project's root <code>AGENTS.md</code> or <code>CLAUDE.md</code> file.</li>
     <li><strong>Cross-Agent Alignment</strong>: Ensure all coding agents (Claude, Codex, Antigravity, or Cursor) share the exact same rules, preventing agents from repeating known bugs in future sessions.</li>
   </ol>
-
-  <div class="screenshot-box">
-    <img src="screenshots/screenshot-7-local-ai.png" alt="L2Cache On-Device Local AI and Knowledge Indexing" class="screenshot-img"/>
-    <div class="screenshot-caption">Figure 3: On-device local AI processing and repository context indexing in L2Cache.</div>
-  </div>
 
   <h2>4. 100% Local, Zero-Cloud Privacy</h2>
   <p>Just like L2Cache's core clipboard management, all Agent History &amp; Analytics parsing occurs strictly <strong>on-device on your Mac</strong>. L2Cache reads local session logs directly from your home directory, stores analytics in local SQLite databases using GRDB, and never sends your prompts, code snippets, or token statistics to external servers.</p>
