@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tracking Claude Code &amp; Codex Sessions: How AI Agent History &amp; Token Analytics Supercharge macOS Development</title>
+  <meta name="description" content="Learn how tracking local Claude Code and Codex CLI agent sessions, token usage, prompt cache hit ratios, and session replay inside L2Cache helps software engineers debug AI coding workflows.">
+  <link rel="icon" type="image/png" href="icon.png"/>
+  <link rel="apple-touch-icon" href="icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #7F77DD; --bg: #0D0C1A; --bg2: #131126; --bg3: #1A1830;
+      --border: rgba(127,119,221,0.18); --text: #F0EFF8;
+      --text-muted: rgba(240,239,248,0.5); --text-dim: rgba(240,239,248,0.28);
+      --mono: 'DM Mono', monospace; --serif: 'Fraunces', serif; --sans: 'DM Sans', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .container { max-width: 720px; margin: 0 auto; padding: 80px 24px; min-height: 80vh; }
+    .label { font-family: var(--mono); font-size: 12px; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: inline-block; }
+    h1 { font-family: var(--serif); font-size: 40px; font-weight: 700; line-height: 1.2; margin-bottom: 32px; color: var(--text); }
+    h2 { font-family: var(--serif); font-size: 28px; font-weight: 700; margin-top: 48px; margin-bottom: 16px; color: var(--text); }
+    h3 { font-family: var(--serif); font-size: 20px; font-weight: 700; margin-top: 32px; margin-bottom: 12px; color: var(--text); }
+    p { font-size: 16px; color: rgba(240,239,248,0.7); margin-bottom: 24px; }
+    ul, ol { font-size: 16px; color: rgba(240,239,248,0.7); margin-bottom: 24px; padding-left: 24px; }
+    li { margin-bottom: 8px; }
+    pre { background: rgba(255,255,255,0.05); padding: 16px; border-radius: 8px; overflow-x: auto; margin-bottom: 24px; border: 1px solid var(--border); }
+    code { font-family: var(--mono); font-size: 14px; color: #a197fd; }
+    pre code { color: var(--text); }
+    strong { color: var(--text); font-weight: 600; }
+    .highlight-box { background: rgba(127,119,221,0.08); border-left: 3px solid var(--purple); padding: 20px; margin: 32px 0; border-radius: 0 8px 8px 0; }
+    .highlight-box p { margin-bottom: 0; color: var(--text); }
+    .feature-card { background: rgba(127,119,221,0.05); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin-bottom: 24px; }
+    .feature-card h3 { font-family: var(--serif); font-size: 20px; font-weight: 700; color: var(--text); margin-top: 0; margin-bottom: 8px; }
+    .feature-card p { font-size: 15px; margin-bottom: 0; color: rgba(240,239,248,0.7); }
+    .cta-box { background: rgba(127,119,221,0.08); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
+    .cta-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+    .cta-btn { display: inline-block; background: var(--purple); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
+    .cta-btn:hover { background: #5C52C8; }
+    footer { padding: 48px 24px; text-align: center; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-dim); }
+    footer a { color: var(--text-dim); text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: var(--text-muted); }
+  </style>
+  <link rel="stylesheet" href="theme.css">
+  <link rel="canonical" href="https://l2cache.amvo.store/en/blog-agent-history-analytics">
+
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="L2Cache">
+  <meta property="og:url" content="https://l2cache.amvo.store/en/blog-agent-history-analytics">
+  <meta property="og:title" content="Tracking Claude Code &amp; Codex Sessions: How AI Agent History &amp; Token Analytics Supercharge macOS Development">
+  <meta property="og:description" content="Learn how tracking local Claude Code and Codex CLI agent sessions, token usage, prompt cache hit ratios, and session replay inside L2Cache helps software engineers debug AI coding workflows.">
+  <meta property="og:image" content="https://l2cache.amvo.store/icon.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="L2Cache app icon">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="https://l2cache.amvo.store/en/blog-agent-history-analytics">
+  <meta name="twitter:title" content="Tracking Claude Code &amp; Codex Sessions: How AI Agent History &amp; Token Analytics Supercharge macOS Development">
+  <meta name="twitter:description" content="Learn how tracking local Claude Code and Codex CLI agent sessions, token usage, prompt cache hit ratios, and session replay inside L2Cache helps software engineers debug AI coding workflows.">
+  <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
+  <meta name="twitter:image:alt" content="L2Cache app icon">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Tracking Claude Code & Codex Sessions: How AI Agent History & Token Analytics Supercharge macOS Development",
+    "description": "Learn how tracking local Claude Code and Codex CLI agent sessions, token usage, prompt cache hit ratios, and session replay inside L2Cache helps software engineers debug AI coding workflows.",
+    "url": "https://l2cache.amvo.store/en/blog-agent-history-analytics",
+    "publisher": {
+      "@type": "Organization",
+      "name": "L2Cache",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://l2cache.amvo.store/icon.png"
+      }
+    }
+  }
+  </script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="icon.png" width="28" height="28" alt="L2Cache" style="border-radius:7px"/>
+    L2Cache
+  </a>
+</nav>
+
+<div class="container">
+  <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
+  <h1>Tracking Claude Code &amp; Codex Sessions: How AI Agent History &amp; Token Analytics Supercharge macOS Development</h1>
+
+  <p>Software engineering workflows have undergone a massive shift. Developers no longer rely solely on basic autocomplete; today, we pair with autonomous CLI coding agents like <strong>Claude Code</strong> and <strong>Codex</strong> to execute multi-turn refactors, write unit tests, and resolve complex edge-case bugs across full repositories.</p>
+
+  <p>However, as engineers run dozens of agent tasks daily across different terminals and projects, managing AI agent context has become a major productivity bottleneck.</p>
+
+  <div class="highlight-box">
+    <p><strong>The Multi-Agent Visibility Gap:</strong> Autonomous agents generate vast amounts of session history, token consumption, prompt cache metrics, and discovered repository constraints. Yet, these logs remain trapped in hidden local files (such as <code>~/.claude/projects/</code> JSONL records and <code>~/.codex/memories.sqlite</code> databases). Without a unified dashboard, developers lose track of past session context, waste money re-prompting agents, and watch different agents make the exact same coding mistakes over and over.</p>
+  </div>
+
+  <h2>1. Unified Session Capture &amp; Token Analytics</h2>
+  <p>In <strong>L2Cache 1.4</strong>, we introduced native <strong>AI Agent History &amp; Analytics</strong>—bringing full visibility to your CLI agent sessions directly from your Mac's menu bar or global hotkey (<code>⌥Space</code>).</p>
+
+  <p>L2Cache automatically parses and indexes local agent logs in real time, giving developers zero-cloud access to critical session metrics:</p>
+
+  <div class="feature-card">
+    <h3>Real-Time Token &amp; Cost Breakdown</h3>
+    <p>View total input tokens, output tokens, and overall token consumption for every session across Claude Code and Codex. Instantly identify token-heavy prompts or runaway context loops before they inflate API bills.</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>Prompt Cache Efficiency (Cache Hit Ratio)</h3>
+    <p>Track <code>cacheReadTokens</code> and prompt cache hit ratios. See exactly how effectively your agent sessions leverage LLM prompt caching, allowing you to optimize prompt structures for maximum speed and cost efficiency.</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>Session Sorting &amp; Filtering</h3>
+    <p>Sort past sessions by <strong>Recent Activity</strong>, <strong>Total Tokens</strong>, <strong>Prompt Cache Hits</strong>, or <strong>Runtime Duration</strong>. Filter sessions by provider (Claude vs. Codex) or search through full conversation histories instantly with SQLite FTS5 fast search.</p>
+  </div>
+
+  <h2>2. 1-Click Terminal Session Replay &amp; Resume</h2>
+  <p>One of the most frustrating parts of using CLI agents is resuming a session after switching terminals or closing a window. Previously, developers had to manually locate session UUIDs or inspect raw logs to run commands like <code>claude --resume &lt;session-id&gt;</code> or <code>codex resume</code>.</p>
+
+  <p>With L2Cache, session resumption is seamless:</p>
+  <ul>
+    <li>Inspect any past session in the L2Cache floating panel to see full turn-by-turn prompts, tool executions, and file edits.</li>
+    <li>Click <strong>"Resume in Terminal"</strong> to launch a fresh terminal window automatically attached to the selected agent session.</li>
+    <li>Never lose your place or re-explain context when returning to a complex multi-hour debugging session.</li>
+  </ul>
+
+  <h2>3. Repository Knowledge Graph: Preventing Agent Memory Rot</h2>
+  <p>When an agent spends 20 turns debugging a subtle AppKit threading bug, a SQLite concurrency issue, or a custom build flag constraint, it learns vital facts about your codebase. But when that session finishes, those insights often stay buried in local log archives.</p>
+
+  <p>L2Cache's <strong>Repository Knowledge Graph</strong> bridge converts transient agent discoveries into permanent repository documentation:</p>
+
+  <ol>
+    <li><strong>Extract Discovered Gotchas</strong>: L2Cache parses agent execution logs to surface fragile components, recurring error tracebacks, and technical debt notes.</li>
+    <li><strong>1-Click Promotion to AGENTS.md</strong>: Review extracted constraints and click <em>"Promote to AGENTS.md"</em> to write the rule directly into your project's root <code>AGENTS.md</code> or <code>CLAUDE.md</code> file.</li>
+    <li><strong>Cross-Agent Alignment</strong>: Ensure all coding agents (Claude, Codex, Antigravity, or Cursor) share the exact same rules, preventing agents from repeating known bugs in future sessions.</li>
+  </ol>
+
+  <h2>4. 100% Local, Zero-Cloud Privacy</h2>
+  <p>Just like L2Cache's core clipboard management, all Agent History &amp; Analytics parsing occurs strictly <strong>on-device on your Mac</strong>. L2Cache reads local session logs directly from your home directory, stores analytics in local SQLite databases using GRDB, and never sends your prompts, code snippets, or token statistics to external servers.</p>
+
+  <div class="cta-box">
+    <div class="cta-title">Ready to Supercharge Your AI Coding Workflow?</div>
+    <p style="color: rgba(240,239,248,0.7); margin-bottom: 24px;">Experience fast floating panel access, zero-cloud clipboard history, and native AI Agent History on macOS today.</p>
+    <a href="index.html" class="cta-btn">Try L2Cache Free</a>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">Home</a>
+  <a href="privacy.html">Privacy</a>
+  <a href="support.html">Support</a>
+  <a href="sitemap.html">Sitemap</a>
+  <br/><br/>
+  © 2026 L2Cache. All rights reserved.
+</footer>
+</body>
+</html>
