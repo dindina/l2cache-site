@@ -129,7 +129,7 @@
   </div>
 
   <h2>2. 1-Click Terminal Session Replay &amp; Resume</h2>
-  <p>One of the most frustrating parts of using CLI agents is resuming a session after switching terminals or closing a window. Previously, developers had to manually locate session UUIDs or inspect raw logs to run CLI commands:</p>
+  <p>One of the most frustrating parts of using CLI agents is resuming a session after switching terminals or closing a window. While the native CLI `claude --resume` picker lists recent sessions, **it only displays the initial prompt of each session**. You cannot search across middle turns, tool outputs, terminal commands, error tracebacks, or modified file names across past projects:</p>
 
 <pre><code># Manual session resumption in CLI
 claude --resume a85fd1e8-3b4a-4f12-89cd-7e62a104f982
