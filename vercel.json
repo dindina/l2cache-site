@@ -22,7 +22,7 @@
       "permanent": true
     },
     {
-      "source": "/:page(tools|privacy|support|intelligence|changelog|clipboard-history-mac|mac-command-history|comparison|benchmark|developer-clipboard|custom-actions|jwt-decoder-mac|json-formatter-mac|regex-clipboard-mac|screenshot-ocr-mac|sql-test-data-generator|sitemap|blog|blog-[a-zA-Z0-9_-]+|l2cache-vs-[a-zA-Z0-9_-]+)",
+      "source": "/:page((?!en|zh-Hans|fr|de|it|ja|ko|pt-BR|es|vi|_vercel|tools|icon\\.png|theme\\.css|screenshots|sitemap\\.xml|robots\\.txt|benchmark_dataset_2026\\.csv)[^/]+)",
       "missing": [
         { "type": "host", "value": "amvo.store" },
         { "type": "host", "value": "www.amvo.store" }
