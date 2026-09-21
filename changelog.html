@@ -164,7 +164,177 @@
   <div class="label">Release notes</div>
   <h1>What's New</h1>
 
-  <div class="timeline">
+    <div class="timeline">
+
+    <div class="release">
+      <div class="release-dot"></div>
+      <div class="release-meta">
+        <div class="release-version">v1.4.3</div>
+        <div class="release-date">September 2026</div>
+      </div>
+      <div class="release-body">
+        <div class="release-title">Refined Agent Sessions &amp; Shell Filters</div>
+        <p class="release-summary">Enhanced Claude Code and Codex session history with initial prompt titling, plus dedicated source filtering for your personal shell history.</p>
+
+        <div class="change-group">
+          <div class="change-group-label">Features &amp; Improvements</div>
+          <ul class="change-list">
+            <li><strong>Initial Prompt Titling:</strong> Agent sessions automatically extract and display your original prompt as the session title instead of generic folder names.</li>
+            <li><strong>Terminal Source Filters:</strong> Filter pills (<em>My Shell</em>, <em>Agents</em>, <em>All</em>) separate interactive human commands from automated agent runs.</li>
+            <li><strong>Performance &amp; Polish:</strong> Faster database queries, optimized background indexing, and bug fixes.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="release">
+      <div class="release-dot"></div>
+      <div class="release-meta">
+        <div class="release-version">v1.4.2</div>
+        <div class="release-date">September 2026</div>
+      </div>
+      <div class="release-body">
+        <div class="release-title">Zero-Latency Scrolling &amp; Battery Efficiency</div>
+        <p class="release-summary">Major performance overhaul delivering instant list responsiveness and drastically reduced idle CPU and power draw.</p>
+
+        <div class="change-group">
+          <div class="change-group-label">Performance</div>
+          <ul class="change-list">
+            <li><strong>Ultra-Smooth Scrolling:</strong> Zero-overhead list rendering across large clip databases with tens of thousands of items.</li>
+            <li><strong>Asynchronous Syntax Highlighting:</strong> Code and JSON previews highlight asynchronously in the background without UI stutter.</li>
+            <li><strong>Refined Hover Actions:</strong> Quick copy, delete, and transform buttons appear cleanly on trailing hover.</li>
+            <li><strong>Battery Efficiency:</strong> Reduced CPU consumption for all-day Mac battery life.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="release">
+      <div class="release-dot"></div>
+      <div class="release-meta">
+        <div class="release-version">v1.4.1</div>
+        <div class="release-date">September 2026</div>
+      </div>
+      <div class="release-body">
+        <div class="release-title">Error-to-Resolution Memory &amp; Safe Regex</div>
+        <p class="release-summary">Instant troubleshooting recommendations and a hardened regex playground engine.</p>
+
+        <div class="change-group">
+          <div class="change-group-label">Features</div>
+          <ul class="change-list">
+            <li><strong>Error Resolution Memory:</strong> Automatically matches terminal build and runtime errors with past successful fix commands.</li>
+            <li><strong>Safe Regex Playground:</strong> Enhanced regex tester with support for lookarounds, alternations, and exponential backtrack guards.</li>
+            <li><strong>List Optimizations:</strong> Refined thumbnail caching and smoother scroll interactions.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="release">
+      <div class="release-dot"></div>
+      <div class="release-meta">
+        <div class="release-version">v1.4.0</div>
+        <div class="release-date">August 2026</div>
+      </div>
+      <div class="release-body">
+        <div class="release-title">AI Coding Agent History &amp; Developer Insights</div>
+        <p class="release-summary">A dedicated command center for software developers working with AI coding agents.</p>
+
+        <div class="change-group">
+          <div class="change-group-label">Coding Agents &amp; Terminal</div>
+          <ul class="change-list">
+            <li><strong>Agent Session Tracking:</strong> Automatic indexing and replay of Claude Code and OpenAI Codex terminal sessions.</li>
+            <li><strong>Token Analytics &amp; Cost Estimation:</strong> Track input, output, and cached prompt tokens with estimated API savings.</li>
+            <li><strong>Multi-Shell Support:</strong> Full history integration across Zsh, Bash, and Fish shells.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="release">
+      <div class="release-dot"></div>
+      <div class="release-meta">
+        <div class="release-version">v1.3.1</div>
+        <div class="release-date">August 2026</div>
+      </div>
+      <div class="release-body">
+        <div class="release-title">Pre-Disk Secret Redaction &amp; Git Branch Tracking</div>
+        <p class="release-summary">Zero-privilege privacy protections for terminal workflows and contextual metadata.</p>
+
+        <div class="change-group">
+          <div class="change-group-label">Privacy &amp; Search</div>
+          <ul class="change-list">
+            <li><strong>Pre-Disk Redaction:</strong> Automatically strips passwords, auth tokens, and sensitive API keys before saving commands to SQLite.</li>
+            <li><strong>Git Branch Context:</strong> Terminal commands are tagged with working directory and active Git branch.</li>
+            <li><strong>Atomic FTS5 Indexing:</strong> Lightning-fast search across shell history with zero race conditions.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="release">
+      <div class="release-dot"></div>
+      <div class="release-meta">
+        <div class="release-version">v1.3.0</div>
+        <div class="release-date">August 2026</div>
+      </div>
+      <div class="release-body">
+        <div class="release-title">Secret Masking &amp; AI Mock Data Generator</div>
+        <p class="release-summary">Powerful data transformation and sanitization tools right from your clipboard.</p>
+
+        <div class="change-group">
+          <div class="change-group-label">Smart Actions</div>
+          <ul class="change-list">
+            <li><strong>Secret Masking:</strong> One-click local redaction for JSON, YAML, XML, HTTP headers, and server logs.</li>
+            <li><strong>AI Mock Data Generation:</strong> Instantly generate realistic test records from copied JSON schemas or CSV tables.</li>
+            <li><strong>Smart Action Bubbles:</strong> Floating contextual action bubbles appear beside your cursor for immediate transformations.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="release">
+      <div class="release-dot"></div>
+      <div class="release-meta">
+        <div class="release-version">v1.2.6</div>
+        <div class="release-date">July 2026</div>
+      </div>
+      <div class="release-body">
+        <div class="release-title">Terminal History &amp; Custom Script Transforms</div>
+        <p class="release-summary">Terminal history replay, intelligent shell aliases, and custom script execution.</p>
+
+        <div class="change-group">
+          <div class="change-group-label">Features</div>
+          <ul class="change-list">
+            <li><strong>Terminal Command Search:</strong> Search and replay command history with timestamps and directory context.</li>
+            <li><strong>Smart Shell Aliases:</strong> Detects repetitive commands and suggests one-click shell aliases.</li>
+            <li><strong>Custom Scripts:</strong> Execute custom Shell, Python, or Ruby transformation scripts directly from the panel.</li>
+            <li><strong>Searchable Screenshots:</strong> On-device OCR extracts text from copied screenshots for full-text search.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="release">
+      <div class="release-dot"></div>
+      <div class="release-meta">
+        <div class="release-version">v1.2.5</div>
+        <div class="release-date">July 2026</div>
+      </div>
+      <div class="release-body">
+        <div class="release-title">Rich Text Tables &amp; Tracking Sanitizer</div>
+        <p class="release-summary">Preserve table formats and strip tracking redirects automatically.</p>
+
+        <div class="change-group">
+          <div class="change-group-label">Clipboard &amp; Formatting</div>
+          <ul class="change-list">
+            <li><strong>Rich Table Support:</strong> Google Docs and web tables preserve formatting with Markdown and HTML export options.</li>
+            <li><strong>In-Panel Modifiers:</strong> Press Enter for formatted text or Shift+Enter for plain text.</li>
+            <li><strong>Clean URL Sanitizer:</strong> Automatically strips Google redirects and UTM tracking parameters.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
     <div class="release">
       <div class="release-dot"></div>
@@ -173,8 +343,8 @@
         <div class="release-date">July 2026</div>
       </div>
       <div class="release-body">
-        <div class="release-title">Global expansion</div>
-        <p class="release-summary">L2Cache is now fully localized! You can now enjoy L2Cache in Spanish, French, German, Italian, Simplified Chinese, Japanese, Korean, Brazilian Portuguese, and Vietnamese. We've also included various bug fixes and performance improvements.</p>
+        <div class="release-title">Global Expansion &amp; 10 Languages</div>
+        <p class="release-summary">L2Cache is now fully localized across 10 languages including Spanish, French, German, Italian, Simplified Chinese, Japanese, Korean, Brazilian Portuguese, and Vietnamese.</p>
       </div>
     </div>
 
@@ -185,44 +355,17 @@
         <div class="release-date">June 2026</div>
       </div>
       <div class="release-body">
-        <div class="release-title">Initial release</div>
-        <p class="release-summary">L2Cache is here. A clipboard manager that remembers everything you copy, understands what it is, and gets out of your way.</p>
+        <div class="release-title">Initial Release</div>
+        <p class="release-summary">L2Cache is here. A native macOS clipboard manager that remembers everything you copy, understands what it is, and stays out of your way.</p>
 
         <div class="change-group">
-          <div class="change-group-label">Clipboard</div>
+          <div class="change-group-label">Core Capabilities</div>
           <ul class="change-list">
-            <li>Unlimited clipboard history — text, images, URLs, code, files</li>
-            <li>Panel opens in under 100ms via <strong>⌘⇧V</strong></li>
-            <li>Full-text search across all clips</li>
-            <li>Smart albums automatically group clips by type and context</li>
-          </ul>
-        </div>
-
-        <div class="change-group">
-          <div class="change-group-label">AI</div>
-          <ul class="change-list">
-            <li>AI-generated titles — clips are named by what they mean, not what they are</li>
-            <li>Apple Intelligence on-device categorisation — nothing leaves your Mac</li>
-            <li>Smart Transform — copy smarter: strip markdown, fix grammar, format JSON, convert code</li>
-          </ul>
-        </div>
-
-        <div class="change-group">
-          <div class="change-group-label">Privacy &amp; Security</div>
-          <ul class="change-list">
-            <li>Sensitive radar — API keys, credit cards, private keys, SSNs, and WiFi credentials automatically detected and locked</li>
-            <li>Unlock sensitive items with Touch ID or your login password</li>
-            <li>App exclusions — stop capturing from any app</li>
-            <li>All data stored locally in SQLite — zero network requests</li>
-          </ul>
-        </div>
-
-        <div class="change-group">
-          <div class="change-group-label">Extras</div>
-          <ul class="change-list">
-            <li>QR code generation — turn any URL or text into a QR code in one click</li>
-            <li>Screenshot renaming — AI renames screenshots by their content automatically</li>
-            <li>Spotlight integration — find clips without opening the panel</li>
+            <li>Unlimited local clipboard history stored in SQLite (text, images, URLs, code, files)</li>
+            <li>Sub-100ms panel opening via <strong>⌘⇧V</strong></li>
+            <li>Sensitive Data Radar with Touch ID locking for passwords and API keys</li>
+            <li>Apple Intelligence on-device categorisation and smart album organization</li>
+            <li>100% on-device privacy with zero external tracking or network calls</li>
           </ul>
         </div>
       </div>
