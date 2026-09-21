@@ -16,6 +16,20 @@ LANGUAGES = {
     "vi": "Vietnamese"
 }
 
+
+REGIONAL_PRICING = {
+    "en": {"price": "$4.99", "raw_price": "4.99", "currency": "USD", "tag": "$4.99 one-time purchase · Pay once, own forever · All updates included", "type": "one-time purchase · lifetime access · all future updates included", "privacy": "$4.99", "privacy_sub": "one-time purchase<br>pay once, own forever"},
+    "zh-Hans": {"price": "¥38", "raw_price": "38", "currency": "CNY", "tag": "¥38 一次性购买 · 终身使用 · 包含后续所有更新", "type": "一次性购买 · 终身使用 · 包含后续所有更新", "privacy": "¥38", "privacy_sub": "一次性购买<br>终身使用"},
+    "fr": {"price": "4,99 €", "raw_price": "4.99", "currency": "EUR", "tag": "4,99 € achat unique · payez une fois, possédez pour toujours · toutes mises à jour incluses", "type": "achat unique · accès à vie · toutes les mises à jour incluses", "privacy": "4,99 €", "privacy_sub": "achat unique<br>accès à vie"},
+    "de": {"price": "4,99 €", "raw_price": "4.99", "currency": "EUR", "tag": "4,99 € Einmalkauf · Einmal zahlen, für immer nutzen · Alle Updates inklusive", "type": "Einmalkauf · lebenslanger Zugriff · alle Updates inklusive", "privacy": "4,99 €", "privacy_sub": "Einmalkauf<br>lebenslanger Zugriff"},
+    "it": {"price": "4,99 €", "raw_price": "4.99", "currency": "EUR", "tag": "4,99 € acquisto una tantum · paga una volta, possiedi per sempre · tutti gli aggiornamenti inclusi", "type": "acquisto una tantum · accesso a vita · tutti gli aggiornamenti inclusi", "privacy": "4,99 €", "privacy_sub": "acquisto una tantum<br>accesso a vita"},
+    "ja": {"price": "¥800", "raw_price": "800", "currency": "JPY", "tag": "¥800 買い切り · 一度のお支払いで永久利用 · すべての更新を含む", "type": "買い切り · 永久ライセンス · すべてのアップデートを含む", "privacy": "¥800", "privacy_sub": "買い切り<br>永久ライセンス"},
+    "ko": {"price": "₩6,600", "raw_price": "6600", "currency": "KRW", "tag": "₩6,600 1회 결제 · 평생 소장 · 모든 업데이트 포함", "type": "1회 결제 · 평생 이용 · 모든 업데이트 포함", "privacy": "₩6,600", "privacy_sub": "1회 결제<br>평생 소장"},
+    "pt-BR": {"price": "R$ 19,90", "raw_price": "19.90", "currency": "BRL", "tag": "R$ 19,90 pagamento único · pague uma vez, tenha para sempre · todas as atualizações inclusas", "type": "pagamento único · acesso vitalício · todas as atualizações inclusas", "privacy": "R$ 19,90", "privacy_sub": "pagamento único<br>acesso vitalício"},
+    "es": {"price": "4,99 €", "raw_price": "4.99", "currency": "EUR", "tag": "4,99 € pago único · paga una vez, tuyo para siempre · todas las actualizaciones incluidas", "type": "pago único · acceso de por vida · todas las actualizaciones incluidas", "privacy": "4,99 €", "privacy_sub": "pago único<br>acceso de por vida"},
+    "vi": {"price": "99.000 ₫", "raw_price": "99000", "currency": "VND", "tag": "99.000 ₫ mua một lần · sở hữu vĩnh viễn · bao gồm tất cả bản cập nhật", "type": "mua một lần · sở hữu vĩnh viễn · bao gồm tất cả cập nhật", "privacy": "99.000 ₫", "privacy_sub": "mua một lần<br>sở hữu vĩnh viễn"}
+}
+
 APP_STORE_COUNTRIES = {
     "en": "us",
     "zh-Hans": "cn",
@@ -224,6 +238,18 @@ def build():
                         return f'screenshots/{loc_name}'
                     return match.group(0)
                 content = re.sub(r'screenshots/([^"/]+)(\.png)', replace_screenshot, content)
+
+            # Localize pricing for specific region
+            if lang in REGIONAL_PRICING:
+                rp = REGIONAL_PRICING[lang]
+                content = content.replace('<div class="pricing-amount">$4.99</div>', f'<div class="pricing-amount">{rp["price"]}</div>')
+                content = content.replace('<div class="pricing-type">one-time purchase · lifetime access · all future updates included</div>', f'<div class="pricing-type">{rp["type"]}</div>')
+                content = content.replace('<p class="price-tag">$4.99 one-time purchase · Pay once, own forever · All updates included</p>', f'<p class="price-tag">{rp["tag"]}</p>')
+                content = content.replace('<div class="privacy-stat-value">$4.99</div>', f'<div class="privacy-stat-value">{rp["privacy"]}</div>')
+                content = content.replace('<div class="privacy-stat-label">one-time purchase<br>pay once, own forever</div>', f'<div class="privacy-stat-label">{rp["privacy_sub"]}</div>')
+                content = content.replace('"$4.99 one-time purchase (Lifetime access)"', f'"{rp["price"]} one-time purchase (Lifetime access)"')
+                content = content.replace('"price": "4.99"', f'"price": "{rp["raw_price"]}"')
+                content = content.replace('"priceCurrency": "USD"', f'"priceCurrency": "{rp["currency"]}"')
 
             # Localize App Store links
             if lang != "en":

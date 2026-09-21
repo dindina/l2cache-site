@@ -21,8 +21,8 @@ def get_row_category(feature_name):
 
 def format_l2cache_cell(text):
     t = text.strip()
-    if "Free" in t or "early access" in t.lower():
-        return f'<span class="rich-badge badge-win-gold">🎁 {t}</span>'
+    if "$4.99" in t or "one-time" in t.lower() or "free" in t.lower() or "early access" in t.lower():
+        return f'<span class="rich-badge badge-win-gold">💎 {t}</span>'
     elif "35 MB" in t or "34 MB" in t:
         return f'<span class="rich-badge badge-win-emerald">⚡ {t}</span>'
     elif "Touch ID" in t or "Hardware" in t:
