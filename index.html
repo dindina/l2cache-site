@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="author" content="Amvo"/>
+  <meta name="theme-color" content="#0d1117"/>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>L2Cache — Clipboard Manager & History for Mac</title>
-  <meta name="description" content="Clipboard manager for Mac that saves your full clipboard history — search everything you've ever copied. Private, on-device AI. Free while in early access."/>
+  <meta name="description" content="Clipboard manager for Mac that saves your full clipboard history — search everything you've ever copied. Private, on-device AI. $4.99 one-time purchase."/>
   <link rel="icon" type="image/png" href="icon.png"/>
   <link rel="apple-touch-icon" href="icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 
-  <!-- SEO: SoftwareApplication schema. NOTE: "price" is "0" while free in early access.
-       When you flip to paid, update price + priceCurrency here to match the new price. -->
+  <!-- SEO: SoftwareApplication schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -45,10 +47,10 @@
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "Is L2Cache free?",
+        "name": "How much does L2Cache cost?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes. L2Cache is free while in early access, and everyone who joins during early access keeps it free for good, including all future updates. No credit card required."
+          "text": "L2Cache is a $4.99 one-time purchase with lifetime access. Pay once, own forever with all future updates included and no recurring subscriptions."
         }
       },
       {
@@ -1124,13 +1126,23 @@
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta property="og:image:alt" content="L2Cache app icon">
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:url" content="https://l2cache.amvo.store/en">
   <meta name="twitter:title" content="L2Cache — Clipboard Manager &amp; History for Mac">
   <meta name="twitter:description" content="Clipboard manager for Mac that saves your full clipboard history — search everything you&#x27;ve ever copied. Private, on-device AI. $4.99 one-time purchase.">
   <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
   <meta name="twitter:image:alt" content="L2Cache app icon">
   <meta name="google-site-verification" content="QD5YcG1TZXwhH24qzpwbBv_q_CYXAkTtU6iXc4lTJr8"/>
+  <!-- SEO: WebSite schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "L2Cache",
+    "url": "https://l2cache.amvo.store/en",
+    "description": "Privacy-first, local-only macOS clipboard manager with developer intelligence and instant search."
+  }
+  </script>
 </head>
 <body>
 
@@ -1480,6 +1492,54 @@
     <p style="font-size:12px;color:var(--text-dim);margin-top:16px">macOS 13 Ventura or later · Universal Binary (Apple Silicon &amp; Intel) · Pay once, own forever</p>
   </div>
 </section>
+
+
+<!-- ENGINEERING BLOG / GUIDES -->
+<section class="section" id="engineering-blog" style="border-top:1px solid var(--border)">
+  <div class="reveal" style="text-align:center;margin-bottom:48px">
+    <div class="section-label">Engineering Deep Dives</div>
+    <h2 class="section-title">From the L2Cache Blog</h2>
+    <p class="section-sub" style="margin:16px auto 0">Technical guides on macOS engineering, SQLite performance, developer security, and on-device AI.</p>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;max-width:1100px;margin:0 auto 40px" class="reveal">
+    <a href="blog-agent-history-analytics.html" style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;text-decoration:none;color:inherit;display:flex;flex-direction:column;justify-content:space-between;transition:transform 0.2s, border-color 0.2s">
+      <div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--purple);margin-bottom:8px;text-transform:uppercase">AI Coding Workflows</div>
+        <h3 style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1.4">Tracking Claude Code &amp; Codex CLI Sessions</h3>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.5">How agent history, prompt cache ratios, and token analytics supercharge AI development.</p>
+      </div>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--purple);margin-top:16px;font-weight:500">Read Article →</div>
+    </a>
+    <a href="blog-sqlite-fts5-hangs.html" style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;text-decoration:none;color:inherit;display:flex;flex-direction:column;justify-content:space-between;transition:transform 0.2s, border-color 0.2s">
+      <div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--purple);margin-bottom:8px;text-transform:uppercase">Database Architecture</div>
+        <h3 style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1.4">Preventing SQLite FTS5 Hangs on Large Datasets</h3>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.5">How we achieved sub-millisecond search across 100k+ clipboard entries using SQLite triggers.</p>
+      </div>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--purple);margin-top:16px;font-weight:500">Read Article →</div>
+    </a>
+    <a href="blog-apple-intelligence-clipboard.html" style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;text-decoration:none;color:inherit;display:flex;flex-direction:column;justify-content:space-between;transition:transform 0.2s, border-color 0.2s">
+      <div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--purple);margin-bottom:8px;text-transform:uppercase">Security &amp; Privacy</div>
+        <h3 style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1.4">Why Developer Tooling Needs On-Device AI</h3>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.5">Why sending clipboard history to cloud LLMs risks leaking API keys, secrets, and auth tokens.</p>
+      </div>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--purple);margin-top:16px;font-weight:500">Read Article →</div>
+    </a>
+    <a href="blog-jwt-security.html" style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;text-decoration:none;color:inherit;display:flex;flex-direction:column;justify-content:space-between;transition:transform 0.2s, border-color 0.2s">
+      <div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--purple);margin-bottom:8px;text-transform:uppercase">Developer Security</div>
+        <h3 style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1.4">Why Pasting JWTs Online is a Security Risk</h3>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.5">Why developers should decode and validate JSON Web Tokens offline on macOS.</p>
+      </div>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--purple);margin-top:16px;font-weight:500">Read Article →</div>
+    </a>
+  </div>
+  <div style="text-align:center" class="reveal">
+    <a href="blog.html" class="btn-secondary" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);text-decoration:none;font-size:14px;font-weight:500">Explore All Engineering Articles &amp; Guides →</a>
+  </div>
+</section>
+
 
 <!-- FOOTER -->
 <footer>

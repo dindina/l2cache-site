@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="author" content="Amvo"/>
+  <meta name="theme-color" content="#0d1117"/>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Your Clipboard Manager Is Reading Your API Keys: Why Developer Tools Need On-Device Apple Intelligence</title>
-  <meta name="description" content="Discover why cloud clipboard tools risk leaking sensitive API keys and JWTs, and how L2Cache uses native Apple Intelligence to keep clipboard history 100% private and fast on macOS.">
+  <meta name="description" content="Discover why cloud clipboard tools risk leaking sensitive API keys and JWTs, and how L2Cache uses native Apple Intelligence to keep clipboard history private."/>
   <link rel="icon" type="image/png" href="icon.png"/>
   <link rel="apple-touch-icon" href="icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -57,7 +60,7 @@
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta property="og:image:alt" content="L2Cache app icon">
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:url" content="https://l2cache.amvo.store/en/blog-apple-intelligence-clipboard">
   <meta name="twitter:title" content="Your Clipboard Manager Is Reading Your API Keys: Why Developer Tools Need On-Device Apple Intelligence">
   <meta name="twitter:description" content="Discover why cloud clipboard tools risk leaking sensitive API keys and JWTs, and how L2Cache uses native Apple Intelligence to keep clipboard history 100% private and fast on macOS.">
@@ -133,6 +136,35 @@
   <p>When you copy a code snippet, SQL query, JSON payload, or stack trace, Apple Intelligence automatically categorizes the snippet, extracts relevant tags, and generates concise natural-language summaries. You get clean, searchable clipboard history with structured tags—all running strictly on local hardware.</p>
 
   <p>Combined with native macOS Vision OCR for extracting code from terminal screenshots and custom regex heuristics for identifying secrets, L2Cache turns your macOS clipboard into a private, high-speed developer memory layer.</p>
+
+  
+  <!-- Related Articles -->
+  <div class="related-articles" style="margin-top: 48px; border-top: 1px solid var(--border); padding-top: 36px; margin-bottom: 48px;">
+    <h3 style="font-family: var(--serif); font-size: 22px; font-weight: 700; margin-bottom: 20px; color: var(--text);">Related Engineering Deep Dives</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+      <a href="blog-jwt-security.html" style="background: rgba(127,119,221,0.06); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;">
+        <div>
+          <div style="font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">SECURITY DEEP DIVE</div>
+          <div style="font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4;">Stop Leaking Secrets: Why Pasting JWTs into Random Websites is a Nightmare</div>
+        </div>
+        <div style="font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; font-weight: 500;">Read Article →</div>
+      </a>
+      <a href="blog-zero-cloud-mac-desktop-ai.html" style="background: rgba(127,119,221,0.06); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;">
+        <div>
+          <div style="font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">ON-DEVICE AI</div>
+          <div style="font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4;">Building Zero-Cloud Desktop AI: Swift Concurrency & Apple Intelligence</div>
+        </div>
+        <div style="font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; font-weight: 500;">Read Article →</div>
+      </a>
+      <a href="blog-developer-workflow-apple-intelligence.html" style="background: rgba(127,119,221,0.06); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;">
+        <div>
+          <div style="font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">APPLE INTELLIGENCE</div>
+          <div style="font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4;">5 Ways On-Device AI Supercharges macOS Developer Workflows</div>
+        </div>
+        <div style="font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; font-weight: 500;">Read Article →</div>
+      </a>
+    </div>
+  </div>
 
   <div class="cta-box">
     <div class="cta-title">Upgrade Your Mac Clipboard to 100% Private On-Device AI</div>

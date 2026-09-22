@@ -2,6 +2,8 @@
 <html lang="en">
 
 <head>
+  <meta name="author" content="Amvo"/>
+  <meta name="theme-color" content="#0d1117"/>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Offline JWT Decoder App for Mac — L2Cache</title>
@@ -390,12 +392,38 @@
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta property="og:image:alt" content="L2Cache app icon">
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:url" content="https://l2cache.amvo.store/en/jwt-decoder-mac">
   <meta name="twitter:title" content="Offline JWT Decoder App for Mac — L2Cache">
   <meta name="twitter:description" content="Decode JSON Web Tokens (JWT) natively and offline on macOS. Stop pasting secrets into web browsers. Clean, private, and fully integrated with your clipboard.">
   <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
   <meta name="twitter:image:alt" content="L2Cache app icon">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://l2cache.amvo.store/en"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Tools",
+        "item": "https://l2cache.amvo.store/en/tools"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Offline JWT Decoder App for Mac",
+        "item": "https://l2cache.amvo.store/en/jwt-decoder-mac"
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body>
@@ -472,7 +500,12 @@
   </article>
 
   <!-- FOOTER -->
-  <footer>
+  
+  <div style="margin-top: 32px; padding: 20px; background: rgba(127,119,221,0.08); border: 1px solid var(--border); border-radius: 10px;">
+    <strong>Security Deep Dive:</strong> Learn <a href="blog-jwt-security.html" style="color: var(--purple); font-weight: 600;">why pasting JWTs into online formatters risks credential leaks</a> and how offline inspection protects production keys.
+  </div>
+
+<footer>
     <ul class="footer-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="blog.html">Blog</a>

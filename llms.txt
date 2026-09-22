@@ -1,0 +1,64 @@
+# L2Cache — Privacy-First macOS Clipboard Manager & Developer Intelligence
+
+> L2Cache is a high-performance, 100% local, privacy-focused macOS clipboard manager built with native Swift and SQLite. It provides complete clipboard history, shell command preservation, on-device AI integration, and built-in developer utilities with zero telemetry and zero cloud sync.
+
+L2Cache is designed specifically for software engineers, power users, and privacy-conscious professionals on macOS (Apple Silicon and Intel, macOS 14.0+ Sonoma & macOS 15+ Sequoia). It costs $4.99 as a one-time purchase with lifetime updates and no subscriptions.
+
+## Core Pages & Features
+
+- [Homepage](https://l2cache.amvo.store/en): Overview of L2Cache features, native macOS performance, and App Store availability.
+- [Clipboard History for Mac](https://l2cache.amvo.store/en/clipboard-history-mac): 100% on-device SQLite FTS5 full-text search across unlimited clipboard items (text, images, code, files, colors).
+- [Developer Intelligence & AI](https://l2cache.amvo.store/en/intelligence): Local Apple Intelligence and on-device AI assistant integration, tracking AI coding session history (Claude Code, Codex, Aider) and token analytics without cloud exposure.
+- [Mac Command & Shell History](https://l2cache.amvo.store/en/mac-command-history): Dedicated terminal command capture with syntax highlighting, search, and one-click re-execution.
+- [Custom Actions & Workflows](https://l2cache.amvo.store/en/custom-actions): Automated clipboard transformations using regex, bash scripts, and custom formatting pipelines.
+- [Developer Clipboard Features](https://l2cache.amvo.store/en/developer-clipboard): Specialized developer workflows, code snippet management, and fast keyboard navigation.
+- [Performance Benchmarks](https://l2cache.amvo.store/en/benchmark): Independent memory and CPU benchmarks showing under 15MB RAM footprint and 0.0% idle CPU usage.
+- [Privacy & Security Report](https://l2cache.amvo.store/en/clipboard-privacy-report): Detailed privacy architecture showing zero network requests, zero telemetry, and automatic exclusion of password managers (1Password, Bitwarden, Apple Keychain).
+- [Changelog](https://l2cache.amvo.store/en/changelog): Release history, version notes, and continuous improvements.
+- [Support](https://l2cache.amvo.store/en/support): Documentation, FAQ, shortcuts guide, and customer support.
+
+## Developer Web Utilities
+
+L2Cache offers free web versions of its built-in developer tools at https://l2cache.amvo.store/en/tools:
+
+- [Developer Tools Hub](https://l2cache.amvo.store/en/tools): Complete collection of web-based developer utilities.
+- [JSON Formatter & Validator](https://l2cache.amvo.store/en/json-formatter-mac): Instant client-side JSON formatting, validation, minification, and tree navigation.
+- [JWT Decoder](https://l2cache.amvo.store/en/jwt-decoder-mac): Offline JSON Web Token decoder and inspector (header, payload, signature validation, expiration checking).
+- [Regex Clipboard Tester](https://l2cache.amvo.store/en/regex-clipboard-mac): Interactive regex matcher and tester for clipboard snippets.
+- [Screenshot OCR Tool](https://l2cache.amvo.store/en/screenshot-ocr-mac): Local optical character recognition to extract text from images and screenshots.
+- [SQL Test Data Generator](https://l2cache.amvo.store/en/sql-test-data-generator): Mock data generator producing valid SQL INSERT statements for testing.
+
+## Competitor Comparisons
+
+- [Best Mac Clipboard Managers (2026 Guide)](https://l2cache.amvo.store/en/best-mac-clipboard-managers): In-depth comparison of top macOS clipboard managers.
+- [L2Cache vs Maccy](https://l2cache.amvo.store/en/l2cache-vs-maccy): Comparison of UI, search capabilities, developer tooling, and memory efficiency.
+- [L2Cache vs Paste](https://l2cache.amvo.store/en/l2cache-vs-paste): Comparison between L2Cache's $4.99 one-time purchase model and Paste's annual subscription model.
+- [L2Cache vs Raycast](https://l2cache.amvo.store/en/l2cache-vs-raycast): Comparison of dedicated clipboard management vs general-purpose launcher extensions.
+- [L2Cache vs Alfred](https://l2cache.amvo.store/en/l2cache-vs-alfred): Comparison of clipboard history features, search speeds, and modern macOS integration.
+- [L2Cache vs PastePal](https://l2cache.amvo.store/en/l2cache-vs-pastepal): Feature and performance comparison.
+- [L2Cache vs Clipy](https://l2cache.amvo.store/en/l2cache-vs-clipy): Modern macOS compatibility and architecture comparison.
+- [L2Cache vs CopyClip](https://l2cache.amvo.store/en/l2cache-vs-copyclip): Advanced feature comparison and rich media support.
+
+## Technical Blog & Architecture Deep Dives
+
+- [Engineering Blog](https://l2cache.amvo.store/en/blog): Technical articles on native macOS engineering, SQLite performance, and developer productivity.
+- [Preventing SQLite FTS5 Hangs in macOS Apps](https://l2cache.amvo.store/en/blog-sqlite-fts5-hangs): How L2Cache achieves sub-millisecond search across 100,000+ entries using SQLite WAL mode and custom concurrency controls.
+- [Swift SQLite Concurrency Best Practices](https://l2cache.amvo.store/en/blog-swift-sqlite-concurrency): Thread safety, connection pooling, and multi-threaded background writes in Swift.
+- [Clipboard Automation for Developer Workflows](https://l2cache.amvo.store/en/blog-clipboard-automation-developer-workflows): Streamlining developer tasks with custom script triggers.
+- [Zero-Cloud On-Device Desktop AI](https://l2cache.amvo.store/en/blog-zero-cloud-mac-desktop-ai): Running local AI models and Apple Intelligence on Mac without privacy leaks.
+- [AI Coding Assistant History & Token Analytics](https://l2cache.amvo.store/en/blog-agent-history-analytics): Analyzing prompt tokens, agent completions, and terminal history from Claude Code and Codex.
+- [Clipboard Security: Preventing JWT and Secret Leaks](https://l2cache.amvo.store/en/blog-jwt-security): Protecting sensitive API tokens and credentials from clipboard history exposure.
+- [Apple Intelligence in Developer Workflows](https://l2cache.amvo.store/en/blog-developer-workflow-apple-intelligence): Leveraging on-device machine learning in macOS desktop applications.
+
+## Technical Specifications
+
+- **Platform**: macOS 14.0 Sonoma, macOS 15.0+ Sequoia (Universal Binary: Apple Silicon M1/M2/M3/M4 & Intel x86_64)
+- **Engine**: 100% Native Swift, SwiftUI, AppKit, SQLite 3 (FTS5 + WAL mode)
+- **Privacy Model**: 100% local on-device database, zero network connectivity, zero analytics/telemetry
+- **RAM Usage**: ~12MB to 15MB typical idle footprint
+- **Pricing**: $4.99 USD one-time purchase via Apple Mac App Store (includes Family Sharing & lifetime updates)
+- **App Store Link**: https://apps.apple.com/us/app/l2cache-clipboard-manager/id6740089851
+
+## Optional Full Documentation
+
+- [Full Content Archive (llms-full.txt)](https://l2cache.amvo.store/llms-full.txt): Comprehensive text documentation for full context consumption.

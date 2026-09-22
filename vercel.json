@@ -2,6 +2,17 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "outputDirectory": "out",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "X-DNS-Prefetch-Control", "value": "on" }
+      ]
+    }
+  ],
   "redirects": [
     {
       "source": "/",
@@ -22,7 +33,7 @@
       "permanent": true
     },
     {
-      "source": "/:page((?!en|zh-Hans|fr|de|it|ja|ko|pt-BR|es|vi|_vercel|tools|icon\\.png|theme\\.css|screenshots|sitemap\\.xml|robots\\.txt|benchmark_dataset_2026\\.csv)[^/]+)",
+      "source": "/:page((?!en|zh-Hans|fr|de|it|ja|ko|pt-BR|es|vi|_vercel|tools|icon\\.png|theme\\.css|screenshots|sitemap\\.xml|robots\\.txt|benchmark_dataset_2026\\.csv|llms\\.txt|llms-full\\.txt)[^/]+)",
       "missing": [
         { "type": "host", "value": "amvo.store" },
         { "type": "host", "value": "www.amvo.store" }

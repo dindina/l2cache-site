@@ -1,0 +1,337 @@
+{
+  "summary": {
+    "health_score": 80,
+    "business_type": "SaaS (Developer Tool — macOS Clipboard Manager)",
+    "sitemap_urls": 101,
+    "languages": ["en", "zh-Hans", "fr", "de", "it", "ja", "ko", "pt-BR", "es", "vi"],
+    "top_findings": [
+      "Missing security headers (X-Content-Type-Options, X-Frame-Options, Referrer-Policy)",
+      "FAQPage schema deprecated by Google on May 7, 2026 — flag, don't remove",
+      "Pricing signal discrepancy: Schema.org says $4.99 but marketing says 'Free during early access'",
+      "47 thin tool pages (~164 words each) at scale risk",
+      "No llms.txt for AI crawler guidance"
+    ],
+    "quick_wins": [
+      "Add security headers via vercel.json (5 min)",
+      "Fix pricing signal discrepancy in JSON-LD or copy (15 min)",
+      "Add llms.txt at site root (15 min)",
+      "Add crossorigin to Google Fonts preconnect (5 min)",
+      "Add loading='lazy' to homepage images (30 min)"
+    ]
+  },
+  "categories": [
+    {
+      "name": "Technical SEO",
+      "score": 18,
+      "max_score": 25,
+      "weight": 0.22,
+      "what_works": [
+        "HTTPS with HSTS (max-age=63072000)",
+        "robots.txt allows all crawlers",
+        "sitemap.xml with 101 URLs, all hreflang-annotated",
+        "Canonical tags on all sampled pages",
+        "Proper 308 redirect from / to /en",
+        "Vercel CDN with strong caching (Age: 69324s)",
+        "No console errors, static HTML (not SPA)"
+      ],
+      "findings": [
+        {
+          "title": "Missing security headers",
+          "severity": "High",
+          "description": "X-Content-Type-Options, X-Frame-Options, and Referrer-Policy headers are all absent. Site is vulnerable to MIME-type sniffing, clickjacking, and referrer leakage.",
+          "recommendation": "Add headers via Vercel vercel.json configuration"
+        },
+        {
+          "title": "Broad CORS policy",
+          "severity": "Info",
+          "description": "Access-Control-Allow-Origin: * is set on all responses. Acceptable for static content site but could be tightened.",
+          "recommendation": "Review if broad CORS is needed for all paths"
+        },
+        {
+          "title": "Missing changefreq and priority in sitemap",
+          "severity": "Low",
+          "description": "Sitemap entries lack changefreq and priority attributes, reducing crawl optimization signals.",
+          "recommendation": "Add changefreq (daily/weekly/monthly) and priority (0.1-1.0) to sitemap entries"
+        }
+      ]
+    },
+    {
+      "name": "Content Quality",
+      "score": 19,
+      "max_score": 25,
+      "weight": 0.23,
+      "what_works": [
+        "Homepage: ~300+ words of focused, benefit-driven content",
+        "Blog posts: 522+ words with clear H1/H2 structure",
+        "Tools index: 935 words with comprehensive tool descriptions",
+        "3 customer testimonials with specific use cases",
+        "Developer-focused keyword targeting (Claude Code, Codex, JWT, SQLite FTS5)",
+        "No duplicate content detected"
+      ],
+      "findings": [
+        {
+          "title": "47 thin tool pages (~164 words each)",
+          "severity": "Medium",
+          "description": "Individual tool pages like /en/tools/json-formatter contain only ~164 words. At 47 pages, this scale of thin content risks Google filtering.",
+          "recommendation": "Add code examples, L2Cache integration tips, and extended FAQ to each tool page"
+        },
+        {
+          "title": "No llms.txt for AI crawler guidance",
+          "severity": "Medium",
+          "description": "No llms.txt file at site root. This file helps AI crawlers (ChatGPT, Claude, Perplexity) understand site purpose and key pages.",
+          "recommendation": "Create llms.txt with site purpose and links to key pages"
+        },
+        {
+          "title": "Missing granular publication dates",
+          "severity": "Low",
+          "description": "Blog meta tag shows 2026-01-01 — lacks specific date and time for freshness signals.",
+          "recommendation": "Add specific datePublished and dateModified to blog posts"
+        },
+        {
+          "title": "No Article/BlogPosting structured data on blog posts",
+          "severity": "Low",
+          "description": "Blog posts lack structured data, missing rich result opportunities.",
+          "recommendation": "Add BlogPosting schema with author, datePublished, headline, image"
+        }
+      ]
+    },
+    {
+      "name": "On-Page SEO",
+      "score": 16,
+      "max_score": 20,
+      "weight": 0.20,
+      "what_works": [
+        "Title tags: 47-125 chars, unique per page, keyword-rich",
+        "Meta descriptions: 156-220 chars, descriptive and compelling",
+        "H1 + H2 heading hierarchy on all sampled pages",
+        "Clean URL structure: /{lang}/descriptive-path",
+        "Internal linking: 10+ links per page, contextual and relevant"
+      ],
+      "findings": [
+        {
+          "title": "2 meta descriptions exceed 155 characters",
+          "severity": "Low",
+          "description": "Blog post description is 220 chars and tools index is 198 chars. Google typically truncates at 155-160 chars.",
+          "recommendation": "Trim to ≤155 characters for full SERP display"
+        },
+        {
+          "title": "Missing meta keywords, author, and theme-color tags",
+          "severity": "Low",
+          "description": "meta keywords (minor), meta author, and theme-color meta tags are absent.",
+          "recommendation": "Add for completeness and browser UI integration"
+        }
+      ]
+    },
+    {
+      "name": "Schema / Structured Data",
+      "score": 7,
+      "max_score": 10,
+      "weight": 0.10,
+      "what_works": [
+        "SoftwareApplication + Offer + Organization on homepage (valid JSON-LD)",
+        "WebApplication + Offer on tool pages (valid JSON-LD)",
+        "FAQPage + Question + Answer on homepage and tool pages (valid JSON-LD)",
+        "Download URL to App Store in structured data",
+        "Software version specified (1.4)"
+      ],
+      "findings": [
+        {
+          "title": "FAQPage schema deprecated by Google",
+          "severity": "Info",
+          "description": "Google retired FAQ rich results for ALL sites on May 7, 2026. The FAQPage structured data is valid JSON-LD but no longer generates Google SERP rich results. Per guidelines, flag at Info, do not recommend removal — still valid for other search engines.",
+          "recommendation": "Keep FAQPage schema (valid, benefits Bing/DuckDuckGo). Consider QAPage for genuine user Q&A instead."
+        },
+        {
+          "title": "Pricing signal discrepancy",
+          "severity": "Medium",
+          "description": "Schema.org Offer.price is 4.99 but HTML comment says price should be '0' while free in early access, and meta description says 'Free while in early access.' This creates confusion for search engines.",
+          "recommendation": "Reconcile: either update Offer.price to 0 or update all copy to say $4.99"
+        },
+        {
+          "title": "No Article/BlogPosting schema on blog posts",
+          "severity": "Medium",
+          "description": "Blog posts lack structured data, missing rich result opportunities.",
+          "recommendation": "Add BlogPosting schema to all blog post templates"
+        },
+        {
+          "title": "Missing WebSite schema with sitelinksSearchbox",
+          "severity": "Low",
+          "description": "No site-wide WebSite schema for potential sitelinks search box.",
+          "recommendation": "Add WebSite JSON-LD with PotentialAction for site search"
+        }
+      ]
+    },
+    {
+      "name": "Performance (CWV)",
+      "score": 7,
+      "max_score": 10,
+      "weight": 0.10,
+      "what_works": [
+        "Vercel CDN with strong caching",
+        "Static HTML (no SPA rendering delays)",
+        "Zero console errors",
+        "gzip compression"
+      ],
+      "findings": [
+        {
+          "title": "Unable to measure Core Web Vitals",
+          "severity": "Info",
+          "description": "PageSpeed Insights API returned rate-limit error. Cannot measure LCP, INP, CLS precisely.",
+          "recommendation": "Re-run pagespeed_check.py when PSI quota resets"
+        },
+        {
+          "title": "6 animated GIF files on homepage",
+          "severity": "Medium",
+          "description": "GIFs: l2cache-jwt.gif, l2cache-ocr.gif, terminal-history.gif, l2cache-sql-smart.gif, custom-smart-actions.gif, and one more. Animated GIFs waste 70-80% bandwidth vs video/WebP.",
+          "recommendation": "Convert to <video autoplay muted loop> or animated WebP"
+        },
+        {
+          "title": "Missing crossorigin on font preconnect",
+          "severity": "Low",
+          "description": "Google Fonts preconnect lacks crossorigin attribute. Can cause FOIT/FOUT.",
+          "recommendation": "Add crossorigin to Google Fonts link"
+        },
+        {
+          "title": "Missing fonts.gstatic.com preconnect",
+          "severity": "Low",
+          "description": "Only fonts.googleapis.com is preconnected. fonts.gstatic.com (where fonts are actually loaded from) is not.",
+          "recommendation": "Add <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>"
+        },
+        {
+          "title": "No loading=lazy on images",
+          "severity": "Low",
+          "description": "No images use loading='lazy' attribute. Below-fold screenshots may cause unnecessary LCP pressure.",
+          "recommendation": "Add loading='lazy' to all below-fold images"
+        }
+      ]
+    },
+    {
+      "name": "AI Search Readiness",
+      "score": 7,
+      "max_score": 10,
+      "weight": 0.10,
+      "what_works": [
+        "Clear, structured content with code examples",
+        "FAQPage content provides direct Q&A for AI extraction",
+        "Technical blog targets AI coding assistant topics (Claude Code, Codex)",
+        "3 customer testimonials with specific use cases",
+        "7 comparison pages for competitive AI responses"
+      ],
+      "findings": [
+        {
+          "title": "No llms.txt for AI crawler guidance",
+          "severity": "Medium",
+          "description": "No llms.txt file at site root. This file helps AI crawlers understand site purpose and key pages.",
+          "recommendation": "Create llms.txt with site purpose and links to key pages"
+        },
+        {
+          "title": "No outbound citations in blog content",
+          "severity": "Low",
+          "description": "Blog posts mention Claude Code, Codex, JSON RFC, etc. but don't link to external documentation.",
+          "recommendation": "Add 2-3 outbound links to authoritative sources per blog post"
+        },
+        {
+          "title": "Non-specific publication dates",
+          "severity": "Low",
+          "description": "Meta tag shows 2026-01-01 — lacks granular dates for freshness signals in AI contexts.",
+          "recommendation": "Add specific datePublished and dateModified to blog posts"
+        }
+      ]
+    },
+    {
+      "name": "Images",
+      "score": 5,
+      "max_score": 5,
+      "weight": 0.05,
+      "what_works": [
+        "All 16 homepage images have descriptive, contextually relevant alt text",
+        "Alt text includes product name for brand consistency",
+        "OG image and Apple touch icon set (512x512)",
+        "OpenGraph tags complete (type, title, description, image, url, site_name)"
+      ],
+      "findings": [
+        {
+          "title": "Animated GIFs instead of modern formats",
+          "severity": "Low",
+          "description": "6 animated GIFs would be more efficient as video or WebP",
+          "recommendation": "Convert GIFs to <video> or animated WebP"
+        },
+        {
+          "title": "No width/height on images",
+          "severity": "Low",
+          "description": "No explicit dimensions on images — potential CLS",
+          "recommendation": "Add width and height attributes to all images"
+        },
+        {
+          "title": "Twitter Card is summary not summary_large_image",
+          "severity": "Low",
+          "description": "twitter:card is 'summary' — less visual impact than summary_large_image",
+          "recommendation": "Change to summary_large_image"
+        }
+      ]
+    }
+  ],
+  "action_plan": {
+    "phases": [
+      {
+        "name": "Phase 1: Critical Fixes",
+        "timeframe": "Week 1",
+        "items": [
+          {"task": "Add security headers via vercel.json", "effort": "5 min", "priority": "High"},
+          {"task": "Fix pricing signal discrepancy ($4.99 vs Free)", "effort": "15 min", "priority": "Medium"},
+          {"task": "Create llms.txt at site root", "effort": "15 min", "priority": "Medium"},
+          {"task": "Add BlogPosting schema to blog posts", "effort": "2 hr", "priority": "Medium"},
+          {"task": "Convert animated GIFs to video/WebP", "effort": "1 hr", "priority": "Medium"}
+        ]
+      },
+      {
+        "name": "Phase 2: High-Impact Improvements",
+        "timeframe": "Weeks 2-3",
+        "items": [
+          {"task": "Expand 47 thin tool pages with code examples and integration tips", "effort": "20 hr", "priority": "Medium"},
+          {"task": "Trim meta descriptions to ≤155 chars", "effort": "1 min", "priority": "Low"},
+          {"task": "Add loading=lazy and width/height to images", "effort": "1 hr", "priority": "Low"},
+          {"task": "Fix font preloading (crossorigin + gstatic preconnect)", "effort": "10 min", "priority": "Low"},
+          {"task": "Add meta author and theme-color tags", "effort": "5 min", "priority": "Low"}
+        ]
+      },
+      {
+        "name": "Phase 3: Content & Authority",
+        "timeframe": "Month 2",
+        "items": [
+          {"task": "Add WebSite schema with sitelinksSearchbox", "effort": "30 min", "priority": "Low"},
+          {"task": "Add BreadcrumbList schema", "effort": "30 min", "priority": "Low"},
+          {"task": "Upgrade Twitter Card to summary_large_image", "effort": "5 min", "priority": "Low"},
+          {"task": "Create branded OG image (1200x630)", "effort": "2 hr", "priority": "Low"},
+          {"task": "Add outbound citations to blog posts", "effort": "1 hr", "priority": "Low"},
+          {"task": "Add image sitemap entries", "effort": "30 min", "priority": "Low"},
+          {"task": "Add changefreq/priority to sitemap", "effort": "30 min", "priority": "Low"},
+          {"task": "Create llms-full.txt with detailed tool descriptions", "effort": "1 hr", "priority": "Low"}
+        ]
+      },
+      {
+        "name": "Phase 4: Monitoring & Iteration",
+        "timeframe": "Ongoing",
+        "items": [
+          {"task": "Re-run PageSpeed Insights for CWV verification", "effort": "5 min", "priority": "Info"},
+          {"task": "Set up drift baseline for homepage SEO elements", "effort": "10 min", "priority": "Info"},
+          {"task": "Monitor FAQPage retention (no immediate action needed)", "effort": "5 min", "priority": "Info"}
+        ]
+      }
+    ]
+  },
+  "artifacts": {
+    "findings_dir": "findings/",
+    "screenshots_dir": "screenshots/",
+    "files": [
+      "findings/technical.md",
+      "findings/content.md",
+      "findings/schema.md",
+      "findings/performance.md",
+      "findings/geo.md",
+      "findings/visual.md",
+      "findings/onpage.md",
+      "findings/sitemap.md"
+    ]
+  }
+}

@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="author" content="Amvo"/>
+  <meta name="theme-color" content="#0d1117"/>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Preventing SQLite FTS5 Tokenization Hangs on Large Datasets</title>
-  <meta name="description" content="Learn how to prevent SQLite FTS5 from hanging on massive text blobs using a simple 8KB trigger hack for your full-text search indexes.">
+  <meta name="description" content="Learn how to prevent SQLite FTS5 from hanging on massive text blobs using a simple 8KB trigger hack for your full-text search indexes."/>
   <link rel="icon" type="image/png" href="icon.png"/>
   <link rel="apple-touch-icon" href="icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -49,12 +52,68 @@
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta property="og:image:alt" content="L2Cache app icon">
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:url" content="https://l2cache.amvo.store/en/blog-sqlite-fts5-hangs">
   <meta name="twitter:title" content="Preventing SQLite FTS5 Tokenization Hangs on Large Datasets">
   <meta name="twitter:description" content="Learn how to prevent SQLite FTS5 from hanging on massive text blobs using a simple 8KB trigger hack for your full-text search indexes.">
   <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
   <meta name="twitter:image:alt" content="L2Cache app icon">
+  <!-- SEO: BlogPosting & Breadcrumb Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Preventing SQLite FTS5 Tokenization Hangs on Large Datasets",
+    "description": "Learn how to prevent SQLite FTS5 from hanging on massive text blobs using a simple 8KB trigger hack for your full-text search indexes.",
+    "url": "https://l2cache.amvo.store/en/blog-sqlite-fts5-hangs",
+    "datePublished": "2026-02-25",
+    "dateModified": "2026-03-20",
+    "author": {
+      "@type": "Organization",
+      "name": "Amvo",
+      "url": "https://l2cache.amvo.store/en"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Amvo",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://l2cache.amvo.store/icon.png"
+      }
+    },
+    "image": "https://l2cache.amvo.store/icon.png",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://l2cache.amvo.store/en/blog-sqlite-fts5-hangs"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://l2cache.amvo.store/en"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "https://l2cache.amvo.store/en/blog"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Preventing SQLite FTS5 Tokenization Hangs on Large Datasets",
+        "item": "https://l2cache.amvo.store/en/blog-sqlite-fts5-hangs"
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 <nav>
@@ -114,6 +173,35 @@ END</code></pre>
   </ul>
 
   <p>If you are building an offline-first application that handles unpredictable user inputs, capping your FTS5 indexes via database triggers is one of the most effective defensive engineering practices you can adopt.</p>
+
+  
+  <!-- Related Articles -->
+  <div class="related-articles" style="margin-top: 48px; border-top: 1px solid var(--border); padding-top: 36px; margin-bottom: 48px;">
+    <h3 style="font-family: var(--serif); font-size: 22px; font-weight: 700; margin-bottom: 20px; color: var(--text);">Related Engineering Deep Dives</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+      <a href="blog-swift-sqlite-concurrency.html" style="background: rgba(127,119,221,0.06); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;">
+        <div>
+          <div style="font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">SWIFT ARCHITECTURE</div>
+          <div style="font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4;">Safe SQLite Concurrency in macOS using Swift Actors and GRDB</div>
+        </div>
+        <div style="font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; font-weight: 500;">Read Article →</div>
+      </a>
+      <a href="blog-zero-cloud-mac-desktop-ai.html" style="background: rgba(127,119,221,0.06); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;">
+        <div>
+          <div style="font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">ON-DEVICE AI</div>
+          <div style="font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4;">Building Zero-Cloud Desktop AI: Swift Concurrency & Apple Intelligence</div>
+        </div>
+        <div style="font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; font-weight: 500;">Read Article →</div>
+      </a>
+      <a href="blog-sql-test-data.html" style="background: rgba(127,119,221,0.06); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;">
+        <div>
+          <div style="font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">AI MOCK DATA</div>
+          <div style="font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4;">Generate Realistic Mock JSON from SQL Schemas Using Local AI on Mac</div>
+        </div>
+        <div style="font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; font-weight: 500;">Read Article →</div>
+      </a>
+    </div>
+  </div>
 
   <div class="cta-box">
     <div class="cta-title">See this architecture in action</div>

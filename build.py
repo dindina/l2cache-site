@@ -195,7 +195,7 @@ def build():
     os.makedirs(L2CACHE_OUT_DIR)
 
     # Copy L2Cache assets
-    for asset in ["icon.png", "screenshots", "theme.css", "tools", "benchmark_dataset_2026.csv"]:
+    for asset in ["icon.png", "screenshots", "theme.css", "tools", "benchmark_dataset_2026.csv", "llms.txt", "llms-full.txt"]:
         if os.path.exists(asset):
             if os.path.isdir(asset):
                 shutil.copytree(asset, os.path.join(L2CACHE_OUT_DIR, asset))
@@ -214,6 +214,11 @@ def build():
         lang_dir = os.path.join(L2CACHE_OUT_DIR, lang)
         os.makedirs(lang_dir, exist_ok=True)
         print(f"Building for {lang}...")
+        
+        # Copy llms.txt and llms-full.txt to localized subpaths
+        for llm_file in ["llms.txt", "llms-full.txt"]:
+            if os.path.exists(llm_file):
+                shutil.copy(llm_file, os.path.join(lang_dir, llm_file))
         
         for file in HTML_FILES:
             if not os.path.exists(file):
@@ -296,8 +301,23 @@ def build():
             if not os.path.exists(file):
                 continue
             clean = build_page_clean_path(file)
+            if file == "index.html":
+                changefreq = "daily"
+                priority = "1.0"
+            elif file in ["intelligence.html", "clipboard-history-mac.html", "mac-command-history.html", "custom-actions.html", "developer-clipboard.html", "benchmark.html", "clipboard-privacy-report.html", "changelog.html"]:
+                changefreq = "weekly"
+                priority = "0.9"
+            elif file.startswith("blog") or file.startswith("l2cache-vs-") or file == "best-mac-clipboard-managers.html":
+                changefreq = "weekly"
+                priority = "0.8"
+            else:
+                changefreq = "monthly"
+                priority = "0.7"
+
             f.write('  <url>\n')
             f.write(f'    <loc>{localized_page("en", file)}</loc>\n')
+            f.write(f'    <changefreq>{changefreq}</changefreq>\n')
+            f.write(f'    <priority>{priority}</priority>\n')
             # xhtml:link alternates for all locales (incl. self + x-default)
             for code in LANGUAGES.keys():
                 f.write(f'    <xhtml:link rel="alternate" hreflang="{code}" '
@@ -311,8 +331,12 @@ def build():
             tool_files = [f for f in sorted(os.listdir("tools")) if f.endswith('.html')]
             for tf in tool_files:
                 clean_tf = "" if tf == "index.html" else f"/{tf.removesuffix('.html')}"
+                changefreq = "weekly" if tf == "index.html" else "monthly"
+                priority = "0.8" if tf == "index.html" else "0.7"
                 f.write('  <url>\n')
                 f.write(f'    <loc>{base_url}/en/tools{clean_tf}</loc>\n')
+                f.write(f'    <changefreq>{changefreq}</changefreq>\n')
+                f.write(f'    <priority>{priority}</priority>\n')
                 f.write('  </url>\n')
                 
         f.write('</urlset>\n')
