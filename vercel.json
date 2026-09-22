@@ -24,6 +24,24 @@
       "permanent": true
     },
     {
+      "source": "/:lang(zh-Hans|fr|de|it|ja|ko|pt-BR|es|vi)/tools/:tool*",
+      "missing": [
+        { "type": "host", "value": "amvo.store" },
+        { "type": "host", "value": "www.amvo.store" }
+      ],
+      "destination": "/en/tools/:tool*",
+      "permanent": true
+    },
+    {
+      "source": "/:lang(zh-Hans|fr|de|it|ja|ko|pt-BR|es|vi)/:page((?!$)[^/]+)",
+      "missing": [
+        { "type": "host", "value": "amvo.store" },
+        { "type": "host", "value": "www.amvo.store" }
+      ],
+      "destination": "/en/:page",
+      "permanent": true
+    },
+    {
       "source": "/tools/:tool*",
       "missing": [
         { "type": "host", "value": "amvo.store" },

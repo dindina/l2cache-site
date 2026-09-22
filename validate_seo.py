@@ -19,7 +19,7 @@ ROOT = Path(__file__).parent
 _build_spec = importlib.util.spec_from_file_location("l2cache_build", ROOT / "build.py")
 _build = importlib.util.module_from_spec(_build_spec)
 _build_spec.loader.exec_module(_build)  # type: ignore[arg-type]
-LOCALIZED_FILES = frozenset(_build.HTML_FILES) | frozenset(p.name for p in (ROOT / "l2cache-vs-*.html").parent.glob("l2cache-vs-*.html"))
+LOCALIZED_FILES = frozenset(_build.LOCALIZED_FILES)
 SITE_URL = "https://l2cache.amvo.store"
 PUBLIC_PAGES = [
     "index.html", "support.html", "privacy.html", "intelligence.html",

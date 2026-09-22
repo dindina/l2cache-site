@@ -76,7 +76,8 @@ def inject_vercel_analytics(root_dir):
             with open(path, "w", encoding="utf-8") as f:
                 f.write(content)
 
-# Clean, canonical site path for a source file (matches the deployed '/lang/...' slug).
+LOCALIZED_FILES = ["index.html"]
+
 def build_page_clean_path(file):
     # index.html is the site root -> '/en' (no trailing slash; Vercel stores it
     # that way and it's the URL Google indexes). Everything else keeps its slug.
@@ -88,13 +89,15 @@ def localized_page(lang, file):
     clean = build_page_clean_path(file)
     if file == "index.html":
         return f"https://l2cache.amvo.store/{lang}"
-    return f"https://l2cache.amvo.store/{lang}/{clean}"
+    return f"https://l2cache.amvo.store/en/{clean}" if file not in LOCALIZED_FILES else f"https://l2cache.amvo.store/{lang}/{clean}"
 
 
 def hreflang_tags(file):
     """Alternate-locale <link> block for a page across all LANGUAGES.
-    Self-referencing entry included so each page fully maps its locale set.
-    x-default points at English. Returns '' when the list would be empty."""
+    Only emitted for pages that are genuinely translated into all LANGUAGES.
+    Untranslated English pages return '' to prevent hreflang mismatch errors."""
+    if file not in LOCALIZED_FILES:
+        return ""
     alts = []
     for code in LANGUAGES.keys():
         alts.append(
@@ -102,8 +105,6 @@ def hreflang_tags(file):
                 code, localized_page(code, file)
             )
         )
-    if not alts:
-        return ""
     alts.append(
         '    <link rel="alternate" hreflang="x-default" href="{}" />'.format(
             localized_page("en", file)
@@ -113,16 +114,12 @@ def hreflang_tags(file):
 
 
 def rewrite_canonical(html, lang, file):
-    """Replace the hardcoded /en/ canonical with a self-referencing one for the
-    current locale, and append hreflang alternates right after it. Why this
-    matters: templates ship a single /en/ canonical; without rewriting, all
-    localized pages self-declare themselves duplicates of English (the GSC
-    'Duplicate without user-selected canonical' error). This gives each locale
-    its own canonical + reciprocal hreflang."""
-    canonical = localized_page(lang, file)
-    block = "  <link rel=\"canonical\" href=\"{}\" />{}".format(
-        canonical, hreflang_tags(file)
-    )
+    """Replace the hardcoded canonical with the proper canonical.
+    For localized pages: self-referencing canonical for current locale + hreflang tags.
+    For English-only pages: canonical pointing to /en/ without hreflang tags."""
+    canonical = localized_page(lang, file) if file in LOCALIZED_FILES else localized_page("en", file)
+    alts = hreflang_tags(file)
+    block = f"  <link rel=\"canonical\" href=\"{canonical}\" />{alts}"
     # Match the existing canonical tag regardless of trailing slash / quote style.
     html, _ = re.subn(
         r'\s*<link\s+rel="canonical"[^>]*/?>',
@@ -130,8 +127,7 @@ def rewrite_canonical(html, lang, file):
         html,
         count=1,
     )
-    # Keep og:url / twitter:url in sync with the locale canonical (they are
-    # hardcoded to the /en/ URL in the source templates).
+    # Keep og:url / twitter:url in sync with the canonical
     html = re.sub(
         r'(<meta\s+property=\"og:url\"\s+content=\")[^\"]*(\".*?/?>)',
         lambda m: f'{m.group(1)}{canonical}{m.group(2)}',
@@ -167,13 +163,14 @@ def get_language_switcher_html(current_lang):
     return switcher
 
 def fix_links(html_content, lang):
-    """Prefix local links with /lang/ and use Vercel's canonical clean URLs."""
+    """Prefix local links with /lang/ for localized files, and /en/ for English-only files."""
     for file in HTML_FILES:
         # Avoid double replacing or replacing external links
         clean_path = "" if file == "index.html" else file.removesuffix(".html")
+        dest_lang = lang if file in LOCALIZED_FILES else "en"
         html_content = re.sub(
             f'href="{file}(#[^"]*)?"',
-            f'href="/{lang}/{clean_path}\\1"',
+            f'href="/{dest_lang}/{clean_path}\\1"',
             html_content,
         )
     return html_content
@@ -220,7 +217,10 @@ def build():
             if os.path.exists(llm_file):
                 shutil.copy(llm_file, os.path.join(lang_dir, llm_file))
         
-        for file in HTML_FILES:
+        # Only build translated pages for non-en locales (index.html)
+        target_files = HTML_FILES if lang == "en" else LOCALIZED_FILES
+
+        for file in target_files:
             if not os.path.exists(file):
                 continue
             with open(file, "r", encoding="utf-8") as f:
@@ -262,8 +262,8 @@ def build():
                 if country_code != "us":
                     content = content.replace('apps.apple.com/us/', f'apps.apple.com/{country_code}/')
 
-            # Inject language switcher into nav and footer (skip for untranslated files)
-            if file not in ["clipboard-history-mac.html", "mac-command-history.html"]:
+            # Inject language switcher into nav and footer (only for localized files)
+            if file in LOCALIZED_FILES:
                 switcher_html = get_language_switcher_html(lang)
                 if '</nav>' in content:
                     content = content.replace('</nav>', f'{switcher_html}\n</nav>')
@@ -283,14 +283,12 @@ def build():
                 content = re.sub(r'<html lang="[^"]*"', f'<html lang="{lang}"', content)
 
             # SEO: self-referencing canonical for THIS locale + reciprocal hreflang.
-            # Prevents GSC 'Duplicate without user-selected canonical' for localized pages.
             content = rewrite_canonical(content, lang, file)
 
             with open(os.path.join(lang_dir, file), "w", encoding="utf-8") as f:
                 f.write(content)
 
-    # Generate sitemap.xml (canonical URLs + reciprocal hreflang alternates for
-    # every locale, so Google treats localized pages as translations, not dupes).
+    # Generate sitemap.xml
     sitemap_path = os.path.join(L2CACHE_OUT_DIR, "sitemap.xml")
     base_url = "https://l2cache.amvo.store"
     with open(sitemap_path, "w", encoding="utf-8") as f:
@@ -318,12 +316,13 @@ def build():
             f.write(f'    <loc>{localized_page("en", file)}</loc>\n')
             f.write(f'    <changefreq>{changefreq}</changefreq>\n')
             f.write(f'    <priority>{priority}</priority>\n')
-            # xhtml:link alternates for all locales (incl. self + x-default)
-            for code in LANGUAGES.keys():
-                f.write(f'    <xhtml:link rel="alternate" hreflang="{code}" '
-                        f'href="{localized_page(code, file)}" />\n')
-            f.write(f'    <xhtml:link rel="alternate" hreflang="x-default" '
-                    f'href="{localized_page("en", file)}" />\n')
+            # xhtml:link alternates only for genuinely localized pages
+            if file in LOCALIZED_FILES:
+                for code in LANGUAGES.keys():
+                    f.write(f'    <xhtml:link rel="alternate" hreflang="{code}" '
+                            f'href="{localized_page(code, file)}" />\n')
+                f.write(f'    <xhtml:link rel="alternate" hreflang="x-default" '
+                        f'href="{localized_page("en", file)}" />\n')
             f.write('  </url>\n')
             
         # Add Tools to Sitemap
