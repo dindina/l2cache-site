@@ -100,10 +100,21 @@
     }
     .copy-cmd-inline {
       background: rgba(0,200,150,0.1); border: 1px solid rgba(0,200,150,0.25);
-      padding: 4px 8px; border-radius: 6px; font-family: var(--mono); font-size: 12px;
-      color: #008765; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border-radius: 8px; font-family: var(--mono); font-size: 13px;
+      color: #008765; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+      transition: all 0.2s ease;
     }
-    .copy-cmd-inline:hover { background: rgba(0,200,150,0.2); }
+    .copy-cmd-inline:hover { background: rgba(0,200,150,0.2); transform: translateY(-1px); }
+    .copy-cmd-inline.copied { background: #00a87f; color: #ffffff; border-color: #008765; }
+    #toast-notification {
+      position: fixed; bottom: 28px; right: 28px; z-index: 9999;
+      background: #0D0C1A; color: #FFFFFF; border: 1.5px solid #00C896;
+      border-radius: 12px; padding: 14px 22px; font-size: 14px; font-weight: 500;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35); display: flex; align-items: center; gap: 10px;
+      transform: translateY(100px); opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+    #toast-notification.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
   </style>
 
   <script type="application/ld+json">
@@ -208,7 +219,7 @@
           <p class="guide-step-desc">
             Claude Code stores transcripts in <code>~/.claude/projects/</code>. Run in terminal:
             <br/><br/>
-            <span class="copy-cmd-inline" onclick="copyTerminalCmd('open ~/.claude/projects/')" title="Click to copy">
+            <span class="copy-cmd-inline" onclick="copyTerminalCmd('open ~/.claude/projects/', this)" title="Click to copy">
               📋 <code>open ~/.claude/projects/</code>
             </span>
           </p>
@@ -367,10 +378,28 @@
     © 2026 L2Cache. All rights reserved.
   </footer>
 
+  <!-- Toast Notification Container -->
+  <div id="toast-notification">
+    <span id="toast-icon">✅</span>
+    <span id="toast-msg">Copied to clipboard!</span>
+  </div>
+
   <!-- Script: Parser & Timeline Logic -->
   <script>
     let parsedEvents = [];
     let currentFilter = 'all';
+    let toastTimeout;
+
+    function showToast(msg, icon = '✅') {
+      const toast = document.getElementById('toast-notification');
+      document.getElementById('toast-msg').innerText = msg;
+      document.getElementById('toast-icon').innerText = icon;
+      toast.classList.add('show');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
 
     // Drag and drop listeners
     const dropzone = document.getElementById('dropzone');
@@ -402,13 +431,22 @@
 
     function parsePastedJSONL() {
       const text = document.getElementById('raw-jsonl-input').value.trim();
-      if (!text) return alert('Please paste JSONL lines first.');
+      if (!text) return showToast('Please paste JSONL lines first.', '⚠️');
       parseJSONLContent(text);
     }
 
-    function copyTerminalCmd(cmd) {
+    function copyTerminalCmd(cmd, el) {
       navigator.clipboard.writeText(cmd).then(() => {
-        alert('Copied to clipboard: ' + cmd + '\nPaste into Terminal to open your Claude Code projects folder!');
+        showToast("Copied '" + cmd + "' — paste into Terminal to open your projects folder!");
+        if (el) {
+          const original = el.innerHTML;
+          el.innerHTML = '✅ <code>Copied! Paste in Terminal</code>';
+          el.classList.add('copied');
+          setTimeout(() => {
+            el.innerHTML = original;
+            el.classList.remove('copied');
+          }, 2500);
+        }
       });
     }
 
@@ -437,10 +475,11 @@
       });
 
       if (parsedEvents.length === 0) {
-        alert('Could not find valid JSONL events. Try loading the sample session.');
+        showToast('Could not find valid JSONL events. Try loading the sample session.', '⚠️');
         return;
       }
 
+      showToast(`Parsed ${parsedEvents.length} session events successfully!`, '🚀');
       renderResults();
     }
 
@@ -577,7 +616,7 @@
       });
 
       navigator.clipboard.writeText(md).then(() => {
-        alert('Session exported as clean Markdown and copied to your clipboard!');
+        showToast('Session exported as clean Markdown and copied to clipboard!', '📋');
       });
     }
 
