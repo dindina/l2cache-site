@@ -994,32 +994,34 @@
 
     function isTranscriptFile(name, path = '') {
       if (!name) return false;
-      const lower = (path ? path + '/' : '') + name.toLowerCase().trim();
-
-      // Skip internal cache, embeddings, vector stores, telemetry, and non-conversation config files
-      const blacklist = [
-        'known_marketplaces', 'package.json', 'package-lock.json', 'tsconfig.json',
-        'settings.json', 'config.json', 'manifest.json', 'installed_plugins',
-        'plugins.json', 'telemetry', 'stats', 'metrics', 'metadata.json',
-        'keys.json', 'credentials.json', 'launch.json', 'extensions.json',
-        'theme.json', 'tasks.json', 'keybindings.json', 'cache', 'vectors',
-        'embeddings', 'indexes', 'chunks', 'tokens', 'checkpoints', 'debug.log',
-        '.eslintrc', '.prettierrc', 'yarn.lock', 'pnpm-lock.yaml'
+      const fileName = name.toLowerCase().trim();
+      
+      // Exact filename blacklist to avoid config, lock, and metadata files
+      const blacklistFiles = [
+        'known_marketplaces.json', 'package.json', 'package-lock.json', 'tsconfig.json',
+        'settings.json', 'config.json', 'manifest.json', 'installed_plugins.json',
+        'plugins.json', 'metadata.json', 'keys.json', 'credentials.json', 'launch.json',
+        'extensions.json', 'theme.json', 'tasks.json', 'keybindings.json', 'debug.log',
+        '.eslintrc', '.prettierrc', 'yarn.lock', 'pnpm-lock.yaml', 'composer.json'
       ];
-      for (const b of blacklist) {
-        if (lower.includes(b)) return false;
-      }
+      if (blacklistFiles.includes(fileName)) return false;
+
+      // Skip temporary/lock files
+      if (fileName.startsWith('.') && !fileName.includes('transcript')) return false;
+      if (fileName.endsWith('.lock') || fileName.endsWith('.tmp') || fileName.endsWith('.bak')) return false;
 
       // Valid transcript extensions & keywords
-      if (lower.endsWith('.jsonl')) return true;
-      if (lower.endsWith('.json') || lower.endsWith('.txt')) {
-        return lower.includes('transcript') || 
-               lower.includes('session') || 
-               lower.includes('history') || 
-               lower.includes('conversation') || 
-               lower.includes('chat') || 
-               lower.includes('memories') || 
-               lower.includes('thread');
+      if (fileName.endsWith('.jsonl')) return true;
+      if (fileName.endsWith('.json') || fileName.endsWith('.txt')) {
+        return fileName.includes('transcript') || 
+               fileName.includes('session') || 
+               fileName.includes('history') || 
+               fileName.includes('conversation') || 
+               fileName.includes('chat') || 
+               fileName.includes('memories') || 
+               fileName.includes('thread') ||
+               fileName.includes('rollout') ||
+               (path && path.toLowerCase().includes('projects'));
       }
 
       return false;
@@ -1037,7 +1039,8 @@
           });
         }
       } else if (entry.isDirectory) {
-        if (['node_modules', '.git', 'dist', 'build', '.venv', 'venv', 'cache', '.cache', 'tmp', '.tmp', 'vectors', 'embeddings', 'indexes', 'telemetry', 'DerivedData'].includes(entry.name)) return;
+        const dirName = entry.name.toLowerCase();
+        if (['node_modules', '.git', 'dist', 'build', '.venv', 'venv', 'deriveddata', '__pycache__'].includes(dirName)) return;
         const dirReader = entry.createReader();
         const entries = await new Promise((resolve) => {
           dirReader.readEntries((results) => resolve(results || []), () => resolve([]));
@@ -1063,24 +1066,35 @@
           if (fileList.length > 0) {
             await handleDiscoveredFiles(fileList, true);
           } else {
-            showToast(`No transcript files found in ${dirHandle.name}.`, '⚠️');
+            showToast(`No transcript files found in ${dirHandle.name}. Try picking subfolder or JSONL files directly.`, '⚠️');
           }
         } catch (err) {
           if (err.name !== 'AbortError') {
-            console.warn('showDirectoryPicker error:', err);
-            document.getElementById('file-input').click();
+            console.warn('showDirectoryPicker error, opening file/folder dialog fallback:', err);
+            const folderInput = document.getElementById('folder-input');
+            if (folderInput) {
+              folderInput.click();
+            } else {
+              document.getElementById('file-input').click();
+            }
           }
         }
       } else {
-        document.getElementById('file-input').click();
+        const folderInput = document.getElementById('folder-input');
+        if (folderInput) {
+          folderInput.click();
+        } else {
+          document.getElementById('file-input').click();
+        }
       }
     }
 
     async function scanDirHandle(dirHandle, fileList, currentPath = '') {
       try {
         for await (const [name, handle] of dirHandle.entries()) {
-          // Skip internal caches, builds, vector stores, and telemetry
-          if (['node_modules', '.git', 'dist', 'build', '.venv', 'venv', 'cache', '.cache', 'tmp', '.tmp', 'temp', 'vectors', 'embeddings', 'indexes', 'telemetry', 'DerivedData', 'models'].includes(name)) continue;
+          // Skip internal build folders and VCS repositories
+          const lowerName = name.toLowerCase();
+          if (['node_modules', '.git', 'dist', 'build', '.venv', 'venv', 'deriveddata', '__pycache__'].includes(lowerName)) continue;
 
           if (handle.kind === 'file') {
             if (isTranscriptFile(name, currentPath)) {
