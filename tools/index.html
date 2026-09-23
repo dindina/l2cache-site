@@ -73,7 +73,7 @@
     </a>
         <ul class="nav-links">
       <li><a href="/en/developer-clipboard">Developers</a></li>
-      <li><a href="/en/tools" class="active">Free Tools (63)</a></li>
+      <li><a href="/en/tools" class="active">Free Tools (64)</a></li>
       <li><a href="/en/benchmark">Benchmark</a></li>
       <li><a href="/en/best-mac-clipboard-managers">Buyer's Guide</a></li>
       <li><a href="/en/blog">Blog</a></li>
@@ -95,7 +95,7 @@
 
         <!-- Search Box -->
         <div style="position: relative; max-width: 480px; margin: 0 auto;">
-          <input type="text" id="tool-search" placeholder="Search tools (e.g. PDF, Regex, JWT, Color, cURL, Diff)..." 
+          <input type="text" id="tool-search" placeholder="Search tools (e.g. Claude, Codex, PDF, Regex, JWT, Color, cURL)..." 
                  oninput="filterTools()"
                  style="width: 100%; padding: 12px 18px 12px 42px; border-radius: 100px; border: 1px solid var(--border); font-family: var(--sans); font-size: 14px; background: #fff; outline: none; box-shadow: 0 4px 12px rgba(0,0,0,0.03);" />
           <span style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 15px; color: #888;">🔍</span>
@@ -104,7 +104,7 @@
 
       <!-- Category Filter Hub & Crawlable Anchors -->
       <nav class="filter-nav" style="justify-content: center;" aria-label="Tool Categories">
-        <a href="#all" class="filter-btn active" onclick="setCategory('all', this); return false;">All Tools (63)</a>
+        <a href="#all" class="filter-btn active" onclick="setCategory('all', this); return false;">All Tools (64)</a>
         <a href="#dev" class="filter-btn" onclick="setCategory('dev', this); return false;">👨‍💻 Developers & APIs</a>
         <a href="#data" class="filter-btn" onclick="setCategory('data', this); return false;">{ } Data & JSON</a>
         <a href="#security" class="filter-btn" onclick="setCategory('security', this); return false;">🛡️ Security & Auth</a>
@@ -115,6 +115,19 @@
 
       <!-- Tools Directory Grid -->
       <div class="tools-grid" id="tools-container">
+
+        <!-- Tool: Claude Code & Codex Session Viewer (FEATURED) -->
+        <a href="/en/tools/claude-session-viewer" class="tool-card-item card-super-tool" data-cat="dev" data-keywords="claude code session viewer transcript jsonl inspector codex memories cli log parser ai agent terminal branch project" style="grid-column: span 2; border: 1.5px solid #00C896; background: linear-gradient(135deg, rgba(0,200,150,0.06) 0%, rgba(127,119,221,0.06) 100%);">
+          <div class="tool-card-top">
+            <div class="tool-card-icon-box" style="background: rgba(0, 200, 150, 0.2); border-color: rgba(0, 200, 150, 0.5); font-size: 22px;">⚡</div>
+            <div style="display: flex; gap: 6px;">
+              <span class="tool-card-badge badge-super" style="background: #00C896; color: #00382b; font-weight: 700;">⭐ NEW · AI AGENTS</span>
+              <span class="tool-card-badge" style="background: rgba(127,119,221,0.15); color: #5C52C8;">Offline PWA</span>
+            </div>
+          </div>
+          <h3 style="font-size: 17px; margin-top: 6px;">Claude Code &amp; Codex Session Log Viewer</h3>
+          <p style="font-size: 13.5px; line-height: 1.5;">Inspect, search, and analyze multi-turn Claude Code &amp; Codex JSONL transcripts, tool commands, projects, and git branches in your browser with 1-click folder refresh &amp; offline PWA download.</p>
+        </a>
 
         <!-- Tool: MongoDB Query Formatter -->
         <a href="/en/tools/mongodb-query-formatter" class="tool-card-item" data-cat="data" data-keywords="mongodb query formatter mongoose query inspector mongo shell beautify format aggregate find">
@@ -164,16 +177,6 @@
           </div>
           <h3>AWS ARN Deconstructor</h3>
           <p>Deconstruct Amazon Resource Names into Partition, Service, Region, Account ID, and Resource links.</p>
-        </a>
-
-        <!-- Tool: Claude Code & Codex Session Viewer -->
-        <a href="/en/tools/claude-session-viewer" class="tool-card-item card-super-tool" data-cat="dev" data-keywords="claude code session viewer transcript jsonl inspector codex memories cli log parser ai agent">
-          <div class="tool-card-top">
-            <div class="tool-card-icon-box" style="background: rgba(0, 200, 150, 0.2); border-color: rgba(0, 200, 150, 0.4);">🤖</div>
-            <span class="tool-card-badge badge-super">⭐ AI AGENTS</span>
-          </div>
-          <h3>Claude Code &amp; Codex Session Viewer</h3>
-          <p>Inspect, filter, and analyze multi-turn Claude Code and Codex JSONL transcripts and tool calls in your browser.</p>
         </a>
 
         <!-- Tool: DevOps Manifest Parser -->
@@ -787,7 +790,7 @@
         <li><a href="/en/benchmark">Benchmark 2026</a></li>
         <li><a href="/en/best-mac-clipboard-managers">Best Mac Clipboard Managers</a></li>
         <li><a href="/en/clipboard-privacy-report">Privacy Report</a></li>
-        <li><a href="/en/tools">Free Tools (63)</a></li>
+        <li><a href="/en/tools">Free Tools (64)</a></li>
         <li><a href="/en/privacy">Privacy Policy</a></li>
         <li><a href="/en/support">Support</a></li>
       </ul>
