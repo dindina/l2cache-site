@@ -1,7 +1,7 @@
 {
   "maccy": {
     "competitor_name": "Maccy",
-    "seo_title": "L2Cache vs. Maccy: Which Mac Clipboard Manager is Better?",
+    "seo_title": "L2Cache vs. Maccy: Mac Clipboard Manager Compared",
     "seo_description": "A detailed comparison of L2Cache and Maccy. See how their pricing, on-device AI search, developer transforms, and Touch ID credentials encryption stack up.",
     "intro_paragraph": "Maccy is a popular, lightweight, and open-source clipboard manager for macOS designed for speed and keyboard-first navigation. However, if you want on-device AI search, automated OCR text extraction from screenshots, and advanced developer smart transforms, L2Cache offers a significant step up. Here is a side-by-side comparison.",
     "matrix": [
@@ -76,14 +76,19 @@
   },
   "paste": {
     "competitor_name": "Paste",
-    "seo_title": "L2Cache vs. Paste App: The Best Mac Clipboard Manager Compared",
-    "seo_description": "Comparing L2Cache and Paste App. Discover the differences in pricing models, visual UI layouts, developer-focused smart formatting, and local data security.",
-    "intro_paragraph": "Paste is a highly visual, aesthetic clipboard manager that uses a card-based layout at the bottom of the screen and syncs history across Apple devices. However, its mandatory subscription pricing and lack of developer-focused code tools make it expensive for programmers. L2Cache offers a free-for-life alternative with robust security and AI-powered workflow features.",
+    "seo_title": "L2Cache vs. Paste: Best No-Sub Mac Alternative",
+    "seo_description": "Comparing L2Cache and Paste App. Discover the differences in pricing models ($4.99 one-time vs $29.99/yr subscription), UI layouts, developer smart formatting, and local data security.",
+    "intro_paragraph": "Paste is a visual clipboard manager with a card-based carousel at the bottom of the screen that syncs clipboard data to iCloud for $29.99/year. L2Cache offers a modern, high-performance macOS native alternative: a one-time $4.99 purchase, 100% on-device SQLite database, Apple Intelligence OCR search, and built-in developer code formatters.",
     "matrix": [
       [
-        "Pricing",
+        "Pricing Model",
         "$4.99 one-time purchase (Lifetime access)",
-        "$29.99/year subscription"
+        "$29.99/year recurring subscription"
+      ],
+      [
+        "3-Year Total Cost of Ownership",
+        "$4.99 total (Pay once, own forever)",
+        "$89.97 total"
       ],
       [
         "Search Capabilities",
@@ -116,42 +121,55 @@
         "No (Manual Pinboards only)"
       ],
       [
-        "Data Privacy",
-        "100% Local database (Never leaves your Mac)",
+        "Data Privacy & Cloud Isolation",
+        "100% Local database (Zero cloud leak)",
         "Syncs to iCloud (Cloud storage)"
       ]
     ],
     "advantages": [
       [
-        "💰",
-        "Subscription-Free Developer Tool",
-        "Paste App requires a recurring $29.99/year subscription. L2Cache is completely free while in early access, and everyone who joins now keeps all features and future updates free for life. There are no ads, upsells, or hidden subscriptions."
+        "💎",
+        "One-Time Purchase vs. Endless Subscriptions",
+        "Paste App shifted from a standalone tool to a recurring $29.99/year subscription model. L2Cache costs a flat $4.99 one-time purchase with lifetime access, free family sharing via Apple, and all future updates included. Over 3 years, you save over $80 with zero recurring fees."
       ],
       [
         "🛠️",
-        "Developer Code Transforms",
+        "Developer Code Transforms on Copy",
         "Developers frequently need to strip Markdown code fences, format JSON/YAML payloads, or change casing (camelCase to snake_case). L2Cache includes a built-in 'Smart Transform' panel to clean and format code instantly on copy. Paste only stores raw clips with no coding utility."
       ],
       [
         "🛡️",
         "Strict On-Device Privacy & Key Locking",
         "Paste syncs your entire clipboard history—including sensitive API tokens and credentials—to iCloud. L2Cache keeps all clipboard databases strictly local on your physical Mac. It also detects sensitive data automatically, locking it securely behind Touch ID."
+      ],
+      [
+        "🚀",
+        "Instant 2-Minute Migration from Paste",
+        "Switching is seamless: install L2Cache from the Mac App Store, assign your global hotkey (e.g. Cmd+Shift+V), and enjoy sub-50ms panel activations and on-device OCR without losing flow state."
       ]
     ],
     "faqs": [
       [
+        "Why switch from Paste to L2Cache?",
+        "The primary reason is pricing and privacy: Paste requires a recurring $29.99/year subscription and syncs unencrypted clipboard data to iCloud. L2Cache costs a flat $4.99 one-time purchase, keeps all data 100% on-device, and includes built-in developer transforms and Touch ID credential protection."
+      ],
+      [
+        "How do I switch from Paste to L2Cache on macOS?",
+        "Simply install L2Cache from the Mac App Store and map your global hotkey (e.g. Cmd+Shift+V) in L2Cache Settings. Once activated, L2Cache begins indexing your clipboard history with SQLite FTS5 search and OCR immediately without interfering with existing apps."
+      ],
+      [
         "Does L2Cache support iCloud syncing like Paste?",
-        "Not currently. To maintain 100% local privacy, L2Cache keeps your clipboard history isolated to each Mac. Each Mac maintains its own secure, local database. iCloud sync is planned for a future version, but will be completely optional."
+        "To maintain 100% local privacy and prevent sensitive token exposure, L2Cache keeps your clipboard history isolated to each physical Mac. Each device maintains its own secure, local database."
       ],
       [
         "How does L2Cache's UI compare to Paste?",
-        "While Paste uses a large horizontal carousel at the bottom of the screen, L2Cache uses a sleek, compact side panel that opens in under 100ms. It is designed to stay out of your way and let you search and copy using keyboard shortcuts."
+        "While Paste uses a large horizontal carousel at the bottom of the screen, L2Cache uses a sleek, compact side panel that opens in under 50ms with instant keyboard navigation."
       ]
     ]
   },
   "clipy": {
     "competitor_name": "Clipy",
-    "seo_title": "L2Cache vs. Clipy: Modern Alternative for Mac Clipboard Management",
+    "seo_title": "L2Cache vs. Clipy: Modern Mac Clipboard Manager",
     "seo_description": "Comparing the classic Clipy manager with the modern, AI-powered L2Cache. Compare features, interface design, developer productivity tools, and security.",
     "intro_paragraph": "Clipy is a classic, lightweight open-source clipboard manager for Mac that operates out of the menu bar. While it has been a developer favorite for years, it has not been actively updated and lacks critical modern features like full-text search, OCR, security locking, and intelligent categorization. L2Cache provides a modern, secure upgrade for today's macOS workflow.",
     "matrix": [
@@ -226,7 +244,7 @@
   },
   "raycast": {
     "competitor_name": "Raycast Clipboard History",
-    "seo_title": "L2Cache vs. Raycast Clipboard History: Dedicated Native AI vs. Launcher Extension",
+    "seo_title": "L2Cache vs. Raycast Clipboard History Compared",
     "seo_description": "Comparing L2Cache and Raycast Clipboard History. See how dedicated memory footprint, Apple Intelligence screenshot OCR search, Touch ID credential masking, and coding smart transforms compare.",
     "intro_paragraph": "Raycast is an all-in-one launcher with a built-in clipboard history extension. While convenient for existing Raycast power users, it consumes significant background RAM (250MB+) and lacks dedicated on-device OCR search, code sanitization for LLM prompts, and hardware Touch ID credential locking. L2Cache is a focused, ultra-lightweight (<35MB) native clipboard intelligence engine built exclusively for macOS.",
     "matrix": [
@@ -296,7 +314,7 @@
   },
   "alfred": {
     "competitor_name": "Alfred Clipboard History",
-    "seo_title": "L2Cache vs. Alfred Clipboard History: Modern AI & OCR vs. Classic Launcher",
+    "seo_title": "L2Cache vs. Alfred Clipboard History Compared",
     "seo_description": "Comparing L2Cache and Alfred Powerpack clipboard history. Compare modern UI speed, on-device OCR screenshot search, Apple Intelligence categorization, and developer formatting tools.",
     "intro_paragraph": "Alfred is a classic macOS productivity tool that includes a clipboard history viewer with the paid Powerpack. While robust and battle-tested, Alfred's clipboard viewer relies on legacy text matching, lacks screenshot OCR indexing, offers no on-device AI categorization, and doesn't provide built-in developer transforms for JSON, YAML, or regex. L2Cache provides a modern, AI-first alternative designed for today's macOS ecosystem.",
     "matrix": [
@@ -366,7 +384,7 @@
   },
   "pastepal": {
     "competitor_name": "PastePal",
-    "seo_title": "L2Cache vs. PastePal: Mac Clipboard Managers Compared",
+    "seo_title": "L2Cache vs. PastePal: Mac Clipboard Compared",
     "seo_description": "A detailed comparison of L2Cache and PastePal for macOS. Compare on-device Apple Intelligence, developer smart transforms, Touch ID security, and pricing.",
     "intro_paragraph": "PastePal is a well-designed native clipboard manager for Apple devices with iCloud synchronization. While visually polished, it lacks on-device AI categorization, developer-focused code formatting tools, and automated credential masking. L2Cache offers an AI-first alternative with robust developer utilities and zero subscription costs.",
     "matrix": [
@@ -436,7 +454,7 @@
   },
   "copyclip": {
     "competitor_name": "CopyClip",
-    "seo_title": "L2Cache vs. CopyClip: Modern AI Upgrade for Mac Clipboard Management",
+    "seo_title": "L2Cache vs. CopyClip: Mac Clipboard Compared",
     "seo_description": "Comparing CopyClip and L2Cache. Compare full-text search, OCR, Touch ID credential masking, and developer transforms.",
     "intro_paragraph": "CopyClip is a minimalist, basic menu-bar clipboard history tool for macOS. While lightweight, it is limited to plain text only, has no search bar in the free tier, and lacks OCR, security, and smart code transforms. L2Cache provides a modern, feature-complete upgrade designed for power users and developers.",
     "matrix": [
