@@ -886,7 +886,7 @@
       }
     }
 
-    const PARSER_SCHEMA_VERSION = 'v2026_09_23_v9';
+    const PARSER_SCHEMA_VERSION = 'v2026_09_23_v10';
 
     async function saveSessionsToCache(sessions) {
       try {
@@ -1291,17 +1291,72 @@
       if (cOther) cOther.innerText = `${otherCount}`;
     }
 
-    // --- Smart Multi-Session File Parser ---
+    // --- Smart Multi-Session & Agent Parser (Matching CodexHistoryAdapter & ClaudeHistoryAdapter) ---
+    function extractTextHelper(val) {
+      if (!val) return '';
+      if (typeof val === 'string') return val.trim();
+      if (Array.isArray(val)) {
+        const parts = [];
+        for (const item of val) {
+          if (typeof item === 'string' && item.trim()) parts.push(item.trim());
+          else if (item && typeof item === 'object') {
+            const type = (item.type || '').toLowerCase();
+            if (type === 'thinking' || type === 'reasoning' || type === 'encrypted_content') continue;
+            const t = item.text || item.content || item.value;
+            if (typeof t === 'string' && t.trim()) parts.push(t.trim());
+          }
+        }
+        return parts.join('\n').trim();
+      }
+      return '';
+    }
+
+    function extractCommandHelper(item) {
+      if (!item) return '';
+      if (typeof item.command === 'string') return item.command.trim();
+      if (Array.isArray(item.command)) {
+        if (item.command.length >= 3 && (item.command[1] === '-lc' || item.command[1] === '-c' || item.command[1] === '-l')) {
+          if (typeof item.command[2] === 'string') return item.command[2].trim();
+        }
+        return item.command.join(' ').trim();
+      }
+      if (Array.isArray(item.parsed_cmd)) {
+        const cmds = item.parsed_cmd.map(c => c && (c.cmd || c.command)).filter(Boolean);
+        if (cmds.length > 0) return cmds.join(' && ');
+      }
+      return '';
+    }
+
+    function extractToolCallCommandHelper(input) {
+      if (!input) return null;
+      if (typeof input === 'object') {
+        const cmd = input.cmd || input.command;
+        if (cmd && typeof cmd === 'string') {
+          return { command: cmd, workdir: input.workdir || input.cwd };
+        }
+      }
+      if (typeof input === 'string') {
+        const m = input.match(/"cmd"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+        if (m) {
+          try {
+            const parsed = JSON.parse('{' + m[0] + '}');
+            if (parsed.cmd) return { command: parsed.cmd, workdir: null };
+          } catch(e) {}
+        }
+      }
+      return null;
+    }
+
     function parseFileIntoSessions(rawText, file, baseIdx) {
       if (!rawText || !rawText.trim()) return [];
 
       const trimmed = rawText.trim();
-      const path = (file && (file.customRelativePath || file.webkitRelativePath || file.name)) || `session-${baseIdx+1}.jsonl`;
+      const filePath = (file && (file.customRelativePath || file.webkitRelativePath || file.name)) || `session-${baseIdx+1}.jsonl`;
       const modDate = (file && file.lastModified) 
         ? new Date(file.lastModified).toLocaleDateString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})
         : new Date().toLocaleDateString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
 
-      const parts = path.split('/');
+      const parts = filePath.split('/');
       let project = 'project';
       if (parts.length > 1) {
         project = parts[parts.length - 2];
@@ -1309,12 +1364,11 @@
         project = file.name.replace('.transcript.jsonl', '').replace('.jsonl', '').replace('.json', '').replace('transcript-', '');
       }
 
-      // Case 1: Pure JSON Array or Object
+      // Case 1: Pure JSON Array or Object (e.g. Exported conversations / Alpaca / OpenAI Chat arrays)
       if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
         try {
           const parsed = JSON.parse(trimmed);
           
-          // Case 1A: Top-level Array of direct message turns: [ { role: 'user', ... }, { role: 'assistant', ... } ]
           if (Array.isArray(parsed) && parsed.length > 0) {
             const isTurnList = parsed.some(item => item && typeof item === 'object' && (item.role || item.author || item.speaker || item.prompt || item.instruction || item.human || item.sender || item.type || item.content || item.text));
             const isSessionList = parsed.some(item => item && typeof item === 'object' && (item.messages || item.turns || item.events || item.chat_messages || item.history));
@@ -1322,42 +1376,34 @@
             if (isSessionList) {
               return parsed.map((sessObj, sIdx) => {
                 const events = extractEventsFromObject(sessObj);
-                return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, path, modDate, rawText, file);
+                return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, filePath, modDate, rawText, file);
               }).filter(Boolean);
             }
 
             if (isTurnList) {
               const events = [];
               parsed.forEach((turnObj, tIdx) => {
-                const normList = normalizeRawLine(turnObj, tIdx);
+                const normList = normalizeRawLine(turnObj, tIdx, new Map(), '');
                 if (normList && normList.length > 0) events.push(...normList);
               });
-              const sess = createSessionRecord(events, `session-1`, project, path, modDate, rawText, file);
+              const sess = createSessionRecord(events, `session-1`, project, filePath, modDate, rawText, file);
               return sess ? [sess] : [];
             }
           }
 
-          // Case 1B: Top-level Single Object
           if (parsed && typeof parsed === 'object') {
             const sessionsArray = parsed.sessions || parsed.conversations || parsed.threads;
             if (Array.isArray(sessionsArray) && sessionsArray.length > 0) {
               return sessionsArray.map((sessObj, sIdx) => {
                 const events = extractEventsFromObject(sessObj);
-                return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, path, modDate, rawText, file);
+                return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, filePath, modDate, rawText, file);
               }).filter(Boolean);
             }
 
             if (parsed.messages || parsed.turns || parsed.events || parsed.chat_messages || parsed.history || parsed.conversation || parsed.items || parsed.mapping) {
               const events = extractEventsFromObject(parsed);
-              const sess = createSessionRecord(events, parsed.id || parsed.session_id || `session-1`, project, path, modDate, rawText, file);
+              const sess = createSessionRecord(events, parsed.id || parsed.session_id || `session-1`, project, filePath, modDate, rawText, file);
               return sess ? [sess] : [];
-            }
-
-            // Single completion / Q&A object at top-level
-            const normList = normalizeRawLine(parsed, 0);
-            if (normList && normList.length > 0) {
-              const sess = createSessionRecord(normList, parsed.id || 'session-1', project, path, modDate, rawText, file);
-              if (sess) return [sess];
             }
           }
         } catch (e) {
@@ -1365,47 +1411,78 @@
         }
       }
 
-      // Case 2: JSON Lines (JSONL)
+      // Case 2: JSON Lines (JSONL) - 2-Pass Architecture (Matching CodexHistoryAdapter & ClaudeHistoryAdapter)
       const lines = rawText.split('\n');
-      const allEvents = [];
-      const sessionGroups = new Map(); // sessionKey -> raw events[]
-      const isMultiSessionFile = path.toLowerCase().includes('history') || path.toLowerCase().includes('all_sessions') || path.toLowerCase().includes('memories');
-
-      lines.forEach((line, lineIdx) => {
-        const lineTrimmed = line.trim();
-        if (!lineTrimmed) return;
+      const parsedRecords = [];
+      for (let i = 0; i < lines.length; i++) {
+        const lt = lines[i].trim();
+        if (!lt) continue;
         try {
-          const obj = JSON.parse(lineTrimmed);
-          const sId = obj.session_id || obj.sessionId || obj.sessionID || obj.conversation_id || obj.thread_id || (obj.session && obj.session.id);
-          
-          const normEvents = normalizeRawLine(obj, lineIdx);
-          if (normEvents && normEvents.length > 0) {
-            if (isMultiSessionFile && sId) {
-              if (!sessionGroups.has(sId)) sessionGroups.set(sId, []);
-              sessionGroups.get(sId).push(...normEvents);
-            } else {
-              allEvents.push(...normEvents);
-            }
-          }
-        } catch (err) {
-          if (lineTrimmed.length > 10 && !lineTrimmed.startsWith('{') && !lineTrimmed.startsWith('[')) {
-            allEvents.push({
-              index: lineIdx + 1,
-              role: 'user',
-              type: 'RAW_LINE',
-              content: lineTrimmed,
-              toolCalls: []
-            });
+          parsedRecords.push({ raw: JSON.parse(lt), lineIdx: i });
+        } catch(e) {
+          if (lt.length > 10 && !lt.startsWith('{') && !lt.startsWith('[')) {
+            parsedRecords.push({ raw: { type: 'RAW_LINE', text: lt }, lineIdx: i });
           }
         }
-      });
+      }
+
+      // Pass 1: Pre-scan for Session Context, Metadata, and Claude Tool Results
+      const toolResults = new Map();
+      let preSessionID = '';
+      let preCWD = '';
+      let preBranch = '';
+      let preModel = '';
+
+      for (const { raw } of parsedRecords) {
+        // Claude tool results
+        if (raw.message && Array.isArray(raw.message.content)) {
+          for (const b of raw.message.content) {
+            if (b && b.type === 'tool_result' && b.tool_use_id) {
+              toolResults.set(b.tool_use_id, { isError: b.is_error === true, content: b.content });
+            }
+          }
+        }
+        // Claude metadata
+        if (raw.sessionId) preSessionID = preSessionID || raw.sessionId;
+        if (raw.cwd) preCWD = preCWD || raw.cwd;
+        if (raw.gitBranch) preBranch = preBranch || raw.gitBranch;
+        if (raw.message && raw.message.model) preModel = preModel || raw.message.model;
+
+        // Codex metadata
+        const type = raw.type;
+        const payload = raw.payload;
+        if ((type === 'session_meta' || type === 'turn_context') && payload) {
+          preSessionID = preSessionID || payload.session_id || payload.id || payload.turn_id;
+          preCWD = preCWD || payload.cwd;
+          if (payload.git && payload.git.branch) preBranch = preBranch || payload.git.branch;
+          if (payload.model) preModel = preModel || payload.model;
+        }
+      }
+
+      // Pass 2: Normalize events
+      const allEvents = [];
+      const sessionGroups = new Map();
+      const isMultiSessionFile = filePath.toLowerCase().includes('history') || filePath.toLowerCase().includes('all_sessions') || filePath.toLowerCase().includes('memories');
+
+      for (const { raw, lineIdx } of parsedRecords) {
+        const sId = raw.session_id || raw.sessionId || raw.sessionID || raw.conversation_id || (raw.payload && (raw.payload.session_id || raw.payload.turn_id)) || preSessionID;
+        const normEvents = normalizeRawLine(raw, lineIdx, toolResults, preCWD);
+        if (normEvents && normEvents.length > 0) {
+          if (isMultiSessionFile && sId) {
+            if (!sessionGroups.has(sId)) sessionGroups.set(sId, []);
+            sessionGroups.get(sId).push(...normEvents);
+          } else {
+            allEvents.push(...normEvents);
+          }
+        }
+      }
 
       if (sessionGroups.size > 0) {
         const resultSessions = [];
         sessionGroups.forEach((events, sKey) => {
           if (events && events.length > 0) {
             events.forEach((ev, evIdx) => ev.index = evIdx + 1);
-            const sess = createSessionRecord(events, sKey, project, path, modDate, rawText, file);
+            const sess = createSessionRecord(events, sKey, project, filePath, modDate, rawText, file, preCWD, preBranch);
             if (sess) resultSessions.push(sess);
           }
         });
@@ -1415,7 +1492,7 @@
       if (allEvents.length === 0) return [];
 
       allEvents.forEach((ev, evIdx) => ev.index = evIdx + 1);
-      const singleSession = createSessionRecord(allEvents, '', project, path, modDate, rawText, file);
+      const singleSession = createSessionRecord(allEvents, preSessionID || '', project, filePath, modDate, rawText, file, preCWD, preBranch);
       return singleSession ? [singleSession] : [];
     }
 
@@ -1428,7 +1505,7 @@
       const events = [];
       if (Array.isArray(rawList)) {
         rawList.forEach((item, idx) => {
-          const normList = normalizeRawLine(item, idx);
+          const normList = normalizeRawLine(item, idx, new Map(), '');
           if (normList && normList.length > 0) {
             events.push(...normList);
           }
@@ -1437,9 +1514,9 @@
       return events;
     }
 
-    function detectBranchAndProject(path, file, rawText, events) {
+    function detectBranchAndProject(path, file, rawText, events, preCWD, preBranch) {
       let project = 'project';
-      let branch = '';
+      let branch = preBranch || '';
 
       // 1. Project extraction from path
       const p = (file && (file.customRelativePath || file.webkitRelativePath || file.name)) || path || '';
@@ -1452,16 +1529,29 @@
         project = file.name.replace('.transcript.jsonl', '').replace('.jsonl', '').replace('.json', '').replace('transcript-', '');
       }
 
-      // 2. Scan raw text / JSON objects for git_branch, branch, cwd
-      const sample = (rawText || '').substring(0, 25000);
-      
-      const cwdMatch = sample.match(/"(?:cwd|workdir|working_directory|workspace_root|workspace_roots)"\s*:\s*\[?"?([^"\]]+)"?/);
-      if (cwdMatch && cwdMatch[1] && cwdMatch[1] !== 'undefined') {
-        const cwdParts = cwdMatch[1].split(/[\\\/]/).filter(Boolean);
+      // 2. Project from CWD if available
+      const cwdTarget = preCWD || '';
+      if (cwdTarget) {
+        const cwdParts = cwdTarget.split(/[\\\/]/).filter(Boolean);
         if (cwdParts.length > 0) {
           const lastPart = cwdParts[cwdParts.length - 1];
           if (lastPart && lastPart !== 'tech' && lastPart !== 'projects' && lastPart !== 'root' && lastPart !== 'workspace') {
             project = lastPart;
+          }
+        }
+      }
+
+      // 3. Scan raw text / JSON objects for git_branch, branch, cwd
+      const sample = (rawText || '').substring(0, 25000);
+      if (!cwdTarget) {
+        const cwdMatch = sample.match(/"(?:cwd|workdir|working_directory|workspace_root|workspace_roots)"\s*:\s*\[?"?([^"\]]+)"?/);
+        if (cwdMatch && cwdMatch[1] && cwdMatch[1] !== 'undefined') {
+          const cwdParts = cwdMatch[1].split(/[\\\/]/).filter(Boolean);
+          if (cwdParts.length > 0) {
+            const lastPart = cwdParts[cwdParts.length - 1];
+            if (lastPart && lastPart !== 'tech' && lastPart !== 'projects' && lastPart !== 'root' && lastPart !== 'workspace') {
+              project = lastPart;
+            }
           }
         }
       }
@@ -1474,14 +1564,16 @@
         project = 'project';
       }
       
-      const branchMatch = sample.match(/"(?:git_branch|gitBranch|branch|current_branch|currentBranch|branch_name|branchName)"\s*:\s*"([^"]+)"/) ||
-                          sample.match(/"(?:git|vcs|repo)"\s*:\s*\{[^}]*"(?:branch)"\s*:\s*"([^"]+)"/) ||
-                          sample.match(/(?:git checkout -b|git switch -c|git switch|git checkout)\s+([a-zA-Z0-9_\-\.\/]+)/) ||
-                          sample.match(/On branch\s+([a-zA-Z0-9_\-\.\/]+)/) ||
-                          sample.match(/HEAD ->\s+origin\/([a-zA-Z0-9_\-\.\/]+)/);
+      if (!branch) {
+        const branchMatch = sample.match(/"(?:git_branch|gitBranch|branch|current_branch|currentBranch|branch_name|branchName)"\s*:\s*"([^"]+)"/) ||
+                            sample.match(/"(?:git|vcs|repo)"\s*:\s*\{[^}]*"(?:branch)"\s*:\s*"([^"]+)"/) ||
+                            sample.match(/(?:git checkout -b|git switch -c|git switch|git checkout)\s+([a-zA-Z0-9_\-\.\/]+)/) ||
+                            sample.match(/On branch\s+([a-zA-Z0-9_\-\.\/]+)/) ||
+                            sample.match(/HEAD ->\s+origin\/([a-zA-Z0-9_\-\.\/]+)/);
 
-      if (branchMatch && branchMatch[1] && !branchMatch[1].startsWith('-') && branchMatch[1] !== 'undefined') {
-        branch = branchMatch[1].replace(/['";,]/g, '').trim();
+        if (branchMatch && branchMatch[1] && !branchMatch[1].startsWith('-') && branchMatch[1] !== 'undefined') {
+          branch = branchMatch[1].replace(/['";,]/g, '').trim();
+        }
       }
 
       // Check events for tool calls or event metadata
@@ -1513,7 +1605,7 @@
       return { project, branch };
     }
 
-    function createSessionRecord(events, sessionKey, defaultProject, path, modDate, rawText, file) {
+    function createSessionRecord(events, sessionKey, defaultProject, path, modDate, rawText, file, preCWD, preBranch) {
       if (!events || events.length === 0) return null;
 
       // Filter out empty turns with no text and no tool calls
@@ -1545,7 +1637,7 @@
       }
 
       const agentInfo = detectAgent(path, file ? file.name : '', rawText);
-      const meta = detectBranchAndProject(path, file, rawText, cleanEvents);
+      const meta = detectBranchAndProject(path, file, rawText, cleanEvents, preCWD, preBranch);
       const project = meta.project || defaultProject || 'project';
       const branch = meta.branch || 'main';
 
@@ -1581,370 +1673,204 @@
       };
     }
 
-    function normalizeRawLine(obj, lineIdx) {
+    function normalizeRawLine(obj, lineIdx, toolResults, defaultCWD) {
       if (!obj || typeof obj !== 'object') return [];
 
-      // 0. OpenAI Codex Rollout Envelopes { timestamp, type, payload }
-      if (obj.payload && typeof obj.payload === 'object') {
-        const pType = obj.payload.type || '';
-        const envType = obj.type || '';
-        // Skip internal telemetry and lifecycle events
-        if (
-          pType === 'token_count' || pType === 'task_started' || pType === 'task_completed' || 
-          pType === 'item_completed' || envType === 'turn_context' || envType === 'world_state' || 
-          envType === 'session_meta' || envType === 'inter_agent_communication_metadata'
-        ) {
-          return [];
+      const type = obj.type;
+      const payload = obj.payload;
+
+      // 1. Codex Format 1: event_msg -> item_completed
+      if (type === 'event_msg' && payload && payload.type === 'item_completed' && payload.item) {
+        const item = payload.item;
+        const itemType = (item.type || item.role || '').toLowerCase();
+        const isUser = itemType === 'usermessage' || itemType === 'user_message' || itemType === 'user' || itemType === 'prompt' || (item.role || '').toLowerCase() === 'user';
+        const isAgent = itemType === 'agentmessage' || itemType === 'agent_message' || itemType === 'assistant' || itemType === 'agent' || (item.role || '').toLowerCase() === 'assistant';
+        const isCmd = itemType === 'commandexecution' || itemType === 'command_execution' || itemType === 'command' || itemType === 'exec' || itemType === 'bash' || itemType === 'filechange' || itemType === 'websearch';
+
+        if (isUser) {
+          const text = extractTextHelper(item.content || item.text || item.message || item.prompt);
+          if (text) return [{ index: lineIdx + 1, role: 'user', type: 'USER_PROMPT', content: text, toolCalls: [] }];
+        } else if (isAgent) {
+          const text = extractTextHelper(item.content || item.text || item.message);
+          if (text) return [{ index: lineIdx + 1, role: 'assistant', type: 'ASSISTANT_RESPONSE', content: text, toolCalls: [] }];
+        } else if (isCmd) {
+          const cmd = extractCommandHelper(item);
+          if (cmd) {
+            return [{
+              index: lineIdx + 1,
+              role: 'tool',
+              type: 'COMMAND_EXECUTION',
+              content: cmd,
+              toolCalls: [{ name: item.type || 'exec', arguments: { command: cmd, cwd: item.cwd || defaultCWD, exit_code: item.exit_code, duration: item.duration } }]
+            }];
+          }
+        }
+        return [];
+      }
+
+      // 2. Codex Format 2: event_msg direct
+      if (type === 'event_msg' && payload) {
+        const pType = (payload.type || '').toLowerCase();
+        const isUser = pType === 'user_message' || pType === 'usermessage' || pType === 'user' || pType === 'prompt' || (payload.role || '').toLowerCase() === 'user';
+        const isAgent = pType === 'agent_message' || pType === 'agentmessage' || pType === 'assistant' || pType === 'agent' || (payload.role || '').toLowerCase() === 'assistant';
+
+        if (isUser) {
+          const text = extractTextHelper(payload.message || payload.text || payload.content || payload.prompt);
+          if (text) return [{ index: lineIdx + 1, role: 'user', type: 'USER_PROMPT', content: text, toolCalls: [] }];
+        } else if (isAgent) {
+          const text = extractTextHelper(payload.message || payload.text || payload.content);
+          if (text && !text.startsWith('<EXTERNAL SESSION IMPORTED>')) {
+            return [{ index: lineIdx + 1, role: 'assistant', type: 'ASSISTANT_RESPONSE', content: text, toolCalls: [] }];
+          }
+        }
+        return [];
+      }
+
+      // 3. Codex Format 3: response_item
+      if (type === 'response_item' && payload) {
+        const pType = (payload.type || '').toLowerCase();
+        const pRole = (payload.role || '').toLowerCase();
+
+        if (pType === 'custom_tool_call' || pType === 'tool_call' || pType === 'function_call') {
+          const extracted = extractToolCallCommandHelper(payload.input);
+          const cmd = extracted ? extracted.command : '';
+          return [{
+            index: lineIdx + 1,
+            role: 'tool',
+            type: 'TOOL_CALL',
+            content: cmd,
+            toolCalls: [{ name: payload.name || 'exec', arguments: payload.input || {} }]
+          }];
+        } else if (pType === 'custom_tool_call_output' || pType === 'tool_call_output' || pType === 'function_call_output') {
+          const outText = extractTextHelper(payload.output);
+          if (outText) {
+            return [{ index: lineIdx + 1, role: 'tool', type: 'TOOL_OUTPUT', content: outText, toolCalls: [] }];
+          }
+        } else if (pRole === 'user' || pType === 'user_message' || pType === 'user') {
+          const text = extractTextHelper(payload.content || payload.message || payload.text || payload.prompt);
+          if (text) return [{ index: lineIdx + 1, role: 'user', type: 'USER_PROMPT', content: text, toolCalls: [] }];
+        } else if (pRole === 'developer' || pRole === 'system') {
+          const text = extractTextHelper(payload.content || payload.message || payload.text);
+          if (text) return [{ index: lineIdx + 1, role: 'assistant', type: 'SYSTEM_PROMPT', content: '[System Prompt] ' + text, toolCalls: [] }];
+        } else if (pType === 'message' || pRole === 'assistant' || pType === 'agent_message') {
+          const text = extractTextHelper(payload.content || payload.message || payload.text);
+          if (text) return [{ index: lineIdx + 1, role: 'assistant', type: 'ASSISTANT_RESPONSE', content: text, toolCalls: [] }];
+        } else if (pType === 'reasoning') {
+          const text = extractTextHelper(payload.summary || payload.content || payload.text);
+          if (text) return [{ index: lineIdx + 1, role: 'assistant', type: 'THINKING', content: '💭 **Reasoning:**\n' + text, toolCalls: [] }];
+        }
+        return [];
+      }
+
+      // 4. Claude transcripts: type: "user" | "assistant"
+      if (type === 'user' && obj.message) {
+        const text = extractTextHelper(obj.message.content || obj.message.text);
+        if (text) {
+          const isSys = text.startsWith('<recommended_plugins>') || text.startsWith('<permissions') || text.startsWith('<multi_agent_mode') || text.startsWith('<environment_context>') || text.startsWith('<skills_instructions>') || text.startsWith('<INSTRUCTIONS>') || text.startsWith('# AGENTS.md') || text.startsWith('AGENTS.md') || text.startsWith('<local-command-stdout>');
+          return [{
+            index: lineIdx + 1,
+            role: isSys ? 'assistant' : 'user',
+            type: isSys ? 'SYSTEM_PROMPT' : 'USER_PROMPT',
+            content: isSys ? (`[System Context] ${text}`) : text,
+            toolCalls: []
+          }];
         }
       }
 
-      // 1. Array wrapper inside object (e.g. OpenAI dataset format: { "messages": [ ... ] } or { "turns": [ ... ] })
+      if (type === 'assistant' && obj.message && Array.isArray(obj.message.content)) {
+        const events = [];
+        obj.message.content.forEach((block, bIdx) => {
+          if (block.type === 'text' && block.text && block.text.trim()) {
+            events.push({
+              index: lineIdx * 10 + bIdx + 1,
+              role: 'assistant',
+              type: 'ASSISTANT_RESPONSE',
+              content: block.text.trim(),
+              toolCalls: []
+            });
+          } else if (block.type === 'tool_use' && (block.name || block.id)) {
+            const input = block.input || {};
+            let cmd = '';
+            if (block.name === 'Bash') cmd = input.command || '';
+            else if (input.file_path || input.path || input.target_file || input.filePath) cmd = `${block.name}: ${input.file_path || input.path || input.target_file || input.filePath}`;
+            else if (input.command || input.query || input.pattern) cmd = `${block.name}: ${input.command || input.query || input.pattern}`;
+            else cmd = block.name;
+
+            events.push({
+              index: lineIdx * 10 + bIdx + 1,
+              role: 'tool',
+              type: 'TOOL_CALL',
+              content: cmd,
+              toolCalls: [{ name: block.name, arguments: input }]
+            });
+          }
+        });
+        if (events.length > 0) return events;
+      }
+
+      // 5. Claude Global history.jsonl format: obj.display
+      if (obj.display && typeof obj.display === 'string') {
+        let fullPrompt = obj.display.trim();
+        if (obj.pastedContents && typeof obj.pastedContents === 'object') {
+          const sortedPasted = Object.values(obj.pastedContents).map(d => d && d.content).filter(Boolean);
+          if (sortedPasted.length > 0) fullPrompt += '\n' + sortedPasted.join('\n');
+        }
+        return [{ index: lineIdx + 1, role: 'user', type: 'USER_PROMPT', content: fullPrompt, toolCalls: [] }];
+      }
+
+      // 6. Generic array wrapper / conversations / Alpaca / ChatGPT choices
       const innerList = obj.messages || obj.turns || obj.conversation || obj.items || obj.chat || obj.chat_messages;
       if (Array.isArray(innerList) && innerList.length > 0) {
-        const subEvents = [];
-        innerList.forEach((subItem, sIdx) => {
-          const norm = normalizeRawLine(subItem, lineIdx * 100 + sIdx);
-          if (norm && norm.length > 0) subEvents.push(...norm);
+        const sub = [];
+        innerList.forEach((si, idx) => {
+          const res = normalizeRawLine(si, lineIdx * 100 + idx, toolResults, defaultCWD);
+          if (res && res.length > 0) sub.push(...res);
         });
-        if (subEvents.length > 0) return subEvents;
+        if (sub.length > 0) return sub;
       }
 
-      // 2. OpenAI Request / Response log wrapper ({ "request": { "messages": [...] }, "response": { "choices": [...] } })
-      if (obj.request && (Array.isArray(obj.request.messages) || obj.request.prompt)) {
-        const subEvents = [];
-        if (Array.isArray(obj.request.messages)) {
-          obj.request.messages.forEach((subItem, sIdx) => {
-            const norm = normalizeRawLine(subItem, lineIdx * 100 + sIdx);
-            if (norm && norm.length > 0) subEvents.push(...norm);
-          });
-        } else if (obj.request.prompt) {
-          subEvents.push({ index: lineIdx * 100 + 1, role: 'user', type: 'USER_PROMPT', content: String(obj.request.prompt).trim(), toolCalls: [] });
-        }
-        if (obj.response) {
-          const respNorm = normalizeRawLine(obj.response, lineIdx * 100 + subEvents.length + 1);
-          if (respNorm && respNorm.length > 0) subEvents.push(...respNorm);
-        }
-        if (subEvents.length > 0) return subEvents;
-      }
-
-      // 3. OpenAI Prompt + Choices (Completion API format)
-      if (obj.prompt && Array.isArray(obj.choices) && obj.choices.length > 0) {
-        const userEvent = { index: lineIdx * 2 + 1, role: 'user', type: 'USER_PROMPT', content: String(obj.prompt).trim(), toolCalls: [] };
-        const choice = obj.choices[0];
-        const botText = (choice.message && (choice.message.content || choice.message.text)) || choice.text || '';
-        const botEvent = { index: lineIdx * 2 + 2, role: 'assistant', type: 'ASSISTANT_RESPONSE', content: String(botText).trim(), toolCalls: [] };
-        return [userEvent, botEvent];
-      }
-
-      // 4. Two-turn Q&A Pair structures (Alpaca, Codex dataset, Instruction-Tuning)
-      const userText = obj.prompt || obj.instruction || obj.question || obj.human || obj.user || (obj.input && (obj.output || obj.response) ? obj.input : null) || (obj.query && (obj.response || obj.result || obj.answer) ? obj.query : null);
-      const botText = obj.response || obj.completion || obj.answer || obj.output || obj.assistant || obj.ai || obj.gpt || obj.model || obj.result;
-      
-      if (userText && botText && typeof userText === 'string' && typeof botText === 'string') {
-        return [
-          { index: lineIdx * 2 + 1, role: 'user', type: 'USER_PROMPT', content: userText.trim(), toolCalls: [] },
-          { index: lineIdx * 2 + 2, role: 'assistant', type: 'ASSISTANT_RESPONSE', content: botText.trim(), toolCalls: [] }
-        ];
-      }
-
-      // 5. OpenAI Realtime / Codex Item Wrappers ({"type":"conversation.item.create","item":{...}})
-      if (obj.item && typeof obj.item === 'object') {
-        const itemNorm = normalizeEvent(obj.item, lineIdx);
-        if (itemNorm) return [itemNorm];
-      }
-
-      // 6. OpenAI Chat completion choices ({ "choices": [ { "message": { "role": "assistant", ... } } ] })
-      if (Array.isArray(obj.choices) && obj.choices.length > 0 && obj.choices[0]) {
-        const firstChoice = obj.choices[0];
-        if (firstChoice.message) {
-          const choiceNorm = normalizeEvent(firstChoice.message, lineIdx);
-          if (choiceNorm) return [choiceNorm];
-        } else if (firstChoice.text) {
-          return [{ index: lineIdx + 1, role: 'assistant', type: 'MODEL_OUTPUT', content: String(firstChoice.text).trim(), toolCalls: [] }];
-        }
-      }
-
-      const single = normalizeEvent(obj, lineIdx);
-      return single ? [single] : [];
+      // 7. Generic Fallback
+      return normalizeEvent(obj, lineIdx);
     }
 
     function normalizeEvent(obj, idx) {
       if (!obj || typeof obj !== 'object') return null;
 
-      // 0. Unwrap Codex Rollout Payload Envelope
-      if (obj.payload && typeof obj.payload === 'object') {
-        const parentTs = obj.timestamp;
-        const envType = obj.type;
-        obj = { ...obj.payload, timestamp: parentTs || obj.payload.timestamp, envelopeType: envType };
-      }
-
-      // Skip internal telemetry / metadata events
-      if (
-        obj.type === 'token_count' || obj.type === 'task_started' || obj.type === 'task_completed' || 
-        obj.type === 'item_completed' || obj.envelopeType === 'turn_context' || obj.envelopeType === 'world_state' || 
-        obj.envelopeType === 'session_meta' || obj.envelopeType === 'inter_agent_communication_metadata'
-      ) {
-        return null;
-      }
-
-      let role = 'assistant';
+      // Extract content & tool calls from generic JSON structures
       let content = '';
       let toolCalls = [];
 
-      // 1. Tool Calls (Codex custom_tool_call / tool_call / function_call)
-      if (obj.type === 'custom_tool_call' || obj.type === 'tool_call' || obj.type === 'function_call') {
-        let args = obj.input || obj.arguments || {};
-        let cleanArgs = args;
-        if (typeof args === 'string') {
-          const m = args.match(/tools\.[a-zA-Z0-9_]+\s*\(\s*(\{[\s\S]*\})\s*\)/);
-          if (m) {
-            try { cleanArgs = JSON.parse(m[1]); } catch(e) { cleanArgs = m[1]; }
-          }
-        }
-        return {
-          index: idx + 1,
-          role: 'tool',
-          type: 'TOOL_CALL',
-          content: '',
-          toolCalls: [{ name: obj.name || 'exec', arguments: cleanArgs }],
-          timestamp: obj.timestamp || ''
-        };
-      }
+      if (typeof obj.content === 'string') content = obj.content.trim();
+      else if (typeof obj.text === 'string') content = obj.text.trim();
+      else if (typeof obj.message === 'string') content = obj.message.trim();
+      else if (typeof obj.prompt === 'string') content = obj.prompt.trim();
+      else if (typeof obj.response === 'string') content = obj.response.trim();
+      else if (typeof obj.instruction === 'string') content = obj.instruction.trim();
 
-      // 2. Tool Outputs (Codex custom_tool_call_output / tool_call_output / function_call_output)
-      if (obj.type === 'custom_tool_call_output' || obj.type === 'tool_call_output' || obj.type === 'function_call_output') {
-        let outText = '';
-        if (Array.isArray(obj.output)) {
-          outText = obj.output.map(o => o.text || (typeof o === 'string' ? o : JSON.stringify(o))).filter(Boolean).join('\n').trim();
-        } else if (typeof obj.output === 'string') {
-          outText = obj.output.trim();
-        }
-        if (!outText) return null;
-        return {
-          index: idx + 1,
-          role: 'tool',
-          type: 'TOOL_OUTPUT',
-          content: outText,
-          toolCalls: [],
-          timestamp: obj.timestamp || ''
-        };
-      }
-
-      // 3. Reasoning / Thinking (Codex reasoning summary)
-      if (obj.type === 'reasoning') {
-        let summaryText = '';
-        if (Array.isArray(obj.summary)) {
-          summaryText = obj.summary.map(s => s.text || '').filter(Boolean).join('\n').trim();
-        }
-        if (!summaryText) return null;
-        return {
-          index: idx + 1,
-          role: 'assistant',
-          type: 'THINKING',
-          content: '💭 **Reasoning:**\n' + summaryText,
-          toolCalls: [],
-          timestamp: obj.timestamp || ''
-        };
-      }
-
-      // 4. Subagent Messages (Codex agent_message)
-      if (obj.type === 'agent_message') {
-        let msgText = '';
-        if (Array.isArray(obj.content)) {
-          msgText = obj.content.map(c => c.text || '').filter(Boolean).join('\n').trim();
-        } else if (typeof obj.content === 'string') {
-          msgText = obj.content.trim();
-        }
-        return {
-          index: idx + 1,
-          role: 'assistant',
-          type: 'SUBAGENT_MESSAGE',
-          content: `🤖 **Sub-agent (${obj.author || 'agent'} ➔ ${obj.recipient || 'root'}):**\n` + (msgText || ''),
-          toolCalls: [],
-          timestamp: obj.timestamp || ''
-        };
-      }
-
-      // 5. Extract content & tool calls from Claude Code, OpenAI Codex, Realtime & ChatGPT structures
-      let contentArray = [];
-      if (Array.isArray(obj.content)) contentArray = obj.content;
-      else if (obj.message && Array.isArray(obj.message.content)) contentArray = obj.message.content;
-      else if (obj.item && Array.isArray(obj.item.content)) contentArray = obj.item.content;
-      else if (Array.isArray(obj.parts)) contentArray = obj.parts;
-      else if (obj.content && Array.isArray(obj.content.parts)) contentArray = obj.content.parts;
-      else if (obj.message && obj.message.content && Array.isArray(obj.message.content.parts)) contentArray = obj.message.content.parts;
-
-      if (contentArray.length > 0) {
-        const textParts = [];
-        contentArray.forEach(c => {
-          if (typeof c === 'string') {
-            if (c.trim()) textParts.push(c.trim());
-          } else if (c && typeof c === 'object') {
-            if ((c.type === 'text' || c.type === 'input_text' || c.type === 'output_text') && c.text) {
-              if (c.text.trim()) textParts.push(c.text.trim());
-            } else if (c.text && typeof c.text === 'string') {
-              if (c.text.trim()) textParts.push(c.text.trim());
-            } else if (Array.isArray(c.parts)) {
-              const joinedParts = c.parts.filter(p => typeof p === 'string' && p.trim()).join('\n').trim();
-              if (joinedParts) textParts.push(joinedParts);
-            } else if (c.type === 'tool_use' || c.type === 'function_call' || c.tool_use_id || c.name || c.function_call || (c.input && !c.text)) {
-              toolCalls.push({
-                name: c.name || (c.function_call && c.function_call.name) || c.tool_name || c.id || 'tool_call',
-                arguments: c.input || c.arguments || (c.function_call && c.function_call.arguments) || c.parameters || {}
-              });
-            } else if (c.type === 'tool_result' || c.type === 'function_call_output' || c.output) {
-              const res = typeof c.content === 'string' ? c.content : (typeof c.output === 'string' ? c.output : JSON.stringify(c));
-              if (res && res.trim()) textParts.push(res.trim());
-            }
-          }
-        });
-        content = textParts.join('\n\n').trim();
-      } else if (typeof obj.content === 'string') {
-        content = obj.content.trim();
-      } else if (obj.text && typeof obj.text === 'string') {
-        content = obj.text.trim();
-      } else if (obj.message && typeof obj.message.content === 'string') {
-        content = obj.message.content.trim();
-      } else if (obj.message && typeof obj.message.text === 'string') {
-        content = obj.message.text.trim();
-      } else if (obj.item && typeof obj.item.text === 'string') {
-        content = obj.item.text.trim();
-      } else if (obj.item && typeof obj.item.content === 'string') {
-        content = obj.item.content.trim();
-      } else if (obj.value && typeof obj.value === 'string') {
-        content = obj.value.trim();
-      } else if (obj.prompt && typeof obj.prompt === 'string') {
-        content = obj.prompt.trim();
-      } else if (obj.instruction && typeof obj.instruction === 'string') {
-        content = obj.instruction.trim();
-      } else if (obj.query && typeof obj.query === 'string') {
-        content = obj.query.trim();
-      } else if (obj.question && typeof obj.question === 'string') {
-        content = obj.question.trim();
-      } else if (obj.response && typeof obj.response === 'string') {
-        content = obj.response.trim();
-      } else if (obj.completion && typeof obj.completion === 'string') {
-        content = obj.completion.trim();
-      } else if (obj.answer && typeof obj.answer === 'string') {
-        content = obj.answer.trim();
-      } else if (obj.output && typeof obj.output === 'string') {
-        content = obj.output.trim();
-      } else if (obj.thought && typeof obj.thought === 'string') {
-        content = obj.thought.trim();
-      }
-
-      // Extract standalone tool calls
-      if (obj.tool_calls || obj.toolCalls || obj.tools) {
-        const rawTools = obj.tool_calls || obj.toolCalls || obj.tools;
+      if (obj.tool_calls || obj.toolCalls) {
+        const rawTools = obj.tool_calls || obj.toolCalls;
         if (Array.isArray(rawTools)) toolCalls.push(...rawTools);
       }
-      if (obj.function_call && typeof obj.function_call === 'object') {
-        toolCalls.push({
-          name: obj.function_call.name || 'function_call',
-          arguments: obj.function_call.arguments || {}
-        });
-      }
-      if (obj.toolAction || obj.CommandLine) {
-        toolCalls.push(obj);
-      }
 
-      // Comprehensive Role Extraction across Claude, Codex, ChatGPT, and CLI engines
-      let rawRole = '';
-      if (obj.author && obj.author.role) {
-        rawRole = obj.author.role;
-      } else if (obj.message && obj.message.author && obj.message.author.role) {
-        rawRole = obj.message.author.role;
-      } else if (obj.message && obj.message.role) {
-        rawRole = obj.message.role;
-      } else if (obj.item && obj.item.author && obj.item.author.role) {
-        rawRole = obj.item.author.role;
-      } else if (obj.item && obj.item.role) {
-        rawRole = obj.item.role;
-      } else if (obj.role) {
-        rawRole = obj.role;
-      } else if (obj.speaker) {
-        rawRole = obj.speaker;
-      } else if (obj.sender) {
-        rawRole = obj.sender;
-      } else if (obj.source) {
-        rawRole = obj.source;
-      } else if (obj.from) {
-        rawRole = obj.from;
-      } else if (obj.event && /^(user_message|prompt|user_prompt|human_message)$/i.test(String(obj.event))) {
-        rawRole = 'user';
-      } else if (obj.type && /^(user|user_input|user_prompt|user_explicit|human|prompt|input|instruction|query|question|client|customer|assistant|model|ai|bot|completion|response|system|developer|tool|tool_execution|tool_call|tool_result|tool_use|function|function_call)$/i.test(String(obj.type))) {
-        rawRole = obj.type;
-      } else if (obj.prompt || obj.instruction || obj.query || obj.question) {
-        rawRole = 'user';
-      } else if (obj.response || obj.completion || obj.answer) {
-        rawRole = 'assistant';
-      }
-
+      let rawRole = obj.role || obj.type || obj.author || (obj.prompt ? 'user' : 'assistant');
+      let role = 'assistant';
       const cleanRole = String(rawRole || '').toLowerCase().trim();
 
-      if (
-        cleanRole === 'user' ||
-        cleanRole === 'user_input' ||
-        cleanRole === 'user_prompt' ||
-        cleanRole === 'user_explicit' ||
-        cleanRole === 'user_message' ||
-        cleanRole === 'human' ||
-        cleanRole === 'prompt' ||
-        cleanRole === 'input' ||
-        cleanRole === 'instruction' ||
-        cleanRole === 'query' ||
-        cleanRole === 'question' ||
-        cleanRole === 'client' ||
-        cleanRole === 'customer'
-      ) {
-        const isSys = content.startsWith('<recommended_plugins>') ||
-                      content.startsWith('<permissions') ||
-                      content.startsWith('<multi_agent_mode') ||
-                      content.startsWith('<environment_context>') ||
-                      content.startsWith('<skills_instructions>') ||
-                      content.startsWith('<INSTRUCTIONS>') ||
-                      content.startsWith('# AGENTS.md') ||
-                      content.startsWith('AGENTS.md') ||
-                      content.startsWith('<local-command-stdout>');
-        if (isSys) {
-          role = 'assistant';
-          if (!content.startsWith('[System Context]')) content = `[System Context] ${content}`;
-        } else {
-          role = 'user';
-        }
-      } else if (
-        cleanRole === 'tool' ||
-        cleanRole === 'tool_execution' ||
-        cleanRole === 'tool_call' ||
-        cleanRole === 'tool_result' ||
-        cleanRole === 'tool_use' ||
-        cleanRole === 'function' ||
-        cleanRole === 'function_call' ||
-        cleanRole === 'function_output' ||
-        (toolCalls.length > 0 && !content)
-      ) {
+      if (['user', 'user_input', 'user_prompt', 'prompt', 'human', 'client', 'customer'].includes(cleanRole)) {
+        role = 'user';
+      } else if (['tool', 'tool_call', 'tool_result', 'tool_execution', 'function'].includes(cleanRole) || toolCalls.length > 0) {
         role = 'tool';
-      } else if (cleanRole === 'system' || cleanRole === 'developer' || cleanRole === 'system_prompt' || cleanRole === 'system_message') {
-        role = 'assistant';
-        if (content && !content.startsWith('[System Prompt]')) content = `[System Prompt] ${content}`;
-      } else {
-        role = 'assistant';
       }
 
-      // Discard useless heartbeats, telemetry, progress bars, or empty objects
-      const isBlankContent = !content || content.trim().length === 0;
-      const isBlankTools = !toolCalls || toolCalls.length === 0;
-      if (isBlankContent && isBlankTools) {
-        return null;
-      }
+      if (!content && toolCalls.length === 0) return null;
 
       return {
         index: idx + 1,
         role: role,
-        type: obj.type || obj.role || cleanRole.toUpperCase() || 'EVENT',
+        type: role === 'user' ? 'USER_PROMPT' : (role === 'tool' ? 'TOOL_CALL' : 'ASSISTANT_RESPONSE'),
         content: content,
         toolCalls: toolCalls,
-        timestamp: obj.timestamp || obj.created_at || obj.create_time || ''
+        timestamp: obj.timestamp || ''
       };
     }
 
