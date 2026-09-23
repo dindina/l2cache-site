@@ -237,6 +237,53 @@
       padding: 2px 6px;
       border-radius: 4px;
     }
+    
+    /* Session Tiles Grid View */
+    .session-tiles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+      margin: 18px 0 28px;
+    }
+    .session-tile-card {
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: left;
+    }
+    .session-tile-card:hover {
+      border-color: #00C896;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,200,150,0.12);
+    }
+    .session-tile-card.active {
+      border-color: #00C896;
+      background: rgba(0,200,150,0.05);
+    }
+    .session-tile-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin: 10px 0 14px;
+    }
+    .session-tile-btn {
+      margin-top: 12px;
+      width: 100%;
+      justify-content: center;
+      font-size: 12.5px;
+      padding: 7px 12px;
+    }
     .active-session-banner {
       background: var(--bg2);
       border: 1px solid var(--border);
@@ -452,84 +499,116 @@
         </div>
       </div>
 
-      <!-- Master-Detail Workspace Results View -->
+      <!-- Master-Detail & Session Tiles Results View -->
       <div id="viewer-results" style="display: none;">
         
-        <div class="workspace-layout">
-          
-          <!-- Left Column: Sessions Sidebar -->
-          <div class="sessions-sidebar-card">
-            <div class="sidebar-header">
-              <div class="sidebar-title">
-                <span>📂</span> Sessions <span class="sidebar-count-badge" id="sidebar-session-count">0</span>
-              </div>
-              <button class="tbtn tbtn-ghost" onclick="document.getElementById('folder-input').click()" style="padding: 4px 8px; font-size: 11.5px;">+ Add Folder</button>
-            </div>
+        <!-- View Mode Switcher Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 20px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 15px; font-weight: 700; color: var(--text);">📂 Discovered Sessions:</span>
+            <span class="sidebar-count-badge" id="main-session-count">0</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button id="btn-view-tiles" class="filter-btn active" onclick="switchMainView('tiles')">▦ All Session Tiles</button>
+            <button id="btn-view-split" class="filter-btn" onclick="switchMainView('split')">💬 Conversation Workspace</button>
+          </div>
+        </div>
 
-            <!-- Search Sessions -->
-            <div style="margin-bottom: 12px;">
-              <input type="text" id="session-search-input" placeholder="🔍 Search projects &amp; prompts..." oninput="filterSessionList(this.value)" style="width: 100%; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 12.5px; background: var(--bg); color: var(--text);"/>
-            </div>
+        <!-- 1. Session Tiles Grid Gallery -->
+        <div id="sessions-tiles-section">
+          <div style="margin-bottom: 14px;">
+            <input type="text" id="tiles-search-input" placeholder="🔍 Search session tiles by project name or prompt text..." oninput="filterSessionList(this.value)" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); font-size: 13.5px; background: var(--bg2); color: var(--text);"/>
+          </div>
+          <div class="session-tiles-grid" id="session-tiles-container">
+            <!-- Dynamically populated session tiles -->
+          </div>
+        </div>
 
-            <!-- Scrollable Session Cards List -->
-            <div class="sessions-scroll-list" id="sessions-list-container">
-              <!-- Dynamically populated session cards -->
-            </div>
+        <!-- 2. Master-Detail Conversation Workspace -->
+        <div id="sessions-workspace-section" style="display: none;">
+          <div style="margin-bottom: 16px;">
+            <button class="tbtn tbtn-ghost" onclick="switchMainView('tiles')" style="font-size: 13px; padding: 7px 14px;">
+              ← Back to All Session Tiles
+            </button>
           </div>
 
-          <!-- Right Column: Active Session Conversation Detail -->
-          <div class="session-detail-pane">
+          <div class="workspace-layout" style="margin-top: 0;">
             
-            <!-- Active Session Header Banner -->
-            <div class="active-session-banner">
-              <div>
-                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                  <span class="session-badge-project" id="active-project-tag">PROJECT</span>
-                  <span style="font-size: 12px; color: var(--text-dim); font-family: var(--mono);" id="active-session-date">Just now</span>
+            <!-- Left Column: Sessions Sidebar -->
+            <div class="sessions-sidebar-card">
+              <div class="sidebar-header">
+                <div class="sidebar-title">
+                  <span>📂</span> Sessions <span class="sidebar-count-badge" id="sidebar-session-count">0</span>
                 </div>
-                <div style="font-weight: 700; font-size: 15px; color: var(--text);" id="active-session-title">Selected Session</div>
-                <div style="font-size: 12px; color: var(--text-muted); font-family: var(--mono); margin-top: 2px;" id="active-session-path">~/.claude/projects/...</div>
+                <button class="tbtn tbtn-ghost" onclick="openFolderPicker()" style="padding: 4px 8px; font-size: 11.5px;">+ Open</button>
               </div>
-              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <button class="tbtn tbtn-ghost" onclick="exportMarkdownSummary()" style="font-size: 12px; padding: 6px 12px;">📋 Export Markdown</button>
+
+              <!-- Search Sessions -->
+              <div style="margin-bottom: 12px;">
+                <input type="text" id="session-search-input" placeholder="🔍 Search sessions..." oninput="filterSessionList(this.value)" style="width: 100%; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 12.5px; background: var(--bg); color: var(--text);"/>
+              </div>
+
+              <!-- Scrollable Session Cards List -->
+              <div class="sessions-scroll-list" id="sessions-list-container">
+                <!-- Dynamically populated session cards -->
               </div>
             </div>
 
-            <!-- Stats Summary -->
-            <div class="stats-bar">
-              <div class="stat-pill-card">
-                <div class="stat-pill-val" id="stat-turns">0</div>
-                <div class="stat-pill-lbl">Total Turns</div>
+            <!-- Right Column: Active Session Conversation Detail -->
+            <div class="session-detail-pane">
+              
+              <!-- Active Session Header Banner -->
+              <div class="active-session-banner">
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                    <span class="session-badge-project" id="active-project-tag">PROJECT</span>
+                    <span style="font-size: 12px; color: var(--text-dim); font-family: var(--mono);" id="active-session-date">Just now</span>
+                  </div>
+                  <div style="font-weight: 700; font-size: 15px; color: var(--text);" id="active-session-title">Selected Session</div>
+                  <div style="font-size: 12px; color: var(--text-muted); font-family: var(--mono); margin-top: 2px;" id="active-session-path">~/.claude/projects/...</div>
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <button class="tbtn tbtn-ghost" onclick="exportMarkdownSummary()" style="font-size: 12px; padding: 6px 12px;">📋 Export Markdown</button>
+                </div>
               </div>
-              <div class="stat-pill-card">
-                <div class="stat-pill-val" id="stat-prompts">0</div>
-                <div class="stat-pill-lbl">User Prompts</div>
+
+              <!-- Stats Summary -->
+              <div class="stats-bar">
+                <div class="stat-pill-card">
+                  <div class="stat-pill-val" id="stat-turns">0</div>
+                  <div class="stat-pill-lbl">Total Turns</div>
+                </div>
+                <div class="stat-pill-card">
+                  <div class="stat-pill-val" id="stat-prompts">0</div>
+                  <div class="stat-pill-lbl">User Prompts</div>
+                </div>
+                <div class="stat-pill-card">
+                  <div class="stat-pill-val" id="stat-tools">0</div>
+                  <div class="stat-pill-lbl">Tool Executions</div>
+                </div>
+                <div class="stat-pill-card">
+                  <div class="stat-pill-val" id="stat-model-msgs">0</div>
+                  <div class="stat-pill-lbl">Assistant Replies</div>
+                </div>
               </div>
-              <div class="stat-pill-card">
-                <div class="stat-pill-val" id="stat-tools">0</div>
-                <div class="stat-pill-lbl">Tool Executions</div>
+
+              <!-- Filter Bar & In-Conversation Search -->
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+                <div class="filter-tabs-row" style="margin-bottom: 0;">
+                  <button class="filter-btn active" onclick="setFilter('all', this)">All Events</button>
+                  <button class="filter-btn" onclick="setFilter('user', this)">👤 Prompts Only</button>
+                  <button class="filter-btn" onclick="setFilter('assistant', this)">🤖 Assistant Only</button>
+                  <button class="filter-btn" onclick="setFilter('tool', this)">🛠️ Tool Calls Only</button>
+                </div>
+                <div style="flex: 1; max-width: 260px; min-width: 180px;">
+                  <input type="text" id="turn-search-input" placeholder="🔍 Search in conversation..." oninput="filterTurns(this.value)" style="width: 100%; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 12.5px; background: var(--bg2); color: var(--text);"/>
+                </div>
               </div>
-              <div class="stat-pill-card">
-                <div class="stat-pill-val" id="stat-model-msgs">0</div>
-                <div class="stat-pill-lbl">Assistant Replies</div>
-              </div>
+
+              <!-- Interactive Timeline -->
+              <div id="timeline-container" class="chat-timeline"></div>
             </div>
 
-            <!-- Filter Bar & In-Conversation Search -->
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
-              <div class="filter-tabs-row" style="margin-bottom: 0;">
-                <button class="filter-btn active" onclick="setFilter('all', this)">All Events</button>
-                <button class="filter-btn" onclick="setFilter('user', this)">👤 Prompts Only</button>
-                <button class="filter-btn" onclick="setFilter('assistant', this)">🤖 Assistant Only</button>
-                <button class="filter-btn" onclick="setFilter('tool', this)">🛠️ Tool Calls Only</button>
-              </div>
-              <div style="flex: 1; max-width: 260px; min-width: 180px;">
-                <input type="text" id="turn-search-input" placeholder="🔍 Search in conversation..." oninput="filterTurns(this.value)" style="width: 100%; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 12.5px; background: var(--bg2); color: var(--text);"/>
-              </div>
-            </div>
-
-            <!-- Interactive Timeline -->
-            <div id="timeline-container" class="chat-timeline"></div>
           </div>
 
         </div>
@@ -654,9 +733,35 @@
       if (files.length > 0) handleDiscoveredFiles(files);
     });
 
+    function isTranscriptFile(name) {
+      if (!name) return false;
+      const lower = name.toLowerCase().trim();
+
+      // Exclude non-conversation config files and marketplace metadata
+      const blacklist = [
+        'known_marketplaces', 'package.json', 'package-lock.json', 'tsconfig.json',
+        'settings.json', 'config.json', 'manifest.json', 'installed_plugins',
+        'plugins.json', 'telemetry.json', 'stats.json', 'metadata.json',
+        'keys.json', 'credentials.json', 'launch.json', 'extensions.json',
+        'theme.json', 'index.json', 'tasks.json', 'keybindings.json',
+        '.eslintrc', '.prettierrc', 'yarn.lock', 'pnpm-lock.yaml'
+      ];
+      for (const b of blacklist) {
+        if (lower === b || lower.endsWith('/' + b) || lower.includes(b)) return false;
+      }
+
+      // Accept .jsonl files or transcript / session named files
+      if (lower.endsWith('.jsonl')) return true;
+      if (lower.includes('transcript') && (lower.endsWith('.json') || lower.endsWith('.jsonl') || lower.endsWith('.txt'))) return true;
+      if (lower.includes('session') && (lower.endsWith('.json') || lower.endsWith('.jsonl'))) return true;
+      if (lower.includes('memories') && lower.endsWith('.jsonl')) return true;
+
+      return false;
+    }
+
     async function traverseFileTree(entry, fileList, path = '') {
       if (entry.isFile) {
-        if (entry.name.endsWith('.jsonl') || entry.name.endsWith('.json') || entry.name.toLowerCase().includes('transcript') || entry.name.toLowerCase().includes('log')) {
+        if (isTranscriptFile(entry.name)) {
           await new Promise((resolve) => {
             entry.file((f) => {
               f.customRelativePath = path ? `${path}/${f.name}` : f.name;
@@ -696,7 +801,6 @@
           }
         }
       } else {
-        // Fallback: pick files directly
         document.getElementById('file-input').click();
       }
     }
@@ -704,12 +808,11 @@
     async function scanDirHandle(dirHandle, fileList, currentPath = '') {
       try {
         for await (const [name, handle] of dirHandle.entries()) {
-          // Skip massive or irrelevant dirs
           if (['node_modules', '.git', 'dist', 'build', '.venv', 'venv', 'cache', 'tmp', 'DerivedData'].includes(name)) continue;
           if (name.startsWith('.') && name !== '.claude' && name !== '.codex' && name !== '.gemini' && name !== '.cursor') continue;
 
           if (handle.kind === 'file') {
-            if (name.endsWith('.jsonl') || name.endsWith('.json') || name.toLowerCase().includes('transcript') || name.toLowerCase().includes('log')) {
+            if (isTranscriptFile(name)) {
               const file = await handle.getFile();
               file.customRelativePath = currentPath ? `${currentPath}/${name}` : name;
               fileList.push(file);
@@ -735,12 +838,7 @@
     }
 
     async function handleDiscoveredFiles(fileList) {
-      const validFiles = fileList.filter(f => 
-        f.name.endsWith('.jsonl') || 
-        f.name.endsWith('.json') || 
-        f.name.toLowerCase().includes('transcript') ||
-        f.name.toLowerCase().includes('log')
-      );
+      const validFiles = fileList.filter(f => isTranscriptFile(f.name));
 
       if (validFiles.length === 0) {
         showToast('No transcript (.jsonl) files found in selection.', '⚠️');
@@ -766,14 +864,19 @@
       sessionsList = loaded.filter(s => s && s.events.length > 0);
 
       if (sessionsList.length === 0) {
-        showToast('Could not find valid session events in the selected files.', '⚠️');
+        showToast('No valid conversation logs found in selected files.', '⚠️');
         return;
       }
 
       document.getElementById('viewer-results').style.display = 'block';
+      document.getElementById('main-session-count').innerText = `${sessionsList.length}`;
+      document.getElementById('sidebar-session-count').innerText = `${sessionsList.length}`;
+      
+      renderSessionTiles();
       renderSessionsSidebar();
       selectSession(0);
-      showToast(`Discovered ${sessionsList.length} session${sessionsList.length > 1 ? 's' : ''}! Click any session on the left.`, '📁');
+      switchMainView('tiles');
+      showToast(`Found ${sessionsList.length} session tile${sessionsList.length > 1 ? 's' : ''}!`, '📁');
     }
 
     function parseSingleSession(rawText, file, idx) {
@@ -785,9 +888,13 @@
         if (!trimmed) return;
         try {
           const obj = JSON.parse(trimmed);
-          events.push(normalizeEvent(obj, lineIdx));
+          // Only add valid event objects
+          const norm = normalizeEvent(obj, lineIdx);
+          if (norm && (norm.content || (norm.toolCalls && norm.toolCalls.length > 0))) {
+            events.push(norm);
+          }
         } catch (err) {
-          if (trimmed.length > 5) {
+          if (trimmed.length > 10 && !trimmed.startsWith('{')) {
             events.push({
               index: lineIdx + 1,
               role: 'user',
@@ -802,7 +909,7 @@
       if (events.length === 0) return null;
 
       // Extract metadata
-      const path = (file && (file.webkitRelativePath || file.name)) || `session-${idx+1}.jsonl`;
+      const path = (file && (file.customRelativePath || file.webkitRelativePath || file.name)) || `session-${idx+1}.jsonl`;
       const parts = path.split('/');
       let project = 'claude-project';
       if (parts.length > 1) {
@@ -813,7 +920,7 @@
 
       const firstUser = events.find(e => e.role === 'user');
       const firstPrompt = firstUser ? (firstUser.content || '') : (events[0].content || '');
-      const titleSnippet = firstPrompt.replace(/[\r\n]+/g, ' ').substring(0, 75) || 'Conversation Session';
+      const titleSnippet = firstPrompt.replace(/[\r\n]+/g, ' ').substring(0, 85) || 'Conversation Session';
 
       const modDate = (file && file.lastModified) 
         ? new Date(file.lastModified).toLocaleDateString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})
@@ -833,9 +940,9 @@
       };
     }
 
-    function renderSessionsSidebar() {
-      const container = document.getElementById('sessions-list-container');
-      const countBadge = document.getElementById('sidebar-session-count');
+    function renderSessionTiles() {
+      const container = document.getElementById('session-tiles-container');
+      if (!container) return;
       container.innerHTML = '';
 
       const query = sessionSearchQuery.toLowerCase().trim();
@@ -846,7 +953,81 @@
                s.fileName.toLowerCase().includes(query);
       });
 
-      countBadge.innerText = `${filtered.length}`;
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="grid-column: 1 / -1; padding: 36px; text-align: center; color: var(--text-muted); background: var(--bg2); border-radius: 12px; border: 1px dashed var(--border);">No session tiles match query.</div>';
+        return;
+      }
+
+      filtered.forEach(session => {
+        const tile = document.createElement('div');
+        tile.className = `session-tile-card ${session.id === activeSessionId ? 'active' : ''}`;
+        tile.onclick = () => {
+          selectSession(session.id);
+          switchMainView('split');
+        };
+
+        tile.innerHTML = `
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span class="session-badge-project">${escapeHtml(session.project)}</span>
+              <span style="font-size: 11px; color: var(--text-dim); font-family: var(--mono);">${escapeHtml(session.dateStr)}</span>
+            </div>
+            <div class="session-tile-title">${escapeHtml(session.title)}</div>
+          </div>
+          <div>
+            <div class="session-meta-row" style="margin-bottom: 6px;">
+              <span class="session-meta-pill">💬 ${session.events.length} turns</span>
+              <span class="session-meta-pill">👤 ${session.promptsCount}</span>
+              <span class="session-meta-pill">🛠️ ${session.toolsCount}</span>
+            </div>
+            <button type="button" class="tbtn tbtn-ghost session-tile-btn">
+              Open Conversation →
+            </button>
+          </div>
+        `;
+
+        container.appendChild(tile);
+      });
+    }
+
+    function switchMainView(mode) {
+      const tilesSec = document.getElementById('sessions-tiles-section');
+      const workspaceSec = document.getElementById('sessions-workspace-section');
+      const btnTiles = document.getElementById('btn-view-tiles');
+      const btnSplit = document.getElementById('btn-view-split');
+
+      if (mode === 'tiles') {
+        tilesSec.style.display = 'block';
+        workspaceSec.style.display = 'none';
+        btnTiles.classList.add('active');
+        btnSplit.classList.remove('active');
+        renderSessionTiles();
+      } else {
+        tilesSec.style.display = 'none';
+        workspaceSec.style.display = 'block';
+        btnTiles.classList.remove('active');
+        btnSplit.classList.add('active');
+        renderTimeline();
+      }
+    }
+
+    function renderSessionsSidebar() {
+      const container = document.getElementById('sessions-list-container');
+      const countBadge = document.getElementById('sidebar-session-count');
+      const mainCount = document.getElementById('main-session-count');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const query = sessionSearchQuery.toLowerCase().trim();
+      const filtered = sessionsList.filter(s => {
+        if (!query) return true;
+        return s.project.toLowerCase().includes(query) || 
+               s.title.toLowerCase().includes(query) ||
+               s.fileName.toLowerCase().includes(query);
+      });
+
+      if (countBadge) countBadge.innerText = `${filtered.length}`;
+      if (mainCount) mainCount.innerText = `${filtered.length}`;
 
       if (filtered.length === 0) {
         container.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px;">No sessions match query.</div>';
@@ -877,6 +1058,11 @@
 
     function filterSessionList(val) {
       sessionSearchQuery = val;
+      const tilesInput = document.getElementById('tiles-search-input');
+      const sidebarInput = document.getElementById('session-search-input');
+      if (tilesInput && tilesInput.value !== val) tilesInput.value = val;
+      if (sidebarInput && sidebarInput.value !== val) sidebarInput.value = val;
+      renderSessionTiles();
       renderSessionsSidebar();
     }
 
@@ -897,8 +1083,9 @@
       document.getElementById('stat-tools').innerText = session.toolsCount;
       document.getElementById('stat-model-msgs').innerText = session.assistantCount;
 
-      // Re-highlight active in sidebar
+      // Re-highlight active in sidebar & tiles
       renderSessionsSidebar();
+      renderSessionTiles();
 
       // Render timeline
       renderTimeline();
@@ -1036,8 +1223,12 @@
       if (session && session.events.length > 0) {
         sessionsList.unshift(session);
         document.getElementById('viewer-results').style.display = 'block';
+        document.getElementById('main-session-count').innerText = `${sessionsList.length}`;
+        document.getElementById('sidebar-session-count').innerText = `${sessionsList.length}`;
+        renderSessionTiles();
         renderSessionsSidebar();
         selectSession(session.id);
+        switchMainView('split');
         showToast(`Parsed session (${session.events.length} turns) successfully!`, '🚀');
       } else {
         showToast('Could not parse valid session events from text.', '⚠️');
@@ -1143,9 +1334,13 @@
 
       sessionsList = [s1, s2, s3];
       document.getElementById('viewer-results').style.display = 'block';
+      document.getElementById('main-session-count').innerText = `${sessionsList.length}`;
+      document.getElementById('sidebar-session-count').innerText = `${sessionsList.length}`;
+      renderSessionTiles();
       renderSessionsSidebar();
       selectSession(0);
-      showToast('Loaded 3 sample multi-project sessions! Click each session on the left to see conversations separately.', '🚀');
+      switchMainView('tiles');
+      showToast('Loaded 3 sample multi-project session tiles! Click any tile to open conversation.', '🚀');
     }
 
     // --- PWA Desktop App Installation & Service Worker ---
