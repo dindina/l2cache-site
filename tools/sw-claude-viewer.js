@@ -1,4 +1,4 @@
-const CACHE_NAME = 'claude-session-viewer-v4';
+const CACHE_NAME = 'claude-session-viewer-v5';
 const PRECACHE_ASSETS = [
   '/en/tools/claude-session-viewer',
   '/en/tools/claude-session-viewer-manifest.json',

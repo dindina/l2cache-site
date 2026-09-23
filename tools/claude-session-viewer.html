@@ -931,7 +931,7 @@
           className: 'agent-badge-claude'
         };
       }
-      if (p.includes('.codex') || p.includes('codex') || p.includes('openai') || p.includes('memories.sqlite')) {
+      if (p.includes('.codex') || p.includes('codex') || p.includes('openai') || p.includes('chatgpt') || p.includes('memories.sqlite') || p.includes('gpt-')) {
         return {
           type: 'codex',
           label: '🟢 OpenAI Codex',
@@ -947,12 +947,15 @@
       }
       // Inspect content if path is generic
       if (text) {
-        const t = text.substring(0, 500).toLowerCase();
+        const t = text.substring(0, 1500).toLowerCase();
         if (t.includes('claude') || t.includes('anthropic')) {
           return { type: 'claude', label: '🤖 Claude Code', className: 'agent-badge-claude' };
         }
-        if (t.includes('codex') || t.includes('openai')) {
+        if (t.includes('codex') || t.includes('openai') || t.includes('gpt-') || t.includes('chatgpt') || t.includes('davinci')) {
           return { type: 'codex', label: '🟢 OpenAI Codex', className: 'agent-badge-codex' };
+        }
+        if (t.includes('gemini') || t.includes('antigravity')) {
+          return { type: 'antigravity', label: '⚡ Antigravity', className: 'agent-badge-antigravity' };
         }
       }
       return {
@@ -1361,14 +1364,20 @@
     }
 
     function extractEventsFromObject(sessObj) {
-      const rawList = sessObj.messages || sessObj.turns || sessObj.events || [];
+      if (!sessObj || typeof sessObj !== 'object') return [];
+      let rawList = sessObj.messages || sessObj.turns || sessObj.events || sessObj.history || sessObj.chat_messages || sessObj.items || [];
+      if ((!rawList || rawList.length === 0) && sessObj.mapping && typeof sessObj.mapping === 'object') {
+        rawList = Object.values(sessObj.mapping).map(m => m && m.message).filter(Boolean);
+      }
       const events = [];
-      rawList.forEach((item, idx) => {
-        const norm = normalizeEvent(item, idx);
-        if (norm && (norm.content || (norm.toolCalls && norm.toolCalls.length > 0))) {
-          events.push(norm);
-        }
-      });
+      if (Array.isArray(rawList)) {
+        rawList.forEach((item, idx) => {
+          const normList = normalizeRawLine(item, idx);
+          if (normList && normList.length > 0) {
+            events.push(...normList);
+          }
+        });
+      }
       return events;
     }
 
@@ -1379,8 +1388,8 @@
       // 1. Project extraction from path
       const p = (file && (file.customRelativePath || file.webkitRelativePath || file.name)) || path || '';
       const parts = p.split(/[\\\/]/).filter(Boolean);
-      if (parts.length > 2 && (parts[0] === '.claude' || parts[0] === 'projects')) {
-        project = parts[1] === 'projects' ? parts[2] : parts[1];
+      if (parts.length > 2 && (parts[0] === '.claude' || parts[0] === 'projects' || parts[0] === '.codex')) {
+        project = (parts[1] === 'projects' || parts[1] === 'sessions') ? (parts[2] || parts[1]) : parts[1];
       } else if (parts.length > 1) {
         project = parts[parts.length - 2];
       } else if (file && file.name) {
@@ -1502,18 +1511,27 @@
     function normalizeRawLine(obj, lineIdx) {
       if (!obj || typeof obj !== 'object') return [];
 
-      // Handle pair formats { prompt: "...", response: "..." }
-      if (obj.prompt && obj.response) {
+      // 1. Two-turn Q&A Pair structures (Alpaca, Codex dataset, Instruction-Tuning)
+      const userText = obj.prompt || obj.instruction || obj.question || obj.human || obj.user || (obj.input && (obj.output || obj.response) ? obj.input : null) || (obj.query && (obj.response || obj.result || obj.answer) ? obj.query : null);
+      const botText = obj.response || obj.completion || obj.answer || obj.output || obj.assistant || obj.ai || obj.gpt || obj.model || obj.result;
+      
+      if (userText && botText && typeof userText === 'string' && typeof botText === 'string') {
         return [
-          { index: lineIdx + 1, role: 'user', type: 'USER_PROMPT', content: String(obj.prompt), toolCalls: [] },
-          { index: lineIdx + 2, role: 'assistant', type: 'ASSISTANT_RESPONSE', content: String(obj.response), toolCalls: [] }
+          { index: lineIdx * 2 + 1, role: 'user', type: 'USER_PROMPT', content: userText.trim(), toolCalls: [] },
+          { index: lineIdx * 2 + 2, role: 'assistant', type: 'ASSISTANT_RESPONSE', content: botText.trim(), toolCalls: [] }
         ];
       }
-      if (obj.input && obj.output) {
-        return [
-          { index: lineIdx + 1, role: 'user', type: 'USER_INPUT', content: String(obj.input), toolCalls: [] },
-          { index: lineIdx + 2, role: 'assistant', type: 'MODEL_OUTPUT', content: String(obj.output), toolCalls: [] }
-        ];
+
+      // 2. OpenAI Realtime / Codex Item Wrappers ({"type":"conversation.item.create","item":{...}})
+      if (obj.item && typeof obj.item === 'object') {
+        const itemNorm = normalizeEvent(obj.item, lineIdx);
+        if (itemNorm) return [itemNorm];
+      }
+
+      // 3. OpenAI Chat completion choices
+      if (Array.isArray(obj.choices) && obj.choices.length > 0 && obj.choices[0] && obj.choices[0].message) {
+        const choiceNorm = normalizeEvent(obj.choices[0].message, lineIdx);
+        if (choiceNorm) return [choiceNorm];
       }
 
       const single = normalizeEvent(obj, lineIdx);
@@ -1527,11 +1545,14 @@
       let content = '';
       let toolCalls = [];
 
-      // Extract content & tool calls from Claude Code & Codex structures
+      // Extract content & tool calls from Claude Code, OpenAI Codex, Realtime & ChatGPT structures
       let contentArray = [];
       if (Array.isArray(obj.content)) contentArray = obj.content;
       else if (obj.message && Array.isArray(obj.message.content)) contentArray = obj.message.content;
       else if (obj.item && Array.isArray(obj.item.content)) contentArray = obj.item.content;
+      else if (Array.isArray(obj.parts)) contentArray = obj.parts;
+      else if (obj.content && Array.isArray(obj.content.parts)) contentArray = obj.content.parts;
+      else if (obj.message && obj.message.content && Array.isArray(obj.message.content.parts)) contentArray = obj.message.content.parts;
 
       if (contentArray.length > 0) {
         const textParts = [];
@@ -1539,17 +1560,20 @@
           if (typeof c === 'string') {
             if (c.trim()) textParts.push(c.trim());
           } else if (c && typeof c === 'object') {
-            if (c.type === 'text' && c.text) {
+            if ((c.type === 'text' || c.type === 'input_text' || c.type === 'output_text') && c.text) {
               if (c.text.trim()) textParts.push(c.text.trim());
             } else if (c.text && typeof c.text === 'string') {
               if (c.text.trim()) textParts.push(c.text.trim());
-            } else if (c.type === 'tool_use' || c.tool_use_id || c.name || c.input) {
+            } else if (Array.isArray(c.parts)) {
+              const joinedParts = c.parts.filter(p => typeof p === 'string' && p.trim()).join('\n').trim();
+              if (joinedParts) textParts.push(joinedParts);
+            } else if (c.type === 'tool_use' || c.type === 'function_call' || c.tool_use_id || c.name || c.function_call || (c.input && !c.text)) {
               toolCalls.push({
-                name: c.name || c.tool_name || c.id || 'tool_call',
-                arguments: c.input || c.arguments || c.parameters || {}
+                name: c.name || (c.function_call && c.function_call.name) || c.tool_name || c.id || 'tool_call',
+                arguments: c.input || c.arguments || (c.function_call && c.function_call.arguments) || c.parameters || {}
               });
-            } else if (c.type === 'tool_result' || c.output) {
-              const res = typeof c.content === 'string' ? c.content : (c.output || JSON.stringify(c));
+            } else if (c.type === 'tool_result' || c.type === 'function_call_output' || c.output) {
+              const res = typeof c.content === 'string' ? c.content : (typeof c.output === 'string' ? c.output : JSON.stringify(c));
               if (res && res.trim()) textParts.push(res.trim());
             }
           }
@@ -1561,61 +1585,114 @@
         content = obj.text.trim();
       } else if (obj.message && typeof obj.message.content === 'string') {
         content = obj.message.content.trim();
-      } else if (obj.output && typeof obj.output === 'string') {
-        content = obj.output.trim();
+      } else if (obj.message && typeof obj.message.text === 'string') {
+        content = obj.message.text.trim();
+      } else if (obj.item && typeof obj.item.text === 'string') {
+        content = obj.item.text.trim();
+      } else if (obj.item && typeof obj.item.content === 'string') {
+        content = obj.item.content.trim();
+      } else if (obj.value && typeof obj.value === 'string') {
+        content = obj.value.trim();
       } else if (obj.prompt && typeof obj.prompt === 'string') {
         content = obj.prompt.trim();
+      } else if (obj.instruction && typeof obj.instruction === 'string') {
+        content = obj.instruction.trim();
+      } else if (obj.query && typeof obj.query === 'string') {
+        content = obj.query.trim();
+      } else if (obj.question && typeof obj.question === 'string') {
+        content = obj.question.trim();
+      } else if (obj.response && typeof obj.response === 'string') {
+        content = obj.response.trim();
+      } else if (obj.completion && typeof obj.completion === 'string') {
+        content = obj.completion.trim();
+      } else if (obj.answer && typeof obj.answer === 'string') {
+        content = obj.answer.trim();
+      } else if (obj.output && typeof obj.output === 'string') {
+        content = obj.output.trim();
       } else if (obj.thought && typeof obj.thought === 'string') {
         content = obj.thought.trim();
       }
 
-      // Check for standalone toolCalls
-      if (obj.tool_calls || obj.toolCalls) {
-        const rawTools = obj.tool_calls || obj.toolCalls;
+      // Extract standalone tool calls
+      if (obj.tool_calls || obj.toolCalls || obj.tools) {
+        const rawTools = obj.tool_calls || obj.toolCalls || obj.tools;
         if (Array.isArray(rawTools)) toolCalls.push(...rawTools);
+      }
+      if (obj.function_call && typeof obj.function_call === 'object') {
+        toolCalls.push({
+          name: obj.function_call.name || 'function_call',
+          arguments: obj.function_call.arguments || {}
+        });
       }
       if (obj.toolAction || obj.CommandLine) {
         toolCalls.push(obj);
       }
 
-      // Determine role with strict priority on message.role / role before generic wrapper types
-      let detectedRole = '';
-      if (obj.message && obj.message.role) {
-        detectedRole = String(obj.message.role).toLowerCase().trim();
-      } else if (obj.role) {
-        detectedRole = String(obj.role).toLowerCase().trim();
+      // Comprehensive Role Extraction across Claude, Codex, ChatGPT, and CLI engines
+      let rawRole = '';
+      if (obj.author && obj.author.role) {
+        rawRole = obj.author.role;
+      } else if (obj.message && obj.message.author && obj.message.author.role) {
+        rawRole = obj.message.author.role;
+      } else if (obj.message && obj.message.role) {
+        rawRole = obj.message.role;
+      } else if (obj.item && obj.item.author && obj.item.author.role) {
+        rawRole = obj.item.author.role;
       } else if (obj.item && obj.item.role) {
-        detectedRole = String(obj.item.role).toLowerCase().trim();
-      } else if (obj.sender || obj.source) {
-        detectedRole = String(obj.sender || obj.source).toLowerCase().trim();
-      } else if (obj.type && obj.type !== 'message') {
-        detectedRole = String(obj.type).toLowerCase().trim();
-      } else if (obj.prompt) {
-        detectedRole = 'user';
+        rawRole = obj.item.role;
+      } else if (obj.role) {
+        rawRole = obj.role;
+      } else if (obj.speaker) {
+        rawRole = obj.speaker;
+      } else if (obj.sender) {
+        rawRole = obj.sender;
+      } else if (obj.source) {
+        rawRole = obj.source;
+      } else if (obj.from) {
+        rawRole = obj.from;
+      } else if (obj.event && /^(user_message|prompt|user_prompt|human_message)$/i.test(String(obj.event))) {
+        rawRole = 'user';
+      } else if (obj.type && /^(user|user_input|user_prompt|user_explicit|human|prompt|input|instruction|query|question|client|customer|assistant|model|ai|bot|completion|response|system|developer|tool|tool_execution|tool_call|tool_result|tool_use|function|function_call)$/i.test(String(obj.type))) {
+        rawRole = obj.type;
+      } else if (obj.prompt || obj.instruction || obj.query || obj.question) {
+        rawRole = 'user';
+      } else if (obj.response || obj.completion || obj.answer) {
+        rawRole = 'assistant';
       }
 
+      const cleanRole = String(rawRole || '').toLowerCase().trim();
+
       if (
-        detectedRole === 'user' ||
-        detectedRole === 'user_input' ||
-        detectedRole === 'user_prompt' ||
-        detectedRole === 'user_explicit' ||
-        detectedRole === 'human' ||
-        detectedRole === 'prompt' ||
-        detectedRole === 'input'
+        cleanRole === 'user' ||
+        cleanRole === 'user_input' ||
+        cleanRole === 'user_prompt' ||
+        cleanRole === 'user_explicit' ||
+        cleanRole === 'user_message' ||
+        cleanRole === 'human' ||
+        cleanRole === 'prompt' ||
+        cleanRole === 'input' ||
+        cleanRole === 'instruction' ||
+        cleanRole === 'query' ||
+        cleanRole === 'question' ||
+        cleanRole === 'client' ||
+        cleanRole === 'customer'
       ) {
         role = 'user';
       } else if (
-        detectedRole === 'tool' ||
-        detectedRole === 'tool_execution' ||
-        detectedRole === 'tool_call' ||
-        detectedRole === 'tool_result' ||
-        detectedRole === 'tool_use' ||
+        cleanRole === 'tool' ||
+        cleanRole === 'tool_execution' ||
+        cleanRole === 'tool_call' ||
+        cleanRole === 'tool_result' ||
+        cleanRole === 'tool_use' ||
+        cleanRole === 'function' ||
+        cleanRole === 'function_call' ||
+        cleanRole === 'function_output' ||
         (toolCalls.length > 0 && !content)
       ) {
         role = 'tool';
-      } else if (detectedRole === 'system') {
+      } else if (cleanRole === 'system' || cleanRole === 'developer' || cleanRole === 'system_prompt' || cleanRole === 'system_message') {
         role = 'assistant';
-        if (content) content = `[System Prompt] ${content}`;
+        if (content && !content.startsWith('[System Prompt]')) content = `[System Prompt] ${content}`;
       } else {
         role = 'assistant';
       }
@@ -1630,10 +1707,10 @@
       return {
         index: idx + 1,
         role: role,
-        type: obj.type || obj.role || 'EVENT',
+        type: obj.type || obj.role || cleanRole.toUpperCase() || 'EVENT',
         content: content,
         toolCalls: toolCalls,
-        timestamp: obj.timestamp || obj.created_at || ''
+        timestamp: obj.timestamp || obj.created_at || obj.create_time || ''
       };
     }
 
