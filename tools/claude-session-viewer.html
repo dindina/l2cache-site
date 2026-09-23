@@ -1276,33 +1276,56 @@
         project = file.name.replace('.transcript.jsonl', '').replace('.jsonl', '').replace('.json', '').replace('transcript-', '');
       }
 
-      // Case 1: Pure JSON Array or Object with sessions list
+      // Case 1: Pure JSON Array or Object
       if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
         try {
           const parsed = JSON.parse(trimmed);
           
-          // Case 1A: Object with sessions / conversations / threads array
-          const sessionsArray = parsed.sessions || parsed.conversations || parsed.threads || parsed.history;
-          if (Array.isArray(sessionsArray) && sessionsArray.length > 0) {
-            return sessionsArray.map((sessObj, sIdx) => {
-              const events = extractEventsFromObject(sessObj);
-              return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, path, modDate, rawText, file);
-            }).filter(Boolean);
+          // Case 1A: Top-level Array of direct message turns: [ { role: 'user', ... }, { role: 'assistant', ... } ]
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const isTurnList = parsed.some(item => item && typeof item === 'object' && (item.role || item.author || item.speaker || item.prompt || item.instruction || item.human || item.sender || item.type || item.content || item.text));
+            const isSessionList = parsed.some(item => item && typeof item === 'object' && (item.messages || item.turns || item.events || item.chat_messages || item.history));
+
+            if (isSessionList) {
+              return parsed.map((sessObj, sIdx) => {
+                const events = extractEventsFromObject(sessObj);
+                return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, path, modDate, rawText, file);
+              }).filter(Boolean);
+            }
+
+            if (isTurnList) {
+              const events = [];
+              parsed.forEach((turnObj, tIdx) => {
+                const normList = normalizeRawLine(turnObj, tIdx);
+                if (normList && normList.length > 0) events.push(...normList);
+              });
+              const sess = createSessionRecord(events, `session-1`, project, path, modDate, rawText, file);
+              return sess ? [sess] : [];
+            }
           }
 
-          // Case 1B: Top-level Array of session objects
-          if (Array.isArray(parsed) && parsed.length > 0 && (parsed[0].messages || parsed[0].turns || parsed[0].events)) {
-            return parsed.map((sessObj, sIdx) => {
-              const events = extractEventsFromObject(sessObj);
-              return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, path, modDate, rawText, file);
-            }).filter(Boolean);
-          }
+          // Case 1B: Top-level Single Object
+          if (parsed && typeof parsed === 'object') {
+            const sessionsArray = parsed.sessions || parsed.conversations || parsed.threads;
+            if (Array.isArray(sessionsArray) && sessionsArray.length > 0) {
+              return sessionsArray.map((sessObj, sIdx) => {
+                const events = extractEventsFromObject(sessObj);
+                return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, path, modDate, rawText, file);
+              }).filter(Boolean);
+            }
 
-          // Case 1C: Single session object with messages or turns
-          if (parsed.messages || parsed.turns || parsed.events) {
-            const events = extractEventsFromObject(parsed);
-            const sess = createSessionRecord(events, parsed.id || `session-1`, project, path, modDate, rawText, file);
-            return sess ? [sess] : [];
+            if (parsed.messages || parsed.turns || parsed.events || parsed.chat_messages || parsed.history || parsed.conversation || parsed.items || parsed.mapping) {
+              const events = extractEventsFromObject(parsed);
+              const sess = createSessionRecord(events, parsed.id || parsed.session_id || `session-1`, project, path, modDate, rawText, file);
+              return sess ? [sess] : [];
+            }
+
+            // Single completion / Q&A object at top-level
+            const normList = normalizeRawLine(parsed, 0);
+            if (normList && normList.length > 0) {
+              const sess = createSessionRecord(normList, parsed.id || 'session-1', project, path, modDate, rawText, file);
+              if (sess) return [sess];
+            }
           }
         } catch (e) {
           // Fall through to JSONL line-by-line parsing
@@ -1332,7 +1355,7 @@
             }
           }
         } catch (err) {
-          if (lineTrimmed.length > 10 && !lineTrimmed.startsWith('{')) {
+          if (lineTrimmed.length > 10 && !lineTrimmed.startsWith('{') && !lineTrimmed.startsWith('[')) {
             allEvents.push({
               index: lineIdx + 1,
               role: 'user',
@@ -1365,7 +1388,7 @@
 
     function extractEventsFromObject(sessObj) {
       if (!sessObj || typeof sessObj !== 'object') return [];
-      let rawList = sessObj.messages || sessObj.turns || sessObj.events || sessObj.history || sessObj.chat_messages || sessObj.items || [];
+      let rawList = sessObj.messages || sessObj.turns || sessObj.events || sessObj.history || sessObj.chat_messages || sessObj.items || sessObj.conversation || [];
       if ((!rawList || rawList.length === 0) && sessObj.mapping && typeof sessObj.mapping === 'object') {
         rawList = Object.values(sessObj.mapping).map(m => m && m.message).filter(Boolean);
       }
@@ -1511,7 +1534,45 @@
     function normalizeRawLine(obj, lineIdx) {
       if (!obj || typeof obj !== 'object') return [];
 
-      // 1. Two-turn Q&A Pair structures (Alpaca, Codex dataset, Instruction-Tuning)
+      // 1. Array wrapper inside object (e.g. OpenAI dataset format: { "messages": [ ... ] } or { "turns": [ ... ] })
+      const innerList = obj.messages || obj.turns || obj.conversation || obj.items || obj.chat || obj.chat_messages;
+      if (Array.isArray(innerList) && innerList.length > 0) {
+        const subEvents = [];
+        innerList.forEach((subItem, sIdx) => {
+          const norm = normalizeRawLine(subItem, lineIdx * 100 + sIdx);
+          if (norm && norm.length > 0) subEvents.push(...norm);
+        });
+        if (subEvents.length > 0) return subEvents;
+      }
+
+      // 2. OpenAI Request / Response log wrapper ({ "request": { "messages": [...] }, "response": { "choices": [...] } })
+      if (obj.request && (Array.isArray(obj.request.messages) || obj.request.prompt)) {
+        const subEvents = [];
+        if (Array.isArray(obj.request.messages)) {
+          obj.request.messages.forEach((subItem, sIdx) => {
+            const norm = normalizeRawLine(subItem, lineIdx * 100 + sIdx);
+            if (norm && norm.length > 0) subEvents.push(...norm);
+          });
+        } else if (obj.request.prompt) {
+          subEvents.push({ index: lineIdx * 100 + 1, role: 'user', type: 'USER_PROMPT', content: String(obj.request.prompt).trim(), toolCalls: [] });
+        }
+        if (obj.response) {
+          const respNorm = normalizeRawLine(obj.response, lineIdx * 100 + subEvents.length + 1);
+          if (respNorm && respNorm.length > 0) subEvents.push(...respNorm);
+        }
+        if (subEvents.length > 0) return subEvents;
+      }
+
+      // 3. OpenAI Prompt + Choices (Completion API format)
+      if (obj.prompt && Array.isArray(obj.choices) && obj.choices.length > 0) {
+        const userEvent = { index: lineIdx * 2 + 1, role: 'user', type: 'USER_PROMPT', content: String(obj.prompt).trim(), toolCalls: [] };
+        const choice = obj.choices[0];
+        const botText = (choice.message && (choice.message.content || choice.message.text)) || choice.text || '';
+        const botEvent = { index: lineIdx * 2 + 2, role: 'assistant', type: 'ASSISTANT_RESPONSE', content: String(botText).trim(), toolCalls: [] };
+        return [userEvent, botEvent];
+      }
+
+      // 4. Two-turn Q&A Pair structures (Alpaca, Codex dataset, Instruction-Tuning)
       const userText = obj.prompt || obj.instruction || obj.question || obj.human || obj.user || (obj.input && (obj.output || obj.response) ? obj.input : null) || (obj.query && (obj.response || obj.result || obj.answer) ? obj.query : null);
       const botText = obj.response || obj.completion || obj.answer || obj.output || obj.assistant || obj.ai || obj.gpt || obj.model || obj.result;
       
@@ -1522,16 +1583,21 @@
         ];
       }
 
-      // 2. OpenAI Realtime / Codex Item Wrappers ({"type":"conversation.item.create","item":{...}})
+      // 5. OpenAI Realtime / Codex Item Wrappers ({"type":"conversation.item.create","item":{...}})
       if (obj.item && typeof obj.item === 'object') {
         const itemNorm = normalizeEvent(obj.item, lineIdx);
         if (itemNorm) return [itemNorm];
       }
 
-      // 3. OpenAI Chat completion choices
-      if (Array.isArray(obj.choices) && obj.choices.length > 0 && obj.choices[0] && obj.choices[0].message) {
-        const choiceNorm = normalizeEvent(obj.choices[0].message, lineIdx);
-        if (choiceNorm) return [choiceNorm];
+      // 6. OpenAI Chat completion choices ({ "choices": [ { "message": { "role": "assistant", ... } } ] })
+      if (Array.isArray(obj.choices) && obj.choices.length > 0 && obj.choices[0]) {
+        const firstChoice = obj.choices[0];
+        if (firstChoice.message) {
+          const choiceNorm = normalizeEvent(firstChoice.message, lineIdx);
+          if (choiceNorm) return [choiceNorm];
+        } else if (firstChoice.text) {
+          return [{ index: lineIdx + 1, role: 'assistant', type: 'MODEL_OUTPUT', content: String(firstChoice.text).trim(), toolCalls: [] }];
+        }
       }
 
       const single = normalizeEvent(obj, lineIdx);
