@@ -2200,6 +2200,7 @@
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/en/tools/sw-claude-viewer.js', { scope: '/en/tools/' })
           .then((reg) => {
+            reg.update();
             console.log('Session Viewer PWA ServiceWorker active:', reg.scope);
           })
           .catch((err) => {
