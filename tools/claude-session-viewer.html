@@ -401,18 +401,34 @@
           },
           {
             "@type": "Question",
-            "name": "Does this tool upload my Claude Code transcripts to any server?",
+            "name": "Where are OpenAI Codex session transcripts saved on macOS?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "No. The parser runs 100% locally in your browser sandbox using JavaScript. No prompts, codebase files, or tool outputs are sent to remote servers."
+              "text": "OpenAI Codex CLI session rollout logs and history are saved in ~/.codex/sessions/ and ~/.codex/history.jsonl on your local disk. You can open this directory with 'open ~/.codex/sessions/' in your terminal."
             }
           },
           {
             "@type": "Question",
-            "name": "How do I resume a past Claude Code session in my terminal?",
+            "name": "Does this tool upload my transcripts or proprietary code to any server?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Run 'claude --resume' to pick from recent sessions, or 'claude --resume <session-id>' to jump directly into a specific session. To view and resume past sessions in one click without files, use L2Cache for Mac."
+              "text": "No. The viewer runs 100% locally in your browser sandbox using client-side JavaScript. No prompts, source code, or tool outputs are ever transmitted over the network."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What file formats and agents does this viewer support?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The tool supports Claude Code (transcript.jsonl), OpenAI Codex (rollout-*.jsonl, history.jsonl), ChatGPT conversation exports, Alpaca/fine-tuning instruction pairs, and standard multi-turn JSON/JSONL transcripts."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I resume a past Claude Code or Codex session in my terminal?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Run 'claude --resume' to pick from recent sessions, or 'claude --resume <session-id>' to jump directly into a specific session. For fast global search across all past sessions and 1-click terminal resumption, use L2Cache for Mac."
             }
           }
         ]
@@ -733,6 +749,20 @@
         </div>
 
         <div class="guide-step-card" style="margin-bottom: 16px;">
+          <h3 style="font-size: 16px; margin-bottom: 6px;">❓ Where are OpenAI Codex session rollout logs saved on macOS?</h3>
+          <p style="font-size: 14px; color: var(--text-muted); margin: 0;">
+            OpenAI Codex saves session rollout files and history in <code>~/.codex/sessions/</code> and <code>~/.codex/history.jsonl</code>. Run <code>open ~/.codex/sessions/</code> in your terminal to view your past rollout session logs.
+          </p>
+        </div>
+
+        <div class="guide-step-card" style="margin-bottom: 16px;">
+          <h3 style="font-size: 16px; margin-bottom: 6px;">❓ What log formats and AI agents are supported?</h3>
+          <p style="font-size: 14px; color: var(--text-muted); margin: 0;">
+            This tool natively parses Claude Code (<code>transcript.jsonl</code>), OpenAI Codex (<code>rollout-*.jsonl</code>), ChatGPT conversation exports, Alpaca/fine-tuning Q&amp;A pairs, and standard multi-turn AI developer logs.
+          </p>
+        </div>
+
+        <div class="guide-step-card" style="margin-bottom: 16px;">
           <h3 style="font-size: 16px; margin-bottom: 6px;">❓ Is it safe to drop proprietary company code logs into this viewer?</h3>
           <p style="font-size: 14px; color: var(--text-muted); margin: 0;">
             Yes, 100%. This tool operates completely in-browser on your local machine using vanilla JavaScript. No logs, prompts, or tool outputs are sent over the network. You can verify this by running the page in Airplane Mode.
@@ -740,9 +770,9 @@
         </div>
 
         <div class="guide-step-card" style="margin-bottom: 16px;">
-          <h3 style="font-size: 16px; margin-bottom: 6px;">❓ How can I search past Claude Code sessions natively on Mac?</h3>
+          <h3 style="font-size: 16px; margin-bottom: 6px;">❓ How can I search past Claude Code &amp; Codex sessions natively on Mac?</h3>
           <p style="font-size: 14px; color: var(--text-muted); margin: 0;">
-            <a href="https://l2cache.amvo.store" style="color: #00a87f; font-weight: 600;">L2Cache for Mac</a> automatically indexes your local <code>~/.claude/projects/</code> and <code>~/.codex/memories.sqlite</code> databases in real time, giving you global hotkey access (<code>⌥ + Space</code>), fast FTS5 search across all turns, and 1-click terminal resumption.
+            <a href="https://l2cache.amvo.store" style="color: #00a87f; font-weight: 600;">L2Cache for Mac</a> automatically indexes your local <code>~/.claude/projects/</code> and <code>~/.codex/sessions/</code> in real time, giving you global hotkey access (<code>⌥ + Space</code>), fast FTS5 search across all turns, and 1-click terminal resumption.
           </p>
         </div>
       </div>
