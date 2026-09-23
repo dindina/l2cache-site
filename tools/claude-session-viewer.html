@@ -966,33 +966,42 @@
       if (files.length > 0) handleDiscoveredFiles(files, true);
     });
 
-    function isTranscriptFile(name) {
+    function isTranscriptFile(name, path = '') {
       if (!name) return false;
-      const lower = name.toLowerCase().trim();
+      const lower = (path ? path + '/' : '') + name.toLowerCase().trim();
 
-      // Exclude non-conversation config files and marketplace metadata
+      // Skip internal cache, embeddings, vector stores, telemetry, and non-conversation config files
       const blacklist = [
         'known_marketplaces', 'package.json', 'package-lock.json', 'tsconfig.json',
         'settings.json', 'config.json', 'manifest.json', 'installed_plugins',
-        'plugins.json', 'telemetry.json', 'stats.json', 'metadata.json',
+        'plugins.json', 'telemetry', 'stats', 'metrics', 'metadata.json',
         'keys.json', 'credentials.json', 'launch.json', 'extensions.json',
-        'theme.json', 'tasks.json', 'keybindings.json',
+        'theme.json', 'tasks.json', 'keybindings.json', 'cache', 'vectors',
+        'embeddings', 'indexes', 'chunks', 'tokens', 'checkpoints', 'debug.log',
         '.eslintrc', '.prettierrc', 'yarn.lock', 'pnpm-lock.yaml'
       ];
       for (const b of blacklist) {
-        if (lower === b || lower.endsWith('/' + b) || lower.includes(b)) return false;
+        if (lower.includes(b)) return false;
       }
 
-      // Accept .jsonl files, transcripts, sessions, history, chats, memories, or generic json/log/txt
+      // Valid transcript extensions & keywords
       if (lower.endsWith('.jsonl')) return true;
-      if (lower.endsWith('.json') || lower.endsWith('.log') || lower.endsWith('.txt')) return true;
+      if (lower.endsWith('.json') || lower.endsWith('.txt')) {
+        return lower.includes('transcript') || 
+               lower.includes('session') || 
+               lower.includes('history') || 
+               lower.includes('conversation') || 
+               lower.includes('chat') || 
+               lower.includes('memories') || 
+               lower.includes('thread');
+      }
 
       return false;
     }
 
     async function traverseFileTree(entry, fileList, path = '') {
       if (entry.isFile) {
-        if (isTranscriptFile(entry.name)) {
+        if (isTranscriptFile(entry.name, path)) {
           await new Promise((resolve) => {
             entry.file((f) => {
               f.customRelativePath = path ? `${path}/${f.name}` : f.name;
@@ -1002,7 +1011,7 @@
           });
         }
       } else if (entry.isDirectory) {
-        if (['node_modules', '.git', 'dist', 'build', '.venv', 'venv', 'cache', 'tmp'].includes(entry.name)) return;
+        if (['node_modules', '.git', 'dist', 'build', '.venv', 'venv', 'cache', '.cache', 'tmp', '.tmp', 'vectors', 'embeddings', 'indexes', 'telemetry', 'DerivedData'].includes(entry.name)) return;
         const dirReader = entry.createReader();
         const entries = await new Promise((resolve) => {
           dirReader.readEntries((results) => resolve(results || []), () => resolve([]));
@@ -1044,11 +1053,11 @@
     async function scanDirHandle(dirHandle, fileList, currentPath = '') {
       try {
         for await (const [name, handle] of dirHandle.entries()) {
-          // Skip build artifacts and git
-          if (['node_modules', '.git', 'dist', 'build', '.venv', 'venv', 'DerivedData'].includes(name)) continue;
+          // Skip internal caches, builds, vector stores, and telemetry
+          if (['node_modules', '.git', 'dist', 'build', '.venv', 'venv', 'cache', '.cache', 'tmp', '.tmp', 'temp', 'vectors', 'embeddings', 'indexes', 'telemetry', 'DerivedData', 'models'].includes(name)) continue;
 
           if (handle.kind === 'file') {
-            if (isTranscriptFile(name)) {
+            if (isTranscriptFile(name, currentPath)) {
               const file = await handle.getFile();
               file.customRelativePath = currentPath ? `${currentPath}/${name}` : name;
               fileList.push(file);
@@ -1109,7 +1118,7 @@
     }
 
     async function handleDiscoveredFiles(fileList, mergeIncremental = true) {
-      const validFiles = fileList.filter(f => isTranscriptFile(f.name));
+      const validFiles = fileList.filter(f => isTranscriptFile(f.name, f.customRelativePath || f.webkitRelativePath || ''));
 
       if (validFiles.length === 0) {
         showToast('No transcript (.jsonl/.json) files found in selection.', '⚠️');
@@ -1254,27 +1263,31 @@
         }
       }
 
-      // Case 2: JSON Lines (JSONL) with possible multi-session grouping by session_id
+      // Case 2: JSON Lines (JSONL)
       const lines = rawText.split('\n');
+      const allEvents = [];
       const sessionGroups = new Map(); // sessionKey -> raw events[]
-      const defaultKey = 'default_session';
+      const isMultiSessionFile = path.toLowerCase().includes('history') || path.toLowerCase().includes('all_sessions') || path.toLowerCase().includes('memories');
 
       lines.forEach((line, lineIdx) => {
         const lineTrimmed = line.trim();
         if (!lineTrimmed) return;
         try {
           const obj = JSON.parse(lineTrimmed);
-          const sId = obj.session_id || obj.sessionId || obj.sessionID || obj.conversation_id || obj.thread_id || (obj.session && obj.session.id) || defaultKey;
+          const sId = obj.session_id || obj.sessionId || obj.sessionID || obj.conversation_id || obj.thread_id || (obj.session && obj.session.id);
           
           const normEvents = normalizeRawLine(obj, lineIdx);
           if (normEvents && normEvents.length > 0) {
-            if (!sessionGroups.has(sId)) sessionGroups.set(sId, []);
-            sessionGroups.get(sId).push(...normEvents);
+            if (isMultiSessionFile && sId) {
+              if (!sessionGroups.has(sId)) sessionGroups.set(sId, []);
+              sessionGroups.get(sId).push(...normEvents);
+            } else {
+              allEvents.push(...normEvents);
+            }
           }
         } catch (err) {
           if (lineTrimmed.length > 10 && !lineTrimmed.startsWith('{')) {
-            if (!sessionGroups.has(defaultKey)) sessionGroups.set(defaultKey, []);
-            sessionGroups.get(defaultKey).push({
+            allEvents.push({
               index: lineIdx + 1,
               role: 'user',
               type: 'RAW_LINE',
@@ -1285,19 +1298,23 @@
         }
       });
 
-      if (sessionGroups.size === 0) return [];
+      if (sessionGroups.size > 0) {
+        const resultSessions = [];
+        sessionGroups.forEach((events, sKey) => {
+          if (events && events.length > 0) {
+            events.forEach((ev, evIdx) => ev.index = evIdx + 1);
+            const sess = createSessionRecord(events, sKey, project, path, modDate, rawText, file);
+            if (sess) resultSessions.push(sess);
+          }
+        });
+        return resultSessions;
+      }
 
-      const resultSessions = [];
-      sessionGroups.forEach((events, sKey) => {
-        if (events && events.length > 0) {
-          // Re-index event numbers sequentially within session
-          events.forEach((ev, evIdx) => ev.index = evIdx + 1);
-          const sess = createSessionRecord(events, sKey, project, path, modDate, rawText, file);
-          if (sess) resultSessions.push(sess);
-        }
-      });
+      if (allEvents.length === 0) return [];
 
-      return resultSessions;
+      allEvents.forEach((ev, evIdx) => ev.index = evIdx + 1);
+      const singleSession = createSessionRecord(allEvents, '', project, path, modDate, rawText, file);
+      return singleSession ? [singleSession] : [];
     }
 
     function extractEventsFromObject(sessObj) {
@@ -1314,6 +1331,11 @@
 
     function createSessionRecord(events, sessionKey, project, path, modDate, rawText, file) {
       if (!events || events.length === 0) return null;
+
+      // Filter out non-conversational single-turn pings or empty logs
+      const hasUser = events.some(e => e.role === 'user');
+      const hasMeaningfulContent = events.some(e => (e.content && e.content.length > 12) || (e.toolCalls && e.toolCalls.length > 0));
+      if (!hasUser && !hasMeaningfulContent) return null;
 
       const firstUser = events.find(e => e.role === 'user');
       const firstPrompt = firstUser ? (firstUser.content || '') : (events[0].content || '');
