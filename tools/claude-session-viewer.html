@@ -376,13 +376,13 @@
       <div class="guide-steps-grid">
         <div class="guide-step-card" style="border-top: 3px solid #00C896;">
           <div class="guide-step-title">
-            <span class="step-badge">A</span> 📁 Scan Entire Projects Folder (Easiest)
+            <span class="step-badge">A</span> 📁 Scan Projects Folder (Native)
           </div>
           <p class="guide-step-desc">
-            Pick your <code>~/.claude/projects/</code> folder once. The browser auto-scans all projects &amp; creates a session switcher.
+            Select <code>~/.claude/projects/</code> or <code>~/.codex/</code> to discover all sessions locally with zero server upload:
             <br/><br/>
-            <button type="button" class="tbtn tbtn-primary" onclick="document.getElementById('folder-input').click()" style="width: 100%; justify-content: center; font-size: 13px; padding: 9px 12px;">
-              📁 Select Projects Folder
+            <button type="button" class="tbtn tbtn-primary" onclick="openFolderPicker()" style="width: 100%; justify-content: center; font-size: 13px; padding: 9px 12px;">
+              📁 Open Projects Folder
             </button>
             <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;" onchange="handleFolderSelect(event)"/>
           </p>
@@ -424,33 +424,21 @@
         <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="tbtn tbtn-primary" style="text-decoration: none; padding: 8px 18px; font-size: 13.5px;">Get L2Cache ($4.99)</a>
       </div>
 
-      <!-- Session Multi-Select Dropdown Bar (Shown when multiple sessions found) -->
-      <div id="session-picker-bar" style="display: none; background: var(--bg2); border: 1.5px solid #00C896; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; box-shadow: 0 4px 14px rgba(0,200,150,0.08);">
-        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
-          <div style="font-weight: 700; font-size: 14px; color: var(--text); display: flex; align-items: center; gap: 8px;">
-            <span>📂</span> <span id="session-count-label">Found Sessions:</span>
-          </div>
-          <div style="flex: 1; min-width: 260px;">
-            <select id="session-select-dropdown" onchange="switchSession(this.value)" style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); font-family: var(--mono); font-size: 13px; background: var(--bg); color: var(--text); cursor: pointer;">
-            </select>
-          </div>
-        </div>
-      </div>
-
       <!-- Dropzone & Upload Box -->
-      <div class="dropzone-box" id="dropzone" onclick="document.getElementById('file-input').click()">
+      <div class="dropzone-box" id="dropzone" onclick="openFolderPicker()">
         <input type="file" id="file-input" accept=".jsonl,.json,.txt" multiple style="display: none;" onchange="handleFileSelect(event)"/>
         <div style="font-size: 32px; margin-bottom: 10px;">📂</div>
         <div style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px;">
           Drag &amp; Drop <code>transcript.jsonl</code> files or folders here, or click to browse
         </div>
         <div style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 14px;">
-          Supports multiple files, folder drop, Claude Code transcripts, OpenAI Codex memories, and Antigravity logs.
+          Supports multiple files, folder picker, Claude Code transcripts, OpenAI Codex memories, and Antigravity logs.
         </div>
         <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
-          <button type="button" class="tbtn tbtn-primary" onclick="event.stopPropagation(); document.getElementById('folder-input').click();">📁 Select Projects Folder</button>
+          <button type="button" class="tbtn tbtn-primary" onclick="event.stopPropagation(); openFolderPicker();">📁 Open Projects Folder</button>
+          <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); document.getElementById('file-input').click();">📄 Pick .jsonl Files</button>
           <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); readFromClipboard();">📋 Paste from Clipboard</button>
-          <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); loadSampleSession();">⚡ Load Sample Session</button>
+          <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); loadSampleSession();">⚡ Load Sample Sessions</button>
         </div>
       </div>
 
@@ -633,7 +621,7 @@
       }, 3500);
     }
 
-    // Drag and drop listeners
+    // Drag and drop listeners supporting both files and folders
     const dropzone = document.getElementById('dropzone');
     ['dragenter', 'dragover'].forEach(name => {
       dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
@@ -641,10 +629,99 @@
     ['dragleave', 'drop'].forEach(name => {
       dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.classList.remove('dragover'); });
     });
-    dropzone.addEventListener('drop', (e) => {
+    dropzone.addEventListener('drop', async (e) => {
+      const items = e.dataTransfer.items;
+      if (items && items.length > 0) {
+        const fileList = [];
+        const promises = [];
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          if (item.webkitGetAsEntry) {
+            const entry = item.webkitGetAsEntry();
+            if (entry) promises.push(traverseFileTree(entry, fileList));
+          } else if (item.kind === 'file') {
+            const f = item.getAsFile();
+            if (f) fileList.push(f);
+          }
+        }
+        await Promise.all(promises);
+        if (fileList.length > 0) {
+          handleDiscoveredFiles(fileList);
+          return;
+        }
+      }
       const files = Array.from(e.dataTransfer.files);
       if (files.length > 0) handleDiscoveredFiles(files);
     });
+
+    async function traverseFileTree(entry, fileList, path = '') {
+      if (entry.isFile) {
+        if (entry.name.endsWith('.jsonl') || entry.name.endsWith('.json') || entry.name.toLowerCase().includes('transcript') || entry.name.toLowerCase().includes('log')) {
+          await new Promise((resolve) => {
+            entry.file((f) => {
+              f.customRelativePath = path ? `${path}/${f.name}` : f.name;
+              fileList.push(f);
+              resolve();
+            }, () => resolve());
+          });
+        }
+      } else if (entry.isDirectory) {
+        if (['node_modules', '.git', 'dist', 'build', '.venv', 'venv', 'cache', 'tmp'].includes(entry.name)) return;
+        const dirReader = entry.createReader();
+        const entries = await new Promise((resolve) => {
+          dirReader.readEntries((results) => resolve(results || []), () => resolve([]));
+        });
+        for (const child of entries) {
+          await traverseFileTree(child, fileList, path ? `${path}/${entry.name}` : entry.name);
+        }
+      }
+    }
+
+    async function openFolderPicker() {
+      if ('showDirectoryPicker' in window) {
+        try {
+          const dirHandle = await window.showDirectoryPicker();
+          showToast('Scanning folder for transcripts...', '⏳');
+          const fileList = [];
+          await scanDirHandle(dirHandle, fileList, dirHandle.name);
+          if (fileList.length > 0) {
+            handleDiscoveredFiles(fileList);
+          } else {
+            showToast('No .jsonl transcript files found in selected folder.', '⚠️');
+          }
+        } catch (err) {
+          if (err.name !== 'AbortError') {
+            console.warn('showDirectoryPicker error:', err);
+            document.getElementById('file-input').click();
+          }
+        }
+      } else {
+        // Fallback: pick files directly
+        document.getElementById('file-input').click();
+      }
+    }
+
+    async function scanDirHandle(dirHandle, fileList, currentPath = '') {
+      try {
+        for await (const [name, handle] of dirHandle.entries()) {
+          // Skip massive or irrelevant dirs
+          if (['node_modules', '.git', 'dist', 'build', '.venv', 'venv', 'cache', 'tmp', 'DerivedData'].includes(name)) continue;
+          if (name.startsWith('.') && name !== '.claude' && name !== '.codex' && name !== '.gemini' && name !== '.cursor') continue;
+
+          if (handle.kind === 'file') {
+            if (name.endsWith('.jsonl') || name.endsWith('.json') || name.toLowerCase().includes('transcript') || name.toLowerCase().includes('log')) {
+              const file = await handle.getFile();
+              file.customRelativePath = currentPath ? `${currentPath}/${name}` : name;
+              fileList.push(file);
+            }
+          } else if (handle.kind === 'directory') {
+            await scanDirHandle(handle, fileList, currentPath ? `${currentPath}/${name}` : name);
+          }
+        }
+      } catch (err) {
+        console.warn('Directory scan error in:', currentPath, err);
+      }
+    }
 
     function handleFileSelect(e) {
       const files = Array.from(e.target.files || []);
