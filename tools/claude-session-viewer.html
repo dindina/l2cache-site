@@ -210,36 +210,45 @@
       <h1>Claude Code &amp; Codex Session Log Viewer</h1>
       <p class="hero-sub">Inspect, filter, and analyze multi-turn Claude Code &amp; Codex CLI session transcripts (<code>transcript.jsonl</code>) in a clean chat interface. 100% private &amp; in-browser.</p>
 
-      <!-- 3-Step Easiest Guide -->
+      <!-- 3 Quick Ways to Load -->
       <div class="guide-steps-grid">
-        <div class="guide-step-card">
+        <div class="guide-step-card" style="border-top: 3px solid #00C896;">
           <div class="guide-step-title">
-            <span class="step-badge">1</span> Locate Your Logs
+            <span class="step-badge">A</span> 📁 Scan Entire Projects Folder (Easiest)
           </div>
           <p class="guide-step-desc">
-            Claude Code stores transcripts in <code>~/.claude/projects/</code>. Run in terminal:
+            Pick your <code>~/.claude/projects/</code> folder once. The browser auto-scans all projects &amp; creates a session switcher.
             <br/><br/>
-            <span class="copy-cmd-inline" onclick="copyTerminalCmd('open ~/.claude/projects/', this)" title="Click to copy">
-              📋 <code>open ~/.claude/projects/</code>
+            <button type="button" class="tbtn tbtn-primary" onclick="document.getElementById('folder-input').click()" style="width: 100%; justify-content: center; font-size: 13px; padding: 9px 12px;">
+              📁 Select Projects Folder
+            </button>
+            <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;" onchange="handleFolderSelect(event)"/>
+          </p>
+        </div>
+
+        <div class="guide-step-card" style="border-top: 3px solid #7F77DD;">
+          <div class="guide-step-title">
+            <span class="step-badge">B</span> 📋 1-Click Clipboard Paste
+          </div>
+          <p class="guide-step-desc">
+            Copy log text or run the terminal one-liner below, then click to load instantly:
+            <br/><br/>
+            <button type="button" class="tbtn tbtn-ghost" onclick="readFromClipboard()" style="width: 100%; justify-content: center; font-size: 13px; padding: 9px 12px; background: var(--bg3); border-color: var(--border);">
+              📋 Paste from Clipboard (1-Click)
+            </button>
+          </p>
+        </div>
+
+        <div class="guide-step-card" style="border-top: 3px solid #f59e0b;">
+          <div class="guide-step-title">
+            <span class="step-badge">C</span> ⚡ Terminal Quick Copy One-Liner
+          </div>
+          <p class="guide-step-desc">
+            Copies your latest Claude Code session directly to your clipboard:
+            <br/><br/>
+            <span class="copy-cmd-inline" onclick="copyTerminalCmd('cat $(ls -t ~/.claude/projects/*/*/transcript.jsonl 2>/dev/null | head -n1) | pbcopy', this)" title="Click to copy one-liner" style="font-size: 11px; word-break: break-all; width: 100%; justify-content: center;">
+              📋 <code>cat $(ls -t ~/.claude/... | head -n1) | pbcopy</code>
             </span>
-          </p>
-        </div>
-
-        <div class="guide-step-card">
-          <div class="guide-step-title">
-            <span class="step-badge">2</span> Drop or Paste JSONL
-          </div>
-          <p class="guide-step-desc">
-            Drag any <code>transcript.jsonl</code> file into the box below, or paste raw JSON lines from your session.
-          </p>
-        </div>
-
-        <div class="guide-step-card">
-          <div class="guide-step-title">
-            <span class="step-badge">3</span> Inspect &amp; Analyze
-          </div>
-          <p class="guide-step-desc">
-            View turn-by-turn prompts, tool executions, file edits, and token counts with full privacy.
           </p>
         </div>
       </div>
@@ -253,19 +262,33 @@
         <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="tbtn tbtn-primary" style="text-decoration: none; padding: 8px 18px; font-size: 13.5px;">Get L2Cache ($4.99)</a>
       </div>
 
+      <!-- Session Multi-Select Dropdown Bar (Shown when multiple sessions found) -->
+      <div id="session-picker-bar" style="display: none; background: var(--bg2); border: 1.5px solid #00C896; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; box-shadow: 0 4px 14px rgba(0,200,150,0.08);">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+          <div style="font-weight: 700; font-size: 14px; color: var(--text); display: flex; align-items: center; gap: 8px;">
+            <span>📂</span> <span id="session-count-label">Found Sessions:</span>
+          </div>
+          <div style="flex: 1; min-width: 260px;">
+            <select id="session-select-dropdown" onchange="switchSession(this.value)" style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); font-family: var(--mono); font-size: 13px; background: var(--bg); color: var(--text); cursor: pointer;">
+            </select>
+          </div>
+        </div>
+      </div>
+
       <!-- Dropzone & Upload Box -->
       <div class="dropzone-box" id="dropzone" onclick="document.getElementById('file-input').click()">
-        <input type="file" id="file-input" accept=".jsonl,.json,.txt" style="display: none;" onchange="handleFileSelect(event)"/>
+        <input type="file" id="file-input" accept=".jsonl,.json,.txt" multiple style="display: none;" onchange="handleFileSelect(event)"/>
         <div style="font-size: 32px; margin-bottom: 10px;">📂</div>
         <div style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px;">
-          Drag &amp; Drop <code>transcript.jsonl</code> here, or click to browse
+          Drag &amp; Drop <code>transcript.jsonl</code> files or folders here, or click to browse
         </div>
         <div style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 14px;">
-          Supports Claude Code JSONL transcripts, OpenAI Codex memories, and Antigravity logs.
+          Supports multiple files, folder drop, Claude Code transcripts, OpenAI Codex memories, and Antigravity logs.
         </div>
-        <div style="display: flex; justify-content: center; gap: 10px;">
-          <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); loadSampleSession();">⚡ Load Sample Claude Code Session</button>
-          <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); togglePasteBox();">📝 Paste Raw JSON Lines</button>
+        <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
+          <button type="button" class="tbtn tbtn-primary" onclick="event.stopPropagation(); document.getElementById('folder-input').click();">📁 Select Projects Folder</button>
+          <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); readFromClipboard();">📋 Paste from Clipboard</button>
+          <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); loadSampleSession();">⚡ Load Sample Session</button>
         </div>
       </div>
 
@@ -389,6 +412,7 @@
     let parsedEvents = [];
     let currentFilter = 'all';
     let toastTimeout;
+    let discoveredSessions = []; // Array of { name, path, file, lastModified }
 
     function showToast(msg, icon = '✅') {
       const toast = document.getElementById('toast-notification');
@@ -398,7 +422,7 @@
       clearTimeout(toastTimeout);
       toastTimeout = setTimeout(() => {
         toast.classList.remove('show');
-      }, 3000);
+      }, 3500);
     }
 
     // Drag and drop listeners
@@ -410,18 +434,118 @@
       dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.classList.remove('dragover'); });
     });
     dropzone.addEventListener('drop', (e) => {
-      const files = e.dataTransfer.files;
-      if (files.length > 0) processFile(files[0]);
+      const files = Array.from(e.dataTransfer.files);
+      if (files.length > 0) {
+        handleDiscoveredFiles(files);
+      }
     });
 
     function handleFileSelect(e) {
-      if (e.target.files.length > 0) processFile(e.target.files[0]);
+      const files = Array.from(e.target.files || []);
+      if (files.length > 0) {
+        handleDiscoveredFiles(files);
+      }
+    }
+
+    function handleFolderSelect(e) {
+      const files = Array.from(e.target.files || []);
+      if (files.length === 0) return;
+      handleDiscoveredFiles(files);
+    }
+
+    function handleDiscoveredFiles(fileList) {
+      // Filter for jsonl / json / txt transcript files
+      const validFiles = fileList.filter(f => 
+        f.name.endsWith('.jsonl') || 
+        f.name.endsWith('.json') || 
+        f.name.toLowerCase().includes('transcript') ||
+        f.name.toLowerCase().includes('log')
+      );
+
+      if (validFiles.length === 0) {
+        showToast('No transcript (.jsonl) files found in selection.', '⚠️');
+        return;
+      }
+
+      // Sort newest first
+      validFiles.sort((a, b) => (b.lastModified || 0) - (a.lastModified || 0));
+
+      discoveredSessions = validFiles.map((f, i) => {
+        const path = f.webkitRelativePath || f.name;
+        // Clean display name from folder path e.g. "projects/my-app/transcript.jsonl" -> "my-app"
+        const parts = path.split('/');
+        let label = f.name;
+        if (parts.length > 1) {
+          const folder = parts[parts.length - 2];
+          label = `${folder} / ${f.name}`;
+        }
+        const modDate = f.lastModified ? new Date(f.lastModified).toLocaleDateString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}) : '';
+        return {
+          id: i,
+          name: label,
+          fullPath: path,
+          file: f,
+          dateStr: modDate
+        };
+      });
+
+      // Update session picker dropdown
+      const pickerBar = document.getElementById('session-picker-bar');
+      const dropdown = document.getElementById('session-select-dropdown');
+      const countLabel = document.getElementById('session-count-label');
+
+      dropdown.innerHTML = '';
+      discoveredSessions.forEach((s) => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = `${s.name} ${s.dateStr ? '(' + s.dateStr + ')' : ''}`;
+        dropdown.appendChild(opt);
+      });
+
+      countLabel.textContent = `Found ${discoveredSessions.length} Session${discoveredSessions.length > 1 ? 's' : ''}:`;
+      pickerBar.style.display = 'block';
+
+      // Automatically load the latest session
+      loadSessionById(0);
+      showToast(`Loaded latest of ${discoveredSessions.length} sessions! Use dropdown to switch.`, '📁');
+    }
+
+    function switchSession(indexStr) {
+      const idx = parseInt(indexStr, 10);
+      loadSessionById(idx);
+    }
+
+    function loadSessionById(idx) {
+      const session = discoveredSessions[idx];
+      if (!session) return;
+      processFile(session.file);
     }
 
     function processFile(file) {
       const reader = new FileReader();
       reader.onload = (e) => parseJSONLContent(e.target.result);
       reader.readAsText(file);
+    }
+
+    function readFromClipboard() {
+      if (!navigator.clipboard || !navigator.clipboard.readText) {
+        // Fallback: open paste drawer
+        togglePasteBox();
+        showToast('Clipboard API unavailable. Please paste logs into the box below.', '📋');
+        return;
+      }
+
+      navigator.clipboard.readText().then(text => {
+        if (!text || text.trim().length === 0) {
+          showToast('Clipboard is empty. Copy some JSONL logs first!', '⚠️');
+          return;
+        }
+        parseJSONLContent(text);
+        showToast('Loaded transcript from clipboard!', '📋');
+      }).catch(err => {
+        togglePasteBox();
+        showToast('Please paste log content into the box below.', '📋');
+      });
     }
 
     function togglePasteBox() {
@@ -437,15 +561,15 @@
 
     function copyTerminalCmd(cmd, el) {
       navigator.clipboard.writeText(cmd).then(() => {
-        showToast("Copied '" + cmd + "' — paste into Terminal to open your projects folder!");
+        showToast("Copied command to clipboard! Paste in Terminal, then click 'Paste from Clipboard'.", '⚡');
         if (el) {
           const original = el.innerHTML;
-          el.innerHTML = '✅ <code>Copied! Paste in Terminal</code>';
+          el.innerHTML = '✅ <code>Copied! Run in Terminal, then Paste</code>';
           el.classList.add('copied');
           setTimeout(() => {
             el.innerHTML = original;
             el.classList.remove('copied');
-          }, 2500);
+          }, 3000);
         }
       });
     }
