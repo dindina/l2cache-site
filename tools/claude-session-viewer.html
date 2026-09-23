@@ -1440,20 +1440,30 @@
     function createSessionRecord(events, sessionKey, defaultProject, path, modDate, rawText, file) {
       if (!events || events.length === 0) return null;
 
+      // Filter out empty turns with no text and no tool calls
+      const cleanEvents = events.filter(e => {
+        const hasContent = e.content && typeof e.content === 'string' && e.content.trim().length > 0;
+        const hasTools = e.toolCalls && e.toolCalls.length > 0;
+        return hasContent || hasTools;
+      });
+
+      if (cleanEvents.length === 0) return null;
+      cleanEvents.forEach((ev, evIdx) => ev.index = evIdx + 1);
+
       // Filter out non-conversational single-turn pings or empty logs
-      const hasUser = events.some(e => e.role === 'user');
-      const hasMeaningfulContent = events.some(e => (e.content && e.content.length > 12) || (e.toolCalls && e.toolCalls.length > 0));
+      const hasUser = cleanEvents.some(e => e.role === 'user');
+      const hasMeaningfulContent = cleanEvents.some(e => (e.content && e.content.length > 8) || (e.toolCalls && e.toolCalls.length > 0));
       if (!hasUser && !hasMeaningfulContent) return null;
 
-      const firstUser = events.find(e => e.role === 'user');
-      const firstPrompt = firstUser ? (firstUser.content || '') : (events[0].content || '');
+      const firstUser = cleanEvents.find(e => e.role === 'user');
+      const firstPrompt = firstUser ? (firstUser.content || '') : (cleanEvents[0].content || '');
       let titleSnippet = firstPrompt.replace(/[\r\n]+/g, ' ').substring(0, 85) || 'Conversation Session';
       if (sessionKey && sessionKey !== 'default_session') {
         titleSnippet = `[${sessionKey.substring(0, 8)}] ${titleSnippet}`;
       }
 
       const agentInfo = detectAgent(path, file ? file.name : '', rawText);
-      const meta = detectBranchAndProject(path, file, rawText, events);
+      const meta = detectBranchAndProject(path, file, rawText, cleanEvents);
       const project = meta.project || defaultProject || 'project';
       const branch = meta.branch || 'main';
 
@@ -1465,7 +1475,7 @@
         sessionKey,
         agentInfo.label,
         path,
-        ...events.map(e => (e.content || '') + ' ' + (e.toolCalls ? JSON.stringify(e.toolCalls) : ''))
+        ...cleanEvents.map(e => (e.content || '') + ' ' + (e.toolCalls ? JSON.stringify(e.toolCalls) : ''))
       ].join(' ').toLowerCase();
 
       return {
@@ -1477,19 +1487,21 @@
         fileName: file ? file.name : `session.jsonl`,
         fullPath: path,
         dateStr: modDate,
-        events: events,
+        events: cleanEvents,
         agentType: agentInfo.type,
         agentLabel: agentInfo.label,
         agentClass: agentInfo.className,
         searchIndexText: indexTokens,
         currentMatchCount: 0,
-        promptsCount: events.filter(e => e.role === 'user').length,
-        toolsCount: events.filter(e => e.role === 'tool' || (e.toolCalls && e.toolCalls.length > 0)).length,
-        assistantCount: events.filter(e => e.role === 'assistant').length
+        promptsCount: cleanEvents.filter(e => e.role === 'user').length,
+        toolsCount: cleanEvents.filter(e => e.role === 'tool' || (e.toolCalls && e.toolCalls.length > 0)).length,
+        assistantCount: cleanEvents.filter(e => e.role === 'assistant').length
       };
     }
 
     function normalizeRawLine(obj, lineIdx) {
+      if (!obj || typeof obj !== 'object') return [];
+
       // Handle pair formats { prompt: "...", response: "..." }
       if (obj.prompt && obj.response) {
         return [
@@ -1509,52 +1521,89 @@
     }
 
     function normalizeEvent(obj, idx) {
+      if (!obj || typeof obj !== 'object') return null;
+
       let role = 'assistant';
       let content = '';
       let toolCalls = [];
 
-      // Extract content from text or object or content array
-      if (typeof obj.content === 'string') {
-        content = obj.content;
-      } else if (Array.isArray(obj.content)) {
-        content = obj.content.map(c => typeof c === 'string' ? c : (c.text || c.input_text || JSON.stringify(c))).join('\n');
-      } else if (obj.text) {
-        content = typeof obj.text === 'string' ? obj.text : JSON.stringify(obj.text);
-      } else if (obj.message && obj.message.content) {
-        content = typeof obj.message.content === 'string' ? obj.message.content : JSON.stringify(obj.message.content);
-      } else if (obj.item && obj.item.content) {
-        content = Array.isArray(obj.item.content) 
-          ? obj.item.content.map(c => c.text || c.input_text || JSON.stringify(c)).join('\n')
-          : String(obj.item.content);
+      // Extract content & tool calls from Claude Code & Codex structures
+      let contentArray = [];
+      if (Array.isArray(obj.content)) contentArray = obj.content;
+      else if (obj.message && Array.isArray(obj.message.content)) contentArray = obj.message.content;
+      else if (obj.item && Array.isArray(obj.item.content)) contentArray = obj.item.content;
+
+      if (contentArray.length > 0) {
+        const textParts = [];
+        contentArray.forEach(c => {
+          if (typeof c === 'string') {
+            if (c.trim()) textParts.push(c.trim());
+          } else if (c && typeof c === 'object') {
+            if (c.type === 'text' && c.text) {
+              if (c.text.trim()) textParts.push(c.text.trim());
+            } else if (c.text && typeof c.text === 'string') {
+              if (c.text.trim()) textParts.push(c.text.trim());
+            } else if (c.type === 'tool_use' || c.tool_use_id || c.name || c.input) {
+              toolCalls.push({
+                name: c.name || c.tool_name || c.id || 'tool_call',
+                arguments: c.input || c.arguments || c.parameters || {}
+              });
+            } else if (c.type === 'tool_result' || c.output) {
+              const res = typeof c.content === 'string' ? c.content : (c.output || JSON.stringify(c));
+              if (res && res.trim()) textParts.push(res.trim());
+            }
+          }
+        });
+        content = textParts.join('\n\n').trim();
+      } else if (typeof obj.content === 'string') {
+        content = obj.content.trim();
+      } else if (obj.text && typeof obj.text === 'string') {
+        content = obj.text.trim();
+      } else if (obj.message && typeof obj.message.content === 'string') {
+        content = obj.message.content.trim();
+      } else if (obj.output && typeof obj.output === 'string') {
+        content = obj.output.trim();
+      } else if (obj.prompt && typeof obj.prompt === 'string') {
+        content = obj.prompt.trim();
+      } else if (obj.thought && typeof obj.thought === 'string') {
+        content = obj.thought.trim();
+      }
+
+      // Check for standalone toolCalls
+      if (obj.tool_calls || obj.toolCalls) {
+        const rawTools = obj.tool_calls || obj.toolCalls;
+        if (Array.isArray(rawTools)) toolCalls.push(...rawTools);
+      }
+      if (obj.toolAction || obj.CommandLine) {
+        toolCalls.push(obj);
       }
 
       // Determine role
-      const rawRole = (obj.role || obj.type || (obj.item && obj.item.role) || obj.sender || obj.source || '').toLowerCase();
+      const rawRole = (obj.role || obj.type || (obj.item && obj.item.role) || (obj.message && obj.message.role) || obj.sender || obj.source || '').toLowerCase();
       
       if (rawRole === 'user' || rawRole === 'user_input' || rawRole === 'user_prompt' || rawRole === 'user_explicit' || rawRole === 'human') {
         role = 'user';
-      } else if (rawRole === 'tool' || rawRole === 'tool_execution' || rawRole === 'tool_call' || obj.tool_calls || obj.toolCalls || obj.toolAction) {
+      } else if (rawRole === 'tool' || rawRole === 'tool_execution' || rawRole === 'tool_call' || rawRole === 'tool_result' || (toolCalls.length > 0 && !content)) {
         role = 'tool';
-        toolCalls = obj.tool_calls || obj.toolCalls || (obj.toolAction ? [obj] : []);
       } else if (rawRole === 'system') {
         role = 'assistant';
-        content = `[System Prompt] ${content}`;
+        if (content) content = `[System Prompt] ${content}`;
       } else {
         role = 'assistant';
-        if (obj.tool_calls || obj.toolCalls) {
-          toolCalls = obj.tool_calls || obj.toolCalls;
-        }
       }
 
-      if (!content && (!toolCalls || toolCalls.length === 0)) {
-        content = obj.toolAction || (obj.summary ? String(obj.summary) : '');
+      // Discard useless heartbeats, telemetry, progress bars, or empty objects
+      const isBlankContent = !content || content.trim().length === 0;
+      const isBlankTools = !toolCalls || toolCalls.length === 0;
+      if (isBlankContent && isBlankTools) {
+        return null;
       }
 
       return {
         index: idx + 1,
         role: role,
         type: obj.type || obj.role || 'EVENT',
-        content: typeof content === 'string' ? content : JSON.stringify(content, null, 2),
+        content: content,
         toolCalls: toolCalls,
         timestamp: obj.timestamp || obj.created_at || ''
       };
@@ -1843,12 +1892,20 @@
           });
         }
 
+        const hasContent = item.content && typeof item.content === 'string' && item.content.trim().length > 0;
+        const hasTools = item.toolCalls && item.toolCalls.length > 0;
+        if (!hasContent && !hasTools) return;
+
+        const contentHtml = hasContent 
+          ? `<div class="msg-content">${formatMessageContent(item.content)}</div>`
+          : '';
+
         card.innerHTML = `
           <div class="msg-header">
             <span class="msg-role-tag ${roleClass}">#${item.index} · ${roleLabel}</span>
             <span style="font-family: var(--mono); font-size: 11.5px; color: var(--text-dim);">${escapeHtml(item.type)}</span>
           </div>
-          <div class="msg-content">${formatMessageContent(item.content)}</div>
+          ${contentHtml}
           ${toolsHtml}
         `;
 
@@ -1857,8 +1914,8 @@
     }
 
     function formatMessageContent(text) {
-      if (!text) return '<em style="color:var(--text-dim)">[Empty message payload]</em>';
-      let safe = escapeHtml(text);
+      if (!text || typeof text !== 'string' || text.trim().length === 0) return '';
+      let safe = escapeHtml(text.trim());
       safe = safe.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
       safe = safe.replace(/`([^`]+)`/g, '<code style="background:rgba(0,200,150,0.1);color:#008765;padding:2px 4px;border-radius:4px;">$1</code>');
       return safe.replace(/\n/g, '<br/>');
@@ -2044,8 +2101,20 @@
           if (!s.project || s.project === 'undefined') {
             s.project = 'project';
           }
+          if (s.events && Array.isArray(s.events)) {
+            s.events = s.events.filter(e => {
+              const hasContent = e.content && typeof e.content === 'string' && e.content.trim().length > 0;
+              const hasTools = e.toolCalls && e.toolCalls.length > 0;
+              return hasContent || hasTools;
+            });
+            s.events.forEach((ev, evIdx) => ev.index = evIdx + 1);
+            s.promptsCount = s.events.filter(e => e.role === 'user').length;
+            s.toolsCount = s.events.filter(e => e.role === 'tool' || (e.toolCalls && e.toolCalls.length > 0)).length;
+            s.assistantCount = s.events.filter(e => e.role === 'assistant').length;
+          }
           return s;
-        });
+        }).filter(s => s.events && s.events.length > 0);
+
         saveSessionsToCache(sessionsList);
         document.getElementById('viewer-results').style.display = 'block';
         updateAgentCounters();
