@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude Code &amp; Codex Session Log Viewer | L2Cache</title>
+  <meta name="description" content="View, inspect, and analyze Claude Code and Codex CLI session logs (transcript.jsonl) in your browser. 100% private, offline client-side parser." />
+  <meta name="keywords" content="claude code log viewer, claude code transcript viewer, codex session viewer, claude code jsonl viewer, view claude code history, claude code resume" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/claude-session-viewer" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="L2Cache" />
+  <meta property="og:url" content="https://l2cache.amvo.store/en/tools/claude-session-viewer" />
+  <meta property="og:title" content="Claude Code &amp; Codex Session Log Viewer | L2Cache" />
+  <meta property="og:description" content="View, inspect, and analyze Claude Code and Codex CLI session logs (transcript.jsonl) in your browser. 100% private, offline client-side parser." />
+  <meta property="og:image" content="https://l2cache.amvo.store/icon.png" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <meta property="og:image:alt" content="L2Cache app icon" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:url" content="https://l2cache.amvo.store/en/tools/claude-session-viewer" />
+  <meta name="twitter:title" content="Claude Code &amp; Codex Session Log Viewer | L2Cache" />
+  <meta name="twitter:description" content="View, inspect, and analyze Claude Code and Codex CLI session logs (transcript.jsonl) in your browser. 100% private, offline client-side parser." />
+  <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png" />
+
+  <link rel="stylesheet" href="/en/tools/theme.css" />
+
+  <style>
+    .step-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 24px; height: 24px; border-radius: 50%;
+      background: #00C896; color: #003d2e; font-weight: 700; font-size: 12px; margin-right: 8px;
+    }
+    .guide-steps-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px; margin: 24px 0 32px;
+    }
+    .guide-step-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .guide-step-title {
+      font-weight: 700; font-size: 15px; color: var(--text);
+      display: flex; align-items: center; margin-bottom: 8px;
+    }
+    .guide-step-desc { font-size: 13.5px; color: var(--text-muted); line-height: 1.5; }
+    .dropzone-box {
+      border: 2px dashed #00C896; border-radius: 14px; background: rgba(0,200,150,0.03);
+      padding: 36px 20px; text-align: center; cursor: pointer; transition: all 0.2s ease;
+      margin-bottom: 24px;
+    }
+    .dropzone-box:hover, .dropzone-box.dragover {
+      background: rgba(0,200,150,0.08); border-color: #00a87f; transform: translateY(-2px);
+    }
+    .stats-bar {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px; margin-bottom: 24px;
+    }
+    .stat-pill-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px; text-align: center;
+    }
+    .stat-pill-val { font-size: 20px; font-weight: 700; color: #00a87f; font-family: var(--mono); }
+    .stat-pill-lbl { font-size: 11.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+    .chat-timeline { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
+    .msg-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 18px 22px; transition: border-color 0.15s;
+    }
+    .msg-card.user { border-left: 4px solid #00a87f; }
+    .msg-card.assistant { border-left: 4px solid #7F77DD; }
+    .msg-card.tool { border-left: 4px solid #f59e0b; background: rgba(245,158,11,0.02); }
+    .msg-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px; font-size: 13px;
+    }
+    .msg-role-tag {
+      font-weight: 700; text-transform: uppercase; font-size: 11px;
+      letter-spacing: 0.05em; padding: 3px 8px; border-radius: 6px;
+    }
+    .role-user { background: rgba(0,200,150,0.12); color: #008765; }
+    .role-assistant { background: rgba(127,119,221,0.12); color: #5C52C8; }
+    .role-tool { background: rgba(245,158,11,0.12); color: #b45309; }
+    .msg-content { font-size: 14.5px; line-height: 1.6; color: var(--text); word-break: break-word; }
+    .msg-content pre {
+      background: #0D0C1A; color: #e0ffe8; padding: 14px;
+      border-radius: 8px; overflow-x: auto; margin: 12px 0 6px; font-size: 13px;
+    }
+    .tool-call-box {
+      background: #0D0C1A; border: 1px solid #232238; border-radius: 8px;
+      padding: 12px 16px; margin: 8px 0; font-family: var(--mono); font-size: 13px; color: #a197fd;
+    }
+    .filter-tabs-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .filter-btn {
+      background: var(--bg2); border: 1px solid var(--border);
+      padding: 6px 14px; border-radius: 8px; font-size: 13px; cursor: pointer;
+      font-weight: 500; color: var(--text-muted); transition: all 0.15s;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: #00a87f; color: #fff; border-color: #00a87f;
+    }
+    .copy-cmd-inline {
+      background: rgba(0,200,150,0.1); border: 1px solid rgba(0,200,150,0.25);
+      padding: 4px 8px; border-radius: 6px; font-family: var(--mono); font-size: 12px;
+      color: #008765; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .copy-cmd-inline:hover { background: rgba(0,200,150,0.2); }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Claude Code & Codex Session Log Viewer",
+        "url": "https://l2cache.amvo.store/en/tools/claude-session-viewer",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Where are Claude Code session logs stored on macOS?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Claude Code stores JSONL conversation logs and session transcripts locally in ~/.claude/projects/ on macOS. You can open this directory by running 'open ~/.claude/projects/' in your terminal."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does this tool upload my Claude Code transcripts to any server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The parser runs 100% locally in your browser sandbox using JavaScript. No prompts, codebase files, or tool outputs are sent to remote servers."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I resume a past Claude Code session in my terminal?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Run 'claude --resume' to pick from recent sessions, or 'claude --resume <session-id>' to jump directly into a specific session. To view and resume past sessions in one click without files, use L2Cache for Mac."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">100% client-side JavaScript. Proprietary code and prompts never leave your browser.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/en/">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="/en/developer-clipboard">Developers</a></li>
+      <li><a href="/en/tools" class="active">Free Tools</a></li>
+      <li><a href="/en/benchmark">Benchmark</a></li>
+      <li><a href="/en/blog">Blog</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero Header -->
+      <span class="section-label">AI AGENT DEVELOPER TOOL</span>
+      <h1>Claude Code &amp; Codex Session Log Viewer</h1>
+      <p class="hero-sub">Inspect, filter, and analyze multi-turn Claude Code &amp; Codex CLI session transcripts (<code>transcript.jsonl</code>) in a clean chat interface. 100% private &amp; in-browser.</p>
+
+      <!-- 3-Step Easiest Guide -->
+      <div class="guide-steps-grid">
+        <div class="guide-step-card">
+          <div class="guide-step-title">
+            <span class="step-badge">1</span> Locate Your Logs
+          </div>
+          <p class="guide-step-desc">
+            Claude Code stores transcripts in <code>~/.claude/projects/</code>. Run in terminal:
+            <br/><br/>
+            <span class="copy-cmd-inline" onclick="copyTerminalCmd('open ~/.claude/projects/')" title="Click to copy">
+              📋 <code>open ~/.claude/projects/</code>
+            </span>
+          </p>
+        </div>
+
+        <div class="guide-step-card">
+          <div class="guide-step-title">
+            <span class="step-badge">2</span> Drop or Paste JSONL
+          </div>
+          <p class="guide-step-desc">
+            Drag any <code>transcript.jsonl</code> file into the box below, or paste raw JSON lines from your session.
+          </p>
+        </div>
+
+        <div class="guide-step-card">
+          <div class="guide-step-title">
+            <span class="step-badge">3</span> Inspect &amp; Analyze
+          </div>
+          <p class="guide-step-desc">
+            View turn-by-turn prompts, tool executions, file edits, and token counts with full privacy.
+          </p>
+        </div>
+      </div>
+
+      <!-- Native App Promo Banner -->
+      <div style="background: rgba(0,200,150,0.08); border: 1.5px solid rgba(0,200,150,0.3); border-radius: 12px; padding: 18px 24px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+        <div style="font-size: 14px; color: var(--text);">
+          <strong style="color: #008765;">⚡ Want live floating session tracking in macOS?</strong>
+          <span style="color: var(--text-muted); display: block; margin-top: 2px;">L2Cache for Mac automatically monitors Claude Code &amp; Codex sessions in your menu bar with 1-click terminal resumption.</span>
+        </div>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="tbtn tbtn-primary" style="text-decoration: none; padding: 8px 18px; font-size: 13.5px;">Get L2Cache ($4.99)</a>
+      </div>
+
+      <!-- Dropzone & Upload Box -->
+      <div class="dropzone-box" id="dropzone" onclick="document.getElementById('file-input').click()">
+        <input type="file" id="file-input" accept=".jsonl,.json,.txt" style="display: none;" onchange="handleFileSelect(event)"/>
+        <div style="font-size: 32px; margin-bottom: 10px;">📂</div>
+        <div style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px;">
+          Drag &amp; Drop <code>transcript.jsonl</code> here, or click to browse
+        </div>
+        <div style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 14px;">
+          Supports Claude Code JSONL transcripts, OpenAI Codex memories, and Antigravity logs.
+        </div>
+        <div style="display: flex; justify-content: center; gap: 10px;">
+          <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); loadSampleSession();">⚡ Load Sample Claude Code Session</button>
+          <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); togglePasteBox();">📝 Paste Raw JSON Lines</button>
+        </div>
+      </div>
+
+      <!-- Paste Area (Collapsible) -->
+      <div id="paste-drawer" style="display: none; margin-bottom: 24px;">
+        <div style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;">Paste Raw JSONL Lines:</div>
+        <textarea id="raw-jsonl-input" class="tool-textarea" style="height: 140px; font-family: var(--mono); font-size: 12.5px;" placeholder='{"type":"USER_INPUT","content":"Fix the database connection leak..."}&#10;{"type":"PLANNER_RESPONSE","content":"I analyzed the SQLite pool..."}'></textarea>
+        <div style="margin-top: 10px; display: flex; gap: 10px;">
+          <button class="tbtn tbtn-primary" onclick="parsePastedJSONL()">🔍 Parse Pasted Logs</button>
+          <button class="tbtn tbtn-ghost" onclick="document.getElementById('raw-jsonl-input').value=''">Clear</button>
+        </div>
+      </div>
+
+      <!-- Results View -->
+      <div id="viewer-results" style="display: none;">
+        
+        <!-- Stats Summary -->
+        <div class="stats-bar">
+          <div class="stat-pill-card">
+            <div class="stat-pill-val" id="stat-turns">0</div>
+            <div class="stat-pill-lbl">Total Turns</div>
+          </div>
+          <div class="stat-pill-card">
+            <div class="stat-pill-val" id="stat-prompts">0</div>
+            <div class="stat-pill-lbl">User Prompts</div>
+          </div>
+          <div class="stat-pill-card">
+            <div class="stat-pill-val" id="stat-tools">0</div>
+            <div class="stat-pill-lbl">Tool Executions</div>
+          </div>
+          <div class="stat-pill-card">
+            <div class="stat-pill-val" id="stat-model-msgs">0</div>
+            <div class="stat-pill-lbl">Assistant Replies</div>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+          <div class="filter-tabs-row">
+            <button class="filter-btn active" onclick="setFilter('all', this)">All Events</button>
+            <button class="filter-btn" onclick="setFilter('user', this)">👤 Prompts Only</button>
+            <button class="filter-btn" onclick="setFilter('assistant', this)">🤖 Assistant Only</button>
+            <button class="filter-btn" onclick="setFilter('tool', this)">🛠️ Tool Calls Only</button>
+          </div>
+          <div>
+            <button class="tbtn tbtn-ghost" onclick="exportMarkdownSummary()" style="font-size: 12.5px; padding: 6px 12px;">📋 Export Clean Markdown</button>
+          </div>
+        </div>
+
+        <!-- Interactive Timeline -->
+        <div id="timeline-container" class="chat-timeline"></div>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section" style="margin-top: 56px; border-top: 1px solid var(--border); padding-top: 36px;">
+        <h2 style="font-family: var(--serif); font-size: 24px; font-weight: 700; margin-bottom: 20px;">Frequently Asked Questions</h2>
+        
+        <div class="guide-step-card" style="margin-bottom: 16px;">
+          <h3 style="font-size: 16px; margin-bottom: 6px;">❓ Where does Claude Code save its session history on macOS?</h3>
+          <p style="font-size: 14px; color: var(--text-muted); margin: 0;">
+            Claude Code stores all conversation logs as JSON Lines files in <code>~/.claude/projects/&lt;project-name&gt;/transcript.jsonl</code>. Run <code>open ~/.claude/projects/</code> in your Mac terminal to open the folder directly in Finder.
+          </p>
+        </div>
+
+        <div class="guide-step-card" style="margin-bottom: 16px;">
+          <h3 style="font-size: 16px; margin-bottom: 6px;">❓ Is it safe to drop proprietary company code logs into this viewer?</h3>
+          <p style="font-size: 14px; color: var(--text-muted); margin: 0;">
+            Yes, 100%. This tool operates completely in-browser on your local machine using vanilla JavaScript. No logs, prompts, or tool outputs are sent over the network. You can verify this by running the page in Airplane Mode.
+          </p>
+        </div>
+
+        <div class="guide-step-card" style="margin-bottom: 16px;">
+          <h3 style="font-size: 16px; margin-bottom: 6px;">❓ How can I search past Claude Code sessions natively on Mac?</h3>
+          <p style="font-size: 14px; color: var(--text-muted); margin: 0;">
+            <a href="https://l2cache.amvo.store" style="color: #00a87f; font-weight: 600;">L2Cache for Mac</a> automatically indexes your local <code>~/.claude/projects/</code> and <code>~/.codex/memories.sqlite</code> databases in real time, giving you global hotkey access (<code>⌥ + Space</code>), fast FTS5 search across all turns, and 1-click terminal resumption.
+          </p>
+        </div>
+      </div>
+
+      <!-- Related Tools -->
+      <div class="related-tools-box" style="margin-top: 48px; border-top: 1px solid var(--border); padding-top: 32px; margin-bottom: 48px;">
+        <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px;">Related Developer Utilities</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
+          <a href="/en/tools/devops-manifest-parser" style="background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-decoration: none; color: inherit;">
+            <div style="font-weight: 600; font-size: 14.5px; color: var(--text);">DevOps Manifest Parser</div>
+            <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 4px;">Inspect Kubernetes, Docker &amp; CI/CD manifests.</div>
+          </a>
+          <a href="/en/tools/curl-to-fetch" style="background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-decoration: none; color: inherit;">
+            <div style="font-weight: 600; font-size: 14.5px; color: var(--text);">cURL to Fetch Converter</div>
+            <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 4px;">Convert CLI cURL commands to JavaScript Fetch.</div>
+          </a>
+          <a href="/en/tools/json-diff" style="background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-decoration: none; color: inherit;">
+            <div style="font-weight: 600; font-size: 14.5px; color: var(--text);">JSON Diff &amp; Inspector</div>
+            <div style="font-weight: 400; font-size: 12.5px; color: var(--text-muted); margin-top: 4px;">Compare JSON payloads side-by-side.</div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <a href="/en/">Home</a>
+    <a href="/en/blog">Blog</a>
+    <a href="/en/tools">Free Tools</a>
+    <a href="/en/privacy">Privacy Policy</a>
+    <a href="/en/support">Support</a>
+    <br/><br/>
+    © 2026 L2Cache. All rights reserved.
+  </footer>
+
+  <!-- Script: Parser & Timeline Logic -->
+  <script>
+    let parsedEvents = [];
+    let currentFilter = 'all';
+
+    // Drag and drop listeners
+    const dropzone = document.getElementById('dropzone');
+    ['dragenter', 'dragover'].forEach(name => {
+      dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    });
+    ['dragleave', 'drop'].forEach(name => {
+      dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.classList.remove('dragover'); });
+    });
+    dropzone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer.files;
+      if (files.length > 0) processFile(files[0]);
+    });
+
+    function handleFileSelect(e) {
+      if (e.target.files.length > 0) processFile(e.target.files[0]);
+    }
+
+    function processFile(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => parseJSONLContent(e.target.result);
+      reader.readAsText(file);
+    }
+
+    function togglePasteBox() {
+      const drawer = document.getElementById('paste-drawer');
+      drawer.style.display = drawer.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function parsePastedJSONL() {
+      const text = document.getElementById('raw-jsonl-input').value.trim();
+      if (!text) return alert('Please paste JSONL lines first.');
+      parseJSONLContent(text);
+    }
+
+    function copyTerminalCmd(cmd) {
+      navigator.clipboard.writeText(cmd).then(() => {
+        alert('Copied to clipboard: ' + cmd + '\nPaste into Terminal to open your Claude Code projects folder!');
+      });
+    }
+
+    function parseJSONLContent(rawText) {
+      parsedEvents = [];
+      const lines = rawText.split('\n');
+      
+      lines.forEach((line, idx) => {
+        const trimmed = line.trim();
+        if (!trimmed) return;
+        try {
+          const obj = JSON.parse(trimmed);
+          parsedEvents.push(normalizeEvent(obj, idx));
+        } catch (err) {
+          // Attempt parsing fallback text line
+          if (trimmed.length > 5) {
+            parsedEvents.push({
+              index: idx,
+              role: 'user',
+              type: 'RAW_LINE',
+              content: trimmed,
+              toolCalls: []
+            });
+          }
+        }
+      });
+
+      if (parsedEvents.length === 0) {
+        alert('Could not find valid JSONL events. Try loading the sample session.');
+        return;
+      }
+
+      renderResults();
+    }
+
+    function normalizeEvent(obj, idx) {
+      let role = 'assistant';
+      let content = '';
+      let toolCalls = [];
+
+      // Detect role based on Claude Code / Antigravity / OpenAI schemas
+      if (obj.type === 'USER_INPUT' || obj.role === 'user' || obj.source === 'USER_EXPLICIT') {
+        role = 'user';
+        content = obj.content || obj.text || (obj.message && obj.message.content) || JSON.stringify(obj);
+      } else if (obj.tool_calls || obj.toolCalls || obj.type === 'TOOL_EXECUTION' || obj.toolAction) {
+        role = 'tool';
+        content = obj.content || obj.toolAction || '';
+        toolCalls = obj.tool_calls || obj.toolCalls || [obj];
+      } else {
+        role = 'assistant';
+        content = obj.content || obj.text || (obj.message && obj.message.content) || '';
+        if (obj.tool_calls) {
+          toolCalls = obj.tool_calls;
+        }
+      }
+
+      return {
+        index: idx + 1,
+        role: role,
+        type: obj.type || obj.role || 'EVENT',
+        content: typeof content === 'string' ? content : JSON.stringify(content, null, 2),
+        toolCalls: toolCalls,
+        timestamp: obj.timestamp || obj.created_at || ''
+      };
+    }
+
+    function renderResults() {
+      document.getElementById('viewer-results').style.display = 'block';
+
+      // Update statistics
+      const prompts = parsedEvents.filter(e => e.role === 'user').length;
+      const tools = parsedEvents.filter(e => e.role === 'tool' || (e.toolCalls && e.toolCalls.length > 0)).length;
+      const assistantMsgs = parsedEvents.filter(e => e.role === 'assistant').length;
+
+      document.getElementById('stat-turns').innerText = parsedEvents.length;
+      document.getElementById('stat-prompts').innerText = prompts;
+      document.getElementById('stat-tools').innerText = tools;
+      document.getElementById('stat-model-msgs').innerText = assistantMsgs;
+
+      renderTimeline();
+    }
+
+    function setFilter(filter, btn) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTimeline();
+    }
+
+    function renderTimeline() {
+      const container = document.getElementById('timeline-container');
+      container.innerHTML = '';
+
+      const filtered = parsedEvents.filter(e => {
+        if (currentFilter === 'all') return true;
+        if (currentFilter === 'user') return e.role === 'user';
+        if (currentFilter === 'assistant') return e.role === 'assistant';
+        if (currentFilter === 'tool') return e.role === 'tool' || (e.toolCalls && e.toolCalls.length > 0);
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--text-muted);">No events match this filter.</div>';
+        return;
+      }
+
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = `msg-card ${item.role}`;
+
+        let roleLabel = 'Assistant';
+        let roleClass = 'role-assistant';
+        if (item.role === 'user') { roleLabel = 'User Prompt'; roleClass = 'role-user'; }
+        if (item.role === 'tool') { roleLabel = 'Tool Execution'; roleClass = 'role-tool'; }
+
+        let toolsHtml = '';
+        if (item.toolCalls && item.toolCalls.length > 0) {
+          item.toolCalls.forEach(tc => {
+            const name = tc.name || tc.function?.name || tc.toolAction || 'command';
+            const args = tc.parameters || tc.arguments || tc.CommandLine || '';
+            toolsHtml += `
+              <div class="tool-call-box">
+                <div style="font-weight: 700; color: #f59e0b; margin-bottom: 4px;">🛠️ ${escapeHtml(name)}</div>
+                <pre style="margin: 4px 0 0; background: #131126; color: #e0ffe8;">${escapeHtml(typeof args === 'object' ? JSON.stringify(args, null, 2) : args)}</pre>
+              </div>
+            `;
+          });
+        }
+
+        card.innerHTML = `
+          <div class="msg-header">
+            <span class="msg-role-tag ${roleClass}">#${item.index} · ${roleLabel}</span>
+            <span style="font-family: var(--mono); font-size: 11.5px; color: var(--text-dim);">${escapeHtml(item.type)}</span>
+          </div>
+          <div class="msg-content">${formatMessageContent(item.content)}</div>
+          ${toolsHtml}
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function formatMessageContent(text) {
+      if (!text) return '<em style="color:var(--text-dim)">[Empty message payload]</em>';
+      // Simple code block escaping
+      let safe = escapeHtml(text);
+      safe = safe.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+      safe = safe.replace(/`([^`]+)`/g, '<code style="background:rgba(0,200,150,0.1);color:#008765;padding:2px 4px;border-radius:4px;">$1</code>');
+      return safe.replace(/\n/g, '<br/>');
+    }
+
+    function escapeHtml(str) {
+      if (typeof str !== 'string') str = String(str);
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function exportMarkdownSummary() {
+      let md = '# Claude Code Session Summary\n\n';
+      parsedEvents.forEach(e => {
+        md += `### [${e.role.toUpperCase()}] Turn #${e.index}\n\n`;
+        md += `${e.content}\n\n`;
+        if (e.toolCalls && e.toolCalls.length > 0) {
+          md += `\`\`\`json\n${JSON.stringify(e.toolCalls, null, 2)}\n\`\`\`\n\n`;
+        }
+        md += '---\n\n';
+      });
+
+      navigator.clipboard.writeText(md).then(() => {
+        alert('Session exported as clean Markdown and copied to your clipboard!');
+      });
+    }
+
+    function loadSampleSession() {
+      const sampleJSONL = `{"type":"USER_INPUT","content":"Let's refactor the SQLite connection pool to use Swift Actors and prevent thread deadlocks on macOS."}
+{"type":"PLANNER_RESPONSE","content":"I will inspect our existing DatabasePool.swift and wrap read/write operations in an actor-isolated queue."}
+{"type":"TOOL_EXECUTION","toolAction":"Grep for DatabasePool in codebase","CommandLine":"grep -rn 'DatabasePool' ./Sources"}
+{"type":"PLANNER_RESPONSE","content":"Found 3 call sites in ClipboardRepository.swift. I am now applying the actor isolation patch."}
+{"type":"TOOL_EXECUTION","toolAction":"Update DatabasePool.swift with actor isolation","tool_calls":[{"name":"replace_file_content","parameters":{"file":"DatabasePool.swift","patch":"actor DatabaseQueue { ... }"}}]}
+{"type":"PLANNER_RESPONSE","content":"Refactor complete. All 24 unit tests passed with 0 concurrency warnings under Swift 6 strict concurrency."}`;
+
+      parseJSONLContent(sampleJSONL);
+    }
+  </script>
+</body>
+</html>
