@@ -205,10 +205,35 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .session-badge-branch {
+      font-size: 11px;
+      font-family: var(--mono);
+      font-weight: 600;
+      background: rgba(245, 158, 11, 0.12);
+      color: #d97706;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      padding: 1px 6px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      max-width: 130px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .session-item.active .session-badge-project {
       background: #008765;
       color: #ffffff;
+    }
+    .session-item.active .session-badge-branch {
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.4);
     }
     .session-time-text {
       font-size: 11px;
@@ -639,6 +664,7 @@
                   <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
                     <span class="agent-badge agent-badge-claude" id="active-agent-tag">🤖 Claude Code</span>
                     <span class="session-badge-project" id="active-project-tag">PROJECT</span>
+                    <span class="session-badge-branch" id="active-branch-tag">🌿 main</span>
                     <span style="font-size: 12px; color: var(--text-dim); font-family: var(--mono);" id="active-session-date">Just now</span>
                   </div>
                   <div style="font-weight: 700; font-size: 15px; color: var(--text);" id="active-session-title">Selected Session</div>
@@ -1329,7 +1355,60 @@
       return events;
     }
 
-    function createSessionRecord(events, sessionKey, project, path, modDate, rawText, file) {
+    function detectBranchAndProject(path, file, rawText, events) {
+      let project = 'project';
+      let branch = '';
+
+      // 1. Project extraction from path
+      const p = (file && (file.customRelativePath || file.webkitRelativePath || file.name)) || path || '';
+      const parts = p.split('/');
+      if (parts.length > 2 && (parts[0] === '.claude' || parts[0] === 'projects')) {
+        project = parts[1] === 'projects' ? parts[2] : parts[1];
+      } else if (parts.length > 1) {
+        project = parts[parts.length - 2];
+      } else if (file && file.name) {
+        project = file.name.replace('.transcript.jsonl', '').replace('.jsonl', '').replace('.json', '').replace('transcript-', '');
+      }
+
+      // Clean up project name
+      project = project.replace(/^~[\\\/]/, '').replace(/^\.[\\\/]/, '');
+
+      // 2. Scan raw text / JSON objects for git_branch, branch, cwd
+      const sample = (rawText || '').substring(0, 15000);
+      
+      const branchMatch = sample.match(/"(?:git_branch|gitBranch|branch)"\s*:\s*"([^"]+)"/) ||
+                          sample.match(/"(?:git|vcs|repo)"\s*:\s*\{[^}]*"(?:branch)"\s*:\s*"([^"]+)"/) ||
+                          sample.match(/(?:git checkout -b|git switch -c|git switch|git checkout)\s+([a-zA-Z0-9_\-\.\/]+)/) ||
+                          sample.match(/On branch\s+([a-zA-Z0-9_\-\.\/]+)/) ||
+                          sample.match(/HEAD ->\s+origin\/([a-zA-Z0-9_\-\.\/]+)/);
+
+      if (branchMatch && branchMatch[1] && !branchMatch[1].startsWith('-')) {
+        branch = branchMatch[1].replace(/['";,]/g, '').trim();
+      }
+
+      // Check events for tool calls with git commands
+      if (!branch && events && events.length > 0) {
+        for (const ev of events) {
+          if (ev.toolCalls && ev.toolCalls.length > 0) {
+            const str = JSON.stringify(ev.toolCalls);
+            const m = str.match(/(?:git switch|git checkout -b|git checkout|git branch --show-current)\s+([a-zA-Z0-9_\-\.\/]+)/) ||
+                      str.match(/"branch"\s*:\s*"([^"]+)"/);
+            if (m && m[1] && !m[1].startsWith('-')) {
+              branch = m[1].replace(/['";,]/g, '').trim();
+              break;
+            }
+          }
+        }
+      }
+
+      if (!branch) {
+        branch = 'main';
+      }
+
+      return { project, branch };
+    }
+
+    function createSessionRecord(events, sessionKey, defaultProject, path, modDate, rawText, file) {
       if (!events || events.length === 0) return null;
 
       // Filter out non-conversational single-turn pings or empty logs
@@ -1345,10 +1424,14 @@
       }
 
       const agentInfo = detectAgent(path, file ? file.name : '', rawText);
+      const meta = detectBranchAndProject(path, file, rawText, events);
+      const project = meta.project || defaultProject || 'project';
+      const branch = meta.branch || 'main';
 
       // Build search index tokens for lightning fast full-text query matching
       const indexTokens = [
         project,
+        branch,
         titleSnippet,
         sessionKey,
         agentInfo.label,
@@ -1360,6 +1443,7 @@
         id: 0,
         sessionKey: sessionKey !== 'default_session' ? sessionKey : '',
         project: project,
+        branch: branch,
         title: titleSnippet,
         fileName: file ? file.name : `session.jsonl`,
         fullPath: path,
@@ -1501,9 +1585,10 @@
         tile.innerHTML = `
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
-              <div style="display: flex; align-items: center; gap: 6px;">
+              <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
                 <span class="agent-badge ${session.agentClass}">${escapeHtml(session.agentLabel)}</span>
-                <span class="session-badge-project">${escapeHtml(session.project)}</span>
+                <span class="session-badge-project" title="Project: ${escapeHtml(session.project)}">📂 ${escapeHtml(session.project)}</span>
+                <span class="session-badge-branch" title="Git Branch: ${escapeHtml(session.branch)}">🌿 ${escapeHtml(session.branch)}</span>
               </div>
               <span style="font-size: 11px; color: var(--text-dim); font-family: var(--mono);">${escapeHtml(session.dateStr)}</span>
             </div>
@@ -1591,9 +1676,10 @@
 
         item.innerHTML = `
           <div class="session-item-top">
-            <div style="display: flex; align-items: center; gap: 6px;">
+            <div style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
               <span class="agent-badge ${session.agentClass}" style="font-size: 10px; padding: 1px 5px;">${escapeHtml(session.agentLabel)}</span>
-              <span class="session-badge-project">${escapeHtml(session.project)}</span>
+              <span class="session-badge-project" style="max-width: 90px;">📂 ${escapeHtml(session.project)}</span>
+              <span class="session-badge-branch" style="max-width: 80px; font-size: 10px;">🌿 ${escapeHtml(session.branch)}</span>
             </div>
             <span class="session-time-text">${escapeHtml(session.dateStr)}</span>
           </div>
@@ -1631,7 +1717,11 @@
         agentEl.className = `agent-badge ${session.agentClass}`;
         agentEl.innerText = session.agentLabel;
       }
-      document.getElementById('active-project-tag').innerText = session.project.toUpperCase();
+      document.getElementById('active-project-tag').innerText = '📂 ' + session.project.toUpperCase();
+      const branchEl = document.getElementById('active-branch-tag');
+      if (branchEl) {
+        branchEl.innerText = '🌿 ' + session.branch;
+      }
       document.getElementById('active-session-title').innerText = session.title;
       document.getElementById('active-session-date').innerText = session.dateStr;
       document.getElementById('active-session-path').innerText = session.fullPath;
@@ -1818,6 +1908,7 @@
       let md = `# Session: ${session.title}\n`;
       md += `**Agent:** ${session.agentLabel}  \n`;
       md += `**Project:** ${session.project}  \n`;
+      md += `**Branch:** ${session.branch}  \n`;
       md += `**Date:** ${session.dateStr}  \n\n`;
 
       session.events.forEach(e => {
@@ -1836,7 +1927,7 @@
 
     function loadSampleSession() {
       const sample1 = [
-        `{"type":"USER_INPUT","content":"Let's refactor SQLite connection pool to use Swift Actors and prevent concurrency deadlocks on macOS."}`,
+        `{"git_branch":"main","type":"USER_INPUT","content":"Let's refactor SQLite connection pool to use Swift Actors and prevent concurrency deadlocks on macOS."}`,
         `{"type":"PLANNER_RESPONSE","content":"I will inspect DatabasePool.swift and wrap read/write operations in an actor-isolated queue."}`,
         `{"type":"TOOL_EXECUTION","toolAction":"Grep for DatabasePool in codebase","CommandLine":"grep -rn 'DatabasePool' ./Sources"}`,
         `{"type":"PLANNER_RESPONSE","content":"Found 3 call sites in ClipboardRepository.swift. I am applying the actor isolation patch now."}`,
@@ -1845,7 +1936,7 @@
       ].join('\n');
 
       const sample2 = [
-        `{"role":"user","content":"Implement OAuth2 PKCE login flow and secure JWT token refresh rotation with Redis."}`,
+        `{"branch":"feature/pkce-rotation","role":"user","content":"Implement OAuth2 PKCE login flow and secure JWT token refresh rotation with Redis."}`,
         `{"role":"assistant","content":"I will set up the PKCE code challenge generation in AuthService.ts and store hashed refresh tokens in Redis."}`,
         `{"role":"tool","toolAction":"Search authentication middlewares","CommandLine":"find ./src/auth -name '*.ts'"}`,
         `{"role":"assistant","content":"Generated token rotation middleware. Old refresh tokens are invalidated immediately upon replay."}`,
@@ -1854,28 +1945,28 @@
       ].join('\n');
 
       const sample3 = [
-        `{"role":"user","content":"Optimize vector search indexing on ClickHouse and benchmark query latency under 10k RPS."}`,
+        `{"git_branch":"perf/vector-search","role":"user","content":"Optimize vector search indexing on ClickHouse and benchmark query latency under 10k RPS."}`,
         `{"role":"assistant","content":"I will configure an HNSW index on the embeddings column and test batch insert throughput."}`,
         `{"role":"tool","toolAction":"Run benchmark k6 script","CommandLine":"k6 run benchmarks/vector-search.js"}`,
         `{"role":"assistant","content":"p99 latency dropped from 145ms down to 8.2ms! Vector search is ready for production."}`
       ].join('\n');
 
       const sample4 = [
-        `{"type":"USER_INPUT","content":"Generate dynamic OpenGraph social share cards and configure Next.js App Router metadata for SEO."}`,
+        `{"git_branch":"seo/opengraph-cards","type":"USER_INPUT","content":"Generate dynamic OpenGraph social share cards and configure Next.js App Router metadata for SEO."}`,
         `{"type":"PLANNER_RESPONSE","content":"I will create an opengraph-image.tsx route handler with @vercel/og font rasterization."}`,
         `{"type":"TOOL_EXECUTION","toolAction":"Create opengraph-image.tsx","CommandLine":"touch app/opengraph-image.tsx"}`,
         `{"type":"PLANNER_RESPONSE","content":"Generated dynamic SVG-to-PNG social card with brand gradients and automatic title embedding."}`
       ].join('\n');
 
       const sample5 = [
-        `{"role":"user","content":"Build an async FastAPI streaming WebSocket handler with Redis pub/sub backplane for real-time notifications."}`,
+        `{"branch":"feat/fastapi-websockets","role":"user","content":"Build an async FastAPI streaming WebSocket handler with Redis pub/sub backplane for real-time notifications."}`,
         `{"role":"assistant","content":"I will implement the connection manager using redis.asyncio pubsub and broadcaster."}`,
         `{"role":"tool","toolAction":"Install redis-py async dependencies","CommandLine":"uv add 'redis[hiredis]>=5.0.0'"}`,
         `{"role":"assistant","content":"Broadcaster active. Successfully load tested 50,000 concurrent streaming WebSocket client connections."}`
       ].join('\n');
 
       const sample6 = [
-        `{"type":"USER_INPUT","content":"Build an automatic CoreML model quantization pipeline from PyTorch ONNX exports with 4-bit INT quantization."}`,
+        `{"git_branch":"coreml-quantize-int4","type":"USER_INPUT","content":"Build an automatic CoreML model quantization pipeline from PyTorch ONNX exports with 4-bit INT quantization."}`,
         `{"type":"PLANNER_RESPONSE","content":"I will use coremltools.models.neural_network.quantization_utils to perform INT4 linear post-training quantization."}`,
         `{"type":"TOOL_EXECUTION","toolAction":"Run model export script","CommandLine":"python3 export_coreml.py --quantize int4"}`,
         `{"type":"PLANNER_RESPONSE","content":"Model size reduced from 1.4GB to 185MB with 99.4% precision retention on Apple Neural Engine."}`
@@ -1898,7 +1989,7 @@
       renderSessionsSidebar();
       selectSession(0);
       switchMainView('tiles');
-      showToast(`Loaded ${sessionsList.length} sample multi-agent session tiles!`, '🚀');
+      showToast(`Loaded ${sessionsList.length} sample multi-agent session tiles with Git branch info!`, '🚀');
     }
 
     // Auto-restore cached sessions from IndexedDB on startup
