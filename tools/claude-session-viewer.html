@@ -238,6 +238,38 @@
       border-radius: 4px;
     }
     
+    /* Agent Badges */
+    .agent-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.02em;
+    }
+    .agent-badge-claude {
+      background: rgba(127,119,221,0.15);
+      color: #9d95f5;
+      border: 1px solid rgba(127,119,221,0.3);
+    }
+    .agent-badge-codex {
+      background: rgba(0,200,150,0.15);
+      color: #00C896;
+      border: 1px solid rgba(0,200,150,0.3);
+    }
+    .agent-badge-antigravity {
+      background: rgba(59,130,246,0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59,130,246,0.3);
+    }
+    .agent-badge-generic {
+      background: var(--bg3);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
     /* Session Tiles Grid View */
     .session-tiles-grid {
       display: grid;
@@ -283,6 +315,16 @@
       justify-content: center;
       font-size: 12.5px;
       padding: 7px 12px;
+    }
+    .search-match-badge {
+      background: rgba(245,158,11,0.15);
+      color: #f59e0b;
+      border: 1px solid rgba(245,158,11,0.3);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--mono);
     }
     .active-session-banner {
       background: var(--bg2);
@@ -423,14 +465,24 @@
       <div class="guide-steps-grid">
         <div class="guide-step-card" style="border-top: 3px solid #00C896;">
           <div class="guide-step-title">
-            <span class="step-badge">A</span> 📁 Scan Projects Folder (Native)
+            <span class="step-badge">A</span> 📁 Pick Claude &amp; Codex Folders (Zero Upload)
           </div>
           <p class="guide-step-desc">
-            Select <code>~/.claude/projects/</code> or <code>~/.codex/</code> to discover all sessions locally with zero server upload:
+            Choose your <code>~/.claude</code>, <code>~/.codex</code>, or workspace folders. Both are saved locally and can be refreshed in 1-click:
             <br/><br/>
-            <button type="button" class="tbtn tbtn-primary" onclick="openFolderPicker()" style="width: 100%; justify-content: center; font-size: 13px; padding: 9px 12px;">
-              📁 Open Projects Folder
-            </button>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; gap: 6px;">
+                <button type="button" class="tbtn tbtn-primary" onclick="openFolderPicker('claude')" style="flex: 1; justify-content: center; font-size: 12px; padding: 8px 6px;">
+                  🤖 ~/.claude
+                </button>
+                <button type="button" class="tbtn tbtn-primary" onclick="openFolderPicker('codex')" style="flex: 1; justify-content: center; font-size: 12px; padding: 8px 6px; background: #008765; border-color: #00C896;">
+                  🟢 ~/.codex
+                </button>
+              </div>
+              <button type="button" class="tbtn tbtn-ghost btn-refresh-folders" onclick="refreshLinkedFolders()" style="width: 100%; justify-content: center; font-size: 12px; padding: 7px 10px; background: rgba(0,200,150,0.08); border-color: #00C896; color: #008765; font-weight: 700;">
+                🔄 Refresh Linked Folders (No Re-upload)
+              </button>
+            </div>
             <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;" onchange="handleFolderSelect(event)"/>
           </p>
         </div>
@@ -453,7 +505,7 @@
             <span class="step-badge">C</span> ⚡ Terminal Quick Copy One-Liner
           </div>
           <p class="guide-step-desc">
-            Copies your latest Claude Code session directly to your clipboard:
+            Copies your latest Claude Code or Codex session directly to your clipboard:
             <br/><br/>
             <span class="copy-cmd-inline" onclick="copyTerminalCmd('cat $(ls -t ~/.claude/projects/*/*/transcript.jsonl 2>/dev/null | head -n1) | pbcopy', this)" title="Click to copy one-liner" style="font-size: 11px; word-break: break-all; width: 100%; justify-content: center;">
               📋 <code>cat $(ls -t ~/.claude/... | head -n1) | pbcopy</code>
@@ -472,20 +524,22 @@
       </div>
 
       <!-- Dropzone & Upload Box -->
-      <div class="dropzone-box" id="dropzone" onclick="openFolderPicker()">
+      <div class="dropzone-box" id="dropzone" onclick="openFolderPicker('auto')">
         <input type="file" id="file-input" accept=".jsonl,.json,.txt" multiple style="display: none;" onchange="handleFileSelect(event)"/>
         <div style="font-size: 32px; margin-bottom: 10px;">📂</div>
         <div style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px;">
-          Drag &amp; Drop <code>transcript.jsonl</code> files or folders here, or click to browse
+          Drag &amp; Drop Claude or Codex <code>transcript.jsonl</code> files or folders here
         </div>
         <div style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 14px;">
-          Supports multiple files, folder picker, Claude Code transcripts, OpenAI Codex memories, and Antigravity logs.
+          Indexes Claude Code transcripts, OpenAI Codex memories, and Antigravity logs into one unified index.
         </div>
         <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
-          <button type="button" class="tbtn tbtn-primary" onclick="event.stopPropagation(); openFolderPicker();">📁 Open Projects Folder</button>
-          <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); document.getElementById('file-input').click();">📄 Pick .jsonl Files</button>
-          <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); readFromClipboard();">📋 Paste from Clipboard</button>
-          <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); loadSampleSession();">⚡ Load Sample Sessions</button>
+          <button type="button" class="tbtn tbtn-primary" onclick="event.stopPropagation(); openFolderPicker('claude');">🤖 + Claude Folder</button>
+          <button type="button" class="tbtn tbtn-primary" onclick="event.stopPropagation(); openFolderPicker('codex');" style="background: #008765; border-color: #00C896;">🟢 + Codex Folder</button>
+          <button type="button" class="tbtn tbtn-ghost btn-refresh-folders" onclick="event.stopPropagation(); refreshLinkedFolders();" style="border-color: #00C896; color: #008765; font-weight: 700;">🔄 Refresh &amp; Sync</button>
+          <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); document.getElementById('file-input').click();">📄 Pick Files</button>
+          <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); readFromClipboard();">📋 Paste Clipboard</button>
+          <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); loadSampleSession();">⚡ Load Sample Index</button>
         </div>
       </div>
 
@@ -502,23 +556,42 @@
       <!-- Master-Detail & Session Tiles Results View -->
       <div id="viewer-results" style="display: none;">
         
-        <!-- View Mode Switcher Header -->
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 20px;">
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <span style="font-size: 15px; font-weight: 700; color: var(--text);">📂 Discovered Sessions:</span>
+        <!-- View Mode Switcher Header & Multi-Folder Actions -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 20px; background: var(--bg2); border: 1.5px solid #00C896; border-radius: 12px; padding: 14px 20px;">
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <span style="font-size: 15px; font-weight: 700; color: var(--text);">⚡ Unified Agent Index:</span>
             <span class="sidebar-count-badge" id="main-session-count">0</span>
+            <span style="font-size: 12.5px; color: var(--text-muted);" id="index-stat-text">0 total turns indexed</span>
           </div>
-          <div style="display: flex; gap: 8px;">
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="tbtn tbtn-ghost btn-refresh-folders" onclick="refreshLinkedFolders()" style="font-size: 12px; padding: 6px 12px; border-color: #00C896; color: #008765; font-weight: 700;">🔄 Refresh &amp; Sync</button>
+            <button class="tbtn tbtn-ghost" onclick="openFolderPicker('claude')" style="font-size: 12px; padding: 6px 10px;">+ 🤖 Claude</button>
+            <button class="tbtn tbtn-ghost" onclick="openFolderPicker('codex')" style="font-size: 12px; padding: 6px 10px;">+ 🟢 Codex</button>
+            <button class="tbtn tbtn-ghost" onclick="openFolderPicker('auto')" style="font-size: 12px; padding: 6px 10px;">+ 📁 Folder</button>
+            <button class="tbtn tbtn-ghost" onclick="clearAllPersistedData()" style="font-size: 12px; padding: 6px 10px; color: #ef4444;" title="Clear index cache">🗑️ Clear</button>
             <button id="btn-view-tiles" class="filter-btn active" onclick="switchMainView('tiles')">▦ All Session Tiles</button>
             <button id="btn-view-split" class="filter-btn" onclick="switchMainView('split')">💬 Conversation Workspace</button>
           </div>
         </div>
 
-        <!-- 1. Session Tiles Grid Gallery -->
+        <!-- 1. Session Tiles Grid Gallery & Global Search -->
         <div id="sessions-tiles-section">
-          <div style="margin-bottom: 14px;">
-            <input type="text" id="tiles-search-input" placeholder="🔍 Search session tiles by project name or prompt text..." oninput="filterSessionList(this.value)" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); font-size: 13.5px; background: var(--bg2); color: var(--text);"/>
+          
+          <!-- Global Search & Agent Filter Bar -->
+          <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px;">
+            <div style="margin-bottom: 12px;">
+              <input type="text" id="tiles-search-input" placeholder="🔍 Search across ALL indexed sessions, turns, tool commands, code, errors..." oninput="filterSessionList(this.value)" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); font-size: 13.5px; background: var(--bg); color: var(--text);"/>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+              <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Filter Agent:</span>
+              <button class="filter-btn active" id="agent-filter-all" onclick="setAgentFilter('all', this)">All Agents (<span id="count-agent-all">0</span>)</button>
+              <button class="filter-btn" id="agent-filter-claude" onclick="setAgentFilter('claude', this)">🤖 Claude Code (<span id="count-agent-claude">0</span>)</button>
+              <button class="filter-btn" id="agent-filter-codex" onclick="setAgentFilter('codex', this)">🟢 OpenAI Codex (<span id="count-agent-codex">0</span>)</button>
+              <button class="filter-btn" id="agent-filter-other" onclick="setAgentFilter('other', this)">⚡ Other (<span id="count-agent-other">0</span>)</button>
+            </div>
           </div>
+
+          <!-- Session Tiles Grid Container -->
           <div class="session-tiles-grid" id="session-tiles-container">
             <!-- Dynamically populated session tiles -->
           </div>
@@ -540,7 +613,10 @@
                 <div class="sidebar-title">
                   <span>📂</span> Sessions <span class="sidebar-count-badge" id="sidebar-session-count">0</span>
                 </div>
-                <button class="tbtn tbtn-ghost" onclick="openFolderPicker()" style="padding: 4px 8px; font-size: 11.5px;">+ Open</button>
+                <div style="display: flex; gap: 4px;">
+                  <button class="tbtn tbtn-ghost btn-refresh-folders" onclick="refreshLinkedFolders()" style="padding: 4px 6px; font-size: 11px;" title="Refresh linked folders">🔄</button>
+                  <button class="tbtn tbtn-ghost" onclick="openFolderPicker('auto')" style="padding: 4px 8px; font-size: 11.5px;">+ Open</button>
+                </div>
               </div>
 
               <!-- Search Sessions -->
@@ -560,7 +636,8 @@
               <!-- Active Session Header Banner -->
               <div class="active-session-banner">
                 <div>
-                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
+                    <span class="agent-badge agent-badge-claude" id="active-agent-tag">🤖 Claude Code</span>
                     <span class="session-badge-project" id="active-project-tag">PROJECT</span>
                     <span style="font-size: 12px; color: var(--text-dim); font-family: var(--mono);" id="active-session-date">Just now</span>
                   </div>
@@ -680,14 +757,129 @@
     <span id="toast-msg">Copied to clipboard!</span>
   </div>
 
-  <!-- Script: Parser & Master-Detail Workspace Logic -->
+  <!-- Script: Parser, Multi-Agent Indexer, IndexedDB Persistence & Workspace Logic -->
   <script>
     let sessionsList = [];
     let activeSessionId = 0;
     let currentFilter = 'all';
+    let currentAgentFilter = 'all';
     let sessionSearchQuery = '';
     let turnSearchQuery = '';
     let toastTimeout;
+    let dbInstance = null;
+
+    // --- IndexedDB Persistence Layer ---
+    function getDB() {
+      if (dbInstance) return Promise.resolve(dbInstance);
+      return new Promise((resolve, reject) => {
+        if (!('indexedDB' in window)) return resolve(null);
+        const req = indexedDB.open('L2Cache_SessionViewer_v2', 1);
+        req.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains('handles')) {
+            db.createObjectStore('handles', { keyPath: 'id' });
+          }
+          if (!db.objectStoreNames.contains('cache')) {
+            db.createObjectStore('cache', { keyPath: 'id' });
+          }
+        };
+        req.onsuccess = () => {
+          dbInstance = req.result;
+          resolve(dbInstance);
+        };
+        req.onerror = () => {
+          console.warn('IndexedDB unavailable:', req.error);
+          resolve(null);
+        };
+      });
+    }
+
+    async function saveDirectoryHandle(id, handle, agentType) {
+      try {
+        const db = await getDB();
+        if (!db) return;
+        const tx = db.transaction('handles', 'readwrite');
+        tx.objectStore('handles').put({
+          id: id,
+          handle: handle,
+          name: handle.name,
+          agentType: agentType || 'auto',
+          savedAt: Date.now()
+        });
+      } catch (err) {
+        console.warn('Failed to save directory handle in IndexedDB:', err);
+      }
+    }
+
+    async function getAllDirectoryHandles() {
+      try {
+        const db = await getDB();
+        if (!db) return [];
+        return new Promise((resolve) => {
+          const tx = db.transaction('handles', 'readonly');
+          const store = tx.objectStore('handles');
+          const req = store.getAll();
+          req.onsuccess = () => resolve(req.result || []);
+          req.onerror = () => resolve([]);
+        });
+      } catch (err) {
+        return [];
+      }
+    }
+
+    async function saveSessionsToCache(sessions) {
+      try {
+        const db = await getDB();
+        if (!db) return;
+        const tx = db.transaction('cache', 'readwrite');
+        tx.objectStore('cache').put({
+          id: 'sessions_index',
+          sessions: sessions,
+          updatedAt: Date.now()
+        });
+      } catch (err) {
+        console.warn('Failed to cache sessions in IndexedDB:', err);
+      }
+    }
+
+    async function loadSessionsFromCache() {
+      try {
+        const db = await getDB();
+        if (!db) return null;
+        return new Promise((resolve) => {
+          const tx = db.transaction('cache', 'readonly');
+          const store = tx.objectStore('cache');
+          const req = store.get('sessions_index');
+          req.onsuccess = () => {
+            if (req.result && req.result.sessions && req.result.sessions.length > 0) {
+              resolve(req.result.sessions);
+            } else {
+              resolve(null);
+            }
+          };
+          req.onerror = () => resolve(null);
+        });
+      } catch (err) {
+        return null;
+      }
+    }
+
+    async function clearAllPersistedData() {
+      try {
+        const db = await getDB();
+        if (db) {
+          const tx1 = db.transaction('handles', 'readwrite');
+          tx1.objectStore('handles').clear();
+          const tx2 = db.transaction('cache', 'readwrite');
+          tx2.objectStore('cache').clear();
+        }
+      } catch (e) {}
+      sessionsList = [];
+      activeSessionId = 0;
+      document.getElementById('viewer-results').style.display = 'none';
+      updateAgentCounters();
+      showToast('Cleared all indexed sessions and linked folders.', '🗑️');
+    }
 
     function showToast(msg, icon = '✅') {
       const toast = document.getElementById('toast-notification');
@@ -698,6 +890,47 @@
       toastTimeout = setTimeout(() => {
         toast.classList.remove('show');
       }, 3500);
+    }
+
+    // --- Agent Detection ---
+    function detectAgent(path = '', name = '', text = '') {
+      const p = (path + ' ' + name).toLowerCase();
+      if (p.includes('.claude') || p.includes('claude') || p.includes('anthropic')) {
+        return {
+          type: 'claude',
+          label: '🤖 Claude Code',
+          className: 'agent-badge-claude'
+        };
+      }
+      if (p.includes('.codex') || p.includes('codex') || p.includes('openai') || p.includes('memories.sqlite')) {
+        return {
+          type: 'codex',
+          label: '🟢 OpenAI Codex',
+          className: 'agent-badge-codex'
+        };
+      }
+      if (p.includes('.gemini') || p.includes('antigravity') || p.includes('gemini')) {
+        return {
+          type: 'antigravity',
+          label: '⚡ Antigravity',
+          className: 'agent-badge-antigravity'
+        };
+      }
+      // Inspect content if path is generic
+      if (text) {
+        const t = text.substring(0, 500).toLowerCase();
+        if (t.includes('claude') || t.includes('anthropic')) {
+          return { type: 'claude', label: '🤖 Claude Code', className: 'agent-badge-claude' };
+        }
+        if (t.includes('codex') || t.includes('openai')) {
+          return { type: 'codex', label: '🟢 OpenAI Codex', className: 'agent-badge-codex' };
+        }
+      }
+      return {
+        type: 'other',
+        label: '⚡ CLI Agent',
+        className: 'agent-badge-generic'
+      };
     }
 
     // Drag and drop listeners supporting both files and folders
@@ -725,12 +958,12 @@
         }
         await Promise.all(promises);
         if (fileList.length > 0) {
-          handleDiscoveredFiles(fileList);
+          handleDiscoveredFiles(fileList, true);
           return;
         }
       }
       const files = Array.from(e.dataTransfer.files);
-      if (files.length > 0) handleDiscoveredFiles(files);
+      if (files.length > 0) handleDiscoveredFiles(files, true);
     });
 
     function isTranscriptFile(name) {
@@ -782,17 +1015,22 @@
       }
     }
 
-    async function openFolderPicker() {
+    async function openFolderPicker(agentHint = 'auto') {
       if ('showDirectoryPicker' in window) {
         try {
-          const dirHandle = await window.showDirectoryPicker();
-          showToast('Scanning folder for transcripts...', '⏳');
+          const dirHandle = await window.showDirectoryPicker({ mode: 'read' });
+          showToast(`Scanning ${dirHandle.name} for transcripts...`, '⏳');
+          
+          // Save handle in IndexedDB for 1-click refresh without reloading!
+          const handleKey = agentHint !== 'auto' ? agentHint : dirHandle.name;
+          await saveDirectoryHandle(handleKey, dirHandle, agentHint);
+
           const fileList = [];
           await scanDirHandle(dirHandle, fileList, dirHandle.name);
           if (fileList.length > 0) {
-            handleDiscoveredFiles(fileList);
+            await handleDiscoveredFiles(fileList, true);
           } else {
-            showToast('No .jsonl transcript files found in selected folder.', '⚠️');
+            showToast(`No transcript files found in ${dirHandle.name}.`, '⚠️');
           }
         } catch (err) {
           if (err.name !== 'AbortError') {
@@ -826,18 +1064,53 @@
       }
     }
 
+    // 🔄 1-Click Refresh across all linked folders without picking them again
+    async function refreshLinkedFolders() {
+      const handles = await getAllDirectoryHandles();
+      if (handles.length === 0) {
+        showToast('No folders linked yet. Choose ~/.claude or ~/.codex folder first!', '📁');
+        openFolderPicker();
+        return;
+      }
+
+      showToast(`Syncing ${handles.length} linked folder${handles.length > 1 ? 's' : ''}...`, '⏳');
+      const allFiles = [];
+
+      for (const item of handles) {
+        try {
+          const handle = item.handle;
+          let perm = await handle.queryPermission({ mode: 'read' });
+          if (perm !== 'granted') {
+            perm = await handle.requestPermission({ mode: 'read' });
+          }
+          if (perm === 'granted') {
+            await scanDirHandle(handle, allFiles, handle.name);
+          }
+        } catch (e) {
+          console.warn('Failed to refresh folder:', item.id, e);
+        }
+      }
+
+      if (allFiles.length > 0) {
+        await handleDiscoveredFiles(allFiles, true);
+        showToast(`Refreshed index! Synced ${sessionsList.length} total sessions.`, '🔄');
+      } else {
+        showToast('Refresh complete. No new session files found.', '✅');
+      }
+    }
+
     function handleFileSelect(e) {
       const files = Array.from(e.target.files || []);
-      if (files.length > 0) handleDiscoveredFiles(files);
+      if (files.length > 0) handleDiscoveredFiles(files, true);
     }
 
     function handleFolderSelect(e) {
       const files = Array.from(e.target.files || []);
       if (files.length === 0) return;
-      handleDiscoveredFiles(files);
+      handleDiscoveredFiles(files, true);
     }
 
-    async function handleDiscoveredFiles(fileList) {
+    async function handleDiscoveredFiles(fileList, mergeIncremental = true) {
       const validFiles = fileList.filter(f => isTranscriptFile(f.name));
 
       if (validFiles.length === 0) {
@@ -861,22 +1134,74 @@
       });
 
       const loaded = await Promise.all(parsedPromises);
-      sessionsList = loaded.filter(s => s && s.events.length > 0);
+      const newValidSessions = loaded.filter(s => s && s.events.length > 0);
 
-      if (sessionsList.length === 0) {
+      if (newValidSessions.length === 0) {
         showToast('No valid conversation logs found in selected files.', '⚠️');
         return;
       }
 
+      if (mergeIncremental && sessionsList.length > 0) {
+        // Merge without duplicates by fullPath
+        const existingPaths = new Set(sessionsList.map(s => s.fullPath));
+        newValidSessions.forEach(s => {
+          if (existingPaths.has(s.fullPath)) {
+            const idx = sessionsList.findIndex(x => x.fullPath === s.fullPath);
+            if (idx >= 0) sessionsList[idx] = s;
+          } else {
+            sessionsList.push(s);
+          }
+        });
+      } else {
+        sessionsList = newValidSessions;
+      }
+
+      // Re-index IDs
+      sessionsList.forEach((s, idx) => s.id = idx);
+
+      // Save to IndexedDB cache
+      saveSessionsToCache(sessionsList);
+
       document.getElementById('viewer-results').style.display = 'block';
-      document.getElementById('main-session-count').innerText = `${sessionsList.length}`;
-      document.getElementById('sidebar-session-count').innerText = `${sessionsList.length}`;
+      updateAgentCounters();
       
       renderSessionTiles();
       renderSessionsSidebar();
-      selectSession(0);
+      if (activeSessionId === null || activeSessionId >= sessionsList.length) {
+        selectSession(0);
+      } else {
+        selectSession(activeSessionId);
+      }
       switchMainView('tiles');
-      showToast(`Found ${sessionsList.length} session tile${sessionsList.length > 1 ? 's' : ''}!`, '📁');
+      showToast(`Indexed ${sessionsList.length} session${sessionsList.length > 1 ? 's' : ''} across Claude & Codex!`, '⚡');
+    }
+
+    function updateAgentCounters() {
+      const total = sessionsList.length;
+      const claudeCount = sessionsList.filter(s => s.agentType === 'claude').length;
+      const codexCount = sessionsList.filter(s => s.agentType === 'codex').length;
+      const otherCount = sessionsList.filter(s => s.agentType !== 'claude' && s.agentType !== 'codex').length;
+
+      const totalTurns = sessionsList.reduce((acc, s) => acc + s.events.length, 0);
+      const totalTools = sessionsList.reduce((acc, s) => acc + s.toolsCount, 0);
+
+      const mainCount = document.getElementById('main-session-count');
+      const sideCount = document.getElementById('sidebar-session-count');
+      const statText = document.getElementById('index-stat-text');
+
+      if (mainCount) mainCount.innerText = `${total}`;
+      if (sideCount) sideCount.innerText = `${total}`;
+      if (statText) statText.innerText = `${totalTurns} total turns · ${totalTools} tool executions indexed`;
+
+      const cAll = document.getElementById('count-agent-all');
+      const cClaude = document.getElementById('count-agent-claude');
+      const cCodex = document.getElementById('count-agent-codex');
+      const cOther = document.getElementById('count-agent-other');
+
+      if (cAll) cAll.innerText = `${total}`;
+      if (cClaude) cClaude.innerText = `${claudeCount}`;
+      if (cCodex) cCodex.innerText = `${codexCount}`;
+      if (cOther) cOther.innerText = `${otherCount}`;
     }
 
     function parseSingleSession(rawText, file, idx) {
@@ -888,7 +1213,6 @@
         if (!trimmed) return;
         try {
           const obj = JSON.parse(trimmed);
-          // Only add valid event objects
           const norm = normalizeEvent(obj, lineIdx);
           if (norm && (norm.content || (norm.toolCalls && norm.toolCalls.length > 0))) {
             events.push(norm);
@@ -911,7 +1235,7 @@
       // Extract metadata
       const path = (file && (file.customRelativePath || file.webkitRelativePath || file.name)) || `session-${idx+1}.jsonl`;
       const parts = path.split('/');
-      let project = 'claude-project';
+      let project = 'project';
       if (parts.length > 1) {
         project = parts[parts.length - 2];
       } else if (file && file.name) {
@@ -926,6 +1250,17 @@
         ? new Date(file.lastModified).toLocaleDateString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})
         : new Date().toLocaleDateString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
 
+      const agentInfo = detectAgent(path, file ? file.name : '', rawText);
+
+      // Build search index tokens for lightning fast full-text query matching
+      const indexTokens = [
+        project,
+        titleSnippet,
+        agentInfo.label,
+        path,
+        ...events.map(e => (e.content || '') + ' ' + (e.toolCalls ? JSON.stringify(e.toolCalls) : ''))
+      ].join(' ').toLowerCase();
+
       return {
         id: idx,
         project: project,
@@ -934,10 +1269,25 @@
         fullPath: path,
         dateStr: modDate,
         events: events,
+        agentType: agentInfo.type,
+        agentLabel: agentInfo.label,
+        agentClass: agentInfo.className,
+        searchIndexText: indexTokens,
+        currentMatchCount: 0,
         promptsCount: events.filter(e => e.role === 'user').length,
         toolsCount: events.filter(e => e.role === 'tool' || (e.toolCalls && e.toolCalls.length > 0)).length,
         assistantCount: events.filter(e => e.role === 'assistant').length
       };
+    }
+
+    function setAgentFilter(agent, btn) {
+      currentAgentFilter = agent;
+      document.querySelectorAll('#sessions-tiles-section .filter-btn').forEach(b => {
+        if (b.id && b.id.startsWith('agent-filter-')) b.classList.remove('active');
+      });
+      if (btn) btn.classList.add('active');
+      renderSessionTiles();
+      renderSessionsSidebar();
     }
 
     function renderSessionTiles() {
@@ -947,14 +1297,25 @@
 
       const query = sessionSearchQuery.toLowerCase().trim();
       const filtered = sessionsList.filter(s => {
-        if (!query) return true;
-        return s.project.toLowerCase().includes(query) || 
-               s.title.toLowerCase().includes(query) ||
-               s.fileName.toLowerCase().includes(query);
+        // Agent filter
+        if (currentAgentFilter !== 'all') {
+          if (currentAgentFilter === 'claude' && s.agentType !== 'claude') return false;
+          if (currentAgentFilter === 'codex' && s.agentType !== 'codex') return false;
+          if (currentAgentFilter === 'other' && (s.agentType === 'claude' || s.agentType === 'codex')) return false;
+        }
+
+        // Full-Text In-Browser Search
+        if (query) {
+          const count = countOccurrences(s.searchIndexText, query);
+          s.currentMatchCount = count;
+          return count > 0;
+        }
+        s.currentMatchCount = 0;
+        return true;
       });
 
       if (filtered.length === 0) {
-        container.innerHTML = '<div style="grid-column: 1 / -1; padding: 36px; text-align: center; color: var(--text-muted); background: var(--bg2); border-radius: 12px; border: 1px dashed var(--border);">No session tiles match query.</div>';
+        container.innerHTML = '<div style="grid-column: 1 / -1; padding: 36px; text-align: center; color: var(--text-muted); background: var(--bg2); border-radius: 12px; border: 1px dashed var(--border);">No session tiles match query or agent filter.</div>';
         return;
       }
 
@@ -966,19 +1327,29 @@
           switchMainView('split');
         };
 
+        const matchBadgeHtml = session.currentMatchCount > 0 
+          ? `<span class="search-match-badge">⚡ ${session.currentMatchCount} match${session.currentMatchCount > 1 ? 'es' : ''}</span>`
+          : '';
+
         tile.innerHTML = `
           <div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <span class="session-badge-project">${escapeHtml(session.project)}</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="agent-badge ${session.agentClass}">${escapeHtml(session.agentLabel)}</span>
+                <span class="session-badge-project">${escapeHtml(session.project)}</span>
+              </div>
               <span style="font-size: 11px; color: var(--text-dim); font-family: var(--mono);">${escapeHtml(session.dateStr)}</span>
             </div>
             <div class="session-tile-title">${escapeHtml(session.title)}</div>
           </div>
           <div>
-            <div class="session-meta-row" style="margin-bottom: 6px;">
-              <span class="session-meta-pill">💬 ${session.events.length} turns</span>
-              <span class="session-meta-pill">👤 ${session.promptsCount}</span>
-              <span class="session-meta-pill">🛠️ ${session.toolsCount}</span>
+            <div class="session-meta-row" style="margin-bottom: 6px; justify-content: space-between;">
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <span class="session-meta-pill">💬 ${session.events.length} turns</span>
+                <span class="session-meta-pill">👤 ${session.promptsCount}</span>
+                <span class="session-meta-pill">🛠️ ${session.toolsCount}</span>
+              </div>
+              ${matchBadgeHtml}
             </div>
             <button type="button" class="tbtn tbtn-ghost session-tile-btn">
               Open Conversation →
@@ -988,6 +1359,17 @@
 
         container.appendChild(tile);
       });
+    }
+
+    function countOccurrences(text, sub) {
+      if (!text || !sub) return 0;
+      let count = 0;
+      let pos = 0;
+      while ((pos = text.indexOf(sub, pos)) !== -1) {
+        count++;
+        pos += sub.length;
+      }
+      return count;
     }
 
     function switchMainView(mode) {
@@ -1014,20 +1396,21 @@
     function renderSessionsSidebar() {
       const container = document.getElementById('sessions-list-container');
       const countBadge = document.getElementById('sidebar-session-count');
-      const mainCount = document.getElementById('main-session-count');
       if (!container) return;
       container.innerHTML = '';
 
       const query = sessionSearchQuery.toLowerCase().trim();
       const filtered = sessionsList.filter(s => {
+        if (currentAgentFilter !== 'all') {
+          if (currentAgentFilter === 'claude' && s.agentType !== 'claude') return false;
+          if (currentAgentFilter === 'codex' && s.agentType !== 'codex') return false;
+          if (currentAgentFilter === 'other' && (s.agentType === 'claude' || s.agentType === 'codex')) return false;
+        }
         if (!query) return true;
-        return s.project.toLowerCase().includes(query) || 
-               s.title.toLowerCase().includes(query) ||
-               s.fileName.toLowerCase().includes(query);
+        return s.currentMatchCount > 0 || countOccurrences(s.searchIndexText, query) > 0;
       });
 
       if (countBadge) countBadge.innerText = `${filtered.length}`;
-      if (mainCount) mainCount.innerText = `${filtered.length}`;
 
       if (filtered.length === 0) {
         container.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px;">No sessions match query.</div>';
@@ -1041,14 +1424,18 @@
 
         item.innerHTML = `
           <div class="session-item-top">
-            <span class="session-badge-project">${escapeHtml(session.project)}</span>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="agent-badge ${session.agentClass}" style="font-size: 10px; padding: 1px 5px;">${escapeHtml(session.agentLabel)}</span>
+              <span class="session-badge-project">${escapeHtml(session.project)}</span>
+            </div>
             <span class="session-time-text">${escapeHtml(session.dateStr)}</span>
           </div>
           <div class="session-snippet">${escapeHtml(session.title)}</div>
           <div class="session-meta-row">
-            <span class="session-meta-pill">💬 ${session.events.length} turns</span>
+            <span class="session-meta-pill">💬 ${session.events.length}</span>
             <span class="session-meta-pill">👤 ${session.promptsCount}</span>
             <span class="session-meta-pill">🛠️ ${session.toolsCount}</span>
+            ${session.currentMatchCount > 0 ? `<span class="search-match-badge" style="font-size: 10px;">⚡ ${session.currentMatchCount}</span>` : ''}
           </div>
         `;
 
@@ -1072,6 +1459,11 @@
       if (!session) return;
 
       // Update active header banner
+      const agentEl = document.getElementById('active-agent-tag');
+      if (agentEl) {
+        agentEl.className = `agent-badge ${session.agentClass}`;
+        agentEl.innerText = session.agentLabel;
+      }
       document.getElementById('active-project-tag').innerText = session.project.toUpperCase();
       document.getElementById('active-session-title').innerText = session.title;
       document.getElementById('active-session-date').innerText = session.dateStr;
@@ -1093,7 +1485,7 @@
 
     function setFilter(filter, btn) {
       currentFilter = filter;
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.filter-tabs-row .filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       renderTimeline();
     }
@@ -1222,12 +1614,14 @@
       const session = parseSingleSession(text, dummyFile, sessionsList.length);
       if (session && session.events.length > 0) {
         sessionsList.unshift(session);
+        sessionsList.forEach((s, idx) => s.id = idx);
+        saveSessionsToCache(sessionsList);
+
         document.getElementById('viewer-results').style.display = 'block';
-        document.getElementById('main-session-count').innerText = `${sessionsList.length}`;
-        document.getElementById('sidebar-session-count').innerText = `${sessionsList.length}`;
+        updateAgentCounters();
         renderSessionTiles();
         renderSessionsSidebar();
-        selectSession(session.id);
+        selectSession(0);
         switchMainView('split');
         showToast(`Parsed session (${session.events.length} turns) successfully!`, '🚀');
       } else {
@@ -1285,6 +1679,7 @@
       if (!session) return;
 
       let md = `# Session: ${session.title}\n`;
+      md += `**Agent:** ${session.agentLabel}  \n`;
       md += `**Project:** ${session.project}  \n`;
       md += `**Date:** ${session.dateStr}  \n\n`;
 
@@ -1328,20 +1723,53 @@
         `{"type":"PLANNER_RESPONSE","content":"p99 latency dropped from 145ms down to 8.2ms! Vector search is ready for production."}`
       ].join('\n');
 
-      const s1 = parseSingleSession(sample1, { name: 'transcript.jsonl', webkitRelativePath: 'l2cache-mac/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 15 }, 0);
-      const s2 = parseSingleSession(sample2, { name: 'transcript.jsonl', webkitRelativePath: 'auth-service/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 3 }, 1);
-      const s3 = parseSingleSession(sample3, { name: 'transcript.jsonl', webkitRelativePath: 'analytics-engine/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 24 }, 2);
+      const sample4 = [
+        `{"type":"USER_INPUT","content":"Generate dynamic OpenGraph social share cards and configure Next.js App Router metadata for SEO."}`,
+        `{"type":"PLANNER_RESPONSE","content":"I will create an opengraph-image.tsx route handler with @vercel/og font rasterization."}`,
+        `{"type":"TOOL_EXECUTION","toolAction":"Create opengraph-image.tsx","CommandLine":"touch app/opengraph-image.tsx"}`,
+        `{"type":"PLANNER_RESPONSE","content":"Generated dynamic SVG-to-PNG social card with brand gradients and automatic title embedding."}`
+      ].join('\n');
 
-      sessionsList = [s1, s2, s3];
+      const s1 = parseSingleSession(sample1, { name: 'transcript.jsonl', customRelativePath: '.claude/projects/l2cache-mac/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 15 }, 0);
+      const s2 = parseSingleSession(sample2, { name: 'transcript.jsonl', customRelativePath: '.codex/sessions/auth-service/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 3 }, 1);
+      const s3 = parseSingleSession(sample3, { name: 'transcript.jsonl', customRelativePath: '.codex/sessions/analytics-engine/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 24 }, 2);
+      const s4 = parseSingleSession(sample4, { name: 'transcript.jsonl', customRelativePath: '.claude/projects/site-landing/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 48 }, 3);
+
+      sessionsList = [s1, s2, s3, s4].filter(Boolean);
+      saveSessionsToCache(sessionsList);
+
       document.getElementById('viewer-results').style.display = 'block';
-      document.getElementById('main-session-count').innerText = `${sessionsList.length}`;
-      document.getElementById('sidebar-session-count').innerText = `${sessionsList.length}`;
+      updateAgentCounters();
       renderSessionTiles();
       renderSessionsSidebar();
       selectSession(0);
       switchMainView('tiles');
-      showToast('Loaded 3 sample multi-project session tiles! Click any tile to open conversation.', '🚀');
+      showToast('Loaded 4 sample sessions (Claude Code & OpenAI Codex)! Click any tile to inspect.', '🚀');
     }
+
+    // Auto-restore cached sessions from IndexedDB on startup
+    window.addEventListener('DOMContentLoaded', async () => {
+      const cached = await loadSessionsFromCache();
+      if (cached && cached.length > 0 && sessionsList.length === 0) {
+        sessionsList = cached;
+        sessionsList.forEach((s, idx) => s.id = idx);
+        document.getElementById('viewer-results').style.display = 'block';
+        updateAgentCounters();
+        renderSessionTiles();
+        renderSessionsSidebar();
+        selectSession(0);
+        switchMainView('tiles');
+      }
+
+      // Check linked folders count
+      const handles = await getAllDirectoryHandles();
+      if (handles.length > 0) {
+        const refreshBtns = document.querySelectorAll('.btn-refresh-folders');
+        refreshBtns.forEach(btn => {
+          btn.style.display = 'inline-flex';
+        });
+      }
+    });
 
     // --- PWA Desktop App Installation & Service Worker ---
     let deferredPrompt = null;
