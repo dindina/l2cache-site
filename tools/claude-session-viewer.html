@@ -1578,14 +1578,42 @@
         toolCalls.push(obj);
       }
 
-      // Determine role
-      const rawRole = (obj.role || obj.type || (obj.item && obj.item.role) || (obj.message && obj.message.role) || obj.sender || obj.source || '').toLowerCase();
-      
-      if (rawRole === 'user' || rawRole === 'user_input' || rawRole === 'user_prompt' || rawRole === 'user_explicit' || rawRole === 'human') {
+      // Determine role with strict priority on message.role / role before generic wrapper types
+      let detectedRole = '';
+      if (obj.message && obj.message.role) {
+        detectedRole = String(obj.message.role).toLowerCase().trim();
+      } else if (obj.role) {
+        detectedRole = String(obj.role).toLowerCase().trim();
+      } else if (obj.item && obj.item.role) {
+        detectedRole = String(obj.item.role).toLowerCase().trim();
+      } else if (obj.sender || obj.source) {
+        detectedRole = String(obj.sender || obj.source).toLowerCase().trim();
+      } else if (obj.type && obj.type !== 'message') {
+        detectedRole = String(obj.type).toLowerCase().trim();
+      } else if (obj.prompt) {
+        detectedRole = 'user';
+      }
+
+      if (
+        detectedRole === 'user' ||
+        detectedRole === 'user_input' ||
+        detectedRole === 'user_prompt' ||
+        detectedRole === 'user_explicit' ||
+        detectedRole === 'human' ||
+        detectedRole === 'prompt' ||
+        detectedRole === 'input'
+      ) {
         role = 'user';
-      } else if (rawRole === 'tool' || rawRole === 'tool_execution' || rawRole === 'tool_call' || rawRole === 'tool_result' || (toolCalls.length > 0 && !content)) {
+      } else if (
+        detectedRole === 'tool' ||
+        detectedRole === 'tool_execution' ||
+        detectedRole === 'tool_call' ||
+        detectedRole === 'tool_result' ||
+        detectedRole === 'tool_use' ||
+        (toolCalls.length > 0 && !content)
+      ) {
         role = 'tool';
-      } else if (rawRole === 'system') {
+      } else if (detectedRole === 'system') {
         role = 'assistant';
         if (content) content = `[System Prompt] ${content}`;
       } else {
