@@ -23,6 +23,13 @@
   <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png" />
 
   <link rel="stylesheet" href="/en/tools/theme.css" />
+  <link rel="manifest" href="/en/tools/claude-session-viewer-manifest.json" />
+  <meta name="theme-color" content="#0D0C1A" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Session Viewer" />
+  <link rel="apple-touch-icon" href="/en/tools/icon-192.png" />
 
   <style>
     .step-badge {
@@ -346,6 +353,24 @@
       <span class="section-label">AI AGENT DEVELOPER TOOL</span>
       <h1>Claude Code &amp; Codex Session Log Viewer</h1>
       <p class="hero-sub">Inspect, filter, and analyze multi-turn Claude Code &amp; Codex CLI session transcripts (<code>transcript.jsonl</code>) in a clean chat interface. 100% private &amp; in-browser.</p>
+
+      <!-- App Install / Download Banner -->
+      <div id="pwa-install-card" style="background: var(--bg2); border: 1.5px solid #00C896; border-radius: 12px; padding: 14px 20px; margin: 20px 0 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; box-shadow: 0 4px 14px rgba(0,200,150,0.06);">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: #0D0C1A; border: 1.5px solid #00C896; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;">
+            ⚡
+          </div>
+          <div>
+            <div style="font-weight: 700; font-size: 14.5px; color: var(--text);">Install as Standalone Desktop App</div>
+            <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">Download directly to your Mac Dock or Desktop. Opens in its own window and works 100% offline.</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button id="pwa-install-btn" type="button" class="tbtn tbtn-primary" onclick="triggerPwaInstall()" style="font-size: 13px; padding: 8px 16px;">
+            ⬇️ Install as App
+          </button>
+        </div>
+      </div>
 
       <!-- 3 Quick Ways to Load -->
       <div class="guide-steps-grid">
@@ -1045,6 +1070,101 @@
       selectSession(0);
       showToast('Loaded 3 sample multi-project sessions! Click each session on the left to see conversations separately.', '🚀');
     }
+
+    // --- PWA Desktop App Installation & Service Worker ---
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btn = document.getElementById('pwa-install-btn');
+      if (btn) btn.innerHTML = '⬇️ Install App (1-Click)';
+    });
+
+    function triggerPwaInstall() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            showToast('App installed successfully to your desktop!', '🚀');
+            const card = document.getElementById('pwa-install-card');
+            if (card) card.style.display = 'none';
+          }
+          deferredPrompt = null;
+        });
+      } else {
+        // Check if running in standalone mode
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+          showToast('Session Viewer is already running as a standalone desktop app!', '✅');
+        } else {
+          openInstallModal();
+        }
+      }
+    }
+
+    function openInstallModal() {
+      const modal = document.getElementById('install-guide-modal');
+      if (modal) modal.style.display = 'flex';
+    }
+
+    function closeInstallModal() {
+      const modal = document.getElementById('install-guide-modal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    // Register Service Worker for offline capability & PWA installability
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/en/tools/sw-claude-viewer.js', { scope: '/en/tools/' })
+          .then((reg) => {
+            console.log('Session Viewer PWA ServiceWorker active:', reg.scope);
+          })
+          .catch((err) => {
+            console.warn('ServiceWorker registration skipped:', err);
+          });
+      });
+    }
+
+    // If already in standalone mode, adjust banner text
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+      const btn = document.getElementById('pwa-install-btn');
+      if (btn) {
+        btn.innerHTML = '✅ Running as Desktop App';
+        btn.classList.remove('tbtn-primary');
+        btn.classList.add('tbtn-ghost');
+      }
+    }
   </script>
+
+  <!-- Install App Modal for Safari Mac & Other Browsers -->
+  <div id="install-guide-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 99999; align-items: center; justify-content: center; padding: 20px;">
+    <div style="background: var(--bg2); border: 1.5px solid #00C896; border-radius: 16px; max-width: 480px; width: 100%; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative;">
+      <button onclick="closeInstallModal()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer;">✕</button>
+      
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+        <div style="width: 40px; height: 40px; border-radius: 10px; background: #0D0C1A; border: 1px solid #00C896; display: flex; align-items: center; justify-content: center; font-size: 22px;">⚡</div>
+        <div>
+          <h3 style="margin: 0; font-size: 17px; color: var(--text);">Install as Desktop App</h3>
+          <div style="font-size: 12.5px; color: var(--text-muted);">Runs in a dedicated standalone window without browser bars</div>
+        </div>
+      </div>
+
+      <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 16px; font-size: 13.5px; line-height: 1.6; color: var(--text);">
+        <strong>🍏 Safari on Mac:</strong>
+        <ol style="margin: 6px 0 12px 18px; padding: 0;">
+          <li>In the macOS top menu, click <strong>File</strong></li>
+          <li>Select <strong>Add to Dock...</strong></li>
+          <li>Click <strong>Add</strong> — the tool is now in your Mac Dock!</li>
+        </ol>
+        
+        <strong>🌐 Chrome / Edge / Brave:</strong>
+        <ol style="margin: 6px 0 0 18px; padding: 0;">
+          <li>Look for the <strong>Install icon (🖥️ or ⬇️)</strong> in the right side of the address bar.</li>
+          <li>Or click browser menu (<strong>⋮</strong>) → <strong>Save and Share</strong> → <strong>Install Session Viewer</strong>.</li>
+        </ol>
+      </div>
+
+      <button class="tbtn tbtn-primary" onclick="closeInstallModal()" style="width: 100%; justify-content: center; padding: 10px;">Got it</button>
+    </div>
+  </div>
 </body>
 </html>

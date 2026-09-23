@@ -1,0 +1,26 @@
+{
+  "name": "Claude Code & Codex Session Viewer",
+  "short_name": "Session Viewer",
+  "description": "Offline-first viewer & conversation inspector for Claude Code, Codex, and AI CLI transcripts.",
+  "start_url": "/en/tools/claude-session-viewer",
+  "scope": "/en/tools/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0D0C1A",
+  "theme_color": "#00C896",
+  "categories": ["developer", "utilities", "productivity"],
+  "icons": [
+    {
+      "src": "/en/tools/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/en/tools/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
