@@ -455,8 +455,8 @@
       <li><a href="/en/developer-clipboard">Developers</a></li>
       <li><a href="/en/tools" class="active">Free Tools</a></li>
       <li><a href="/en/benchmark">Benchmark</a></li>
-      <li><a href="/en/blog">Blog</a></li>
-      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+      <li><a href="javascript:void(0)" onclick="downloadOfflineApp()" class="nav-cta" style="background: rgba(0,200,150,0.15); border: 1px solid #00C896; color: #008765; margin-right: 4px;">💾 Download App (.html)</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">L2Cache for Mac ($4.99)</a></li>
     </ul>
   </nav>
 
@@ -475,12 +475,15 @@
             ⚡
           </div>
           <div>
-            <div style="font-weight: 700; font-size: 14.5px; color: var(--text);">Install as Standalone Desktop App</div>
-            <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">Download directly to your Mac Dock or Desktop. Opens in its own window and works 100% offline.</div>
+            <div style="font-weight: 700; font-size: 14.5px; color: var(--text);">Run as Standalone Desktop App</div>
+            <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">Install directly to your Mac Dock or download as a 100% offline standalone HTML app.</div>
           </div>
         </div>
-        <div style="display: flex; gap: 8px;">
-          <button id="pwa-install-btn" type="button" class="tbtn tbtn-primary" onclick="triggerPwaInstall()" style="font-size: 13px; padding: 8px 16px;">
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="tbtn tbtn-primary" onclick="downloadOfflineApp()" style="font-size: 13px; padding: 8px 16px;">
+            💾 Download App (.html)
+          </button>
+          <button id="pwa-install-btn" type="button" class="tbtn tbtn-ghost" onclick="triggerPwaInstall()" style="font-size: 13px; padding: 8px 16px; border-color: #00C896; color: #008765; font-weight: 700;">
             ⬇️ Install as App
           </button>
         </div>
@@ -2063,7 +2066,7 @@
       }
     });
 
-    // --- PWA Desktop App Installation & Service Worker ---
+    // --- PWA Desktop App Installation, Offline Download & Service Worker ---
     let deferredPrompt = null;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
@@ -2071,6 +2074,25 @@
       const btn = document.getElementById('pwa-install-btn');
       if (btn) btn.innerHTML = '⬇️ Install App (1-Click)';
     });
+
+    function downloadOfflineApp() {
+      try {
+        const htmlSource = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        const blob = new Blob([htmlSource], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'claude-codex-session-viewer.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+        showToast('Downloaded offline Session Viewer app (.html)! Open anytime with zero internet.', '💾');
+      } catch (err) {
+        console.error('Download failed:', err);
+        showToast('Unable to auto-download. Please use File -> Save Page As in your browser.', '⚠️');
+      }
+    }
 
     function triggerPwaInstall() {
       if (deferredPrompt) {
@@ -2082,25 +2104,27 @@
             if (card) card.style.display = 'none';
           }
           deferredPrompt = null;
+        }).catch((e) => {
+          console.warn('Install prompt rejected:', e);
+          openInstallModal();
         });
       } else {
-        // Check if running in standalone mode
-        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
-          showToast('Session Viewer is already running as a standalone desktop app!', '✅');
-        } else {
-          openInstallModal();
-        }
+        openInstallModal();
       }
     }
 
     function openInstallModal() {
       const modal = document.getElementById('install-guide-modal');
-      if (modal) modal.style.display = 'flex';
+      if (modal) {
+        modal.style.display = 'flex';
+      }
     }
 
     function closeInstallModal() {
       const modal = document.getElementById('install-guide-modal');
-      if (modal) modal.style.display = 'none';
+      if (modal) {
+        modal.style.display = 'none';
+      }
     }
 
     // Register Service Worker for offline capability & PWA installability
@@ -2155,7 +2179,14 @@
         </ol>
       </div>
 
-      <button class="tbtn tbtn-primary" onclick="closeInstallModal()" style="width: 100%; justify-content: center; padding: 10px;">Got it</button>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <button class="tbtn tbtn-primary" onclick="downloadOfflineApp(); closeInstallModal();" style="width: 100%; justify-content: center; padding: 10px;">
+          💾 Download Standalone HTML App (.html)
+        </button>
+        <button class="tbtn tbtn-ghost" onclick="closeInstallModal()" style="width: 100%; justify-content: center; padding: 9px;">
+          Got it
+        </button>
+      </div>
     </div>
   </div>
 </body>
