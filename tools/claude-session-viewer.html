@@ -106,6 +106,143 @@
     }
     .copy-cmd-inline:hover { background: rgba(0,200,150,0.2); transform: translateY(-1px); }
     .copy-cmd-inline.copied { background: #00a87f; color: #ffffff; border-color: #008765; }
+    
+    /* Workspace Master-Detail Split */
+    .workspace-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+      align-items: start;
+      margin-top: 24px;
+    }
+    @media (max-width: 960px) {
+      .workspace-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .sessions-sidebar-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      position: sticky;
+      top: 20px;
+      max-height: calc(100vh - 40px);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+    }
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .sidebar-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sidebar-count-badge {
+      background: rgba(0,200,150,0.12);
+      color: #008765;
+      padding: 2px 7px;
+      border-radius: 12px;
+      font-size: 11.5px;
+      font-weight: 700;
+      font-family: var(--mono);
+    }
+    .sessions-scroll-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      padding-right: 4px;
+      max-height: 520px;
+    }
+    .session-item {
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+    .session-item:hover {
+      border-color: #00C896;
+      transform: translateY(-1px);
+    }
+    .session-item.active {
+      border-color: #00C896;
+      background: rgba(0,200,150,0.06);
+      box-shadow: 0 2px 10px rgba(0,200,150,0.12);
+    }
+    .session-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .session-badge-project {
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(127,119,221,0.12);
+      color: #5C52C8;
+      padding: 2px 6px;
+      border-radius: 4px;
+      max-width: 140px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .session-item.active .session-badge-project {
+      background: #008765;
+      color: #ffffff;
+    }
+    .session-time-text {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-family: var(--mono);
+    }
+    .session-snippet {
+      font-size: 12.5px;
+      color: var(--text);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .session-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .session-meta-pill {
+      background: var(--bg3);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .active-session-banner {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-left: 4px solid #00C896;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
     #toast-notification {
       position: fixed; bottom: 28px; right: 28px; z-index: 9999;
       background: #0D0C1A; color: #FFFFFF; border: 1.5px solid #00C896;
@@ -302,44 +439,88 @@
         </div>
       </div>
 
-      <!-- Results View -->
+      <!-- Master-Detail Workspace Results View -->
       <div id="viewer-results" style="display: none;">
         
-        <!-- Stats Summary -->
-        <div class="stats-bar">
-          <div class="stat-pill-card">
-            <div class="stat-pill-val" id="stat-turns">0</div>
-            <div class="stat-pill-lbl">Total Turns</div>
+        <div class="workspace-layout">
+          
+          <!-- Left Column: Sessions Sidebar -->
+          <div class="sessions-sidebar-card">
+            <div class="sidebar-header">
+              <div class="sidebar-title">
+                <span>📂</span> Sessions <span class="sidebar-count-badge" id="sidebar-session-count">0</span>
+              </div>
+              <button class="tbtn tbtn-ghost" onclick="document.getElementById('folder-input').click()" style="padding: 4px 8px; font-size: 11.5px;">+ Add Folder</button>
+            </div>
+
+            <!-- Search Sessions -->
+            <div style="margin-bottom: 12px;">
+              <input type="text" id="session-search-input" placeholder="🔍 Search projects &amp; prompts..." oninput="filterSessionList(this.value)" style="width: 100%; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 12.5px; background: var(--bg); color: var(--text);"/>
+            </div>
+
+            <!-- Scrollable Session Cards List -->
+            <div class="sessions-scroll-list" id="sessions-list-container">
+              <!-- Dynamically populated session cards -->
+            </div>
           </div>
-          <div class="stat-pill-card">
-            <div class="stat-pill-val" id="stat-prompts">0</div>
-            <div class="stat-pill-lbl">User Prompts</div>
+
+          <!-- Right Column: Active Session Conversation Detail -->
+          <div class="session-detail-pane">
+            
+            <!-- Active Session Header Banner -->
+            <div class="active-session-banner">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                  <span class="session-badge-project" id="active-project-tag">PROJECT</span>
+                  <span style="font-size: 12px; color: var(--text-dim); font-family: var(--mono);" id="active-session-date">Just now</span>
+                </div>
+                <div style="font-weight: 700; font-size: 15px; color: var(--text);" id="active-session-title">Selected Session</div>
+                <div style="font-size: 12px; color: var(--text-muted); font-family: var(--mono); margin-top: 2px;" id="active-session-path">~/.claude/projects/...</div>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="tbtn tbtn-ghost" onclick="exportMarkdownSummary()" style="font-size: 12px; padding: 6px 12px;">📋 Export Markdown</button>
+              </div>
+            </div>
+
+            <!-- Stats Summary -->
+            <div class="stats-bar">
+              <div class="stat-pill-card">
+                <div class="stat-pill-val" id="stat-turns">0</div>
+                <div class="stat-pill-lbl">Total Turns</div>
+              </div>
+              <div class="stat-pill-card">
+                <div class="stat-pill-val" id="stat-prompts">0</div>
+                <div class="stat-pill-lbl">User Prompts</div>
+              </div>
+              <div class="stat-pill-card">
+                <div class="stat-pill-val" id="stat-tools">0</div>
+                <div class="stat-pill-lbl">Tool Executions</div>
+              </div>
+              <div class="stat-pill-card">
+                <div class="stat-pill-val" id="stat-model-msgs">0</div>
+                <div class="stat-pill-lbl">Assistant Replies</div>
+              </div>
+            </div>
+
+            <!-- Filter Bar & In-Conversation Search -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+              <div class="filter-tabs-row" style="margin-bottom: 0;">
+                <button class="filter-btn active" onclick="setFilter('all', this)">All Events</button>
+                <button class="filter-btn" onclick="setFilter('user', this)">👤 Prompts Only</button>
+                <button class="filter-btn" onclick="setFilter('assistant', this)">🤖 Assistant Only</button>
+                <button class="filter-btn" onclick="setFilter('tool', this)">🛠️ Tool Calls Only</button>
+              </div>
+              <div style="flex: 1; max-width: 260px; min-width: 180px;">
+                <input type="text" id="turn-search-input" placeholder="🔍 Search in conversation..." oninput="filterTurns(this.value)" style="width: 100%; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 12.5px; background: var(--bg2); color: var(--text);"/>
+              </div>
+            </div>
+
+            <!-- Interactive Timeline -->
+            <div id="timeline-container" class="chat-timeline"></div>
           </div>
-          <div class="stat-pill-card">
-            <div class="stat-pill-val" id="stat-tools">0</div>
-            <div class="stat-pill-lbl">Tool Executions</div>
-          </div>
-          <div class="stat-pill-card">
-            <div class="stat-pill-val" id="stat-model-msgs">0</div>
-            <div class="stat-pill-lbl">Assistant Replies</div>
-          </div>
+
         </div>
 
-        <!-- Filter Bar -->
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
-          <div class="filter-tabs-row">
-            <button class="filter-btn active" onclick="setFilter('all', this)">All Events</button>
-            <button class="filter-btn" onclick="setFilter('user', this)">👤 Prompts Only</button>
-            <button class="filter-btn" onclick="setFilter('assistant', this)">🤖 Assistant Only</button>
-            <button class="filter-btn" onclick="setFilter('tool', this)">🛠️ Tool Calls Only</button>
-          </div>
-          <div>
-            <button class="tbtn tbtn-ghost" onclick="exportMarkdownSummary()" style="font-size: 12.5px; padding: 6px 12px;">📋 Export Clean Markdown</button>
-          </div>
-        </div>
-
-        <!-- Interactive Timeline -->
-        <div id="timeline-container" class="chat-timeline"></div>
       </div>
 
       <!-- FAQ Section -->
@@ -407,12 +588,14 @@
     <span id="toast-msg">Copied to clipboard!</span>
   </div>
 
-  <!-- Script: Parser & Timeline Logic -->
+  <!-- Script: Parser & Master-Detail Workspace Logic -->
   <script>
-    let parsedEvents = [];
+    let sessionsList = [];
+    let activeSessionId = 0;
     let currentFilter = 'all';
+    let sessionSearchQuery = '';
+    let turnSearchQuery = '';
     let toastTimeout;
-    let discoveredSessions = []; // Array of { name, path, file, lastModified }
 
     function showToast(msg, icon = '✅') {
       const toast = document.getElementById('toast-notification');
@@ -435,16 +618,12 @@
     });
     dropzone.addEventListener('drop', (e) => {
       const files = Array.from(e.dataTransfer.files);
-      if (files.length > 0) {
-        handleDiscoveredFiles(files);
-      }
+      if (files.length > 0) handleDiscoveredFiles(files);
     });
 
     function handleFileSelect(e) {
       const files = Array.from(e.target.files || []);
-      if (files.length > 0) {
-        handleDiscoveredFiles(files);
-      }
+      if (files.length > 0) handleDiscoveredFiles(files);
     }
 
     function handleFolderSelect(e) {
@@ -453,8 +632,7 @@
       handleDiscoveredFiles(files);
     }
 
-    function handleDiscoveredFiles(fileList) {
-      // Filter for jsonl / json / txt transcript files
+    async function handleDiscoveredFiles(fileList) {
       const validFiles = fileList.filter(f => 
         f.name.endsWith('.jsonl') || 
         f.name.endsWith('.json') || 
@@ -470,125 +648,46 @@
       // Sort newest first
       validFiles.sort((a, b) => (b.lastModified || 0) - (a.lastModified || 0));
 
-      discoveredSessions = validFiles.map((f, i) => {
-        const path = f.webkitRelativePath || f.name;
-        // Clean display name from folder path e.g. "projects/my-app/transcript.jsonl" -> "my-app"
-        const parts = path.split('/');
-        let label = f.name;
-        if (parts.length > 1) {
-          const folder = parts[parts.length - 2];
-          label = `${folder} / ${f.name}`;
-        }
-        const modDate = f.lastModified ? new Date(f.lastModified).toLocaleDateString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}) : '';
-        return {
-          id: i,
-          name: label,
-          fullPath: path,
-          file: f,
-          dateStr: modDate
-        };
+      const parsedPromises = validFiles.map((file, idx) => {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const raw = e.target.result;
+            const session = parseSingleSession(raw, file, idx);
+            resolve(session);
+          };
+          reader.readAsText(file);
+        });
       });
 
-      // Update session picker dropdown
-      const pickerBar = document.getElementById('session-picker-bar');
-      const dropdown = document.getElementById('session-select-dropdown');
-      const countLabel = document.getElementById('session-count-label');
+      const loaded = await Promise.all(parsedPromises);
+      sessionsList = loaded.filter(s => s && s.events.length > 0);
 
-      dropdown.innerHTML = '';
-      discoveredSessions.forEach((s) => {
-        const opt = document.createElement('option');
-        opt.value = s.id;
-        opt.textContent = `${s.name} ${s.dateStr ? '(' + s.dateStr + ')' : ''}`;
-        dropdown.appendChild(opt);
-      });
-
-      countLabel.textContent = `Found ${discoveredSessions.length} Session${discoveredSessions.length > 1 ? 's' : ''}:`;
-      pickerBar.style.display = 'block';
-
-      // Automatically load the latest session
-      loadSessionById(0);
-      showToast(`Loaded latest of ${discoveredSessions.length} sessions! Use dropdown to switch.`, '📁');
-    }
-
-    function switchSession(indexStr) {
-      const idx = parseInt(indexStr, 10);
-      loadSessionById(idx);
-    }
-
-    function loadSessionById(idx) {
-      const session = discoveredSessions[idx];
-      if (!session) return;
-      processFile(session.file);
-    }
-
-    function processFile(file) {
-      const reader = new FileReader();
-      reader.onload = (e) => parseJSONLContent(e.target.result);
-      reader.readAsText(file);
-    }
-
-    function readFromClipboard() {
-      if (!navigator.clipboard || !navigator.clipboard.readText) {
-        // Fallback: open paste drawer
-        togglePasteBox();
-        showToast('Clipboard API unavailable. Please paste logs into the box below.', '📋');
+      if (sessionsList.length === 0) {
+        showToast('Could not find valid session events in the selected files.', '⚠️');
         return;
       }
 
-      navigator.clipboard.readText().then(text => {
-        if (!text || text.trim().length === 0) {
-          showToast('Clipboard is empty. Copy some JSONL logs first!', '⚠️');
-          return;
-        }
-        parseJSONLContent(text);
-        showToast('Loaded transcript from clipboard!', '📋');
-      }).catch(err => {
-        togglePasteBox();
-        showToast('Please paste log content into the box below.', '📋');
-      });
+      document.getElementById('viewer-results').style.display = 'block';
+      renderSessionsSidebar();
+      selectSession(0);
+      showToast(`Discovered ${sessionsList.length} session${sessionsList.length > 1 ? 's' : ''}! Click any session on the left.`, '📁');
     }
 
-    function togglePasteBox() {
-      const drawer = document.getElementById('paste-drawer');
-      drawer.style.display = drawer.style.display === 'none' ? 'block' : 'none';
-    }
-
-    function parsePastedJSONL() {
-      const text = document.getElementById('raw-jsonl-input').value.trim();
-      if (!text) return showToast('Please paste JSONL lines first.', '⚠️');
-      parseJSONLContent(text);
-    }
-
-    function copyTerminalCmd(cmd, el) {
-      navigator.clipboard.writeText(cmd).then(() => {
-        showToast("Copied command to clipboard! Paste in Terminal, then click 'Paste from Clipboard'.", '⚡');
-        if (el) {
-          const original = el.innerHTML;
-          el.innerHTML = '✅ <code>Copied! Run in Terminal, then Paste</code>';
-          el.classList.add('copied');
-          setTimeout(() => {
-            el.innerHTML = original;
-            el.classList.remove('copied');
-          }, 3000);
-        }
-      });
-    }
-
-    function parseJSONLContent(rawText) {
-      parsedEvents = [];
+    function parseSingleSession(rawText, file, idx) {
       const lines = rawText.split('\n');
-      
-      lines.forEach((line, idx) => {
+      const events = [];
+
+      lines.forEach((line, lineIdx) => {
         const trimmed = line.trim();
         if (!trimmed) return;
         try {
           const obj = JSON.parse(trimmed);
-          parsedEvents.push(normalizeEvent(obj, idx));
+          events.push(normalizeEvent(obj, lineIdx));
         } catch (err) {
-          // Attempt parsing fallback text line
           if (trimmed.length > 5) {
-            parsedEvents.push({
-              index: idx,
+            events.push({
+              index: lineIdx + 1,
               role: 'user',
               type: 'RAW_LINE',
               content: trimmed,
@@ -598,59 +697,108 @@
         }
       });
 
-      if (parsedEvents.length === 0) {
-        showToast('Could not find valid JSONL events. Try loading the sample session.', '⚠️');
-        return;
+      if (events.length === 0) return null;
+
+      // Extract metadata
+      const path = (file && (file.webkitRelativePath || file.name)) || `session-${idx+1}.jsonl`;
+      const parts = path.split('/');
+      let project = 'claude-project';
+      if (parts.length > 1) {
+        project = parts[parts.length - 2];
+      } else if (file && file.name) {
+        project = file.name.replace('.transcript.jsonl', '').replace('.jsonl', '').replace('transcript-', '');
       }
 
-      showToast(`Parsed ${parsedEvents.length} session events successfully!`, '🚀');
-      renderResults();
-    }
+      const firstUser = events.find(e => e.role === 'user');
+      const firstPrompt = firstUser ? (firstUser.content || '') : (events[0].content || '');
+      const titleSnippet = firstPrompt.replace(/[\r\n]+/g, ' ').substring(0, 75) || 'Conversation Session';
 
-    function normalizeEvent(obj, idx) {
-      let role = 'assistant';
-      let content = '';
-      let toolCalls = [];
-
-      // Detect role based on Claude Code / Antigravity / OpenAI schemas
-      if (obj.type === 'USER_INPUT' || obj.role === 'user' || obj.source === 'USER_EXPLICIT') {
-        role = 'user';
-        content = obj.content || obj.text || (obj.message && obj.message.content) || JSON.stringify(obj);
-      } else if (obj.tool_calls || obj.toolCalls || obj.type === 'TOOL_EXECUTION' || obj.toolAction) {
-        role = 'tool';
-        content = obj.content || obj.toolAction || '';
-        toolCalls = obj.tool_calls || obj.toolCalls || [obj];
-      } else {
-        role = 'assistant';
-        content = obj.content || obj.text || (obj.message && obj.message.content) || '';
-        if (obj.tool_calls) {
-          toolCalls = obj.tool_calls;
-        }
-      }
+      const modDate = (file && file.lastModified) 
+        ? new Date(file.lastModified).toLocaleDateString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})
+        : new Date().toLocaleDateString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
 
       return {
-        index: idx + 1,
-        role: role,
-        type: obj.type || obj.role || 'EVENT',
-        content: typeof content === 'string' ? content : JSON.stringify(content, null, 2),
-        toolCalls: toolCalls,
-        timestamp: obj.timestamp || obj.created_at || ''
+        id: idx,
+        project: project,
+        title: titleSnippet,
+        fileName: file ? file.name : `session-${idx+1}.jsonl`,
+        fullPath: path,
+        dateStr: modDate,
+        events: events,
+        promptsCount: events.filter(e => e.role === 'user').length,
+        toolsCount: events.filter(e => e.role === 'tool' || (e.toolCalls && e.toolCalls.length > 0)).length,
+        assistantCount: events.filter(e => e.role === 'assistant').length
       };
     }
 
-    function renderResults() {
-      document.getElementById('viewer-results').style.display = 'block';
+    function renderSessionsSidebar() {
+      const container = document.getElementById('sessions-list-container');
+      const countBadge = document.getElementById('sidebar-session-count');
+      container.innerHTML = '';
 
-      // Update statistics
-      const prompts = parsedEvents.filter(e => e.role === 'user').length;
-      const tools = parsedEvents.filter(e => e.role === 'tool' || (e.toolCalls && e.toolCalls.length > 0)).length;
-      const assistantMsgs = parsedEvents.filter(e => e.role === 'assistant').length;
+      const query = sessionSearchQuery.toLowerCase().trim();
+      const filtered = sessionsList.filter(s => {
+        if (!query) return true;
+        return s.project.toLowerCase().includes(query) || 
+               s.title.toLowerCase().includes(query) ||
+               s.fileName.toLowerCase().includes(query);
+      });
 
-      document.getElementById('stat-turns').innerText = parsedEvents.length;
-      document.getElementById('stat-prompts').innerText = prompts;
-      document.getElementById('stat-tools').innerText = tools;
-      document.getElementById('stat-model-msgs').innerText = assistantMsgs;
+      countBadge.innerText = `${filtered.length}`;
 
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px;">No sessions match query.</div>';
+        return;
+      }
+
+      filtered.forEach(session => {
+        const item = document.createElement('div');
+        item.className = `session-item ${session.id === activeSessionId ? 'active' : ''}`;
+        item.onclick = () => selectSession(session.id);
+
+        item.innerHTML = `
+          <div class="session-item-top">
+            <span class="session-badge-project">${escapeHtml(session.project)}</span>
+            <span class="session-time-text">${escapeHtml(session.dateStr)}</span>
+          </div>
+          <div class="session-snippet">${escapeHtml(session.title)}</div>
+          <div class="session-meta-row">
+            <span class="session-meta-pill">💬 ${session.events.length} turns</span>
+            <span class="session-meta-pill">👤 ${session.promptsCount}</span>
+            <span class="session-meta-pill">🛠️ ${session.toolsCount}</span>
+          </div>
+        `;
+
+        container.appendChild(item);
+      });
+    }
+
+    function filterSessionList(val) {
+      sessionSearchQuery = val;
+      renderSessionsSidebar();
+    }
+
+    function selectSession(id) {
+      activeSessionId = id;
+      const session = sessionsList.find(s => s.id === id) || sessionsList[0];
+      if (!session) return;
+
+      // Update active header banner
+      document.getElementById('active-project-tag').innerText = session.project.toUpperCase();
+      document.getElementById('active-session-title').innerText = session.title;
+      document.getElementById('active-session-date').innerText = session.dateStr;
+      document.getElementById('active-session-path').innerText = session.fullPath;
+
+      // Update stats
+      document.getElementById('stat-turns').innerText = session.events.length;
+      document.getElementById('stat-prompts').innerText = session.promptsCount;
+      document.getElementById('stat-tools').innerText = session.toolsCount;
+      document.getElementById('stat-model-msgs').innerText = session.assistantCount;
+
+      // Re-highlight active in sidebar
+      renderSessionsSidebar();
+
+      // Render timeline
       renderTimeline();
     }
 
@@ -661,20 +809,38 @@
       renderTimeline();
     }
 
+    function filterTurns(query) {
+      turnSearchQuery = query;
+      renderTimeline();
+    }
+
     function renderTimeline() {
       const container = document.getElementById('timeline-container');
       container.innerHTML = '';
 
-      const filtered = parsedEvents.filter(e => {
-        if (currentFilter === 'all') return true;
-        if (currentFilter === 'user') return e.role === 'user';
-        if (currentFilter === 'assistant') return e.role === 'assistant';
-        if (currentFilter === 'tool') return e.role === 'tool' || (e.toolCalls && e.toolCalls.length > 0);
+      const session = sessionsList.find(s => s.id === activeSessionId) || sessionsList[0];
+      if (!session) return;
+
+      const q = turnSearchQuery.toLowerCase().trim();
+
+      const filtered = session.events.filter(e => {
+        // Role filter
+        if (currentFilter === 'user' && e.role !== 'user') return false;
+        if (currentFilter === 'assistant' && e.role !== 'assistant') return false;
+        if (currentFilter === 'tool' && e.role !== 'tool' && (!e.toolCalls || e.toolCalls.length === 0)) return false;
+
+        // Search query filter
+        if (q) {
+          const inContent = e.content && e.content.toLowerCase().includes(q);
+          const inTools = e.toolCalls && JSON.stringify(e.toolCalls).toLowerCase().includes(q);
+          if (!inContent && !inTools) return false;
+        }
+
         return true;
       });
 
       if (filtered.length === 0) {
-        container.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--text-muted);">No events match this filter.</div>';
+        container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--text-muted); background: var(--bg2); border-radius: 12px; border: 1px dashed var(--border);">No conversation turns match this filter or search query.</div>';
         return;
       }
 
@@ -716,7 +882,6 @@
 
     function formatMessageContent(text) {
       if (!text) return '<em style="color:var(--text-dim)">[Empty message payload]</em>';
-      // Simple code block escaping
       let safe = escapeHtml(text);
       safe = safe.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
       safe = safe.replace(/`([^`]+)`/g, '<code style="background:rgba(0,200,150,0.1);color:#008765;padding:2px 4px;border-radius:4px;">$1</code>');
@@ -728,9 +893,109 @@
       return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
+    function readFromClipboard() {
+      if (!navigator.clipboard || !navigator.clipboard.readText) {
+        togglePasteBox();
+        showToast('Clipboard API unavailable. Please paste logs into the box below.', '📋');
+        return;
+      }
+
+      navigator.clipboard.readText().then(text => {
+        if (!text || text.trim().length === 0) {
+          showToast('Clipboard is empty. Copy some JSONL logs first!', '⚠️');
+          return;
+        }
+        parsePastedText(text, 'clipboard-session');
+        showToast('Loaded transcript from clipboard!', '📋');
+      }).catch(err => {
+        togglePasteBox();
+        showToast('Please paste log content into the box below.', '📋');
+      });
+    }
+
+    function togglePasteBox() {
+      const drawer = document.getElementById('paste-drawer');
+      drawer.style.display = drawer.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function parsePastedJSONL() {
+      const text = document.getElementById('raw-jsonl-input').value.trim();
+      if (!text) return showToast('Please paste JSONL lines first.', '⚠️');
+      parsePastedText(text, 'pasted-session');
+    }
+
+    function parsePastedText(text, sourceName) {
+      const dummyFile = {
+        name: `${sourceName}.jsonl`,
+        webkitRelativePath: `${sourceName}/transcript.jsonl`,
+        lastModified: Date.now()
+      };
+      const session = parseSingleSession(text, dummyFile, sessionsList.length);
+      if (session && session.events.length > 0) {
+        sessionsList.unshift(session);
+        document.getElementById('viewer-results').style.display = 'block';
+        renderSessionsSidebar();
+        selectSession(session.id);
+        showToast(`Parsed session (${session.events.length} turns) successfully!`, '🚀');
+      } else {
+        showToast('Could not parse valid session events from text.', '⚠️');
+      }
+    }
+
+    function copyTerminalCmd(cmd, el) {
+      navigator.clipboard.writeText(cmd).then(() => {
+        showToast("Copied command! Run in Terminal, then click 'Paste from Clipboard'.", '⚡');
+        if (el) {
+          const original = el.innerHTML;
+          el.innerHTML = '✅ <code>Copied! Run in Terminal, then Paste</code>';
+          el.classList.add('copied');
+          setTimeout(() => {
+            el.innerHTML = original;
+            el.classList.remove('copied');
+          }, 3000);
+        }
+      });
+    }
+
+    function normalizeEvent(obj, idx) {
+      let role = 'assistant';
+      let content = '';
+      let toolCalls = [];
+
+      if (obj.type === 'USER_INPUT' || obj.role === 'user' || obj.source === 'USER_EXPLICIT') {
+        role = 'user';
+        content = obj.content || obj.text || (obj.message && obj.message.content) || JSON.stringify(obj);
+      } else if (obj.tool_calls || obj.toolCalls || obj.type === 'TOOL_EXECUTION' || obj.toolAction) {
+        role = 'tool';
+        content = obj.content || obj.toolAction || '';
+        toolCalls = obj.tool_calls || obj.toolCalls || [obj];
+      } else {
+        role = 'assistant';
+        content = obj.content || obj.text || (obj.message && obj.message.content) || '';
+        if (obj.tool_calls) {
+          toolCalls = obj.tool_calls;
+        }
+      }
+
+      return {
+        index: idx + 1,
+        role: role,
+        type: obj.type || obj.role || 'EVENT',
+        content: typeof content === 'string' ? content : JSON.stringify(content, null, 2),
+        toolCalls: toolCalls,
+        timestamp: obj.timestamp || obj.created_at || ''
+      };
+    }
+
     function exportMarkdownSummary() {
-      let md = '# Claude Code Session Summary\n\n';
-      parsedEvents.forEach(e => {
+      const session = sessionsList.find(s => s.id === activeSessionId) || sessionsList[0];
+      if (!session) return;
+
+      let md = `# Session: ${session.title}\n`;
+      md += `**Project:** ${session.project}  \n`;
+      md += `**Date:** ${session.dateStr}  \n\n`;
+
+      session.events.forEach(e => {
         md += `### [${e.role.toUpperCase()}] Turn #${e.index}\n\n`;
         md += `${e.content}\n\n`;
         if (e.toolCalls && e.toolCalls.length > 0) {
@@ -745,14 +1010,40 @@
     }
 
     function loadSampleSession() {
-      const sampleJSONL = `{"type":"USER_INPUT","content":"Let's refactor the SQLite connection pool to use Swift Actors and prevent thread deadlocks on macOS."}
-{"type":"PLANNER_RESPONSE","content":"I will inspect our existing DatabasePool.swift and wrap read/write operations in an actor-isolated queue."}
-{"type":"TOOL_EXECUTION","toolAction":"Grep for DatabasePool in codebase","CommandLine":"grep -rn 'DatabasePool' ./Sources"}
-{"type":"PLANNER_RESPONSE","content":"Found 3 call sites in ClipboardRepository.swift. I am now applying the actor isolation patch."}
-{"type":"TOOL_EXECUTION","toolAction":"Update DatabasePool.swift with actor isolation","tool_calls":[{"name":"replace_file_content","parameters":{"file":"DatabasePool.swift","patch":"actor DatabaseQueue { ... }"}}]}
-{"type":"PLANNER_RESPONSE","content":"Refactor complete. All 24 unit tests passed with 0 concurrency warnings under Swift 6 strict concurrency."}`;
+      const sample1 = [
+        `{"type":"USER_INPUT","content":"Let's refactor SQLite connection pool to use Swift Actors and prevent concurrency deadlocks on macOS."}`,
+        `{"type":"PLANNER_RESPONSE","content":"I will inspect DatabasePool.swift and wrap read/write operations in an actor-isolated queue."}`,
+        `{"type":"TOOL_EXECUTION","toolAction":"Grep for DatabasePool in codebase","CommandLine":"grep -rn 'DatabasePool' ./Sources"}`,
+        `{"type":"PLANNER_RESPONSE","content":"Found 3 call sites in ClipboardRepository.swift. I am applying the actor isolation patch now."}`,
+        `{"type":"TOOL_EXECUTION","toolAction":"Update DatabasePool.swift with actor isolation","tool_calls":[{"name":"replace_file_content","parameters":{"file":"DatabasePool.swift","patch":"actor DatabaseQueue { ... }"}}]}`,
+        `{"type":"PLANNER_RESPONSE","content":"Refactor complete. All 24 unit tests passed with 0 concurrency warnings under Swift 6 strict concurrency."}`
+      ].join('\n');
 
-      parseJSONLContent(sampleJSONL);
+      const sample2 = [
+        `{"type":"USER_INPUT","content":"Implement OAuth2 PKCE login flow and secure JWT token refresh rotation with Redis."}`,
+        `{"type":"PLANNER_RESPONSE","content":"I will set up the PKCE code challenge generation in AuthService.ts and store hashed refresh tokens in Redis."}`,
+        `{"type":"TOOL_EXECUTION","toolAction":"Search authentication middlewares","CommandLine":"find ./src/auth -name '*.ts'"}`,
+        `{"type":"PLANNER_RESPONSE","content":"Generated token rotation middleware. Old refresh tokens are invalidated immediately upon replay."}`,
+        `{"type":"TOOL_EXECUTION","toolAction":"Run OAuth2 test suite","CommandLine":"npm test -- auth.test.ts"}`,
+        `{"type":"PLANNER_RESPONSE","content":"All auth integration tests passed! Token refresh rotation is active."}`
+      ].join('\n');
+
+      const sample3 = [
+        `{"type":"USER_INPUT","content":"Optimize vector search indexing on ClickHouse and benchmark query latency under 10k RPS."}`,
+        `{"type":"PLANNER_RESPONSE","content":"I will configure an HNSW index on the embeddings column and test batch insert throughput."}`,
+        `{"type":"TOOL_EXECUTION","toolAction":"Run benchmark k6 script","CommandLine":"k6 run benchmarks/vector-search.js"}`,
+        `{"type":"PLANNER_RESPONSE","content":"p99 latency dropped from 145ms down to 8.2ms! Vector search is ready for production."}`
+      ].join('\n');
+
+      const s1 = parseSingleSession(sample1, { name: 'transcript.jsonl', webkitRelativePath: 'l2cache-mac/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 15 }, 0);
+      const s2 = parseSingleSession(sample2, { name: 'transcript.jsonl', webkitRelativePath: 'auth-service/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 3 }, 1);
+      const s3 = parseSingleSession(sample3, { name: 'transcript.jsonl', webkitRelativePath: 'analytics-engine/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 24 }, 2);
+
+      sessionsList = [s1, s2, s3];
+      document.getElementById('viewer-results').style.display = 'block';
+      renderSessionsSidebar();
+      selectSession(0);
+      showToast('Loaded 3 sample multi-project sessions! Click each session on the left to see conversations separately.', '🚀');
     }
   </script>
 </body>
