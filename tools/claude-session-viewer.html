@@ -886,6 +886,8 @@
       }
     }
 
+    const PARSER_SCHEMA_VERSION = 'v2026_09_23_v9';
+
     async function saveSessionsToCache(sessions) {
       try {
         const db = await getDB();
@@ -893,6 +895,7 @@
         const tx = db.transaction('cache', 'readwrite');
         tx.objectStore('cache').put({
           id: 'sessions_index',
+          version: PARSER_SCHEMA_VERSION,
           sessions: sessions,
           updatedAt: Date.now()
         });
@@ -910,7 +913,7 @@
           const store = tx.objectStore('cache');
           const req = store.get('sessions_index');
           req.onsuccess = () => {
-            if (req.result && req.result.sessions && req.result.sessions.length > 0) {
+            if (req.result && req.result.version === PARSER_SCHEMA_VERSION && req.result.sessions && req.result.sessions.length > 0) {
               resolve(req.result.sessions);
             } else {
               resolve(null);
@@ -1528,9 +1531,15 @@
       const hasMeaningfulContent = cleanEvents.some(e => (e.content && e.content.length > 8) || (e.toolCalls && e.toolCalls.length > 0));
       if (!hasUser && !hasMeaningfulContent) return null;
 
-      const firstUser = cleanEvents.find(e => e.role === 'user');
-      const firstPrompt = firstUser ? (firstUser.content || '') : (cleanEvents[0].content || '');
-      let titleSnippet = firstPrompt.replace(/[\r\n]+/g, ' ').substring(0, 85) || 'Conversation Session';
+      // Pick first genuine human user prompt (skipping system context / AGENTS.md injections)
+      const firstUser = cleanEvents.find(e => e.role === 'user' && !e.content.startsWith('[System Context]') && !e.content.startsWith('[System Prompt]'));
+      const firstPrompt = firstUser ? (firstUser.content || '') : (cleanEvents.find(e => e.role === 'user')?.content || cleanEvents[0]?.content || '');
+      let cleanTitle = firstPrompt
+        .replace(/<command-name>.*?<\/command-name>/g, '')
+        .replace(/<command-message>(.*?)<\/command-message>/g, '$1')
+        .replace(/[\r\n]+/g, ' ')
+        .trim();
+      let titleSnippet = cleanTitle.substring(0, 85) || 'Conversation Session';
       if (sessionKey && sessionKey !== 'default_session') {
         titleSnippet = `[${sessionKey.substring(0, 8)}] ${titleSnippet}`;
       }
@@ -1583,7 +1592,7 @@
         if (
           pType === 'token_count' || pType === 'task_started' || pType === 'task_completed' || 
           pType === 'item_completed' || envType === 'turn_context' || envType === 'world_state' || 
-          envType === 'session_meta'
+          envType === 'session_meta' || envType === 'inter_agent_communication_metadata'
         ) {
           return [];
         }
@@ -1673,7 +1682,7 @@
       if (
         obj.type === 'token_count' || obj.type === 'task_started' || obj.type === 'task_completed' || 
         obj.type === 'item_completed' || obj.envelopeType === 'turn_context' || obj.envelopeType === 'world_state' || 
-        obj.envelopeType === 'session_meta'
+        obj.envelopeType === 'session_meta' || obj.envelopeType === 'inter_agent_communication_metadata'
       ) {
         return null;
       }
@@ -1702,8 +1711,8 @@
         };
       }
 
-      // 2. Tool Outputs (Codex custom_tool_call_output / tool_call_output)
-      if (obj.type === 'custom_tool_call_output' || obj.type === 'tool_call_output') {
+      // 2. Tool Outputs (Codex custom_tool_call_output / tool_call_output / function_call_output)
+      if (obj.type === 'custom_tool_call_output' || obj.type === 'tool_call_output' || obj.type === 'function_call_output') {
         let outText = '';
         if (Array.isArray(obj.output)) {
           outText = obj.output.map(o => o.text || (typeof o === 'string' ? o : JSON.stringify(o))).filter(Boolean).join('\n').trim();
@@ -1738,7 +1747,25 @@
         };
       }
 
-      // 4. Extract content & tool calls from Claude Code, OpenAI Codex, Realtime & ChatGPT structures
+      // 4. Subagent Messages (Codex agent_message)
+      if (obj.type === 'agent_message') {
+        let msgText = '';
+        if (Array.isArray(obj.content)) {
+          msgText = obj.content.map(c => c.text || '').filter(Boolean).join('\n').trim();
+        } else if (typeof obj.content === 'string') {
+          msgText = obj.content.trim();
+        }
+        return {
+          index: idx + 1,
+          role: 'assistant',
+          type: 'SUBAGENT_MESSAGE',
+          content: `🤖 **Sub-agent (${obj.author || 'agent'} ➔ ${obj.recipient || 'root'}):**\n` + (msgText || ''),
+          toolCalls: [],
+          timestamp: obj.timestamp || ''
+        };
+      }
+
+      // 5. Extract content & tool calls from Claude Code, OpenAI Codex, Realtime & ChatGPT structures
       let contentArray = [];
       if (Array.isArray(obj.content)) contentArray = obj.content;
       else if (obj.message && Array.isArray(obj.message.content)) contentArray = obj.message.content;
@@ -1870,7 +1897,16 @@
         cleanRole === 'client' ||
         cleanRole === 'customer'
       ) {
-        if (content.startsWith('<recommended_plugins>') || content.startsWith('<permissions') || content.startsWith('<multi_agent_mode') || content.startsWith('<environment_context>')) {
+        const isSys = content.startsWith('<recommended_plugins>') ||
+                      content.startsWith('<permissions') ||
+                      content.startsWith('<multi_agent_mode') ||
+                      content.startsWith('<environment_context>') ||
+                      content.startsWith('<skills_instructions>') ||
+                      content.startsWith('<INSTRUCTIONS>') ||
+                      content.startsWith('# AGENTS.md') ||
+                      content.startsWith('AGENTS.md') ||
+                      content.startsWith('<local-command-stdout>');
+        if (isSys) {
           role = 'assistant';
           if (!content.startsWith('[System Context]')) content = `[System Context] ${content}`;
         } else {
