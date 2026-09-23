@@ -976,18 +976,16 @@
         'settings.json', 'config.json', 'manifest.json', 'installed_plugins',
         'plugins.json', 'telemetry.json', 'stats.json', 'metadata.json',
         'keys.json', 'credentials.json', 'launch.json', 'extensions.json',
-        'theme.json', 'index.json', 'tasks.json', 'keybindings.json',
+        'theme.json', 'tasks.json', 'keybindings.json',
         '.eslintrc', '.prettierrc', 'yarn.lock', 'pnpm-lock.yaml'
       ];
       for (const b of blacklist) {
         if (lower === b || lower.endsWith('/' + b) || lower.includes(b)) return false;
       }
 
-      // Accept .jsonl files or transcript / session named files
+      // Accept .jsonl files, transcripts, sessions, history, chats, memories, or generic json/log/txt
       if (lower.endsWith('.jsonl')) return true;
-      if (lower.includes('transcript') && (lower.endsWith('.json') || lower.endsWith('.jsonl') || lower.endsWith('.txt'))) return true;
-      if (lower.includes('session') && (lower.endsWith('.json') || lower.endsWith('.jsonl'))) return true;
-      if (lower.includes('memories') && lower.endsWith('.jsonl')) return true;
+      if (lower.endsWith('.json') || lower.endsWith('.log') || lower.endsWith('.txt')) return true;
 
       return false;
     }
@@ -1046,8 +1044,8 @@
     async function scanDirHandle(dirHandle, fileList, currentPath = '') {
       try {
         for await (const [name, handle] of dirHandle.entries()) {
-          if (['node_modules', '.git', 'dist', 'build', '.venv', 'venv', 'cache', 'tmp', 'DerivedData'].includes(name)) continue;
-          if (name.startsWith('.') && name !== '.claude' && name !== '.codex' && name !== '.gemini' && name !== '.cursor') continue;
+          // Skip build artifacts and git
+          if (['node_modules', '.git', 'dist', 'build', '.venv', 'venv', 'DerivedData'].includes(name)) continue;
 
           if (handle.kind === 'file') {
             if (isTranscriptFile(name)) {
@@ -1114,7 +1112,7 @@
       const validFiles = fileList.filter(f => isTranscriptFile(f.name));
 
       if (validFiles.length === 0) {
-        showToast('No transcript (.jsonl) files found in selection.', '⚠️');
+        showToast('No transcript (.jsonl/.json) files found in selection.', '⚠️');
         return;
       }
 
@@ -1126,15 +1124,15 @@
           const reader = new FileReader();
           reader.onload = (e) => {
             const raw = e.target.result;
-            const session = parseSingleSession(raw, file, idx);
-            resolve(session);
+            const sessions = parseFileIntoSessions(raw, file, idx);
+            resolve(sessions);
           };
           reader.readAsText(file);
         });
       });
 
-      const loaded = await Promise.all(parsedPromises);
-      const newValidSessions = loaded.filter(s => s && s.events.length > 0);
+      const loadedNested = await Promise.all(parsedPromises);
+      const newValidSessions = loadedNested.flat().filter(s => s && s.events && s.events.length > 0);
 
       if (newValidSessions.length === 0) {
         showToast('No valid conversation logs found in selected files.', '⚠️');
@@ -1142,11 +1140,12 @@
       }
 
       if (mergeIncremental && sessionsList.length > 0) {
-        // Merge without duplicates by fullPath
-        const existingPaths = new Set(sessionsList.map(s => s.fullPath));
+        // Merge without duplicates by fullPath / session key
+        const existingKeys = new Set(sessionsList.map(s => s.fullPath + (s.sessionKey ? `::${s.sessionKey}` : '')));
         newValidSessions.forEach(s => {
-          if (existingPaths.has(s.fullPath)) {
-            const idx = sessionsList.findIndex(x => x.fullPath === s.fullPath);
+          const key = s.fullPath + (s.sessionKey ? `::${s.sessionKey}` : '');
+          if (existingKeys.has(key)) {
+            const idx = sessionsList.findIndex(x => (x.fullPath + (x.sessionKey ? `::${x.sessionKey}` : '')) === key);
             if (idx >= 0) sessionsList[idx] = s;
           } else {
             sessionsList.push(s);
@@ -1204,51 +1203,124 @@
       if (cOther) cOther.innerText = `${otherCount}`;
     }
 
-    function parseSingleSession(rawText, file, idx) {
+    // --- Smart Multi-Session File Parser ---
+    function parseFileIntoSessions(rawText, file, baseIdx) {
+      if (!rawText || !rawText.trim()) return [];
+
+      const trimmed = rawText.trim();
+      const path = (file && (file.customRelativePath || file.webkitRelativePath || file.name)) || `session-${baseIdx+1}.jsonl`;
+      const modDate = (file && file.lastModified) 
+        ? new Date(file.lastModified).toLocaleDateString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})
+        : new Date().toLocaleDateString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
+
+      const parts = path.split('/');
+      let project = 'project';
+      if (parts.length > 1) {
+        project = parts[parts.length - 2];
+      } else if (file && file.name) {
+        project = file.name.replace('.transcript.jsonl', '').replace('.jsonl', '').replace('.json', '').replace('transcript-', '');
+      }
+
+      // Case 1: Pure JSON Array or Object with sessions list
+      if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
+        try {
+          const parsed = JSON.parse(trimmed);
+          
+          // Case 1A: Object with sessions / conversations / threads array
+          const sessionsArray = parsed.sessions || parsed.conversations || parsed.threads || parsed.history;
+          if (Array.isArray(sessionsArray) && sessionsArray.length > 0) {
+            return sessionsArray.map((sessObj, sIdx) => {
+              const events = extractEventsFromObject(sessObj);
+              return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, path, modDate, rawText, file);
+            }).filter(Boolean);
+          }
+
+          // Case 1B: Top-level Array of session objects
+          if (Array.isArray(parsed) && parsed.length > 0 && (parsed[0].messages || parsed[0].turns || parsed[0].events)) {
+            return parsed.map((sessObj, sIdx) => {
+              const events = extractEventsFromObject(sessObj);
+              return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, path, modDate, rawText, file);
+            }).filter(Boolean);
+          }
+
+          // Case 1C: Single session object with messages or turns
+          if (parsed.messages || parsed.turns || parsed.events) {
+            const events = extractEventsFromObject(parsed);
+            const sess = createSessionRecord(events, parsed.id || `session-1`, project, path, modDate, rawText, file);
+            return sess ? [sess] : [];
+          }
+        } catch (e) {
+          // Fall through to JSONL line-by-line parsing
+        }
+      }
+
+      // Case 2: JSON Lines (JSONL) with possible multi-session grouping by session_id
       const lines = rawText.split('\n');
-      const events = [];
+      const sessionGroups = new Map(); // sessionKey -> raw events[]
+      const defaultKey = 'default_session';
 
       lines.forEach((line, lineIdx) => {
-        const trimmed = line.trim();
-        if (!trimmed) return;
+        const lineTrimmed = line.trim();
+        if (!lineTrimmed) return;
         try {
-          const obj = JSON.parse(trimmed);
-          const norm = normalizeEvent(obj, lineIdx);
-          if (norm && (norm.content || (norm.toolCalls && norm.toolCalls.length > 0))) {
-            events.push(norm);
+          const obj = JSON.parse(lineTrimmed);
+          const sId = obj.session_id || obj.sessionId || obj.sessionID || obj.conversation_id || obj.thread_id || (obj.session && obj.session.id) || defaultKey;
+          
+          const normEvents = normalizeRawLine(obj, lineIdx);
+          if (normEvents && normEvents.length > 0) {
+            if (!sessionGroups.has(sId)) sessionGroups.set(sId, []);
+            sessionGroups.get(sId).push(...normEvents);
           }
         } catch (err) {
-          if (trimmed.length > 10 && !trimmed.startsWith('{')) {
-            events.push({
+          if (lineTrimmed.length > 10 && !lineTrimmed.startsWith('{')) {
+            if (!sessionGroups.has(defaultKey)) sessionGroups.set(defaultKey, []);
+            sessionGroups.get(defaultKey).push({
               index: lineIdx + 1,
               role: 'user',
               type: 'RAW_LINE',
-              content: trimmed,
+              content: lineTrimmed,
               toolCalls: []
             });
           }
         }
       });
 
-      if (events.length === 0) return null;
+      if (sessionGroups.size === 0) return [];
 
-      // Extract metadata
-      const path = (file && (file.customRelativePath || file.webkitRelativePath || file.name)) || `session-${idx+1}.jsonl`;
-      const parts = path.split('/');
-      let project = 'project';
-      if (parts.length > 1) {
-        project = parts[parts.length - 2];
-      } else if (file && file.name) {
-        project = file.name.replace('.transcript.jsonl', '').replace('.jsonl', '').replace('transcript-', '');
-      }
+      const resultSessions = [];
+      sessionGroups.forEach((events, sKey) => {
+        if (events && events.length > 0) {
+          // Re-index event numbers sequentially within session
+          events.forEach((ev, evIdx) => ev.index = evIdx + 1);
+          const sess = createSessionRecord(events, sKey, project, path, modDate, rawText, file);
+          if (sess) resultSessions.push(sess);
+        }
+      });
+
+      return resultSessions;
+    }
+
+    function extractEventsFromObject(sessObj) {
+      const rawList = sessObj.messages || sessObj.turns || sessObj.events || [];
+      const events = [];
+      rawList.forEach((item, idx) => {
+        const norm = normalizeEvent(item, idx);
+        if (norm && (norm.content || (norm.toolCalls && norm.toolCalls.length > 0))) {
+          events.push(norm);
+        }
+      });
+      return events;
+    }
+
+    function createSessionRecord(events, sessionKey, project, path, modDate, rawText, file) {
+      if (!events || events.length === 0) return null;
 
       const firstUser = events.find(e => e.role === 'user');
       const firstPrompt = firstUser ? (firstUser.content || '') : (events[0].content || '');
-      const titleSnippet = firstPrompt.replace(/[\r\n]+/g, ' ').substring(0, 85) || 'Conversation Session';
-
-      const modDate = (file && file.lastModified) 
-        ? new Date(file.lastModified).toLocaleDateString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})
-        : new Date().toLocaleDateString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
+      let titleSnippet = firstPrompt.replace(/[\r\n]+/g, ' ').substring(0, 85) || 'Conversation Session';
+      if (sessionKey && sessionKey !== 'default_session') {
+        titleSnippet = `[${sessionKey.substring(0, 8)}] ${titleSnippet}`;
+      }
 
       const agentInfo = detectAgent(path, file ? file.name : '', rawText);
 
@@ -1256,16 +1328,18 @@
       const indexTokens = [
         project,
         titleSnippet,
+        sessionKey,
         agentInfo.label,
         path,
         ...events.map(e => (e.content || '') + ' ' + (e.toolCalls ? JSON.stringify(e.toolCalls) : ''))
       ].join(' ').toLowerCase();
 
       return {
-        id: idx,
+        id: 0,
+        sessionKey: sessionKey !== 'default_session' ? sessionKey : '',
         project: project,
         title: titleSnippet,
-        fileName: file ? file.name : `session-${idx+1}.jsonl`,
+        fileName: file ? file.name : `session.jsonl`,
         fullPath: path,
         dateStr: modDate,
         events: events,
@@ -1277,6 +1351,77 @@
         promptsCount: events.filter(e => e.role === 'user').length,
         toolsCount: events.filter(e => e.role === 'tool' || (e.toolCalls && e.toolCalls.length > 0)).length,
         assistantCount: events.filter(e => e.role === 'assistant').length
+      };
+    }
+
+    function normalizeRawLine(obj, lineIdx) {
+      // Handle pair formats { prompt: "...", response: "..." }
+      if (obj.prompt && obj.response) {
+        return [
+          { index: lineIdx + 1, role: 'user', type: 'USER_PROMPT', content: String(obj.prompt), toolCalls: [] },
+          { index: lineIdx + 2, role: 'assistant', type: 'ASSISTANT_RESPONSE', content: String(obj.response), toolCalls: [] }
+        ];
+      }
+      if (obj.input && obj.output) {
+        return [
+          { index: lineIdx + 1, role: 'user', type: 'USER_INPUT', content: String(obj.input), toolCalls: [] },
+          { index: lineIdx + 2, role: 'assistant', type: 'MODEL_OUTPUT', content: String(obj.output), toolCalls: [] }
+        ];
+      }
+
+      const single = normalizeEvent(obj, lineIdx);
+      return single ? [single] : [];
+    }
+
+    function normalizeEvent(obj, idx) {
+      let role = 'assistant';
+      let content = '';
+      let toolCalls = [];
+
+      // Extract content from text or object or content array
+      if (typeof obj.content === 'string') {
+        content = obj.content;
+      } else if (Array.isArray(obj.content)) {
+        content = obj.content.map(c => typeof c === 'string' ? c : (c.text || c.input_text || JSON.stringify(c))).join('\n');
+      } else if (obj.text) {
+        content = typeof obj.text === 'string' ? obj.text : JSON.stringify(obj.text);
+      } else if (obj.message && obj.message.content) {
+        content = typeof obj.message.content === 'string' ? obj.message.content : JSON.stringify(obj.message.content);
+      } else if (obj.item && obj.item.content) {
+        content = Array.isArray(obj.item.content) 
+          ? obj.item.content.map(c => c.text || c.input_text || JSON.stringify(c)).join('\n')
+          : String(obj.item.content);
+      }
+
+      // Determine role
+      const rawRole = (obj.role || obj.type || (obj.item && obj.item.role) || obj.sender || obj.source || '').toLowerCase();
+      
+      if (rawRole === 'user' || rawRole === 'user_input' || rawRole === 'user_prompt' || rawRole === 'user_explicit' || rawRole === 'human') {
+        role = 'user';
+      } else if (rawRole === 'tool' || rawRole === 'tool_execution' || rawRole === 'tool_call' || obj.tool_calls || obj.toolCalls || obj.toolAction) {
+        role = 'tool';
+        toolCalls = obj.tool_calls || obj.toolCalls || (obj.toolAction ? [obj] : []);
+      } else if (rawRole === 'system') {
+        role = 'assistant';
+        content = `[System Prompt] ${content}`;
+      } else {
+        role = 'assistant';
+        if (obj.tool_calls || obj.toolCalls) {
+          toolCalls = obj.tool_calls || obj.toolCalls;
+        }
+      }
+
+      if (!content && (!toolCalls || toolCalls.length === 0)) {
+        content = obj.toolAction || (obj.summary ? String(obj.summary) : '');
+      }
+
+      return {
+        index: idx + 1,
+        role: role,
+        type: obj.type || obj.role || 'EVENT',
+        content: typeof content === 'string' ? content : JSON.stringify(content, null, 2),
+        toolCalls: toolCalls,
+        timestamp: obj.timestamp || obj.created_at || ''
       };
     }
 
@@ -1611,9 +1756,9 @@
         webkitRelativePath: `${sourceName}/transcript.jsonl`,
         lastModified: Date.now()
       };
-      const session = parseSingleSession(text, dummyFile, sessionsList.length);
-      if (session && session.events.length > 0) {
-        sessionsList.unshift(session);
+      const newSessions = parseFileIntoSessions(text, dummyFile, sessionsList.length);
+      if (newSessions && newSessions.length > 0) {
+        sessionsList.unshift(...newSessions);
         sessionsList.forEach((s, idx) => s.id = idx);
         saveSessionsToCache(sessionsList);
 
@@ -1623,7 +1768,7 @@
         renderSessionsSidebar();
         selectSession(0);
         switchMainView('split');
-        showToast(`Parsed session (${session.events.length} turns) successfully!`, '🚀');
+        showToast(`Parsed ${newSessions.length} session${newSessions.length > 1 ? 's' : ''} successfully!`, '🚀');
       } else {
         showToast('Could not parse valid session events from text.', '⚠️');
       }
@@ -1642,36 +1787,6 @@
           }, 3000);
         }
       });
-    }
-
-    function normalizeEvent(obj, idx) {
-      let role = 'assistant';
-      let content = '';
-      let toolCalls = [];
-
-      if (obj.type === 'USER_INPUT' || obj.role === 'user' || obj.source === 'USER_EXPLICIT') {
-        role = 'user';
-        content = obj.content || obj.text || (obj.message && obj.message.content) || JSON.stringify(obj);
-      } else if (obj.tool_calls || obj.toolCalls || obj.type === 'TOOL_EXECUTION' || obj.toolAction) {
-        role = 'tool';
-        content = obj.content || obj.toolAction || '';
-        toolCalls = obj.tool_calls || obj.toolCalls || [obj];
-      } else {
-        role = 'assistant';
-        content = obj.content || obj.text || (obj.message && obj.message.content) || '';
-        if (obj.tool_calls) {
-          toolCalls = obj.tool_calls;
-        }
-      }
-
-      return {
-        index: idx + 1,
-        role: role,
-        type: obj.type || obj.role || 'EVENT',
-        content: typeof content === 'string' ? content : JSON.stringify(content, null, 2),
-        toolCalls: toolCalls,
-        timestamp: obj.timestamp || obj.created_at || ''
-      };
     }
 
     function exportMarkdownSummary() {
@@ -1708,19 +1823,19 @@
       ].join('\n');
 
       const sample2 = [
-        `{"type":"USER_INPUT","content":"Implement OAuth2 PKCE login flow and secure JWT token refresh rotation with Redis."}`,
-        `{"type":"PLANNER_RESPONSE","content":"I will set up the PKCE code challenge generation in AuthService.ts and store hashed refresh tokens in Redis."}`,
-        `{"type":"TOOL_EXECUTION","toolAction":"Search authentication middlewares","CommandLine":"find ./src/auth -name '*.ts'"}`,
-        `{"type":"PLANNER_RESPONSE","content":"Generated token rotation middleware. Old refresh tokens are invalidated immediately upon replay."}`,
-        `{"type":"TOOL_EXECUTION","toolAction":"Run OAuth2 test suite","CommandLine":"npm test -- auth.test.ts"}`,
-        `{"type":"PLANNER_RESPONSE","content":"All auth integration tests passed! Token refresh rotation is active."}`
+        `{"role":"user","content":"Implement OAuth2 PKCE login flow and secure JWT token refresh rotation with Redis."}`,
+        `{"role":"assistant","content":"I will set up the PKCE code challenge generation in AuthService.ts and store hashed refresh tokens in Redis."}`,
+        `{"role":"tool","toolAction":"Search authentication middlewares","CommandLine":"find ./src/auth -name '*.ts'"}`,
+        `{"role":"assistant","content":"Generated token rotation middleware. Old refresh tokens are invalidated immediately upon replay."}`,
+        `{"role":"tool","toolAction":"Run OAuth2 test suite","CommandLine":"npm test -- auth.test.ts"}`,
+        `{"role":"assistant","content":"All auth integration tests passed! Token refresh rotation is active."}`
       ].join('\n');
 
       const sample3 = [
-        `{"type":"USER_INPUT","content":"Optimize vector search indexing on ClickHouse and benchmark query latency under 10k RPS."}`,
-        `{"type":"PLANNER_RESPONSE","content":"I will configure an HNSW index on the embeddings column and test batch insert throughput."}`,
-        `{"type":"TOOL_EXECUTION","toolAction":"Run benchmark k6 script","CommandLine":"k6 run benchmarks/vector-search.js"}`,
-        `{"type":"PLANNER_RESPONSE","content":"p99 latency dropped from 145ms down to 8.2ms! Vector search is ready for production."}`
+        `{"role":"user","content":"Optimize vector search indexing on ClickHouse and benchmark query latency under 10k RPS."}`,
+        `{"role":"assistant","content":"I will configure an HNSW index on the embeddings column and test batch insert throughput."}`,
+        `{"role":"tool","toolAction":"Run benchmark k6 script","CommandLine":"k6 run benchmarks/vector-search.js"}`,
+        `{"role":"assistant","content":"p99 latency dropped from 145ms down to 8.2ms! Vector search is ready for production."}`
       ].join('\n');
 
       const sample4 = [
@@ -1730,12 +1845,29 @@
         `{"type":"PLANNER_RESPONSE","content":"Generated dynamic SVG-to-PNG social card with brand gradients and automatic title embedding."}`
       ].join('\n');
 
-      const s1 = parseSingleSession(sample1, { name: 'transcript.jsonl', customRelativePath: '.claude/projects/l2cache-mac/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 15 }, 0);
-      const s2 = parseSingleSession(sample2, { name: 'transcript.jsonl', customRelativePath: '.codex/sessions/auth-service/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 3 }, 1);
-      const s3 = parseSingleSession(sample3, { name: 'transcript.jsonl', customRelativePath: '.codex/sessions/analytics-engine/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 24 }, 2);
-      const s4 = parseSingleSession(sample4, { name: 'transcript.jsonl', customRelativePath: '.claude/projects/site-landing/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 48 }, 3);
+      const sample5 = [
+        `{"role":"user","content":"Build an async FastAPI streaming WebSocket handler with Redis pub/sub backplane for real-time notifications."}`,
+        `{"role":"assistant","content":"I will implement the connection manager using redis.asyncio pubsub and broadcaster."}`,
+        `{"role":"tool","toolAction":"Install redis-py async dependencies","CommandLine":"uv add 'redis[hiredis]>=5.0.0'"}`,
+        `{"role":"assistant","content":"Broadcaster active. Successfully load tested 50,000 concurrent streaming WebSocket client connections."}`
+      ].join('\n');
 
-      sessionsList = [s1, s2, s3, s4].filter(Boolean);
+      const sample6 = [
+        `{"type":"USER_INPUT","content":"Build an automatic CoreML model quantization pipeline from PyTorch ONNX exports with 4-bit INT quantization."}`,
+        `{"type":"PLANNER_RESPONSE","content":"I will use coremltools.models.neural_network.quantization_utils to perform INT4 linear post-training quantization."}`,
+        `{"type":"TOOL_EXECUTION","toolAction":"Run model export script","CommandLine":"python3 export_coreml.py --quantize int4"}`,
+        `{"type":"PLANNER_RESPONSE","content":"Model size reduced from 1.4GB to 185MB with 99.4% precision retention on Apple Neural Engine."}`
+      ].join('\n');
+
+      const s1 = parseFileIntoSessions(sample1, { name: 'transcript.jsonl', customRelativePath: '.claude/projects/l2cache-mac/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 15 }, 0);
+      const s2 = parseFileIntoSessions(sample2, { name: 'sessions.jsonl', customRelativePath: '.codex/sessions/auth-service/session.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 3 }, 1);
+      const s3 = parseFileIntoSessions(sample3, { name: 'sessions.jsonl', customRelativePath: '.codex/sessions/analytics-engine/session.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 24 }, 2);
+      const s4 = parseFileIntoSessions(sample4, { name: 'transcript.jsonl', customRelativePath: '.claude/projects/site-landing/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 48 }, 3);
+      const s5 = parseFileIntoSessions(sample5, { name: 'chats.jsonl', customRelativePath: '.codex/sessions/websocket-gateway/chat.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 72 }, 4);
+      const s6 = parseFileIntoSessions(sample6, { name: 'agent-log.jsonl', customRelativePath: '.gemini/antigravity-ide/ml-pipeline/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 96 }, 5);
+
+      sessionsList = [s1, s2, s3, s4, s5, s6].flat().filter(Boolean);
+      sessionsList.forEach((s, idx) => s.id = idx);
       saveSessionsToCache(sessionsList);
 
       document.getElementById('viewer-results').style.display = 'block';
@@ -1744,7 +1876,7 @@
       renderSessionsSidebar();
       selectSession(0);
       switchMainView('tiles');
-      showToast('Loaded 4 sample sessions (Claude Code & OpenAI Codex)! Click any tile to inspect.', '🚀');
+      showToast(`Loaded ${sessionsList.length} sample multi-agent session tiles!`, '🚀');
     }
 
     // Auto-restore cached sessions from IndexedDB on startup
