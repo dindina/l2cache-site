@@ -16,9 +16,9 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --purple: #7F77DD; --purple-dark: #5C52C8;
-      --bg: #0D0C1A; --bg2: #131126; --bg3: #1A1830;
-      --border: rgba(127,119,221,0.18); --text: #F0EFF8;
-      --text-muted: rgba(240,239,248,0.5); --text-dim: rgba(240,239,248,0.28);
+      --bg: #f7f7f5; --bg2: #ffffff; --bg3: #eeeeea;
+      --border: #e4e4e0; --text: #0a0a0a;
+      --text-muted: #555550; --text-dim: #999992;
       --mono: 'DM Mono', monospace; --serif: 'Fraunces', serif; --sans: 'DM Sans', sans-serif;
       --green: #34D399; --blue: #60A5FA; --pink: #F472B6; --amber: #FBBF24;
     }
@@ -99,7 +99,7 @@
       padding: 20px 24px; cursor: pointer;
       transition: background 0.15s;
     }
-    .te-header:hover { background: rgba(127,119,221,0.05); }
+    .te-header:hover { background: var(--bg2); }
     .te-icon { font-size: 20px; width: 36px; height: 36px; border-radius: 9px; background: rgba(127,119,221,0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .te-type { font-size: 15px; font-weight: 600; flex: 1; }
     .te-count { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
@@ -115,7 +115,7 @@
     .te-action {
       display: inline-flex; align-items: center; gap: 6px;
       padding: 5px 12px; border-radius: 7px;
-      background: rgba(127,119,221,0.08); border: 1px solid rgba(127,119,221,0.2);
+      background: var(--bg2); border: 1px solid rgba(127,119,221,0.2);
       font-size: 12px; color: var(--text-muted);
     }
     .te-action.ai { background: rgba(52,211,153,0.07); border-color: rgba(52,211,153,0.2); color: #34D399; }
@@ -656,7 +656,7 @@
 </div>
 
 
-  <div style="margin-top: 32px; padding: 20px; background: rgba(127,119,221,0.08); border: 1px solid var(--border); border-radius: 10px;">
+  <div style="margin-top: 32px; padding: 20px; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;">
     <strong>On-Device AI Architecture:</strong> Learn more about our privacy model in <a href="blog-apple-intelligence-clipboard.html" style="color: var(--purple); font-weight: 600;">Apple Intelligence Clipboard Security</a> and <a href="blog-zero-cloud-mac-desktop-ai.html" style="color: var(--purple); font-weight: 600;">Zero-Cloud Desktop AI on macOS</a>.
   </div>
 

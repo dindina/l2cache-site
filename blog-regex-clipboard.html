@@ -15,9 +15,9 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --purple: #7F77DD; --bg: #0D0C1A; --bg2: #131126; --bg3: #1A1830;
-      --border: rgba(127,119,221,0.18); --text: #F0EFF8;
-      --text-muted: rgba(240,239,248,0.5); --text-dim: rgba(240,239,248,0.28);
+      --purple: #7F77DD; --bg: #f7f7f5; --bg2: #ffffff; --bg3: #eeeeea;
+      --border: #e4e4e0; --text: #0a0a0a;
+      --text-muted: #555550; --text-dim: #999992;
       --mono: 'DM Mono', monospace; --serif: 'Fraunces', serif; --sans: 'DM Sans', sans-serif;
     }
     body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; }
@@ -28,13 +28,13 @@
     h1 { font-family: var(--serif); font-size: 40px; font-weight: 700; line-height: 1.2; margin-bottom: 32px; color: var(--text); }
     h2 { font-family: var(--serif); font-size: 28px; font-weight: 700; margin-top: 48px; margin-bottom: 16px; color: var(--text); }
     h3 { font-family: var(--serif); font-size: 22px; font-weight: 700; margin-top: 32px; margin-bottom: 16px; color: var(--text); }
-    p { font-size: 16px; color: rgba(240,239,248,0.7); margin-bottom: 24px; }
-    ul { margin-bottom: 24px; padding-left: 24px; color: rgba(240,239,248,0.7); }
+    p { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; }
+    ul { margin-bottom: 24px; padding-left: 24px; color: var(--text-muted); }
     li { margin-bottom: 8px; }
-    code { font-family: var(--mono); font-size: 14px; background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; color: #a197fd; }
+    code { font-family: var(--mono); font-size: 14px; background: rgba(0,200,150,0.1); color: #008765; padding: 2px 5px; border-radius: 4px; }
     strong { color: var(--text); font-weight: 600; }
     .blog-image { width: 100%; border-radius: 12px; border: 1px solid var(--border); margin: 32px 0; display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-    .cta-box { background: rgba(127,119,221,0.08); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
+    .cta-box { background: var(--bg2); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
     .cta-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
     .cta-btn { display: inline-block; background: var(--purple); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
     .cta-btn:hover { background: #5C52C8; }
@@ -186,21 +186,21 @@
   <div class="related-articles" style="margin-top: 48px; border-top: 1px solid var(--border); padding-top: 36px; margin-bottom: 48px;">
     <h3 style="font-family: var(--serif); font-size: 22px; font-weight: 700; margin-bottom: 20px; color: var(--text);">Related Engineering Deep Dives</h3>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
-      <a href="blog-sql-test-data.html" style="background: rgba(127,119,221,0.06); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;">
+      <a href="blog-sql-test-data.html" style="background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;">
         <div>
           <div style="font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">AI MOCK DATA</div>
           <div style="font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4;">Generate Realistic Mock JSON from SQL Schemas Using Local AI on Mac</div>
         </div>
         <div style="font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; font-weight: 500;">Read Article →</div>
       </a>
-      <a href="blog-jwt-security.html" style="background: rgba(127,119,221,0.06); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;">
+      <a href="blog-jwt-security.html" style="background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;">
         <div>
           <div style="font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">SECURITY DEEP DIVE</div>
           <div style="font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4;">Stop Leaking Secrets: Why Pasting JWTs into Random Websites is a Nightmare</div>
         </div>
         <div style="font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; font-weight: 500;">Read Article →</div>
       </a>
-      <a href="blog-clipboard-automation-developer-workflows.html" style="background: rgba(127,119,221,0.06); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;">
+      <a href="blog-clipboard-automation-developer-workflows.html" style="background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;">
         <div>
           <div style="font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">DEVELOPER WORKFLOWS</div>
           <div style="font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4;">From Clipboard to API: 4 Developer Workflows You Can Automate on Mac</div>

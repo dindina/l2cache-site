@@ -15,9 +15,9 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --purple: #7F77DD; --bg: #0D0C1A; --bg2: #131126; --bg3: #1A1830;
-      --border: rgba(127,119,221,0.18); --text: #F0EFF8;
-      --text-muted: rgba(240,239,248,0.7); --text-dim: rgba(240,239,248,0.42);
+      --purple: #7F77DD; --bg: #f7f7f5; --bg2: #ffffff; --bg3: #eeeeea;
+      --border: #e4e4e0; --text: #0a0a0a;
+      --text-muted: #555550; --text-dim: #999992;
       --mono: 'DM Mono', monospace; --serif: 'Fraunces', serif; --sans: 'DM Sans', sans-serif;
     }
     body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; }
@@ -33,11 +33,11 @@
     li { margin-bottom: 9px; }
     a { color: #a197fd; }
     strong { color: var(--text); font-weight: 600; }
-    code { font-family: var(--mono); font-size: 14px; color: #b2aaff; }
-    pre { background: rgba(255,255,255,0.05); padding: 18px; border-radius: 8px; overflow-x: auto; margin-bottom: 18px; border: 1px solid var(--border); }
-    pre code { color: var(--text); }
+    code { font-family: var(--mono); font-size: 14px; background: rgba(0,200,150,0.1); color: #008765; padding: 2px 5px; border-radius: 4px; }
+    pre { background: #0D0C1A; padding: 18px; border-radius: 10px; overflow-x: auto; margin-bottom: 24px; border: 1px solid var(--border); }
+    pre code { background: transparent; color: #e0ffe8; padding: 0; }
     .byline { color: var(--text-dim); font-size: 14px; margin-bottom: 34px; }
-    .answer-box, .note-box { background: rgba(127,119,221,0.08); border-left: 3px solid var(--purple); padding: 22px; margin: 28px 0; border-radius: 0 8px 8px 0; }
+    .answer-box, .note-box { background: var(--bg2); border-left: 3px solid var(--purple); padding: 22px; margin: 28px 0; border-radius: 0 8px 8px 0; }
     .answer-box p:last-child, .note-box p:last-child { margin-bottom: 0; }
     .flow { font-family: var(--mono); font-size: 14px; text-align: center; color: var(--text); background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin: 28px 0; overflow-x: auto; }
     .workflow { border-top: 1px solid var(--border); margin-top: 52px; padding-top: 4px; }
@@ -47,7 +47,7 @@
     th { background: rgba(127,119,221,0.12); color: var(--text); }
     td { color: var(--text-muted); }
     .faq h3 { margin-top: 28px; }
-    .cta-box { background: rgba(127,119,221,0.08); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
+    .cta-box { background: var(--bg2); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
     .cta-box h2 { font-family: var(--sans); font-size: 21px; margin: 0 0 14px; }
     .cta-btn { display: inline-block; background: var(--purple); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; }
     .cta-btn:hover { background: #5C52C8; }
@@ -274,21 +274,21 @@ curl \
   <div class="related-articles" style="margin-top: 48px; border-top: 1px solid var(--border); padding-top: 36px; margin-bottom: 48px;">
     <h3 style="font-family: var(--serif); font-size: 22px; font-weight: 700; margin-bottom: 20px; color: var(--text);">Related Engineering Deep Dives</h3>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
-      <a href="blog-agent-history-analytics.html" style="background: rgba(127,119,221,0.06); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;">
+      <a href="blog-agent-history-analytics.html" style="background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;">
         <div>
           <div style="font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">AI WORKFLOWS</div>
           <div style="font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4;">Tracking Claude Code & Codex Sessions: How AI Agent History Supercharges macOS Development</div>
         </div>
         <div style="font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; font-weight: 500;">Read Article →</div>
       </a>
-      <a href="blog-regex-clipboard.html" style="background: rgba(127,119,221,0.06); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;">
+      <a href="blog-regex-clipboard.html" style="background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;">
         <div>
           <div style="font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">REGEX MATCHING</div>
           <div style="font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4;">Why Your Mac Clipboard Needs 'grep': A Built-in Regex Matcher</div>
         </div>
         <div style="font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; font-weight: 500;">Read Article →</div>
       </a>
-      <a href="blog-sql-test-data.html" style="background: rgba(127,119,221,0.06); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;">
+      <a href="blog-sql-test-data.html" style="background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;">
         <div>
           <div style="font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">AI MOCK DATA</div>
           <div style="font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4;">Generate Realistic Mock JSON from SQL Schemas Using Local AI on Mac</div>
