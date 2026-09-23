@@ -35,6 +35,7 @@ PUBLIC_PAGES = [
     "blog-developer-workflow-apple-intelligence.html",
     "blog-zero-cloud-mac-desktop-ai.html",
     "blog-agent-history-analytics.html",
+    "blog-screenshot-ocr-search.html",
 ]
 
 # Comparison pages are generated (generate_comparisons.py) and can grow over
