@@ -17,7 +17,24 @@ Both Claude Code and Codex record transcripts locally on your machine:
 - **Claude Code:** Stored in `~/.claude/projects/<project>/transcript.jsonl`
 - **OpenAI Codex:** Stored in `~/.codex/sessions/YYYY/MM/DD/rollout-*.jsonl`
 
-However, these files are massive, multi-megabyte raw JSON Lines (JSONL) blobs filled with tool envelopes, heartbeat telemetry, and token metrics. Opening a 25MB `.jsonl` file in VS Code or Vim will lag your editor and make finding a specific turn nearly impossible.
+---
+
+## 💻 The Built-in CLI Options (And Where They Fall Short)
+
+Both tools provide built-in terminal flags to resume past work:
+
+### 1. Claude Code
+- **Interactive Picker:** `claude --resume` (or `claude -r`) lists recent sessions in your current directory.
+- **Direct Resume:** `claude --resume <session-id>` jumps directly into a specific conversation.
+
+### 2. OpenAI Codex
+- **Resume Command:** `codex resume <session-id>` or `codex --resume` picks up where you left off.
+
+### ⚠️ Why the Default CLI Flags Fall Short:
+While `--resume` is great if you just closed a terminal 5 minutes ago, it struggles as your history grows:
+1. **No Full-Text Search Across Turns:** You only get truncated single-line summaries. You cannot search: *"Which session had that Docker compose volume fix?"* or *"What was the exact curl command we used yesterday?"*.
+2. **Siloed by Directory:** `claude --resume` only shows sessions for the current folder. If you worked across 6 microservices or multiple branches, finding a past solution means `cd`-ing into every folder.
+3. **Massive JSONL Files:** Opening the raw 25MB `.jsonl` transcript in VS Code or Vim will lag your editor and makes reading nested tool envelopes nearly impossible.
 
 ---
 
