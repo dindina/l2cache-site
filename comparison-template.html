@@ -92,26 +92,11 @@
     }
 
     /* ── Sticky Offline Challenge Bar ── */
-    #offline-challenge-bar {
-      position: sticky; top: 0; z-index: 999;
-      background: #ffffff; border-bottom: 1px solid var(--border);
-      padding: 10px 24px;
-      display: flex; align-items: center; justify-content: space-between; gap: 16px;
-      font-size: 13px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-    }
     .challenge-left { display: flex; align-items: center; gap: 12px; }
     .challenge-icon { font-size: 20px; }
     .challenge-title { font-weight: 700; color: #0a0a0a; }
     .challenge-title em { font-style: normal; color: var(--purple-dark); font-weight: 800; }
     .challenge-sub { color: var(--text-muted); font-size: 12px; }
-    #offline-toggle-btn {
-      background: #f0f0ec; border: 1px solid var(--border);
-      color: #0a0a0a; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700;
-      cursor: pointer; display: flex; align-items: center; gap: 6px;
-      transition: all 0.2s;
-    }
-    #offline-toggle-btn:hover { background: var(--purple); color: #002e21; border-color: var(--purple); }
 
     /* ── Navigation ── */
     nav {
@@ -445,18 +430,10 @@
 <body>
 
   <!-- Sticky Offline Challenge Bar -->
-  <div id="offline-challenge-bar">
-    <div class="challenge-left">
-      <span class="challenge-icon">✈️</span>
-      <div class="challenge-text">
-        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
-        <div class="challenge-sub">100% on-device privacy guarantee. No cloud telemetry.</div>
+<div class="challenge-sub">100% on-device privacy guarantee. No cloud telemetry.</div>
       </div>
     </div>
-    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
-      <span id="btn-icon">✈️</span>
-      <span id="btn-label">Airplane Mode Challenge</span>
-    </button>
+    
   </div>
 
   <!-- Nav -->

@@ -81,6 +81,7 @@ nav {
   text-decoration: none; transition: background 0.2s, transform 0.2s;
 }
 .nav-cta:hover { background: #222; transform: translateY(-1px); }
+.nav-mobile-cta { display: none; }
 
 /* ── Sticky Offline Challenge Bar ── */
 #offline-challenge-bar {

@@ -11,15 +11,15 @@
   <link rel="apple-touch-icon" href="icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --purple: #7F77DD; --purple-dark: #5C52C8;
+      --purple: #00C896; --purple-dark: #00a87f;
       --bg: #f7f7f5; --bg2: #ffffff; --bg3: #eeeeea;
       --border: #e4e4e0; --text: #0a0a0a;
       --text-muted: #555550; --text-dim: #999992;
-      --mono: 'DM Mono', monospace; --serif: 'Fraunces', serif; --sans: 'DM Sans', sans-serif;
+      --mono: 'DM Mono', monospace; --serif: "Playfair Display", serif; --sans: 'DM Sans', sans-serif;
       --green: #34D399; --blue: #60A5FA; --pink: #F472B6; --amber: #FBBF24;
     }
     html { scroll-behavior: smooth; }
@@ -39,7 +39,7 @@
 
     /* HERO */
     .hero {
-      padding: 160px 48px 80px;
+      padding: 110px 48px 56px;
       max-width: 900px; margin: 0 auto;
       text-align: center;
     }
@@ -67,7 +67,7 @@
     }
 
     /* SECTIONS */
-    .section { max-width: 1100px; margin: 0 auto; padding: 80px 24px; }
+    .section { max-width: 1100px; margin: 0 auto; padding: 52px 24px; }
     .section-label { font-family: var(--mono); font-size: 12px; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
     .section-title { font-family: var(--serif); font-size: clamp(28px, 4vw, 48px); font-weight: 700; line-height: 1.1; margin-bottom: 16px; }
     .section-sub { font-size: 17px; color: var(--text-muted); max-width: 540px; margin-bottom: 56px; line-height: 1.65; }
@@ -150,7 +150,7 @@
     .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
 
     /* CTA */
-    .cta-section { text-align: center; padding: 80px 24px; }
+    .cta-section { text-align: center; padding: 48px 24px 64px; }
     .btn-primary {
       display: inline-flex; align-items: center; gap: 10px;
       background: var(--purple); color: white;
@@ -202,7 +202,16 @@
     <img src="icon.png" width="34" height="34" alt="L2Cache" style="border-radius:8px"/>
     L2Cache
   </a>
-  <a href="index.html" class="nav-back">← Back</a>
+  <ul class="nav-links">
+    <li><a href="index.html#who">Who it's for</a></li>
+    <li><a href="index.html#features">Features</a></li>
+    <li><a href="intelligence.html">Intelligence</a></li>
+    <li><a href="index.html#pricing">Pricing</a></li>
+    <li><a href="blog.html">Blog</a></li>
+    <li><a href="support.html">Support</a></li>
+  </ul>
+  <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta" target="_blank" rel="noopener">Download L2Cache</a>
+  <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-mobile-cta" target="_blank" rel="noopener">Download</a>
 </nav>
 
 <!-- HERO -->
@@ -289,7 +298,8 @@
 <hr class="divider"/>
 
 <!-- SMART TRANSFORM EXAMPLES -->
-<section class="section">
+<section class="section" style="display:flex; gap:64px; align-items:flex-start; max-width:1200px; margin:0 auto; padding:52px 40px;">
+  <div style="flex:1; min-width:0;">
   <div class="reveal">
     <div class="section-label">Smart Transform</div>
     <h2 class="section-title">The right action,<br/>every time</h2>
@@ -491,7 +501,19 @@
       </div>
     </div>
 
+  </div><!-- end left col -->
+  </div><!-- end flex left -->
+
+  <!-- right col: GIF demo -->
+  <div style="flex:0 0 420px; position:sticky; top:96px;">
+    <div style="border-radius:14px; overflow:hidden; box-shadow:0 20px 56px rgba(0,0,0,0.15); border:1px solid var(--border);">
+      <img src="screenshots/l2cache-smart-connections.gif" alt="Smart Transform in action" style="width:100%; display:block;"/>
+    </div>
+    <div style="border-radius:14px; overflow:hidden; box-shadow:0 20px 56px rgba(0,0,0,0.12); border:1px solid var(--border); margin-top:16px;">
+      <img src="screenshots/l2cache-jwt.gif" alt="JWT decode and JSON format" style="width:100%; display:block;"/>
+    </div>
   </div>
+
 </section>
 
 <hr class="divider"/>
@@ -656,17 +678,16 @@
 </div>
 
 
-  <div style="margin-top: 32px; padding: 20px; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;">
-    <strong>On-Device AI Architecture:</strong> Learn more about our privacy model in <a href="blog-apple-intelligence-clipboard.html" style="color: var(--purple); font-weight: 600;">Apple Intelligence Clipboard Security</a> and <a href="blog-zero-cloud-mac-desktop-ai.html" style="color: var(--purple); font-weight: 600;">Zero-Cloud Desktop AI on macOS</a>.
-  </div>
-
 <footer>
-  <a href="index.html">Home</a>
-  <a href="support.html">Support</a>
-  <a href="blog.html">Blog</a>
-  <a href="privacy.html">Privacy Policy</a>
-  <br/><br/>
-  © 2026 Amvotech
+  <div class="footer-wrap">
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="support.html">Support</a>
+      <a href="blog.html">Blog</a>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+    <div class="footer-copy">© 2026 Amvotech</div>
+  </div>
 </footer>
 
 <script>

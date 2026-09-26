@@ -181,63 +181,6 @@
       color: var(--text-muted);
       margin-bottom: 16px;
     }
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px 48px;
-      background: rgba(13, 12, 26, 0.8);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .nav-logo {
-      font-family: var(--mono);
-      font-size: 17px;
-      font-weight: 500;
-      color: var(--text);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-      list-style: none;
-    }
-
-    .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 14px;
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover {
-      color: var(--text);
-    }
-
-    .nav-cta {
-      background: var(--purple);
-      color: white !important;
-      padding: 8px 20px;
-      border-radius: 8px;
-      font-size: 14px !important;
-      font-weight: 500;
-      transition: background 0.2s !important;
-    }
-
-    .nav-cta:hover {
-      background: var(--purple-dark) !important;
-    }
 
     /* ── FOOTER ── */
     footer {
@@ -503,23 +446,21 @@
 
   <!-- NAV -->
   <nav>
-    <a href="index.html" class="nav-logo">
-      <img src="icon.png" width="34" height="34" alt="L2Cache" style="border-radius:8px" />
-      L2Cache
-    </a>
-    <ul class="nav-links">
-      <li><a href="index.html#who">Who it's for</a></li>
-      <li><a href="index.html#features">Features</a></li>
-      <li><a href="intelligence.html">Intelligence</a></li>
-      <li><a href="index.html#pricing">Pricing</a></li>
-      <li><a href="blog.html">Blog</a></li>
+  <a href="index.html" class="nav-logo">
+    <img src="icon.png" width="34" height="34" alt="L2Cache" style="border-radius:8px"/>
+    L2Cache
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#who">Who it's for</a></li>
+    <li><a href="index.html#features">Features</a></li>
+    <li><a href="intelligence.html">Intelligence</a></li>
+    <li><a href="index.html#pricing">Pricing</a></li>
+    <li><a href="blog.html">Blog</a></li>
     <li><a href="support.html">Support</a></li>
-      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta" target="_blank"
-          rel="noopener">Download L2Cache</a></li>
-    </ul>
-    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-mobile-cta" target="_blank"
-      rel="noopener">Download</a>
-  </nav>
+  </ul>
+  <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta" target="_blank" rel="noopener">Download L2Cache</a>
+  <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-mobile-cta" target="_blank" rel="noopener">Download</a>
+</nav>
 
   <article class="article-wrap">
     <div class="eyebrow">Power User Tools</div>

@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" href="icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 
   <!-- SEO: SoftwareApplication schema -->
   <script type="application/ld+json">
@@ -180,7 +180,7 @@
       align-items: center;
       max-width: 1540px;
       margin: 0 auto;
-      padding: 48px 36px;
+      padding: 96px 36px 48px;
       position: relative;
       gap: 40px;
     }
@@ -874,6 +874,17 @@
     }
     #lightbox-close:hover { background: rgba(255,255,255,0.22); }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .hero-demo-wrap {
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .hero-demo-gif {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
     .hero-shots-track img { cursor: zoom-in; }
 
     /* ── HERO SCREENSHOT CAROUSEL ── */
@@ -1125,6 +1136,36 @@
   <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-mobile-cta" target="_blank" rel="noopener">Download</a>
 </nav>
 
+<!-- HERO -->
+<section class="hero">
+
+  <!-- left: headline + actions -->
+  <div class="hero-text">
+    <h1>The Smart Clipboard<br/>for <em>Developers</em></h1>
+
+    <p class="hero-sub">Don't just store code. Format JSON, decode JWTs, run OCR on stack traces, and link context—automatically.</p>
+
+    <div class="hero-actions">
+      <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="btn-primary" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12l2 2 4-4"/></svg>
+        Download for Mac
+      </a>
+      <a href="#features" class="btn-secondary">See features</a>
+    </div>
+
+  </div>
+
+  <!-- right: hero demo -->
+  <div class="hero-visual">
+    <div class="hero-demo-wrap">
+      <video autoplay loop muted playsinline class="hero-demo-gif">
+        <source src="screenshots/hero-demo.m4v" type="video/mp4">
+      </video>
+    </div>
+  </div>
+
+</section>
+
 <!-- STATS STRIP -->
 <div class="privacy-strip">
   <div class="privacy-inner">
@@ -1158,60 +1199,6 @@
     </div>
   </div>
 </div>
-
-<!-- HERO -->
-<section class="hero">
-
-  <!-- left: headline + actions -->
-  <div class="hero-text">
-    <h1>The Smart Clipboard<br/>for <em>Developers</em></h1>
-
-    <p class="hero-sub">Don't just store code. Format JSON, decode JWTs, run OCR on stack traces, and link context—automatically.</p>
-
-    <div class="hero-actions">
-      <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="btn-primary" target="_blank" rel="noopener">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12l2 2 4-4"/></svg>
-        Download for Mac
-      </a>
-      <a href="#features" class="btn-secondary">See features</a>
-    </div>
-
-    <p class="price-tag">$4.99 one-time purchase · Pay once, own forever · All updates included</p>
-  </div>
-
-  <!-- right: screenshot carousel -->
-  <div class="hero-visual">
-    <div class="hero-shots-wrap">
-      <div class="hero-shots">
-        <div class="hero-shots-track" id="heroTrack">
-          <img src="screenshots/screenshot-1-history.png" alt="Clipboard History — L2Cache"/>
-          <img src="screenshots/screenshot-10-terminal-history.png" alt="Terminal History — L2Cache"/>
-          <img src="screenshots/screenshot-2-search.png" alt="Instant Search — L2Cache"/>
-          <img src="screenshots/screenshot-3-ai-titles.png" alt="AI Titles — L2Cache"/>
-          <img src="screenshots/screenshot-4-transform.png" alt="Smart Transform — L2Cache"/>
-          <img src="screenshots/screenshot-5-developer.png" alt="Developer Tools — L2Cache"/>
-          <img src="screenshots/screenshot-6-smart-albums.png" alt="Smart Albums — L2Cache"/>
-          <img src="screenshots/screenshot-7-local-ai.png" alt="Local AI — L2Cache"/>
-          <img src="screenshots/screenshot-8-spotlight.png" alt="Spotlight Search — L2Cache"/>
-          <img src="screenshots/screenshot-9-qrcode.png" alt="QR Code — L2Cache"/>
-        </div>
-      </div>
-      <div class="hero-shots-dots">
-        <button class="hero-dot active" aria-label="Screenshot 1"></button>
-        <button class="hero-dot" aria-label="Screenshot 2"></button>
-        <button class="hero-dot" aria-label="Screenshot 3"></button>
-        <button class="hero-dot" aria-label="Screenshot 4"></button>
-        <button class="hero-dot" aria-label="Screenshot 5"></button>
-        <button class="hero-dot" aria-label="Screenshot 6"></button>
-        <button class="hero-dot" aria-label="Screenshot 7"></button>
-        <button class="hero-dot" aria-label="Screenshot 8"></button>
-        <button class="hero-dot" aria-label="Screenshot 9"></button>
-        <button class="hero-dot" aria-label="Screenshot 10"></button>
-      </div>
-    </div>
-  </div>
-
-</section>
 
 <!-- DEVELOPER TOOLS -->
 <section class="split-scroll-section" id="developers">
@@ -1247,6 +1234,14 @@
         <p style="color:var(--text-muted);font-size:14px;line-height:1.6;margin-bottom:20px;">L2Cache detects terminal output and automatically extracts the root command (like docker, git, or npm) to tag your clips, making it easy to filter, find, and replay your past commands.</p>
       </div>
       <img src="screenshots/terminal-history.gif" alt="Terminal Command History" style="width:100%; display:block; border-top:1px solid var(--border);"/>
+    </div>
+
+    <div class="feature-card reveal" style="padding:0; overflow:hidden;">
+      <div style="padding:28px 28px 0;">
+        <h3 style="color:var(--text);font-size:19px;font-weight:600;margin-bottom:10px;">AI Agent Session History</h3>
+        <p style="color:var(--text-muted);font-size:14px;line-height:1.6;margin-bottom:20px;">Every Claude Code and Codex CLI session is captured in your clipboard history — prompts, responses, token usage, and cache hit rates. Review, search, and replay your AI coding sessions without leaving your workflow.</p>
+      </div>
+      <img src="screenshots/coding-session-history.gif" alt="AI coding agent session history in L2Cache" style="width:100%; display:block; border-top:1px solid var(--border);"/>
     </div>
 
     <div class="feature-card reveal" style="padding:0; overflow:hidden;">
@@ -1512,82 +1507,6 @@
 </div>
 
 <script>
-  // Hero screenshot carousel — swipe + drag
-  (function() {
-    const track = document.getElementById('heroTrack');
-    const wrap  = track.parentElement; // .hero-shots
-    const dots  = document.querySelectorAll('.hero-dot');
-    const TOTAL = 10, THRESHOLD = 50;
-    let cur = 0, timer, startX = 0, moved = 0, dragging = false;
-
-    function go(n) {
-      cur = (n + TOTAL) % TOTAL;
-      track.style.transition = 'transform 0.55s cubic-bezier(0.4,0,0.2,1)';
-      track.style.transform  = 'translateX(-' + (cur * 100) + '%)';
-      dots.forEach(function(d, i) { d.classList.toggle('active', i === cur); });
-    }
-
-    function resetTimer() {
-      clearInterval(timer);
-      timer = setInterval(function() { go(cur + 1); }, 4500);
-    }
-
-    dots.forEach(function(d, i) {
-      d.addEventListener('click', function() { go(i); resetTimer(); });
-    });
-
-    // ── touch ──
-    wrap.addEventListener('touchstart', function(e) {
-      startX = e.touches[0].clientX;
-      moved = 0;
-      clearInterval(timer);
-    }, { passive: true });
-
-    wrap.addEventListener('touchmove', function(e) {
-      moved = e.touches[0].clientX - startX;
-      track.style.transition = 'none';
-      track.style.transform  = 'translateX(calc(-' + (cur * 100) + '% + ' + moved + 'px))';
-    }, { passive: true });
-
-    wrap.addEventListener('touchend', function() {
-      go(Math.abs(moved) > THRESHOLD ? (moved < 0 ? cur + 1 : cur - 1) : cur);
-      resetTimer();
-    });
-
-    // ── mouse drag ──
-    wrap.addEventListener('mousedown', function(e) {
-      dragging = true; startX = e.clientX; moved = 0;
-      track.style.transition = 'none';
-      wrap.classList.add('grabbing');
-      clearInterval(timer);
-      e.preventDefault();
-    });
-
-    window.addEventListener('mousemove', function(e) {
-      if (!dragging) return;
-      moved = e.clientX - startX;
-      track.style.transform = 'translateX(calc(-' + (cur * 100) + '% + ' + moved + 'px))';
-    });
-
-    function endDrag() {
-      if (!dragging) return;
-      dragging = false;
-      wrap.classList.remove('grabbing');
-      go(Math.abs(moved) > THRESHOLD ? (moved < 0 ? cur + 1 : cur - 1) : cur);
-      resetTimer();
-    }
-
-    window.addEventListener('mouseup', endDrag);
-    window.addEventListener('mouseleave', endDrag);
-
-    // prevent native image drag interfering
-    track.querySelectorAll('img').forEach(function(img) {
-      img.addEventListener('dragstart', function(e) { e.preventDefault(); });
-    });
-
-    resetTimer();
-  })();
-
   // Lightbox — tap/click a screenshot to zoom (ignores drags)
   (function() {
     const lb    = document.getElementById('lightbox');
