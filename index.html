@@ -6,7 +6,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>L2Cache — Clipboard Manager & History for Mac</title>
-  <meta name="description" content="Clipboard manager for Mac that saves your full clipboard history — search everything you've ever copied. Private, on-device AI. $4.99 one-time purchase."/>
+  <meta name="description" content="Mac clipboard manager for developers. Search clipboard history, decode JWTs offline, run regex grep, generate SQL test data — on-device Apple Intelligence. $4.99 one-time."/>
   <link rel="icon" type="image/png" href="icon.png"/>
   <link rel="apple-touch-icon" href="icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -34,7 +34,46 @@
     },
     "publisher": {
       "@type": "Organization",
-      "name": "Amvo"
+      "name": "Amvotech",
+      "@id": "https://l2cache.amvo.store/#org"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "reviewCount": "50",
+      "bestRating": "5",
+      "worstRating": "1"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://l2cache.amvo.store/#org",
+    "name": "Amvotech",
+    "url": "https://l2cache.amvo.store",
+    "logo": "https://l2cache.amvo.store/icon.png",
+    "sameAs": [
+      "https://apps.apple.com/us/app/l2cache/id6774423992"
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    "name": "L2Cache — Smart Clipboard Manager for Mac Developers",
+    "description": "See L2Cache in action: clipboard history, JWT decoding, regex search, SQL mock data generation, and AI-powered content detection — all on-device.",
+    "thumbnailUrl": "https://l2cache.amvo.store/screenshots/hero-poster.jpg",
+    "uploadDate": "2026-09-26",
+    "duration": "PT30S",
+    "contentUrl": "https://l2cache.amvo.store/screenshots/hero-demo-web.mp4",
+    "publisher": {
+      "@type": "Organization",
+      "@id": "https://l2cache.amvo.store/#org"
     }
   }
   </script>
@@ -1158,8 +1197,8 @@
   <!-- right: hero demo -->
   <div class="hero-visual">
     <div class="hero-demo-wrap">
-      <video autoplay loop muted playsinline class="hero-demo-gif">
-        <source src="screenshots/hero-demo.m4v" type="video/mp4">
+      <video autoplay loop muted playsinline class="hero-demo-gif" poster="screenshots/hero-poster.jpg">
+        <source src="screenshots/hero-demo-web.mp4" type="video/mp4">
       </video>
     </div>
   </div>
@@ -1217,7 +1256,7 @@
         <h3 style="color:var(--text);font-size:19px;font-weight:600;margin-bottom:10px;">Decode JWTs & Format JSON</h3>
         <p style="color:var(--text-muted);font-size:14px;line-height:1.6;margin-bottom:20px;">Click any raw JWT or minified JSON to instantly decode and format it on-device. No more pasting into random browser tabs.</p>
       </div>
-      <img src="screenshots/l2cache-jwt.gif" alt="Format JSON and Decode JWT" style="width:100%; display:block; border-top:1px solid var(--border);"/>
+      <video autoplay loop muted playsinline style="width:100%; display:block; border-top:1px solid var(--border);" aria-label="Format JSON and Decode JWT"><source src="screenshots/l2cache-jwt.mp4" type="video/mp4"></video>
     </div>
 
     <div class="feature-card reveal" style="padding:0; overflow:hidden;">
@@ -1225,7 +1264,7 @@
         <h3 style="color:var(--text);font-size:19px;font-weight:600;margin-bottom:10px;">OCR for Stack Traces</h3>
         <p style="color:var(--text-muted);font-size:14px;line-height:1.6;margin-bottom:20px;">Someone sent a screenshot of an error? Copy it. L2Cache extracts the text instantly using Apple's Vision framework.</p>
       </div>
-      <img src="screenshots/l2cache-ocr.gif" alt="Extract text from screenshot OCR" style="width:100%; display:block; border-top:1px solid var(--border);"/>
+      <video autoplay loop muted playsinline style="width:100%; display:block; border-top:1px solid var(--border);" aria-label="Extract text from screenshot OCR"><source src="screenshots/l2cache-ocr.mp4" type="video/mp4"></video>
     </div>
 
     <div class="feature-card reveal" style="padding:0; overflow:hidden;">
@@ -1233,7 +1272,7 @@
         <h3 style="color:var(--text);font-size:19px;font-weight:600;margin-bottom:10px;">Terminal History</h3>
         <p style="color:var(--text-muted);font-size:14px;line-height:1.6;margin-bottom:20px;">L2Cache detects terminal output and automatically extracts the root command (like docker, git, or npm) to tag your clips, making it easy to filter, find, and replay your past commands.</p>
       </div>
-      <img src="screenshots/terminal-history.gif" alt="Terminal Command History" style="width:100%; display:block; border-top:1px solid var(--border);"/>
+      <video autoplay loop muted playsinline style="width:100%; display:block; border-top:1px solid var(--border);" aria-label="Terminal Command History"><source src="screenshots/terminal-history.mp4" type="video/mp4"></video>
     </div>
 
     <div class="feature-card reveal" style="padding:0; overflow:hidden;">
@@ -1241,7 +1280,7 @@
         <h3 style="color:var(--text);font-size:19px;font-weight:600;margin-bottom:10px;">AI Agent Session History</h3>
         <p style="color:var(--text-muted);font-size:14px;line-height:1.6;margin-bottom:20px;">Every Claude Code and Codex CLI session is captured in your clipboard history — prompts, responses, token usage, and cache hit rates. Review, search, and replay your AI coding sessions without leaving your workflow.</p>
       </div>
-      <img src="screenshots/coding-session-history.gif" alt="AI coding agent session history in L2Cache" style="width:100%; display:block; border-top:1px solid var(--border);"/>
+      <video autoplay loop muted playsinline style="width:100%; display:block; border-top:1px solid var(--border);" aria-label="AI coding agent session history in L2Cache"><source src="screenshots/coding-session-history.mp4" type="video/mp4"></video>
     </div>
 
     <div class="feature-card reveal" style="padding:0; overflow:hidden;">
@@ -1249,7 +1288,7 @@
         <h3 style="color:var(--text);font-size:19px;font-weight:600;margin-bottom:10px;">AI Data Generation</h3>
         <p style="color:var(--text-muted);font-size:14px;line-height:1.6;margin-bottom:20px;">Select a SQL schema or Swift struct and run an AI prompt directly inside the clipboard to generate mock data instantly.</p>
       </div>
-      <img src="screenshots/l2cache-sql-smart.gif" alt="AI SQL Data Generation" style="width:100%; display:block; border-top:1px solid var(--border);"/>
+      <video autoplay loop muted playsinline style="width:100%; display:block; border-top:1px solid var(--border);" aria-label="AI SQL Data Generation"><source src="screenshots/l2cache-sql-smart.mp4" type="video/mp4"></video>
     </div>
     <div class="feature-card reveal" style="padding:0; overflow:hidden;">
       <div style="padding:28px 28px 0;">
@@ -1259,7 +1298,7 @@
         </div>
         <p style="color:var(--text-muted);font-size:14px;line-height:1.6;margin-bottom:20px;">L2Cache lets you create custom actions in Bash or Ruby. Target actions dynamically based on content types like SQL, Docker, YAML, or GraphQL. Format, fetch, or filter copied text entirely on-device.</p>
       </div>
-      <img src="screenshots/custom-smart-actions.gif" alt="L2Cache Custom Actions Shell Script Editor" style="width:100%; display:block; border-top:1px solid var(--border);"/>
+      <video autoplay loop muted playsinline style="width:100%; display:block; border-top:1px solid var(--border);" aria-label="L2Cache Custom Actions Shell Script Editor"><source src="screenshots/custom-smart-actions.mp4" type="video/mp4"></video>
     </div>
   </div>
 </section>
@@ -1485,6 +1524,52 @@
 </section>
 
 
+<!-- FAQ: visible HTML so Google can extract for AI Overviews and PAA -->
+<section style="max-width:760px;margin:0 auto;padding:64px 24px 80px;">
+  <div class="label reveal" style="text-align:center;margin-bottom:12px;">FAQ</div>
+  <h2 style="font-family:var(--serif);font-size:36px;font-weight:800;text-align:center;margin-bottom:48px;line-height:1.1;" class="reveal">Common Questions</h2>
+
+  <details style="border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;" class="reveal">
+    <summary style="padding:20px 24px;cursor:pointer;font-weight:600;font-size:16px;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+      How much does L2Cache cost?
+      <span style="font-size:20px;color:var(--purple);">+</span>
+    </summary>
+    <div style="padding:0 24px 20px;color:var(--text-muted);line-height:1.7;">
+      L2Cache is a <strong>$4.99 one-time purchase</strong> with lifetime access. Pay once, own forever — all future updates are included with no recurring subscriptions.
+    </div>
+  </details>
+
+  <details style="border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;" class="reveal">
+    <summary style="padding:20px 24px;cursor:pointer;font-weight:600;font-size:16px;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+      Does L2Cache keep my clipboard history private?
+      <span style="font-size:20px;color:var(--purple);">+</span>
+    </summary>
+    <div style="padding:0 24px 20px;color:var(--text-muted);line-height:1.7;">
+      Yes. L2Cache stores your clipboard history <strong>locally on your Mac</strong> and its AI runs entirely on-device using Apple Intelligence. No clipboard content is ever sent to any server.
+    </div>
+  </details>
+
+  <details style="border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;" class="reveal">
+    <summary style="padding:20px 24px;cursor:pointer;font-weight:600;font-size:16px;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+      What Macs does L2Cache work on?
+      <span style="font-size:20px;color:var(--purple);">+</span>
+    </summary>
+    <div style="padding:0 24px 20px;color:var(--text-muted);line-height:1.7;">
+      L2Cache runs on <strong>macOS 13 Ventura or later</strong>. Core clipboard history and search work on any supported Mac; the on-device AI features (smart titles, Smart Transform) require macOS 15.1+ on Apple Silicon.
+    </div>
+  </details>
+
+  <details style="border:1px solid var(--border);border-radius:12px;overflow:hidden;" class="reveal">
+    <summary style="padding:20px 24px;cursor:pointer;font-weight:600;font-size:16px;list-style:none;display:flex;justify-content:space-between;align-items:center;">
+      How is L2Cache different from the built-in macOS clipboard?
+      <span style="font-size:20px;color:var(--purple);">+</span>
+    </summary>
+    <div style="padding:0 24px 20px;color:var(--text-muted);line-height:1.7;">
+      macOS only keeps the last copied item. L2Cache keeps <strong>unlimited history</strong> with full-text search, OCR search inside screenshots, smart albums, regex grep, JWT/JSON decoding, SQL data generation, custom scripts — and works back to macOS 13.
+    </div>
+  </details>
+</section>
+
 <!-- FOOTER -->
 <footer>
       <ul class="footer-links">
@@ -1503,7 +1588,7 @@
 <!-- LIGHTBOX -->
 <div id="lightbox" class="hidden">
   <button id="lightbox-close" aria-label="Close">&#x2715;</button>
-  <img id="lightbox-img" src="" alt="Screenshot"/>
+  <img loading="lazy" id="lightbox-img" src="" alt="Screenshot"/>
 </div>
 
 <script>

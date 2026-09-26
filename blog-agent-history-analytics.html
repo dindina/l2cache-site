@@ -70,65 +70,70 @@
   <meta name="twitter:image" content="https://l2cache.amvo.store/screenshots/agent-history1.jpg">
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "BlogPosting",
-        "headline": "How to Track & Resume Claude Code Sessions on Mac",
-        "description": "Learn where Claude Code and Codex store local session logs on macOS, how to resume past sessions with token analytics, and prevent agent memory loss.",
-        "url": "https://l2cache.amvo.store/en/blog-agent-history-analytics",
-        "datePublished": "2026-02-10",
-        "dateModified": "2026-09-23",
-        "author": { "@type": "Organization", "name": "L2Cache Labs" },
-        "publisher": {
-          "@type": "Organization",
-          "name": "L2Cache",
-          "logo": {
-            "@type": "ImageObject",
-            "url": "https://l2cache.amvo.store/icon.png"
+  
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "headline": "How to Track & Resume Claude Code Sessions on Mac",
+      "description": "Learn where Claude Code and Codex store local session logs on macOS, how to resume past sessions with token analytics, and prevent agent memory loss.",
+      "url": "https://l2cache.amvo.store/en/blog-agent-history-analytics",
+      "datePublished": "2026-02-10",
+      "dateModified": "2026-09-23",
+      "author": {
+        "@type": "Organization",
+        "name": "L2Cache Labs"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "L2Cache",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://l2cache.amvo.store/icon.png"
+        }
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Where does Claude Code store session history on Mac?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Claude Code stores local conversation transcripts and project histories as JSONL files in ~/.claude/projects/ on macOS. Each session contains turn-by-turn prompts, tool executions, and file modifications."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where does OpenAI Codex CLI store session logs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "OpenAI Codex CLI stores agent execution memories and session databases in ~/.codex/memories.sqlite on your local disk."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do you resume a past Claude Code session?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Run 'claude --resume' in your terminal to pick from recent sessions, or pass the specific session ID with 'claude --resume <session-id>'. To search full past tool calls, file diffs, and prompts, use L2Cache's 1-click terminal resume panel."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How can I track Claude Code token usage and costs locally?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "L2Cache automatically parses local agent logs in real time, displaying input/output tokens, prompt cache hit ratios (cacheReadTokens), and session durations directly in a lightweight Mac menu bar panel."
           }
         }
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "Where does Claude Code store session history on Mac?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Claude Code stores local conversation transcripts and project histories as JSONL files in ~/.claude/projects/ on macOS. Each session contains turn-by-turn prompts, tool executions, and file modifications."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Where does OpenAI Codex CLI store session logs?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "OpenAI Codex CLI stores agent execution memories and session databases in ~/.codex/memories.sqlite on your local disk."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How do you resume a past Claude Code session?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Run 'claude --resume' in your terminal to pick from recent sessions, or pass the specific session ID with 'claude --resume <session-id>'. To search full past tool calls, file diffs, and prompts, use L2Cache's 1-click terminal resume panel."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How can I track Claude Code token usage and costs locally?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "L2Cache automatically parses local agent logs in real time, displaying input/output tokens, prompt cache hit ratios (cacheReadTokens), and session durations directly in a lightweight Mac menu bar panel."
-            }
-          }
-        ]
-      }
-    ]
-  }
+      ]
+    }
+  ]
+}
+
   </script>
 </head>
 <body>
@@ -228,7 +233,7 @@ codex resume session_2026_09_08_build
   <p>L2Cache's <strong>Repository Knowledge Graph</strong> bridge converts transient agent discoveries into permanent repository documentation:</p>
 
   <div class="screenshot-box">
-    <img src="screenshots/agent-history2.jpg" alt="L2Cache Repository Knowledge Graph Gotchas Dashboard" class="screenshot-img"/>
+    <img loading="lazy" src="screenshots/agent-history2.jpg" alt="L2Cache Repository Knowledge Graph Gotchas Dashboard" class="screenshot-img"/>
     <div class="screenshot-caption">Figure 2: L2Cache Repository Knowledge Graph surfacing discovered gotchas, fragile components, and 1-click promotion to AGENTS.md.</div>
   </div>
 

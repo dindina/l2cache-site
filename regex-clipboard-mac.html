@@ -424,6 +424,28 @@
     ]
   }
   </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Regex Clipboard Matcher — L2Cache",
+    "description": "Run regex patterns against your clipboard history on Mac. Extract IPs, UUIDs, emails, and more.",
+    "url": "https://l2cache.amvo.store/en/regex-clipboard-mac",
+    "operatingSystem": "macOS 13.0 or later",
+    "applicationCategory": "DeveloperApplication",
+    "featureList": "Regex search, pattern matching, clipboard grep, capture groups",
+    "isPartOf": {
+      "@type": "SoftwareApplication",
+      "name": "L2Cache",
+      "url": "https://l2cache.amvo.store/en"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "@id": "https://l2cache.amvo.store/#org"
+    }
+  }
+  </script>
 </head>
 
 <body>
@@ -528,7 +550,7 @@ print(f"Extracted {len(matches)} keys.")</code></pre></div>
 
     <p><strong>L2Cache</strong> is a native macOS clipboard manager that completely reimagines pattern matching. Instead of dropping into a terminal, L2Cache automatically parses your clipboard on the fly using native Swift Regex. </p>
 
-    <img src="screenshots/regex-pattern-matcher.gif" alt="Regex Clipboard Mac" style="width:100%; max-width:800px; display:block; margin: 40px auto; border-radius:12px; border:1px solid var(--border); box-shadow:0 10px 30px rgba(0,0,0,0.3);"/>
+    <video autoplay loop muted playsinline style="width:100%; max-width:800px; display:block; margin: 40px auto; border-radius:12px; border:1px solid var(--border); box-shadow:0 10px 30px rgba(0,0,0,0.3);" aria-label="Regex Clipboard Mac"><source src="screenshots/regex-pattern-matcher.mp4" type="video/mp4"></video>
 
     <p>With <strong>Smart Actions</strong>, L2Cache instantly recognizes structured data—like IPs, UUIDs, or URLs—within massive logs and presents them as clickable buttons. You don't have to write a single script. Need to extract a custom API token? Just type a regex pattern directly into L2Cache's search bar, and it filters your local SQLite history in milliseconds.</p>
 

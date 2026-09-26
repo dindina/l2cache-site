@@ -687,6 +687,13 @@ h1 em { font-style: italic; color: var(--purple); }
   margin: 0;
 }
 
+/* ── FAQ details/summary ── */
+details > summary { user-select: none; }
+details > summary::-webkit-details-marker { display: none; }
+details[open] > summary > span { transform: rotate(45deg); display: inline-block; transition: transform 0.2s; }
+details > summary > span { display: inline-block; transition: transform 0.2s; }
+details > summary:hover { background: var(--bg3); }
+
 /* ── Footer ── */
 footer {
   background: #0a0a0a; color: #888;

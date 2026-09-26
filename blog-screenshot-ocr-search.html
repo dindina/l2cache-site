@@ -70,65 +70,70 @@
   <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "BlogPosting",
-        "headline": "How to Search Text Inside Screenshots on Mac with OCR",
-        "description": "Learn how on-device Apple Vision OCR automatically extracts and indexes text from Mac screenshots and copied images into searchable SQLite databases.",
-        "url": "https://l2cache.amvo.store/en/blog-screenshot-ocr-search",
-        "datePublished": "2026-03-01",
-        "dateModified": "2026-09-23",
-        "author": { "@type": "Organization", "name": "L2Cache Labs" },
-        "publisher": {
-          "@type": "Organization",
-          "name": "L2Cache",
-          "logo": {
-            "@type": "ImageObject",
-            "url": "https://l2cache.amvo.store/icon.png"
+  
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "headline": "How to Search Text Inside Screenshots on Mac with OCR",
+      "description": "Learn how on-device Apple Vision OCR automatically extracts and indexes text from Mac screenshots and copied images into searchable SQLite databases.",
+      "url": "https://l2cache.amvo.store/en/blog-screenshot-ocr-search",
+      "datePublished": "2026-03-01",
+      "dateModified": "2026-09-23",
+      "author": {
+        "@type": "Organization",
+        "name": "L2Cache Labs"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "L2Cache",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://l2cache.amvo.store/icon.png"
+        }
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How does screenshot OCR search work on macOS?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "When you copy an image or take a screenshot, L2Cache processes it in the background using Apple's native Vision framework (VNRecognizeTextRequest). The recognized text is automatically indexed into an on-device SQLite FTS5 database, making the image searchable via keyword or natural language."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are my screenshots or images uploaded to the cloud for OCR?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. L2Cache performs 100% of OCR and image indexing locally using the Apple Silicon Neural Engine on your Mac. No image data or extracted text ever leaves your device."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I extract and copy code from terminal error screenshots?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. When you select a screenshot in L2Cache's floating panel, you can click 'Copy Text' or press Enter to extract and paste the underlying text or code snippet directly into your editor or terminal."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which image formats are supported for automatic OCR indexing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "L2Cache automatically extracts text from PNG, JPEG, TIFF, HEIC, WebP, and clipboard bitmap representations."
           }
         }
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "How does screenshot OCR search work on macOS?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "When you copy an image or take a screenshot, L2Cache processes it in the background using Apple's native Vision framework (VNRecognizeTextRequest). The recognized text is automatically indexed into an on-device SQLite FTS5 database, making the image searchable via keyword or natural language."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Are my screenshots or images uploaded to the cloud for OCR?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No. L2Cache performs 100% of OCR and image indexing locally using the Apple Silicon Neural Engine on your Mac. No image data or extracted text ever leaves your device."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Can I extract and copy code from terminal error screenshots?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. When you select a screenshot in L2Cache's floating panel, you can click 'Copy Text' or press Enter to extract and paste the underlying text or code snippet directly into your editor or terminal."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Which image formats are supported for automatic OCR indexing?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "L2Cache automatically extracts text from PNG, JPEG, TIFF, HEIC, WebP, and clipboard bitmap representations."
-            }
-          }
-        ]
-      }
-    ]
-  }
+      ]
+    }
+  ]
+}
+
   </script>
 </head>
 <body>

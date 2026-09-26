@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://l2cache.amvo.store/sitemap.xml

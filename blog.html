@@ -5,8 +5,13 @@
   <meta name="theme-color" content="#0d1117"/>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Blog — L2Cache</title>
-  <meta name="description" content="L2Cache Developer Blog. Thoughts on clipboard management, macOS development, and productivity.">
+  <title>L2Cache Developer Blog — Clipboard, AI &amp; macOS Tips</title>
+  <meta name="description" content="Deep dives into developer productivity, Mac clipboard management, on-device Apple Intelligence, and Swift/SQLite engineering from the L2Cache team.">
+  <meta property="og:title" content="L2Cache Developer Blog — Clipboard, AI &amp; macOS Tips"/>
+  <meta property="og:description" content="Deep dives into developer productivity, Mac clipboard management, on-device Apple Intelligence, and Swift/SQLite engineering from the L2Cache team."/>
+  <meta property="og:image" content="https://l2cache.amvo.store/screenshots/agent-history1.jpg"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://l2cache.amvo.store/en/blog"/>
   <link rel="icon" type="image/png" href="icon.png"/>
   <link rel="apple-touch-icon" href="icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -132,6 +137,27 @@
     }
   </style>
   <link rel="canonical" href="https://l2cache.amvo.store/en/blog">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "L2Cache Developer Blog",
+    "description": "Deep dives into developer productivity, Mac clipboard management, on-device Apple Intelligence, and Swift/SQLite engineering.",
+    "url": "https://l2cache.amvo.store/en/blog",
+    "publisher": {
+      "@type": "Organization",
+      "@id": "https://l2cache.amvo.store/#org",
+      "name": "Amvotech"
+    },
+    "hasPart": [
+      {"@type": "BlogPosting", "headline": "How to Search Text Inside Screenshots on Mac with On-Device Apple Vision OCR", "url": "https://l2cache.amvo.store/en/blog-screenshot-ocr-search"},
+      {"@type": "BlogPosting", "headline": "Tracking Claude Code & Codex Sessions: AI Agent History & Token Analytics", "url": "https://l2cache.amvo.store/en/blog-agent-history-analytics"},
+      {"@type": "BlogPosting", "headline": "From Clipboard to API: 4 Developer Workflows You Can Automate on Mac", "url": "https://l2cache.amvo.store/en/blog-clipboard-automation-developer-workflows"},
+      {"@type": "BlogPosting", "headline": "Your Clipboard Manager Is Reading Your API Keys", "url": "https://l2cache.amvo.store/en/blog-apple-intelligence-clipboard"},
+      {"@type": "BlogPosting", "headline": "5 Ways On-Device AI Supercharges macOS Developer Workflows", "url": "https://l2cache.amvo.store/en/blog-developer-workflow-apple-intelligence"}
+    ]
+  }
+  </script>
 </head>
 <body>
 <nav>
@@ -160,7 +186,7 @@
 <div class="blog-grid">
 
   <a href="blog-screenshot-ocr-search.html" class="blog-card featured">
-    <img src="screenshots/l2cache-ocr.gif" alt="OCR screenshot search" class="blog-card-img"/>
+    <video autoplay loop muted playsinline class="blog-card-img" aria-label="OCR screenshot search"><source src="screenshots/l2cache-ocr.mp4" type="video/mp4"></video>
     <div class="blog-card-body">
       <div class="blog-tag">OCR · Vision Framework</div>
       <div class="blog-title">How to Search Text Inside Screenshots on Mac with On-Device Apple Vision OCR</div>
@@ -170,7 +196,7 @@
   </a>
 
   <a href="blog-agent-history-analytics.html" class="blog-card">
-    <img src="screenshots/agent-history1.jpg" alt="AI agent session history" class="blog-card-img"/>
+    <img loading="lazy" src="screenshots/agent-history1.jpg" alt="AI agent session history" class="blog-card-img"/>
     <div class="blog-card-body">
       <div class="blog-tag">AI · Claude Code · Codex</div>
       <div class="blog-title">Tracking Claude Code & Codex Sessions: How AI Agent History & Token Analytics Supercharge macOS Development</div>
@@ -180,7 +206,7 @@
   </a>
 
   <a href="blog-clipboard-automation-developer-workflows.html" class="blog-card">
-    <img src="screenshots/custom-smart-actions.gif" alt="Clipboard automation workflows" class="blog-card-img"/>
+    <video autoplay loop muted playsinline class="blog-card-img" aria-label="Clipboard automation workflows"><source src="screenshots/custom-smart-actions.mp4" type="video/mp4"></video>
     <div class="blog-card-body">
       <div class="blog-tag">Automation · Workflows</div>
       <div class="blog-title">From Clipboard to API: 4 Developer Workflows You Can Automate on Mac</div>
@@ -190,7 +216,7 @@
   </a>
 
   <a href="blog-apple-intelligence-clipboard.html" class="blog-card">
-    <img src="screenshots/l2cache-smart-connections.gif" alt="Apple Intelligence clipboard privacy" class="blog-card-img"/>
+    <video autoplay loop muted playsinline class="blog-card-img" aria-label="Apple Intelligence clipboard privacy"><source src="screenshots/l2cache-smart-connections.mp4" type="video/mp4"></video>
     <div class="blog-card-body">
       <div class="blog-tag">Privacy · Apple Intelligence</div>
       <div class="blog-title">Your Clipboard Manager Is Reading Your API Keys: Why Developer Tools Need On-Device Apple Intelligence</div>
@@ -200,7 +226,7 @@
   </a>
 
   <a href="blog-developer-workflow-apple-intelligence.html" class="blog-card">
-    <img src="screenshots/l2cache-jwt.gif" alt="Developer workflow on-device AI" class="blog-card-img"/>
+    <video autoplay loop muted playsinline class="blog-card-img" aria-label="Developer workflow on-device AI"><source src="screenshots/l2cache-jwt.mp4" type="video/mp4"></video>
     <div class="blog-card-body">
       <div class="blog-tag">Developer Tools · AI</div>
       <div class="blog-title">5 Ways On-Device AI Supercharges macOS Developer Workflows</div>
@@ -210,7 +236,7 @@
   </a>
 
   <a href="blog-zero-cloud-mac-desktop-ai.html" class="blog-card">
-    <img src="screenshots/terminal-history.gif" alt="Zero cloud desktop AI" class="blog-card-img"/>
+    <video autoplay loop muted playsinline class="blog-card-img" aria-label="Zero cloud desktop AI"><source src="screenshots/terminal-history.mp4" type="video/mp4"></video>
     <div class="blog-card-body">
       <div class="blog-tag">Swift · Architecture</div>
       <div class="blog-title">Building Zero-Cloud Desktop AI: Swift Concurrency & Apple Intelligence on macOS</div>
@@ -220,7 +246,7 @@
   </a>
 
   <a href="blog-sqlite-fts5-hangs.html" class="blog-card">
-    <img src="screenshots/spotlight-clipboard-search.gif" alt="SQLite FTS5 search" class="blog-card-img"/>
+    <img loading="lazy" src="screenshots/spotlight-clipboard-search.gif" alt="SQLite FTS5 search" class="blog-card-img"/>
     <div class="blog-card-body">
       <div class="blog-tag">SQLite · Performance</div>
       <div class="blog-title">Preventing SQLite FTS5 Tokenization Hangs on Large Datasets</div>
@@ -230,7 +256,7 @@
   </a>
 
   <a href="blog-swift-sqlite-concurrency.html" class="blog-card">
-    <img src="screenshots/history-grep.png" alt="Swift SQLite concurrency" class="blog-card-img"/>
+    <img loading="lazy" src="screenshots/history-grep.png" alt="Swift SQLite concurrency" class="blog-card-img"/>
     <div class="blog-card-body">
       <div class="blog-tag">Swift · SQLite · Concurrency</div>
       <div class="blog-title">Safe SQLite Concurrency in macOS using Swift Actors and GRDB</div>
@@ -240,7 +266,7 @@
   </a>
 
   <a href="blog-regex-clipboard.html" class="blog-card">
-    <img src="screenshots/regex-pattern-matcher.gif" alt="Regex clipboard grep" class="blog-card-img"/>
+    <video autoplay loop muted playsinline class="blog-card-img" aria-label="Regex clipboard grep"><source src="screenshots/regex-pattern-matcher.mp4" type="video/mp4"></video>
     <div class="blog-card-body">
       <div class="blog-tag">Regex · Search</div>
       <div class="blog-title">Why Your Mac Clipboard Needs 'grep': A Built-in Regex Matcher</div>
@@ -250,7 +276,7 @@
   </a>
 
   <a href="blog-sql-test-data.html" class="blog-card">
-    <img src="screenshots/l2cache-sql-smart.gif" alt="SQL mock data generation" class="blog-card-img"/>
+    <video autoplay loop muted playsinline class="blog-card-img" aria-label="SQL mock data generation"><source src="screenshots/l2cache-sql-smart.mp4" type="video/mp4"></video>
     <div class="blog-card-body">
       <div class="blog-tag">SQL · AI Data Generation</div>
       <div class="blog-title">Stop Writing Mock Data by Hand</div>
@@ -260,7 +286,7 @@
   </a>
 
   <a href="blog-jwt-security.html" class="blog-card">
-    <img src="screenshots/l2cache-jwt.gif" alt="JWT decode locally on Mac" class="blog-card-img"/>
+    <video autoplay loop muted playsinline class="blog-card-img" aria-label="JWT decode locally on Mac"><source src="screenshots/l2cache-jwt.mp4" type="video/mp4"></video>
     <div class="blog-card-body">
       <div class="blog-tag">Security · JWT</div>
       <div class="blog-title">Stop Leaking Secrets: How to Decode JWTs Locally on Mac</div>
