@@ -50,6 +50,7 @@ HTML_FILES = ["blog-screenshot-ocr-search.html", "blog-agent-history-analytics.h
 OUT_DIR = "out"
 L2CACHE_OUT_DIR = os.path.join(OUT_DIR, "l2cache")
 AMVO_OUT_DIR = os.path.join(OUT_DIR, "amvo-store")
+HINGEJOY_OUT_DIR = os.path.join(OUT_DIR, "hingejoy")
 VERCEL_ANALYTICS_TAG = '<script defer src="/_vercel/insights/script.js"></script>'
 
 
@@ -206,6 +207,10 @@ def build():
     # Copy amvo-store
     if os.path.exists("amvo-store"):
         shutil.copytree("amvo-store", AMVO_OUT_DIR)
+
+    # Copy hingejoy
+    if os.path.exists("hingejoy"):
+        shutil.copytree("hingejoy", HINGEJOY_OUT_DIR)
 
     for lang in LANGUAGES.keys():
         lang_dir = os.path.join(L2CACHE_OUT_DIR, lang)
