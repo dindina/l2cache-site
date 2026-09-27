@@ -7,10 +7,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const gaugeAngle = document.getElementById("gauge-angle");
   const liveSpeedBadge = document.getElementById("live-speed-badge");
   const phoneLeftPanel = document.querySelector(".panel-left");
+  
+  // Inner Screen Elements
   const reactionEmoji = document.getElementById("reaction-emoji");
   const reactionTitle = document.getElementById("reaction-title");
   const currentModeLabel = document.getElementById("current-mode-label");
   const soundWaveBars = document.querySelectorAll(".sound-wave-bars .bar");
+
+  // Outer Cover Screen Elements
+  const coverEmoji = document.getElementById("cover-emoji");
+  const coverTitle = document.getElementById("cover-title");
+  const coverSpeedChip = document.getElementById("cover-speed-chip");
+
+  // Controls & Triggers
   const presetButtons = document.querySelectorAll(".btn-preset");
   const reactionCards = document.querySelectorAll(".reaction-card");
   const foldActionBtns = document.querySelectorAll(".btn-fold-action");
@@ -157,9 +166,22 @@ document.addEventListener("DOMContentLoaded", () => {
     if (gaugeAngle) gaugeAngle.textContent = `${currentAngle}°`;
     if (liveSpeedBadge) liveSpeedBadge.textContent = `${calculatedVelocity}°/s`;
 
+    // 3D Transform: 180° = flat (0deg rotation), 0° = closed (-180deg rotation showing Cover Display)
     const rotateY = -(180 - currentAngle);
     if (phoneLeftPanel) {
       phoneLeftPanel.style.transform = `rotateY(${rotateY}deg)`;
+    }
+
+    // Sync angle preset buttons
+    if (presetButtons) {
+      presetButtons.forEach(b => {
+        const bAngle = parseInt(b.getAttribute("data-angle"), 10);
+        if (bAngle === currentAngle) {
+          b.classList.add("active");
+        } else {
+          b.classList.remove("active");
+        }
+      });
     }
 
     if (currentAngle <= 15 && lastAngle > 15) {
@@ -167,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Apply Reaction: Updates Emoji, Title, Sound, Gauges, and Active Cards
+  // Apply Reaction: Updates BOTH Inner Screen & Outer Cover Screen
   function applyReaction(explicitMode, speed) {
     let mode = explicitMode;
     let emoji = "📱";
@@ -204,16 +226,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (liveSpeedBadge) liveSpeedBadge.textContent = `${speed}°/s`;
 
-    // Update screen display on left phone
-    if (reactionEmoji) {
-      reactionEmoji.textContent = emoji;
-      reactionEmoji.style.transform = "scale(1.4)";
-      setTimeout(() => {
-        reactionEmoji.style.transform = "scale(1)";
-      }, 250);
-    }
+    // 1. Update Inner Screen Display
+    if (reactionEmoji) reactionEmoji.textContent = emoji;
     if (reactionTitle) reactionTitle.textContent = title;
     if (currentModeLabel) currentModeLabel.textContent = title;
+
+    // 2. Update Outer Cover Screen Display (Visible when 0° closed)
+    if (coverEmoji) {
+      coverEmoji.textContent = emoji;
+      coverEmoji.style.transform = "scale(1.3)";
+      setTimeout(() => {
+        coverEmoji.style.transform = "scale(1)";
+      }, 200);
+    }
+    if (coverTitle) coverTitle.textContent = title;
+    if (coverSpeedChip) coverSpeedChip.textContent = `${speed}°/s Shut Speed`;
 
     playReactionSound(mode);
     highlightActiveReactionCard(mode);
@@ -247,14 +274,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const speed = parseInt(btn.getAttribute("data-speed"), 10) || 240;
       const mode = btn.getAttribute("data-mode") || "snap";
 
-      // 1. Instantly display reaction emoji & sound
+      // 1. Immediately apply reaction emoji, title, and sound
       applyReaction(mode, speed);
 
-      // 2. Animate 3D fold
+      // 2. Physically fold phone to 0° (Closed), showing the Outer Cover Screen directly!
       setHingeAngle(0, speed);
-      setTimeout(() => {
-        setHingeAngle(180, 80);
-      }, 700);
     });
   });
 
@@ -284,9 +308,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const speed = parseInt(card.getAttribute("data-speed"), 10) || 240;
       applyReaction(mode, speed);
       setHingeAngle(0, speed);
-      setTimeout(() => {
-        setHingeAngle(180, 80);
-      }, 700);
     });
   });
 
