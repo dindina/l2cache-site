@@ -1811,3 +1811,49 @@ body {
   border-radius: 8px;
   white-space: nowrap;
 }
+
+
+/* TWO-STATE SWITCH (OPEN / CLOSED) */
+.state-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  margin-bottom: 8px;
+}
+
+.two-state-switch {
+  display: flex;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  padding: 3px;
+  gap: 4px;
+}
+
+.btn-state {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.btn-state:hover {
+  color: var(--text-main);
+}
+
+.btn-state.active {
+  background: linear-gradient(135deg, var(--accent-cyan), #007aff);
+  color: #000;
+  font-weight: 800;
+  box-shadow: 0 2px 10px rgba(0, 242, 254, 0.4);
+}

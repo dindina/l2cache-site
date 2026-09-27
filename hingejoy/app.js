@@ -1,9 +1,7 @@
-// HingeJoy Interactive Web Experience
+// HingeJoy Interactive Web Experience (2-State Open/Closed Simulator)
 
 document.addEventListener("DOMContentLoaded", () => {
   // DOM Elements
-  const hingeSlider = document.getElementById("hinge-slider");
-  const angleDisplay = document.getElementById("angle-display");
   const gaugeAngle = document.getElementById("gauge-angle");
   const liveSpeedBadge = document.getElementById("live-speed-badge");
   const phoneLeftPanel = document.querySelector(".panel-left");
@@ -19,15 +17,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const coverTitle = document.getElementById("cover-title");
   const coverSpeedChip = document.getElementById("cover-speed-chip");
 
-  // Controls & Triggers
-  const presetButtons = document.querySelectorAll(".btn-preset");
+  // 2-State Switch Buttons
+  const btnStateOpen = document.getElementById("btn-state-open");
+  const btnStateClosed = document.getElementById("btn-state-closed");
+
+  // Reaction Buttons & Cards
   const reactionCards = document.querySelectorAll(".reaction-card");
   const foldActionBtns = document.querySelectorAll(".btn-fold-action");
   const waitlistForm = document.getElementById("waitlist-form");
   const footerWaitlistForm = document.getElementById("footer-waitlist-form");
   const waitlistSuccess = document.getElementById("waitlist-success");
 
-  // Tab Elements
+  // Tab Elements (Simulator vs Video)
   const tabSim = document.getElementById("tab-sim");
   const tabVideo = document.getElementById("tab-video");
   const contentSim = document.getElementById("content-sim");
@@ -55,9 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let foldCount = 12;
   let peakSpeed = 480;
-  let lastAngle = 180;
-  let lastTimestamp = performance.now();
-  let calculatedVelocity = 0;
+  let currentState = "open"; // "open" (180deg) or "closed" (0deg)
 
   // Web Audio Synthesizer Context
   let audioCtx = null;
@@ -145,51 +144,24 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Update 3D Phone Angle & Telemetry
-  function setHingeAngle(angle, simulatedVelocity = null) {
-    const currentAngle = parseInt(angle, 10);
-    const now = performance.now();
-    const dt = (now - lastTimestamp) / 1000;
+  // 2-State Transition Controller (Open: 180° | Closed: 0°)
+  function setDeviceState(state) {
+    currentState = state;
 
-    if (simulatedVelocity !== null) {
-      calculatedVelocity = simulatedVelocity;
-    } else if (dt > 0.01) {
-      const dAngle = Math.abs(currentAngle - lastAngle);
-      calculatedVelocity = Math.round(dAngle / dt);
-    }
-
-    lastAngle = currentAngle;
-    lastTimestamp = now;
-
-    if (hingeSlider) hingeSlider.value = currentAngle;
-    if (angleDisplay) angleDisplay.textContent = `${currentAngle}°`;
-    if (gaugeAngle) gaugeAngle.textContent = `${currentAngle}°`;
-    if (liveSpeedBadge) liveSpeedBadge.textContent = `${calculatedVelocity}°/s`;
-
-    // 3D Transform: 180° = flat (0deg rotation), 0° = closed (-180deg rotation showing Cover Display)
-    const rotateY = -(180 - currentAngle);
-    if (phoneLeftPanel) {
-      phoneLeftPanel.style.transform = `rotateY(${rotateY}deg)`;
-    }
-
-    // Sync angle preset buttons
-    if (presetButtons) {
-      presetButtons.forEach(b => {
-        const bAngle = parseInt(b.getAttribute("data-angle"), 10);
-        if (bAngle === currentAngle) {
-          b.classList.add("active");
-        } else {
-          b.classList.remove("active");
-        }
-      });
-    }
-
-    if (currentAngle <= 15 && lastAngle > 15) {
-      applyReaction(null, calculatedVelocity);
+    if (state === "open") {
+      if (btnStateOpen) btnStateOpen.classList.add("active");
+      if (btnStateClosed) btnStateClosed.classList.remove("active");
+      if (phoneLeftPanel) phoneLeftPanel.style.transform = "rotateY(0deg)";
+      if (gaugeAngle) gaugeAngle.textContent = "180°";
+    } else {
+      if (btnStateClosed) btnStateClosed.classList.add("active");
+      if (btnStateOpen) btnStateOpen.classList.remove("active");
+      if (phoneLeftPanel) phoneLeftPanel.style.transform = "rotateY(-180deg)";
+      if (gaugeAngle) gaugeAngle.textContent = "0°";
     }
   }
 
-  // Apply Reaction: Updates BOTH Inner Screen & Outer Cover Screen
+  // Apply Reaction: Updates Reaction Data, Sounds, and Displays
   function applyReaction(explicitMode, speed) {
     let mode = explicitMode;
     let emoji = "📱";
@@ -231,7 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (reactionTitle) reactionTitle.textContent = title;
     if (currentModeLabel) currentModeLabel.textContent = title;
 
-    // 2. Update Outer Cover Screen Display (Visible when 0° closed)
+    // 2. Update Outer Cover Screen Display (Facing user when 0° closed)
     if (coverEmoji) {
       coverEmoji.textContent = emoji;
       coverEmoji.style.transform = "scale(1.3)";
@@ -267,37 +239,31 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Fold Action Buttons Click Handlers (Gentle, Normal, Slam, Rage)
+  // 2-State Switch Button Handlers
+  if (btnStateOpen) {
+    btnStateOpen.addEventListener("click", () => {
+      setDeviceState("open");
+    });
+  }
+
+  if (btnStateClosed) {
+    btnStateClosed.addEventListener("click", () => {
+      setDeviceState("closed");
+    });
+  }
+
+  // Fold Action Buttons: Tap to Snap Shut & Play
   foldActionBtns.forEach(btn => {
     btn.addEventListener("click", () => {
       initAudio();
       const speed = parseInt(btn.getAttribute("data-speed"), 10) || 240;
       const mode = btn.getAttribute("data-mode") || "snap";
 
-      // 1. Immediately apply reaction emoji, title, and sound
+      // 1. Apply reaction data & sound
       applyReaction(mode, speed);
 
-      // 2. Physically fold phone to 0° (Closed), showing the Outer Cover Screen directly!
-      setHingeAngle(0, speed);
-    });
-  });
-
-  // Slider Listener
-  if (hingeSlider) {
-    hingeSlider.addEventListener("input", (e) => {
-      setHingeAngle(e.target.value);
-    });
-  }
-
-  // Preset Buttons (180, 90, 45, 0)
-  presetButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      presetButtons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      const targetAngle = btn.getAttribute("data-angle");
-      if (targetAngle !== null) {
-        setHingeAngle(targetAngle, 180);
-      }
+      // 2. Snap to CLOSED (0°) state showing Cover Display
+      setDeviceState("closed");
     });
   });
 
@@ -307,7 +273,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const mode = card.getAttribute("data-mode");
       const speed = parseInt(card.getAttribute("data-speed"), 10) || 240;
       applyReaction(mode, speed);
-      setHingeAngle(0, speed);
+      setDeviceState("closed");
     });
   });
 
