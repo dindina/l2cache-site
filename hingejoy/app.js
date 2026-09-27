@@ -1,62 +1,13 @@
-// HingeJoy Interactive Web Experience (2-State Open/Closed Simulator)
+// HingeJoy Web Experience
 
 document.addEventListener("DOMContentLoaded", () => {
   // DOM Elements
-  const gaugeAngle = document.getElementById("gauge-angle");
-  const liveSpeedBadge = document.getElementById("live-speed-badge");
-  const phoneLeftPanel = document.querySelector(".panel-left");
-  
-  // Inner Screen Elements
-  const reactionEmoji = document.getElementById("reaction-emoji");
-  const reactionTitle = document.getElementById("reaction-title");
-  const currentModeLabel = document.getElementById("current-mode-label");
   const soundWaveBars = document.querySelectorAll(".sound-wave-bars .bar");
-
-  // Outer Cover Screen Elements
-  const coverEmoji = document.getElementById("cover-emoji");
-  const coverTitle = document.getElementById("cover-title");
-  const coverSpeedChip = document.getElementById("cover-speed-chip");
-
-  // 2-State Switch Buttons
-  const btnStateOpen = document.getElementById("btn-state-open");
-  const btnStateClosed = document.getElementById("btn-state-closed");
-
-  // Reaction Buttons & Cards
   const reactionCards = document.querySelectorAll(".reaction-card");
-  const foldActionBtns = document.querySelectorAll(".btn-fold-action");
+  const soundPlayButtons = document.querySelectorAll(".btn-play-sound");
   const waitlistForm = document.getElementById("waitlist-form");
   const footerWaitlistForm = document.getElementById("footer-waitlist-form");
   const waitlistSuccess = document.getElementById("waitlist-success");
-
-  // Tab Elements (Simulator vs Video)
-  const tabSim = document.getElementById("tab-sim");
-  const tabVideo = document.getElementById("tab-video");
-  const contentSim = document.getElementById("content-sim");
-  const contentVideo = document.getElementById("content-video");
-
-  if (tabSim && tabVideo && contentSim && contentVideo) {
-    tabSim.addEventListener("click", () => {
-      tabSim.classList.add("active");
-      tabVideo.classList.remove("active");
-      contentSim.classList.remove("hidden");
-      contentVideo.classList.add("hidden");
-    });
-
-    tabVideo.addEventListener("click", () => {
-      tabVideo.classList.add("active");
-      tabSim.classList.remove("active");
-      contentVideo.classList.remove("hidden");
-      contentSim.classList.add("hidden");
-    });
-  }
-
-  // Telemetry Metrics
-  const metricFolds = document.getElementById("metric-folds");
-  const metricPeak = document.getElementById("metric-peak");
-
-  let foldCount = 12;
-  let peakSpeed = 480;
-  let currentState = "open"; // "open" (180deg) or "closed" (0deg)
 
   // Web Audio Synthesizer Context
   let audioCtx = null;
@@ -71,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Synthesize Sound Effects
+  // Synthesize Sound Effects for Reaction Cards
   function playReactionSound(mode) {
     initAudio();
     if (!audioCtx) return;
@@ -130,103 +81,6 @@ document.addEventListener("DOMContentLoaded", () => {
       gain.connect(audioCtx.destination);
       noise.start(now);
     }
-
-    animateWaveform();
-  }
-
-  function animateWaveform() {
-    soundWaveBars.forEach((bar) => {
-      const randomHeight = Math.floor(Math.random() * 14) + 4;
-      bar.style.height = `${randomHeight}px`;
-      setTimeout(() => {
-        bar.style.height = "4px";
-      }, 250);
-    });
-  }
-
-  // 2-State Transition Controller (Open: 180° | Closed: 0°)
-  function setDeviceState(state) {
-    currentState = state;
-
-    if (state === "open") {
-      if (btnStateOpen) btnStateOpen.classList.add("active");
-      if (btnStateClosed) btnStateClosed.classList.remove("active");
-      if (phoneLeftPanel) phoneLeftPanel.style.transform = "rotateY(0deg)";
-      if (gaugeAngle) gaugeAngle.textContent = "180°";
-    } else {
-      if (btnStateClosed) btnStateClosed.classList.add("active");
-      if (btnStateOpen) btnStateOpen.classList.remove("active");
-      if (phoneLeftPanel) phoneLeftPanel.style.transform = "rotateY(-180deg)";
-      if (gaugeAngle) gaugeAngle.textContent = "0°";
-    }
-  }
-
-  // Apply Reaction: Updates Reaction Data, Sounds, and Displays
-  function applyReaction(explicitMode, speed) {
-    let mode = explicitMode;
-    let emoji = "📱";
-    let title = "Classic Snap";
-
-    if (!mode) {
-      if (speed < 120) mode = "kiss";
-      else if (speed <= 300) mode = "snap";
-      else if (speed <= 600) mode = "slam";
-      else mode = "rage";
-    }
-
-    if (mode === "kiss") {
-      emoji = "💋";
-      title = "Lover's Kiss";
-    } else if (mode === "snap") {
-      emoji = "📱";
-      title = "Classic Snap";
-    } else if (mode === "slam") {
-      emoji = "🐷";
-      title = "Boss Slam";
-    } else if (mode === "rage") {
-      emoji = "💥";
-      title = "Rage Mode";
-    }
-
-    foldCount++;
-    if (metricFolds) metricFolds.textContent = foldCount;
-
-    if (speed > peakSpeed) {
-      peakSpeed = speed;
-      if (metricPeak) metricPeak.textContent = `${peakSpeed}°/s`;
-    }
-
-    if (liveSpeedBadge) liveSpeedBadge.textContent = `${speed}°/s`;
-
-    // 1. Update Inner Screen Display
-    if (reactionEmoji) reactionEmoji.textContent = emoji;
-    if (reactionTitle) reactionTitle.textContent = title;
-    if (currentModeLabel) currentModeLabel.textContent = title;
-
-    // 2. Update Outer Cover Screen Display (Facing user when 0° closed)
-    if (coverEmoji) {
-      coverEmoji.textContent = emoji;
-      coverEmoji.style.transform = "scale(1.3)";
-      setTimeout(() => {
-        coverEmoji.style.transform = "scale(1)";
-      }, 200);
-    }
-    if (coverTitle) coverTitle.textContent = title;
-    if (coverSpeedChip) coverSpeedChip.textContent = `${speed}°/s Shut Speed`;
-
-    playReactionSound(mode);
-    highlightActiveReactionCard(mode);
-
-    // Sync button active states
-    if (foldActionBtns) {
-      foldActionBtns.forEach(b => {
-        if (b.getAttribute("data-mode") === mode) {
-          b.classList.add("active");
-        } else {
-          b.classList.remove("active");
-        }
-      });
-    }
   }
 
   function highlightActiveReactionCard(mode) {
@@ -239,41 +93,24 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 2-State Switch Button Handlers
-  if (btnStateOpen) {
-    btnStateOpen.addEventListener("click", () => {
-      setDeviceState("open");
-    });
-  }
-
-  if (btnStateClosed) {
-    btnStateClosed.addEventListener("click", () => {
-      setDeviceState("closed");
-    });
-  }
-
-  // Fold Action Buttons: Tap to Snap Shut & Play
-  foldActionBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      initAudio();
-      const speed = parseInt(btn.getAttribute("data-speed"), 10) || 240;
-      const mode = btn.getAttribute("data-mode") || "snap";
-
-      // 1. Apply reaction data & sound
-      applyReaction(mode, speed);
-
-      // 2. Snap to CLOSED (0°) state showing Cover Display
-      setDeviceState("closed");
+  // Reaction Cards Sound Buttons & Click Handlers
+  reactionCards.forEach(card => {
+    card.addEventListener("click", () => {
+      const mode = card.getAttribute("data-mode") || "snap";
+      highlightActiveReactionCard(mode);
+      playReactionSound(mode);
     });
   });
 
-  // Reaction Cards Click Listener
-  reactionCards.forEach(card => {
-    card.addEventListener("click", () => {
-      const mode = card.getAttribute("data-mode");
-      const speed = parseInt(card.getAttribute("data-speed"), 10) || 240;
-      applyReaction(mode, speed);
-      setDeviceState("closed");
+  soundPlayButtons.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const card = btn.closest(".reaction-card");
+      if (card) {
+        const mode = card.getAttribute("data-mode") || "snap";
+        highlightActiveReactionCard(mode);
+        playReactionSound(mode);
+      }
     });
   });
 

@@ -144,136 +144,28 @@
           </div>
         </div>
 
-        <!-- HERO VISUAL: 3D SIMULATOR & DEMO TABS -->
+        <!-- HERO VIDEO SHOWCASE -->
         <div class="hero-visual">
-          <div class="simulator-card">
+          <div class="hero-video-card">
             <div class="sim-header">
               <div class="sim-status">
                 <span class="status-indicator"></span>
-                <span>LIVE HINGE ENGINE</span>
+                <span>LIVE ON IPHONE DUO</span>
               </div>
-              <div class="sim-tabs">
-                <button type="button" class="sim-tab active" id="tab-sim">3D Interactive</button>
-                <button type="button" class="sim-tab" id="tab-video">🎬 Video Demo</button>
-              </div>
-              <div class="sim-speed-badge" id="live-speed-badge">0°/s</div>
+              <div class="sim-speed-badge">Real App Demo</div>
             </div>
-
-            <!-- TAB 1: 3D DUO PHONE MODEL -->
-            <div class="tab-content" id="content-sim">
-              <div class="phone-stage">
-                <div class="phone-duo" id="phone-model">
-                  <!-- Left Screen (FUN Inner Face + Cover Screen Outer Face) -->
-                  <div class="phone-panel panel-left">
-                    <!-- Inner Display (Visible when open) -->
-                    <div class="screen-content screen-fun screen-inner-face">
-                      <div class="app-mini-header">
-                        <span class="mini-tag">FUN</span>
-                        <span class="mini-mode" id="current-mode-label">Classic Snap</span>
-                      </div>
-                      <div class="reaction-emoji-display" id="reaction-emoji">📱</div>
-                      <div class="reaction-sound-title" id="reaction-title">Classic Snap</div>
-                      <div class="sound-wave-bars">
-                        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                      </div>
-                    </div>
-
-                    <!-- Outer Cover Screen Display (Visible when closed 0°) -->
-                    <div class="screen-content screen-cover-face">
-                      <div class="app-mini-header">
-                        <span class="mini-tag cover-tag">OUTER SCREEN</span>
-                        <span class="mini-battery">0° SHUT</span>
-                      </div>
-                      <div class="cover-reaction-emoji" id="cover-emoji">📱</div>
-                      <div class="cover-reaction-title" id="cover-title">Classic Snap</div>
-                      <div class="cover-speed-chip" id="cover-speed-chip">240°/s Shut Speed</div>
-                    </div>
-                  </div>
-
-                  <!-- Physical Hinge Spine -->
-                  <div class="phone-hinge-spine"></div>
-
-                  <!-- Right Screen (MY HINGE) -->
-                  <div class="phone-panel panel-right">
-                    <div class="screen-content screen-telemetry">
-                      <div class="app-mini-header">
-                        <span class="mini-tag blue">MY HINGE</span>
-                        <span class="mini-battery">100%</span>
-                      </div>
-                      <div class="telemetry-gauge">
-                        <div class="gauge-value" id="gauge-angle">180°</div>
-                        <div class="gauge-label">HINGE ANGLE</div>
-                      </div>
-                      <div class="telemetry-mini-grid">
-                        <div class="mini-metric">
-                          <span class="m-val" id="metric-folds">12</span>
-                          <span class="m-lbl">FOLDS TODAY</span>
-                        </div>
-                        <div class="mini-metric">
-                          <span class="m-val" id="metric-peak">480°/s</span>
-                          <span class="m-lbl">PEAK SPEED</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Streamlined 2-State Simulator Controls -->
-              <div class="sim-controls">
-                <div class="state-toggle-row">
-                  <span class="ctrl-subhead">Device Physical State:</span>
-                  <div class="two-state-switch">
-                    <button type="button" class="btn-state active" id="btn-state-open" data-state="open">
-                      <span>📖 Open (180°)</span>
-                    </button>
-                    <button type="button" class="btn-state" id="btn-state-closed" data-state="closed">
-                      <span>📱 Closed (0°)</span>
-                    </button>
-                  </div>
-                </div>
-
-                <!-- 4 Tap-to-Fold Reaction Actions -->
-                <div class="sim-fold-triggers">
-                  <span class="ctrl-subhead">Tap a Fold Reaction to Snap & Play:</span>
-                  <div class="fold-buttons-grid">
-                    <button type="button" class="btn-fold-action btn-kiss" data-speed="80" data-mode="kiss">
-                      <span>💋 Gentle</span>
-                      <small>&lt;120°/s</small>
-                    </button>
-                    <button type="button" class="btn-fold-action btn-snap active" data-speed="240" data-mode="snap">
-                      <span>📱 Normal</span>
-                      <small>240°/s</small>
-                    </button>
-                    <button type="button" class="btn-fold-action btn-slam" data-speed="480" data-mode="slam">
-                      <span>🐷 Slam</span>
-                      <small>480°/s</small>
-                    </button>
-                    <button type="button" class="btn-fold-action btn-rage" data-speed="750" data-mode="rage">
-                      <span>💥 Rage</span>
-                      <small>&gt;600°/s</small>
-                    </button>
-                  </div>
-                </div>
-              </div>
+            <div class="hero-video-stage">
+              <video
+                src="assets/demo.mp4"
+                autoplay
+                muted
+                loop
+                playsinline
+                controls
+                poster="assets/og-card.png"
+                aria-label="HingeJoy app demo — fold reactions and telemetry on iPhone Duo"
+              ></video>
             </div>
-
-            <!-- TAB 2: VIDEO DEMO -->
-            <div class="tab-content hidden" id="content-video">
-              <div class="hero-video-stage">
-                <video
-                  src="assets/demo.mp4"
-                  autoplay
-                  muted
-                  loop
-                  playsinline
-                  controls
-                  poster="assets/og-card.png"
-                  aria-label="HingeJoy app demo — fold reactions and telemetry on iPhone Duo"
-                ></video>
-              </div>
-            </div>
-
           </div>
         </div>
 
