@@ -2,6 +2,30 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
+  // Fold Action Buttons (Gentle, Normal, Slam, Rage)
+  const foldActionBtns = document.querySelectorAll(".btn-fold-action");
+  foldActionBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      initAudio();
+      foldActionBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      
+      const speed = parseInt(btn.getAttribute("data-speed"), 10) || 240;
+      const mode = btn.getAttribute("data-mode") || "snap";
+
+      // Animate fold: start from 180, snap to 0 with target velocity, then reopen to 180
+      setHingeAngle(180);
+      setTimeout(() => {
+        setHingeAngle(0, speed);
+        highlightActiveReactionCard(mode);
+        setTimeout(() => {
+          setHingeAngle(180, 80);
+        }, 800);
+      }, 100);
+    });
+  });
+
+
   // Simulator vs Video Tab Switching
   const tabSim = document.getElementById("tab-sim");
   const tabVideo = document.getElementById("tab-video");
