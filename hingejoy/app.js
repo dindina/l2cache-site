@@ -1,32 +1,24 @@
 // HingeJoy Interactive Web Experience
 
 document.addEventListener("DOMContentLoaded", () => {
-
-  // Fold Action Buttons (Gentle, Normal, Slam, Rage)
+  // DOM Elements
+  const hingeSlider = document.getElementById("hinge-slider");
+  const angleDisplay = document.getElementById("angle-display");
+  const gaugeAngle = document.getElementById("gauge-angle");
+  const liveSpeedBadge = document.getElementById("live-speed-badge");
+  const phoneLeftPanel = document.querySelector(".panel-left");
+  const reactionEmoji = document.getElementById("reaction-emoji");
+  const reactionTitle = document.getElementById("reaction-title");
+  const currentModeLabel = document.getElementById("current-mode-label");
+  const soundWaveBars = document.querySelectorAll(".sound-wave-bars .bar");
+  const presetButtons = document.querySelectorAll(".btn-preset");
+  const reactionCards = document.querySelectorAll(".reaction-card");
   const foldActionBtns = document.querySelectorAll(".btn-fold-action");
-  foldActionBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      initAudio();
-      foldActionBtns.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      
-      const speed = parseInt(btn.getAttribute("data-speed"), 10) || 240;
-      const mode = btn.getAttribute("data-mode") || "snap";
+  const waitlistForm = document.getElementById("waitlist-form");
+  const footerWaitlistForm = document.getElementById("footer-waitlist-form");
+  const waitlistSuccess = document.getElementById("waitlist-success");
 
-      // Animate fold: start from 180, snap to 0 with target velocity, then reopen to 180
-      setHingeAngle(180);
-      setTimeout(() => {
-        setHingeAngle(0, speed);
-        highlightActiveReactionCard(mode);
-        setTimeout(() => {
-          setHingeAngle(180, 80);
-        }, 800);
-      }, 100);
-    });
-  });
-
-
-  // Simulator vs Video Tab Switching
+  // Tab Elements
   const tabSim = document.getElementById("tab-sim");
   const tabVideo = document.getElementById("tab-video");
   const contentSim = document.getElementById("content-sim");
@@ -47,24 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
       contentSim.classList.add("hidden");
     });
   }
-
-  // DOM Elements
-  const hingeSlider = document.getElementById("hinge-slider");
-  const angleDisplay = document.getElementById("angle-display");
-  const gaugeAngle = document.getElementById("gauge-angle");
-  const liveSpeedBadge = document.getElementById("live-speed-badge");
-  const phoneLeftPanel = document.querySelector(".panel-left");
-  const reactionEmoji = document.getElementById("reaction-emoji");
-  const reactionTitle = document.getElementById("reaction-title");
-  const currentModeLabel = document.getElementById("current-mode-label");
-  const soundWaveBars = document.querySelectorAll(".sound-wave-bars .bar");
-  const presetButtons = document.querySelectorAll(".btn-preset");
-  const btnSnapTest = document.getElementById("btn-snap-test");
-  const reactionCards = document.querySelectorAll(".reaction-card");
-  const soundPlayButtons = document.querySelectorAll(".btn-play-sound");
-  const waitlistForm = document.getElementById("waitlist-form");
-  const footerWaitlistForm = document.getElementById("footer-waitlist-form");
-  const waitlistSuccess = document.getElementById("waitlist-success");
 
   // Telemetry Metrics
   const metricFolds = document.getElementById("metric-folds");
@@ -97,20 +71,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const now = audioCtx.currentTime;
 
     if (mode === "kiss") {
-      // Gentle Kiss Chime / Sine swell
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       osc.type = "sine";
-      osc.frequency.setValueAtTime(587.33, now); // D5
-      osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); // A5
-      gain.gain.setValueAtTime(0.3, now);
+      osc.frequency.setValueAtTime(587.33, now);
+      osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
+      gain.gain.setValueAtTime(0.35, now);
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
       osc.connect(gain);
       gain.connect(audioCtx.destination);
       osc.start(now);
       osc.stop(now + 0.35);
     } else if (mode === "snap") {
-      // Crisp mechanical click
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       osc.type = "triangle";
@@ -123,7 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
       osc.start(now);
       osc.stop(now + 0.06);
     } else if (mode === "slam") {
-      // Heavy Boss Slam impact
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       osc.type = "sawtooth";
@@ -136,7 +107,6 @@ document.addEventListener("DOMContentLoaded", () => {
       osc.start(now);
       osc.stop(now + 0.28);
     } else if (mode === "rage") {
-      // Explosive Sonic Boom
       const bufferSize = audioCtx.sampleRate * 0.4;
       const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
       const data = buffer.getChannelData(0);
@@ -157,8 +127,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function animateWaveform() {
-    soundWaveBars.forEach((bar, index) => {
-      const randomHeight = Math.floor(Math.random() * 12) + 4;
+    soundWaveBars.forEach((bar) => {
+      const randomHeight = Math.floor(Math.random() * 14) + 4;
       bar.style.height = `${randomHeight}px`;
       setTimeout(() => {
         bar.style.height = "4px";
@@ -170,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function setHingeAngle(angle, simulatedVelocity = null) {
     const currentAngle = parseInt(angle, 10);
     const now = performance.now();
-    const dt = (now - lastTimestamp) / 1000; // seconds
+    const dt = (now - lastTimestamp) / 1000;
 
     if (simulatedVelocity !== null) {
       calculatedVelocity = simulatedVelocity;
@@ -182,68 +152,82 @@ document.addEventListener("DOMContentLoaded", () => {
     lastAngle = currentAngle;
     lastTimestamp = now;
 
-    // Update displays
     if (hingeSlider) hingeSlider.value = currentAngle;
     if (angleDisplay) angleDisplay.textContent = `${currentAngle}°`;
     if (gaugeAngle) gaugeAngle.textContent = `${currentAngle}°`;
     if (liveSpeedBadge) liveSpeedBadge.textContent = `${calculatedVelocity}°/s`;
 
-    // 3D Transform: 180° = flat (0deg rotation), 0° = closed (-180deg rotation)
     const rotateY = -(180 - currentAngle);
     if (phoneLeftPanel) {
       phoneLeftPanel.style.transform = `rotateY(${rotateY}deg)`;
     }
 
-    // Trigger Fold Detection if fully closed (< 15°)
     if (currentAngle <= 15 && lastAngle > 15) {
-      triggerFoldEvent(calculatedVelocity);
+      applyReaction(null, calculatedVelocity);
     }
   }
 
-  function triggerFoldEvent(velocity) {
-    foldCount++;
-    if (metricFolds) metricFolds.textContent = foldCount;
-
-    if (velocity > peakSpeed) {
-      peakSpeed = velocity;
-      if (metricPeak) metricPeak.textContent = `${peakSpeed}°/s`;
-    }
-
-    // Classify Reaction Mode
-    let mode = "snap";
+  // Apply Reaction: Updates Emoji, Title, Sound, Gauges, and Active Cards
+  function applyReaction(explicitMode, speed) {
+    let mode = explicitMode;
     let emoji = "📱";
     let title = "Classic Snap";
 
-    if (velocity < 120) {
-      mode = "kiss";
+    if (!mode) {
+      if (speed < 120) mode = "kiss";
+      else if (speed <= 300) mode = "snap";
+      else if (speed <= 600) mode = "slam";
+      else mode = "rage";
+    }
+
+    if (mode === "kiss") {
       emoji = "💋";
       title = "Lover's Kiss";
-    } else if (velocity <= 300) {
-      mode = "snap";
+    } else if (mode === "snap") {
       emoji = "📱";
       title = "Classic Snap";
-    } else if (velocity <= 600) {
-      mode = "slam";
+    } else if (mode === "slam") {
       emoji = "🐷";
       title = "Boss Slam";
-    } else {
-      mode = "rage";
+    } else if (mode === "rage") {
       emoji = "💥";
       title = "Rage Mode";
     }
 
+    foldCount++;
+    if (metricFolds) metricFolds.textContent = foldCount;
+
+    if (speed > peakSpeed) {
+      peakSpeed = speed;
+      if (metricPeak) metricPeak.textContent = `${peakSpeed}°/s`;
+    }
+
+    if (liveSpeedBadge) liveSpeedBadge.textContent = `${speed}°/s`;
+
+    // Update screen display on left phone
     if (reactionEmoji) {
       reactionEmoji.textContent = emoji;
-      reactionEmoji.style.transform = "scale(1.3)";
+      reactionEmoji.style.transform = "scale(1.4)";
       setTimeout(() => {
         reactionEmoji.style.transform = "scale(1)";
-      }, 200);
+      }, 250);
     }
     if (reactionTitle) reactionTitle.textContent = title;
     if (currentModeLabel) currentModeLabel.textContent = title;
 
     playReactionSound(mode);
     highlightActiveReactionCard(mode);
+
+    // Sync button active states
+    if (foldActionBtns) {
+      foldActionBtns.forEach(b => {
+        if (b.getAttribute("data-mode") === mode) {
+          b.classList.add("active");
+        } else {
+          b.classList.remove("active");
+        }
+      });
+    }
   }
 
   function highlightActiveReactionCard(mode) {
@@ -256,6 +240,24 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Fold Action Buttons Click Handlers (Gentle, Normal, Slam, Rage)
+  foldActionBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      initAudio();
+      const speed = parseInt(btn.getAttribute("data-speed"), 10) || 240;
+      const mode = btn.getAttribute("data-mode") || "snap";
+
+      // 1. Instantly display reaction emoji & sound
+      applyReaction(mode, speed);
+
+      // 2. Animate 3D fold
+      setHingeAngle(0, speed);
+      setTimeout(() => {
+        setHingeAngle(180, 80);
+      }, 700);
+    });
+  });
+
   // Slider Listener
   if (hingeSlider) {
     hingeSlider.addEventListener("input", (e) => {
@@ -263,95 +265,49 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Preset Buttons
+  // Preset Buttons (180, 90, 45, 0)
   presetButtons.forEach(btn => {
     btn.addEventListener("click", () => {
       presetButtons.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       const targetAngle = btn.getAttribute("data-angle");
       if (targetAngle !== null) {
-        setHingeAngle(targetAngle, 200);
+        setHingeAngle(targetAngle, 180);
       }
     });
   });
 
-  // Test Fast Fold Button
-  if (btnSnapTest) {
-    btnSnapTest.addEventListener("click", () => {
-      initAudio();
-      setHingeAngle(180);
-      setTimeout(() => {
-        setHingeAngle(0, 520);
-        setTimeout(() => {
-          setHingeAngle(180, 100);
-        }, 600);
-      }, 150);
-    });
-  }
-
-  // Reaction Cards Sound Buttons
+  // Reaction Cards Click Listener
   reactionCards.forEach(card => {
     card.addEventListener("click", () => {
       const mode = card.getAttribute("data-mode");
-      const speed = parseInt(card.getAttribute("data-speed"), 10) || 200;
-      highlightActiveReactionCard(mode);
-      triggerFoldEvent(speed);
+      const speed = parseInt(card.getAttribute("data-speed"), 10) || 240;
+      applyReaction(mode, speed);
+      setHingeAngle(0, speed);
+      setTimeout(() => {
+        setHingeAngle(180, 80);
+      }, 700);
     });
   });
 
-  // Supabase config
-  const SUPABASE_URL = "https://nxodbwoiwnplbzjdepib.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_oBqdUjVQYGL_U5SR6OELag_aM76Uw6F";
-
   // Waitlist Submissions
-  async function handleWaitlist(e, form) {
+  function handleWaitlist(e, form) {
     e.preventDefault();
-    const input = form.querySelector('input[type="email"]');
+    const input = form.querySelector("input[type=\"email\"]");
     if (!input || !input.value) return;
 
-    const email = input.value.trim();
-    const source = form.id === "footer-waitlist-form" ? "footer" : "hero";
-    const btn = form.querySelector("button");
+    const emails = JSON.parse(localStorage.getItem("hingejoy_waitlist") || "[]");
+    emails.push({ email: input.value, timestamp: new Date().toISOString() });
+    localStorage.setItem("hingejoy_waitlist", JSON.stringify(emails));
 
-    if (btn) {
-      btn.disabled = true;
-      btn.innerHTML = "<span>Saving...</span>";
+    if (waitlistSuccess) {
+      waitlistSuccess.classList.remove("hidden");
     }
-
-    try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
-        method: "POST",
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Authorization": `Bearer ${SUPABASE_KEY}`,
-          "Content-Type": "application/json",
-          "Prefer": "return=minimal"
-        },
-        body: JSON.stringify({ email, source })
-      });
-
-      if (res.ok || res.status === 201) {
-        if (waitlistSuccess) waitlistSuccess.classList.remove("hidden");
-        input.value = "";
-        if (btn) {
-          btn.innerHTML = "<span>Spot Secured ✓</span>";
-          btn.style.background = "#34c759";
-        }
-      } else if (res.status === 409) {
-        // Duplicate email
-        if (btn) {
-          btn.disabled = false;
-          btn.innerHTML = "<span>Already registered ✓</span>";
-          btn.style.background = "#636366";
-        }
-      } else {
-        throw new Error(`HTTP ${res.status}`);
-      }
-    } catch (err) {
-      if (btn) {
-        btn.disabled = false;
-        btn.innerHTML = "<span>Try again</span>";
-      }
+    input.value = "";
+    const btn = form.querySelector("button");
+    if (btn) {
+      btn.innerHTML = "<span>Spot Secured ✓</span>";
+      btn.style.background = "#34c759";
     }
   }
 
@@ -361,5 +317,4 @@ document.addEventListener("DOMContentLoaded", () => {
   if (footerWaitlistForm) {
     footerWaitlistForm.addEventListener("submit", (e) => handleWaitlist(e, footerWaitlistForm));
   }
-
 });
