@@ -144,27 +144,102 @@
           </div>
         </div>
 
-        <!-- HERO VIDEO -->
+        <!-- HERO VISUAL: 3D SIMULATOR & DEMO TABS -->
         <div class="hero-visual">
-          <div class="hero-video-card">
+          <div class="simulator-card">
             <div class="sim-header">
               <div class="sim-status">
                 <span class="status-indicator"></span>
-                <span>LIVE ON IPHONE DUO</span>
+                <span>LIVE HINGE ENGINE</span>
               </div>
-              <div class="sim-speed-badge">Demo</div>
+              <div class="sim-tabs">
+                <button type="button" class="sim-tab active" id="tab-sim">3D Interactive</button>
+                <button type="button" class="sim-tab" id="tab-video">🎬 Video Demo</button>
+              </div>
+              <div class="sim-speed-badge" id="live-speed-badge">0°/s</div>
             </div>
-            <div class="hero-video-stage">
-              <video
-                src="assets/demo.mp4"
-                autoplay
-                muted
-                loop
-                playsinline
-                poster="assets/og-card.png"
-                aria-label="HingeJoy app demo — fold reactions and telemetry on iPhone Duo"
-              ></video>
+
+            <!-- TAB 1: 3D DUO PHONE MODEL -->
+            <div class="tab-content" id="content-sim">
+              <div class="phone-stage">
+                <div class="phone-duo" id="phone-model">
+                  <!-- Left Screen (FUN) -->
+                  <div class="phone-panel panel-left">
+                    <div class="screen-content screen-fun">
+                      <div class="app-mini-header">
+                        <span class="mini-tag">FUN</span>
+                        <span class="mini-mode" id="current-mode-label">Classic Snap</span>
+                      </div>
+                      <div class="reaction-emoji-display" id="reaction-emoji">📱</div>
+                      <div class="reaction-sound-title" id="reaction-title">Classic Snap</div>
+                      <div class="sound-wave-bars">
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Physical Hinge Spine -->
+                  <div class="phone-hinge-spine"></div>
+
+                  <!-- Right Screen (MY HINGE) -->
+                  <div class="phone-panel panel-right">
+                    <div class="screen-content screen-telemetry">
+                      <div class="app-mini-header">
+                        <span class="mini-tag blue">MY HINGE</span>
+                        <span class="mini-battery">100%</span>
+                      </div>
+                      <div class="telemetry-gauge">
+                        <div class="gauge-value" id="gauge-angle">180°</div>
+                        <div class="gauge-label">HINGE ANGLE</div>
+                      </div>
+                      <div class="telemetry-mini-grid">
+                        <div class="mini-metric">
+                          <span class="m-val" id="metric-folds">12</span>
+                          <span class="m-lbl">FOLDS TODAY</span>
+                        </div>
+                        <div class="mini-metric">
+                          <span class="m-val" id="metric-peak">480°/s</span>
+                          <span class="m-lbl">PEAK SPEED</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Simulator Controls -->
+              <div class="sim-controls">
+                <div class="control-row">
+                  <span class="ctrl-label">Hinge Angle: <strong id="angle-display">180°</strong></span>
+                  <span class="ctrl-hint">Drag slider or tap presets to fold</span>
+                </div>
+                <input type="range" id="hinge-slider" min="0" max="180" value="180" step="1" class="custom-range" aria-label="Hinge Angle Controller in degrees">
+                
+                <div class="preset-buttons">
+                  <button type="button" class="btn-preset" data-angle="180">180° Flat</button>
+                  <button type="button" class="btn-preset" data-angle="90">90° Tent</button>
+                  <button type="button" class="btn-preset" data-angle="45">45° Peeking</button>
+                  <button type="button" class="btn-preset active" id="btn-snap-test">⚡ Test Fast Fold</button>
+                </div>
+              </div>
             </div>
+
+            <!-- TAB 2: VIDEO DEMO -->
+            <div class="tab-content hidden" id="content-video">
+              <div class="hero-video-stage">
+                <video
+                  src="assets/demo.mp4"
+                  autoplay
+                  muted
+                  loop
+                  playsinline
+                  controls
+                  poster="assets/og-card.png"
+                  aria-label="HingeJoy app demo — fold reactions and telemetry on iPhone Duo"
+                ></video>
+              </div>
+            </div>
+
           </div>
         </div>
 

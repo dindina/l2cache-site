@@ -1,6 +1,29 @@
 // HingeJoy Interactive Web Experience
 
 document.addEventListener("DOMContentLoaded", () => {
+
+  // Simulator vs Video Tab Switching
+  const tabSim = document.getElementById("tab-sim");
+  const tabVideo = document.getElementById("tab-video");
+  const contentSim = document.getElementById("content-sim");
+  const contentVideo = document.getElementById("content-video");
+
+  if (tabSim && tabVideo && contentSim && contentVideo) {
+    tabSim.addEventListener("click", () => {
+      tabSim.classList.add("active");
+      tabVideo.classList.remove("active");
+      contentSim.classList.remove("hidden");
+      contentVideo.classList.add("hidden");
+    });
+
+    tabVideo.addEventListener("click", () => {
+      tabVideo.classList.add("active");
+      tabSim.classList.remove("active");
+      contentVideo.classList.remove("hidden");
+      contentSim.classList.add("hidden");
+    });
+  }
+
   // DOM Elements
   const hingeSlider = document.getElementById("hinge-slider");
   const angleDisplay = document.getElementById("angle-display");
