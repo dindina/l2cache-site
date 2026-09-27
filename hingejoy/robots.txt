@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hingejoy.amvo.store/sitemap.xml

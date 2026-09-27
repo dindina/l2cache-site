@@ -6,10 +6,22 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "X-DNS-Prefetch-Control", "value": "on" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-DNS-Prefetch-Control",
+          "value": "on"
+        }
       ]
     }
   ],
@@ -17,8 +29,22 @@
     {
       "source": "/",
       "missing": [
-        { "type": "host", "value": "amvo.store" },
-        { "type": "host", "value": "www.amvo.store" }
+        {
+          "type": "host",
+          "value": "amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "hingejoy.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.hingejoy.amvo.store"
+        }
       ],
       "destination": "/en",
       "permanent": true
@@ -26,8 +52,22 @@
     {
       "source": "/:lang(zh-Hans|fr|de|it|ja|ko|pt-BR|es|vi)/tools/:tool*",
       "missing": [
-        { "type": "host", "value": "amvo.store" },
-        { "type": "host", "value": "www.amvo.store" }
+        {
+          "type": "host",
+          "value": "amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "hingejoy.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.hingejoy.amvo.store"
+        }
       ],
       "destination": "/en/tools/:tool*",
       "permanent": true
@@ -35,8 +75,22 @@
     {
       "source": "/:lang(zh-Hans|fr|de|it|ja|ko|pt-BR|es|vi)/:page((?!$)[^/]+)",
       "missing": [
-        { "type": "host", "value": "amvo.store" },
-        { "type": "host", "value": "www.amvo.store" }
+        {
+          "type": "host",
+          "value": "amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "hingejoy.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.hingejoy.amvo.store"
+        }
       ],
       "destination": "/en/:page",
       "permanent": true
@@ -44,8 +98,22 @@
     {
       "source": "/tools/:tool*",
       "missing": [
-        { "type": "host", "value": "amvo.store" },
-        { "type": "host", "value": "www.amvo.store" }
+        {
+          "type": "host",
+          "value": "amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "hingejoy.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.hingejoy.amvo.store"
+        }
       ],
       "destination": "/en/tools/:tool*",
       "permanent": true
@@ -53,8 +121,22 @@
     {
       "source": "/:page((?!en|zh-Hans|fr|de|it|ja|ko|pt-BR|es|vi|_vercel|tools|icon\\.png|theme\\.css|screenshots|sitemap\\.xml|robots\\.txt|benchmark_dataset_2026\\.csv|llms\\.txt|llms-full\\.txt)[^/]+)",
       "missing": [
-        { "type": "host", "value": "amvo.store" },
-        { "type": "host", "value": "www.amvo.store" }
+        {
+          "type": "host",
+          "value": "amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "hingejoy.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.hingejoy.amvo.store"
+        }
       ],
       "destination": "/en/:page",
       "permanent": true
@@ -63,12 +145,46 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "has": [{ "type": "host", "value": "amvo.store" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "hingejoy.amvo.store"
+        }
+      ],
+      "destination": "/hingejoy/$1"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.hingejoy.amvo.store"
+        }
+      ],
+      "destination": "/hingejoy/$1"
+    },
+    {
+      "source": "/hingejoy/(.*)",
+      "destination": "/hingejoy/$1"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "amvo.store"
+        }
+      ],
       "destination": "/amvo-store/$1"
     },
     {
       "source": "/(.*)",
-      "has": [{ "type": "host", "value": "www.amvo.store" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.amvo.store"
+        }
+      ],
       "destination": "/amvo-store/$1"
     },
     {

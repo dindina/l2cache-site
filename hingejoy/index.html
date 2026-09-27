@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HingeJoy — Fun starts at the fold. Native iPhone Duo App</title>
+  <meta name="description" content="The world's first playful companion & precision telemetry dashboard for iPhone Duo. Interactive fold sounds, physical velocity tracking, and peer comparisons.">
+  <meta name="keywords" content="iPhone Duo, HingeJoy, Foldable Phone, Hinge Telemetry, Fold Sounds, Swift, iOS, Native">
+  
+  <!-- OpenGraph / Social Meta Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hingejoy.amvo.store/">
+  <meta property="og:title" content="HingeJoy — Fun starts at the fold.">
+  <meta property="og:description" content="Physical fold sounds, reactions, and precision hinge telemetry built exclusively for iPhone Duo.">
+  <meta property="og:image" content="https://hingejoy.amvo.store/assets/og-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="HingeJoy — Fun starts at the fold.">
+  <meta name="twitter:description" content="The hinge is part of the interface. Discover physical sounds & telemetry on iPhone Duo.">
+  <meta name="twitter:image" content="https://hingejoy.amvo.store/assets/og-card.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="canonical" href="https://hingejoy.amvo.store/">
+  <meta name="theme-color" content="#07070a">
+  <meta property="og:site_name" content="HingeJoy">
+  <meta name="twitter:site" content="@amvostore">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2307070a'/><rect x='6' y='8' width='6' height='16' rx='2' fill='%238e8e93'/><rect x='15' y='5' width='2' height='22' rx='1' fill='%23ff007a'/><rect x='20' y='8' width='6' height='16' rx='2' fill='%2300f2fe'/></svg>">
+  <link rel="apple-touch-icon" href="assets/icon.png">
+
+  <!-- JSON-LD Structured Data Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "HingeJoy",
+    "headline": "Fun starts at the fold.",
+    "description": "The world's first playful companion & precision telemetry dashboard for iPhone Duo. Interactive fold sounds, physical velocity tracking, and peer comparisons.",
+    "operatingSystem": "iOS 18+ (iPhone Duo)",
+    "applicationCategory": "EntertainmentApplication",
+    "applicationSubCategory": "Utilities",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD",
+      "category": "Freemium"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Amvotech",
+      "url": "https://amvo.store"
+    },
+    "url": "https://hingejoy.amvo.store"
+  }
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background Ambient Glows -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
+
+  <!-- STICKY NAVIGATION -->
+  <header class="navbar-wrapper">
+    <nav class="navbar">
+      <a href="#" class="nav-brand">
+        <div class="brand-icon">
+          <div class="hinge-dot left"></div>
+          <div class="hinge-spine"></div>
+          <div class="hinge-dot right"></div>
+        </div>
+        <span class="brand-name">HingeJoy</span>
+        <span class="badge-duo">iPhone Duo</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#playground">Playground</a>
+        <a href="#games">Fold Games</a>
+        <a href="#dual-experience">Fun & Telemetry</a>
+        <a href="#peer-stats">Fold Personality</a>
+        <a href="#transition">How It Works</a>
+        <a href="#faq">FAQ</a>
+      </div>
+
+      <div class="nav-actions">
+        <a href="#waitlist" class="btn-primary-sm">
+          <span>Join Beta</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HERO SECTION -->
+    <section class="hero-section" id="hero">
+      <div class="container hero-container">
+        
+        <div class="hero-content">
+          <div class="eyebrow-pill">
+            <span class="pulse-dot"></span>
+            <span>Exclusively engineered for iPhone Duo</span>
+          </div>
+
+          <h1 class="hero-title">
+            Fun starts<br>
+            <span class="gradient-text">at the fold.</span>
+          </h1>
+
+          <p class="hero-subtitle">
+            The hinge is part of the interface. Turn physical folding into playful sounds, dynamic reactions, and precision shut-speed telemetry with peer ranking.
+          </p>
+
+          <!-- CONVERSION CTA -->
+          <div class="waitlist-card" id="waitlist">
+            <form id="waitlist-form" class="waitlist-form">
+              <div class="input-wrapper">
+                <svg class="mail-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <input type="email" id="email-input" placeholder="Enter your Apple ID / Email" required>
+              </div>
+              <button type="submit" class="btn-glow">
+                <span>Claim Free Lifetime Pro</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </form>
+            <div id="waitlist-success" class="waitlist-success hidden">
+              🎉 <strong>You're in the first 50!</strong> You'll receive a free lifetime Pro code with your TestFlight invitation.
+            </div>
+
+            <div class="social-proof">
+              <div class="avatar-group">
+                <span class="avatar av-1">📱</span>
+                <span class="avatar av-2">⚡</span>
+                <span class="avatar av-3">✨</span>
+              </div>
+              <span class="proof-text"><strong>First 50 members get free lifetime Pro</strong> · TestFlight + iPhone Duo exclusive</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- HERO VIDEO -->
+        <div class="hero-visual">
+          <div class="hero-video-card">
+            <div class="sim-header">
+              <div class="sim-status">
+                <span class="status-indicator"></span>
+                <span>LIVE ON IPHONE DUO</span>
+              </div>
+              <div class="sim-speed-badge">Demo</div>
+            </div>
+            <div class="hero-video-stage">
+              <video
+                src="assets/demo.mp4"
+                autoplay
+                muted
+                loop
+                playsinline
+                poster="assets/og-card.png"
+                aria-label="HingeJoy app demo — fold reactions and telemetry on iPhone Duo"
+              ></video>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: PLAYGROUND & SOUND MODES -->
+    <section class="section playground-section" id="playground">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="section-pill">Physical Audio Synthesis</div>
+          <h2 class="section-title">4 Intensity Levels. Infinite Satisfaction.</h2>
+          <p class="section-desc">Our Swift UIKit engine measures physical angular velocity in real time. Fold gently for a whisper, or slam it shut for total impact.</p>
+        </div>
+
+        <div class="reactions-grid">
+          
+          <!-- Mode 1: Lover's Kiss -->
+          <div class="reaction-card" data-mode="kiss" data-speed="80">
+            <div class="card-glow"></div>
+            <div class="reaction-top">
+              <span class="reaction-speed-range">&lt; 120°/s · Gentle</span>
+              <button class="btn-play-sound" aria-label="Play Lover's Kiss sound">🔊</button>
+            </div>
+            <div class="reaction-icon">💋</div>
+            <h3 class="reaction-name">Lover's Kiss</h3>
+            <p class="reaction-desc">A gentle, tender fold. Rewards your soft hands with a sweet "Mwah!" chime.</p>
+            <div class="reaction-badge badge-gentle">Soft & Subtle</div>
+          </div>
+
+          <!-- Mode 2: Classic Snap -->
+          <div class="reaction-card active" data-mode="snap" data-speed="240">
+            <div class="card-glow"></div>
+            <div class="reaction-top">
+              <span class="reaction-speed-range">120 – 300°/s · Normal</span>
+              <button class="btn-play-sound" aria-label="Play Classic Snap sound">🔊</button>
+            </div>
+            <div class="reaction-icon">📱</div>
+            <h3 class="reaction-name">Classic Snap</h3>
+            <p class="reaction-desc">The authentic, crisp physical click reminiscent of high-end tactile switches.</p>
+            <div class="reaction-badge badge-normal">Everyday Favorite</div>
+          </div>
+
+          <!-- Mode 3: Boss Slam -->
+          <div class="reaction-card" data-mode="slam" data-speed="480">
+            <div class="card-glow"></div>
+            <div class="reaction-top">
+              <span class="reaction-speed-range">300 – 600°/s · Hard</span>
+              <button class="btn-play-sound" aria-label="Play Boss Slam sound">🔊</button>
+            </div>
+            <div class="reaction-icon">🐷</div>
+            <h3 class="reaction-name">Boss Slam</h3>
+            <p class="reaction-desc">Ending a frustrating meeting? Slam the Duo shut for a triumphant "OOOOINK!" blast.</p>
+            <div class="reaction-badge badge-hard">High Energy</div>
+          </div>
+
+          <!-- Mode 4: Rage Mode -->
+          <div class="reaction-card" data-mode="rage" data-speed="750">
+            <div class="card-glow"></div>
+            <div class="reaction-top">
+              <span class="reaction-speed-range">&gt; 600°/s · Extreme</span>
+              <button class="btn-play-sound" aria-label="Play Rage Mode sound">🔊</button>
+            </div>
+            <div class="reaction-icon">💥</div>
+            <h3 class="reaction-name">Rage Mode</h3>
+            <p class="reaction-desc">Maximum angular velocity. Screen shake, explosive fireworks, and sonic boom audio.</p>
+            <div class="reaction-badge badge-rage">Extreme Slam</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: THE DUAL EXPERIENCE (FUN | MY HINGE) -->
+    <section class="section dual-section" id="dual-experience">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="section-pill">The Dual Reality</div>
+          <h2 class="section-title">Divided by the Hinge. United in Delight.</h2>
+          <p class="section-desc">When open, iPhone Duo’s physical hinge acts as a natural separator. Left for play, Right for personal stats.</p>
+        </div>
+
+        <div class="dual-comparison-panel">
+          
+          <!-- LEFT SIDE: FUN -->
+          <div class="dual-half half-fun">
+            <div class="half-header">
+              <span class="half-tag">LEFT SIDE</span>
+              <h3 class="half-title">FUN & Playful Modes</h3>
+            </div>
+            <ul class="feature-checklist">
+              <li>
+                <div class="check-icon">✨</div>
+                <div>
+                  <strong>Dynamic Fold Sounds:</strong>
+                  <span>4 intensity levels — from a gentle kiss to a full rage slam.</span>
+                </div>
+              </li>
+              <li>
+                <div class="check-icon">🎯</div>
+                <div>
+                  <strong>Angle It!:</strong>
+                  <span>Hit exact target degrees using only physical muscle memory and haptic ticks.</span>
+                </div>
+              </li>
+              <li>
+                <div class="check-icon">🍳</div>
+                <div>
+                  <strong>Egg Cracker:</strong>
+                  <span>Fold at just the right velocity to crack the egg — too gentle or too hard and you fail.</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- PHYSICAL HINGE DIVIDER -->
+          <div class="dual-spine">
+            <div class="spine-line"></div>
+            <div class="spine-pill">PHYSICAL HINGE</div>
+            <div class="spine-line"></div>
+          </div>
+
+          <!-- RIGHT SIDE: MY HINGE -->
+          <div class="dual-half half-telemetry">
+            <div class="half-header">
+              <span class="half-tag tag-blue">RIGHT SIDE</span>
+              <h3 class="half-title">MY HINGE Telemetry</h3>
+            </div>
+            <ul class="feature-checklist">
+              <li>
+                <div class="check-icon">🔢</div>
+                <div>
+                  <strong>Fold Odometer:</strong>
+                  <span>Running lifetime fold count with milestone goals — 1K, 5K, 10K and beyond.</span>
+                </div>
+              </li>
+              <li>
+                <div class="check-icon">📊</div>
+                <div>
+                  <strong>7-Day History & Habits:</strong>
+                  <span>Daily fold rhythm, average close speed, and gentle percentage — all on device.</span>
+                </div>
+              </li>
+              <li>
+                <div class="check-icon">🏅</div>
+                <div>
+                  <strong>Achievements & Badges:</strong>
+                  <span>Earn Soft Hands, Gentle Streak, Time Capsule and more based on your real fold patterns.</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- SECTION: FOLD GAMES (ANGLE IT! & EGG CRACKER) -->
+    <section class="section games-section" id="games">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="section-pill">Physical Mini-Games</div>
+          <h2 class="section-title">The Hinge as a Game Controller</h2>
+          <p class="section-desc">Who said a folding phone is just for screens? Use physical muscle memory, tactile angles, and fold velocity in arcade mini-games.</p>
+        </div>
+
+        <div class="games-grid">
+          
+          <!-- GAME 1: ANGLE IT! -->
+          <div class="game-card">
+            <div class="game-badge">Precision Target Challenge</div>
+            <div class="game-visual game-angle-visual">
+              <div class="protractor-ring">
+                <div class="protractor-needle"></div>
+                <div class="protractor-target">90°</div>
+              </div>
+              <div class="game-score-tag">Score: 98.4% Match</div>
+            </div>
+            <div class="game-body">
+              <div class="game-title-row">
+                <span class="game-icon">🎯</span>
+                <h3 class="game-title">Angle It!</h3>
+              </div>
+              <p class="game-desc">
+                Test your physical muscle memory. Match target degrees (45°, 90°, 135°) blindfolded using only your hand feel, guided by haptic tick feedback.
+              </p>
+              <ul class="game-features">
+                <li><span>✦ Real-time sub-degree protractor tracking</span></li>
+                <li><span>✦ Progressive time-attack & streak modes</span></li>
+                <li><span>✦ Ultra-satisfying CoreHaptics click ticks</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- GAME 2: EGG CRACKER -->
+          <div class="game-card">
+            <div class="game-badge badge-egg">Physics & Velocity Control</div>
+            <div class="game-visual game-egg-visual">
+              <div class="egg-stage">
+                <div class="egg-graphic">🥚</div>
+                <div class="crack-spark">⚡</div>
+              </div>
+              <div class="game-score-tag speed-tag">Target: 320°/s Impact</div>
+            </div>
+            <div class="game-body">
+              <div class="game-title-row">
+                <span class="game-icon">🍳</span>
+                <h3 class="game-title">Egg Cracker</h3>
+              </div>
+              <p class="game-desc">
+                Fold at just the right closing velocity to crack the golden egg! Fold too gently and nothing happens; slam it too hard and you splatter yolk everywhere.
+              </p>
+              <ul class="game-features">
+                <li><span>✦ Physics-based velocity threshold detection</span></li>
+                <li><span>✦ Unlockable surprise eggs & quirky collectibles</span></li>
+                <li><span>✦ Hilarious visual splatter animations</span></li>
+              </ul>
+            </div>
+          </div>
+
+
+          <!-- CARD 3: FUTURE ARCADE ROADMAP -->
+          <div class="game-card roadmap-game-card">
+            <div class="game-badge badge-future">Expanding Hinge Arcade</div>
+            <div class="game-visual game-future-visual">
+              <div class="future-icons-cloud">
+                <span class="f-icon">🪗</span>
+                <span class="f-icon">🏓</span>
+                <span class="f-icon">🔐</span>
+                <span class="f-icon">🚀</span>
+              </div>
+              <div class="game-score-tag future-tag">+ More Games Every Month</div>
+            </div>
+            <div class="game-body">
+              <div class="game-title-row">
+                <span class="game-icon">🔮</span>
+                <h3 class="game-title">More Fold Games Incoming</h3>
+              </div>
+              <p class="game-desc">
+                Angle It! and Egg Cracker are just the beginning. We're actively building a full suite of physical fold experiences:
+              </p>
+              <ul class="game-features">
+                <li><span>✦ <strong>Foldstrument:</strong> Continuous accordion & theremin synthesis</span></li>
+                <li><span>✦ <strong>Safe Cracker:</strong> Haptic dial combination lock game</span></li>
+                <li><span>✦ <strong>Hinge Flap:</strong> Control flight altitude with hinge flap physics</span></li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: PEER COMPARISONS & PERSONALITY -->
+    <section class="section peer-section" id="peer-stats">
+      <div class="container">
+        
+        <div class="peer-grid">
+          
+          <div class="peer-info">
+            <div class="section-pill">Fold Personality</div>
+            <h2 class="section-title">What Kind of Folder Are You?</h2>
+            <p class="section-desc">
+              Are you a gentle closer or a speed demon? HingeJoy scores your fold style against a built-in physics distribution model — no accounts, no data sent anywhere.
+            </p>
+
+            <div class="personality-badges-row">
+              <div class="perso-badge">
+                <span class="p-emoji">🕶️</span>
+                <span class="p-name">Smooth Operator</span>
+                <span class="p-sub">Top 5% Consistency</span>
+              </div>
+              <div class="perso-badge">
+                <span class="p-emoji">⚡</span>
+                <span class="p-name">Speed Demon</span>
+                <span class="p-sub">&gt; 500°/s Average</span>
+              </div>
+              <div class="perso-badge">
+                <span class="p-emoji">🎭</span>
+                <span class="p-name">Drama Queen</span>
+                <span class="p-sub">Slam Master</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- INTERACTIVE PERCENTILE CARD -->
+          <div class="peer-interactive-card">
+            <div class="card-header">
+              <span class="c-title">Fold Velocity Distribution</span>
+              <span class="c-tag">Interactive</span>
+            </div>
+
+            <div class="percentile-visual">
+              <div class="curve-graphic">
+                <div class="curve-bar b1" style="height: 25%"></div>
+                <div class="curve-bar b2" style="height: 55%"></div>
+                <div class="curve-bar b3" style="height: 85%"></div>
+                <div class="curve-bar b4 active-bar" style="height: 100%">
+                  <div class="user-pin">You (340°/s)</div>
+                </div>
+                <div class="curve-bar b5" style="height: 70%"></div>
+                <div class="curve-bar b6" style="height: 40%"></div>
+                <div class="curve-bar b7" style="height: 15%"></div>
+              </div>
+              <div class="curve-labels">
+                <span>Gentle (&lt;100°/s)</span>
+                <span>Median (240°/s)</span>
+                <span>Extreme (&gt;600°/s)</span>
+              </div>
+            </div>
+
+            <div class="percentile-result-box">
+              <div class="result-number">Faster than <strong>78%</strong> of users</div>
+              <div class="result-label">Based on your closing velocity and angle acceleration</div>
+            </div>
+
+            <div class="share-card-preview">
+              <div class="share-chip">
+                <span>📸 Auto-generates shareable Instagram/X Stories card</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: INNER TO OUTER FLOW -->
+    <section class="section flow-section" id="transition">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="section-pill">Native Lifecycle</div>
+          <h2 class="section-title">From Open Canvas to Cover Screen</h2>
+          <p class="section-desc">Verified architecture tested on Xcode 27.1 iPhone Duo Simulator.</p>
+        </div>
+
+        <div class="flow-steps">
+          
+          <div class="flow-step-card">
+            <div class="step-num">01</div>
+            <div class="step-icon">📖</div>
+            <h4>Open & Armed</h4>
+            <p>HingeJoy is active on the dual inner display, observing continuous angle and velocity.</p>
+          </div>
+
+          <div class="flow-arrow">➔</div>
+
+          <div class="flow-step-card">
+            <div class="step-num">02</div>
+            <div class="step-icon">⚡</div>
+            <h4>Physical Fold</h4>
+            <p>You snap the device shut. Public UIKit hinge interactions calculate your FoldResult in milliseconds.</p>
+          </div>
+
+          <div class="flow-arrow">➔</div>
+
+          <div class="flow-step-card">
+            <div class="step-num">03</div>
+            <div class="step-icon">📱</div>
+            <h4>Outer Display Result</h4>
+            <p>Duo wakes the compact cover screen displaying your reaction animation and stats.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: CTA BANNER -->
+    <section class="section cta-section">
+      <div class="container">
+        <div class="cta-banner">
+          <div class="cta-content">
+            <div class="section-pill">Pre-Launch TestFlight</div>
+            <h2 class="cta-title">Be among the first to experience HingeJoy.</h2>
+            <p class="cta-desc">First 50 members get a free lifetime Pro unlock. After that, Pro is a one-time $3.99 purchase.</p>
+
+            <form class="cta-form" id="footer-waitlist-form">
+              <input type="email" placeholder="Your Apple ID or Email" required>
+              <button type="submit" class="btn-glow">Claim Free Lifetime Pro</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: FAQ -->
+    <section class="section faq-section" id="faq">
+      <div class="container faq-container">
+        <div class="section-header text-center">
+          <div class="section-pill">Questions & Answers</div>
+          <h2 class="section-title">Frequently Asked Questions</h2>
+        </div>
+
+        <div class="faq-accordion">
+          
+          <details class="faq-item" open>
+            <summary class="faq-question">
+              <span>Which devices are supported?</span>
+              <span class="faq-icon">+</span>
+            </summary>
+            <div class="faq-answer">
+              <p>HingeJoy is built natively for Apple’s <strong>iPhone Duo</strong>, taking direct advantage of its dual-screen layout and UIKit physical hinge angle APIs.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>Does HingeJoy measure mechanical "Hinge Health" or wear?</span>
+              <span class="faq-icon">+</span>
+            </summary>
+            <div class="faq-answer">
+              <p><strong>No.</strong> We take engineering integrity seriously. HingeJoy provides playful physics telemetry (angle, velocity, fold counts, shut speed). We do not claim to measure mechanical wear, battery degradation, or hardware health unless Apple provides legitimate public APIs for it.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>Is my fold data stored privately?</span>
+              <span class="faq-icon">+</span>
+            </summary>
+            <div class="faq-answer">
+              <p><strong>100% on-device and private.</strong> We do not track your location, require accounts, or send telemetry to cloud advertising servers. Your fold counts and speed records stay securely on your iPhone.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>How much will HingeJoy cost?</span>
+              <span class="faq-icon">+</span>
+            </summary>
+            <div class="faq-answer">
+              <p>HingeJoy is <strong>Free to download</strong> with core sounds and daily fold counting. The first <strong>50 waitlist members</strong> receive a free lifetime Pro unlock — no strings attached. After that, Pro is a one-time <strong>$3.99 purchase</strong> giving you lifetime access to all sound packs, custom synthesized instruments, and extended telemetry history.</p>
+            </div>
+          </details>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-container">
+      <div class="footer-brand">
+        <div class="brand-row">
+          <div class="brand-icon small">
+            <div class="hinge-spine"></div>
+          </div>
+          <span class="brand-name">HingeJoy</span>
+        </div>
+        <p class="footer-copy">Fun starts at the fold. Native iPhone Duo experience.</p>
+      </div>
+
+      <div class="footer-links-group">
+        <div class="f-col">
+          <span class="f-heading">Product</span>
+          <a href="#playground">Interactive Playground</a>
+          <a href="#dual-experience">Features</a>
+          <a href="#peer-stats">Telemetry & Peers</a>
+          <a href="#transition">How It Works</a>
+        </div>
+        <div class="f-col">
+          <span class="f-heading">Resources</span>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="support.html">Support</a>
+          <a href="#faq">FAQ</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>© 2026 HingeJoy. Crafted with precision for iPhone Duo. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
