@@ -5,14 +5,28 @@
   <meta name="theme-color" content="#0d1117"/>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>How to View & Search OpenAI Codex CLI Sessions</title>
-  <meta name="description" content="Complete guide to OpenAI Codex terminal session history across macOS, Linux, and Windows. Learn where rollout JSONL logs are stored, how to search past prompts, and use the free in-browser viewer."/>
+  <title>How to Find &amp; Resume OpenAI Codex CLI Sessions on Mac</title>
+  <meta name="description" content="Complete guide on how to find and resume OpenAI Codex CLI sessions on Mac. Inspect rollout JSONL logs, track token usage and prompt cache hit rates, and resume in 1 click."/>
   <link rel="canonical" href="https://l2cache.amvo.store/en/codex-session-history-mac">
   <link rel="icon" type="image/png" href="icon.png"/>
   <link rel="apple-touch-icon" href="icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+
+  <!-- OpenGraph -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="L2Cache">
+  <meta property="og:url" content="https://l2cache.amvo.store/en/codex-session-history-mac">
+  <meta property="og:title" content="How to Find &amp; Resume OpenAI Codex CLI Sessions on Mac">
+  <meta property="og:description" content="Complete guide on how to find and resume OpenAI Codex CLI sessions on Mac. Inspect rollout JSONL schemas, track token usage, and resume in 1 click.">
+  <meta property="og:image" content="https://l2cache.amvo.store/screenshots/agent-history1.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Find &amp; Resume OpenAI Codex CLI Sessions on Mac">
+  <meta name="twitter:description" content="Complete guide on how to find and resume OpenAI Codex CLI sessions on Mac. Inspect rollout JSONL schemas, track token usage, and resume in 1 click.">
+  <meta name="twitter:image" content="https://l2cache.amvo.store/screenshots/agent-history1.jpg">
 
   <!-- SEO: SoftwareApplication schema -->
   <script type="application/ld+json">
@@ -37,8 +51,8 @@
   {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    "headline": "How to View & Search OpenAI Codex CLI Sessions",
-    "description": "Complete guide to OpenAI Codex terminal session history across macOS, Linux, and Windows. Learn where rollout JSONL logs are stored, how to search past prompts, and use the free in-browser viewer.",
+    "headline": "How to Find & Resume OpenAI Codex CLI Sessions on Mac",
+    "description": "Complete guide on how to find and resume OpenAI Codex CLI sessions on Mac. Inspect rollout JSONL logs, track token usage and prompt cache hit rates, and resume in 1 click.",
     "author": { "@type": "Organization", "name": "Amvo" },
     "publisher": {
       "@type": "Organization",
@@ -47,7 +61,7 @@
     },
     "mainEntityOfPage": "https://l2cache.amvo.store/en/codex-session-history-mac",
     "datePublished": "2026-09-27",
-    "dateModified": "2026-09-27"
+    "dateModified": "2026-09-30"
   }
   </script>
 
@@ -62,7 +76,7 @@
         "name": "Where does OpenAI Codex store session logs on Mac?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "OpenAI Codex stores session rollout files under `~/.codex/sessions/YYYY/MM/DD/rollout-*.jsonl` organized by date."
+          "text": "OpenAI Codex stores session rollout files under ~/.codex/sessions/YYYY/MM/DD/rollout-*.jsonl organized by date, and long-term memory in ~/.codex/memories.sqlite."
         }
       },
       {
@@ -70,7 +84,15 @@
         "name": "How do I resume an OpenAI Codex terminal session?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "You can run `codex resume` in your terminal to select and continue previous coding sessions."
+          "text": "You can run 'codex resume' in your terminal to pick from recent sessions, or use L2Cache for Mac to search across full transcripts and launch a resume terminal in 1 click."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What data is stored inside a Codex rollout JSONL file?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Each rollout JSONL contains session_meta (AI title, working dir, model), user messages, tool calls (file edits, bash execution), tool outputs, file diffs, and prompt cache token metrics."
         }
       },
       {
@@ -247,16 +269,43 @@
 
 <article class="article-wrap">
 
-  <div class="eyebrow">Developer Guide</div>
-  <h1>How to View & Search <em>OpenAI Codex CLI Sessions</em></h1>
+  <div class="eyebrow">Developer Guide · AI Agent History</div>
+  <h1>How to Find &amp; Resume <em>OpenAI Codex CLI Sessions on Mac</em></h1>
 
-  <p class="lede">When using OpenAI Codex in your terminal, the agent executes complex shell scripts, builds test fixtures, and writes code across multiple directories. Finding past prompt reasoning and tool commands shouldn't require manual file hunting. Here is how to access and search Codex session rollouts across macOS, Linux, and Windows.</p>
+  <p class="lede">When using OpenAI Codex in your terminal, the agent executes complex multi-file refactors, runs bash tests, and generates code diffs across your projects. Finding past prompt reasoning, reviewing modified files, and resuming interrupted sessions shouldn't require manual file hunting. Here is how to find, inspect, and resume OpenAI Codex sessions on macOS.</p>
 
-  <!-- Above-the-fold CTA Box -->
+  <!-- Above-the-fold Quick Reference Box -->
+  <div style="background: var(--bg2); border: 1.5px solid var(--border); border-radius: 14px; padding: 24px; margin: 28px 0 36px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+    <h3 style="margin-top: 0; font-size: 18px; color: var(--text); display: flex; align-items: center; gap: 8px;">
+      <span>⚡</span> OpenAI Codex CLI Session Quick Reference
+    </h3>
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 14px;">
+      <tbody>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 10px 0; color: var(--text-muted); width: 38%;"><strong>Codex Rollout Logs:</strong></td>
+          <td style="padding: 10px 0;"><code>~/.codex/sessions/YYYY/MM/DD/rollout-*.jsonl</code></td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 10px 0; color: var(--text-muted);"><strong>Long-Term Memory:</strong></td>
+          <td style="padding: 10px 0;"><code>~/.codex/memories.sqlite</code></td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 10px 0; color: var(--text-muted);"><strong>CLI Resume Command:</strong></td>
+          <td style="padding: 10px 0;"><code>codex resume</code></td>
+        </tr>
+        <tr>
+          <td style="padding: 10px 0; color: var(--text-muted);"><strong>GUI Search &amp; Token Tracker:</strong></td>
+          <td style="padding: 10px 0; color: #00a87f;"><strong>L2Cache for Mac</strong> (1-click resume &amp; token analytics)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- In-Browser Session Viewer Callout -->
   <div class="callout" style="background: rgba(0, 200, 150, 0.08); border-left: 4px solid var(--purple);">
     <span class="callout-label" style="color: var(--purple); font-weight: 600;">⚡ Instant Session Inspection (Works on Any OS)</span>
     <p style="margin-bottom: 8px;"><strong>Inspect any Codex <code>rollout-*.jsonl</code> session with zero cloud uploads:</strong></p>
-    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 14px;">Use our free, in-browser viewer to inspect user messages, system completions, and tool executions in any web browser.</p>
+    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 14px;">Use our free, in-browser viewer to inspect user messages, system completions, tool executions, and diffs in any browser.</p>
     <div style="display: flex; gap: 12px; flex-wrap: wrap;">
       <a href="tools/claude-session-viewer.html" class="btn-primary" style="padding: 8px 16px; font-size: 13px;">
         Open Free Session Viewer Tool ↗
@@ -269,58 +318,88 @@
 
   <p class="byline">Updated September 2026 · By the team behind L2Cache</p>
 
-  <h2>Where Are Codex Sessions Stored?</h2>
-  <p>OpenAI Codex organizes transcripts in date-based directories under your user home directory:</p>
+  <h2>Where Are Codex Session Logs Stored on macOS?</h2>
+  <p>OpenAI Codex organizes transcripts into date-partitioned JSON Lines files in your home directory:</p>
 
-  <p><strong>macOS &amp; Linux:</strong></p>
-  <pre>~/.codex/sessions/YYYY/MM/DD/rollout-*.jsonl</pre>
+  <p><strong>macOS &amp; Linux Path:</strong></p>
+  <pre><code>~/.codex/sessions/YYYY/MM/DD/rollout-*.jsonl
+~/.codex/memories.sqlite</code></pre>
 
-  <p><strong>Windows:</strong></p>
-  <pre>%USERPROFILE%\.codex\sessions\YYYY\MM\DD\rollout-*.jsonl</pre>
+  <p><strong>Windows Path:</strong></p>
+  <pre><code>%USERPROFILE%\.codex\sessions\YYYY\MM\DD\rollout-*.jsonl</code></pre>
 
   <p>Each session is assigned a unique rollout ID containing the full conversation history, agent actions, tool inputs, and return results formatted in JSON Lines.</p>
 
-  <h2>Built-in Command: Resuming Codex Sessions</h2>
-  <p>To pick up where you left off in your current or recent coding session:</p>
+  <h2 id="rollout-jsonl">Inside the JSONL: What OpenAI Codex CLI Tracks</h2>
+  <p>Every Codex CLI rollout is an append-only <strong>JSON Lines (.jsonl)</strong> stream. Each line captures a distinct phase in the agent's turn loop:</p>
 
-  <pre># Resume recent Codex sessions interactively
-codex resume</pre>
+<pre><code class="language-json">{"type":"session_meta","session_id":"rollout-2026-09-30-0814-jwt-auth","cwd":"/Users/developer/backend","timestamp":"2026-09-30T08:14:10.052Z","model":"o3-mini","aiTitle":"Refactor JWT token validator with clock skew leeway"}
+{"type":"event_msg","role":"user","turn":1,"timestamp":"2026-09-30T08:14:11.120Z","content":"Update our auth middleware to allow 60 seconds clock skew leeway on JWT token expiration"}
+{"type":"tool_call","turn":1,"tool_name":"file_search","arguments":{"pattern":"*auth*.go","dir":"pkg/auth"}}
+{"type":"item_completed","turn":1,"tool_name":"file_search","status":"success","result":"pkg/auth/jwt_validator.go\npkg/auth/middleware.go"}
+{"type":"tool_call","turn":1,"tool_name":"edit_file","arguments":{"file_path":"pkg/auth/jwt_validator.go","instructions":"Add WithLeeway(60 * time.Second) to jwt.ParseWithClaims"}}
+{"type":"item_completed","turn":1,"tool_name":"edit_file","status":"success","diff":"+ claims := &CustomClaims{}\n+ token, err := jwt.ParseWithClaims(tokenString, claims, keyFunc, jwt.WithLeeway(60*time.Second))"}
+{"type":"response_item","role":"assistant","turn":1,"content":"I have updated `pkg/auth/jwt_validator.go` with 60s leeway. All test suites pass."}
+{"type":"turn_metrics","turn":1,"tokens":{"prompt_tokens":3120,"completion_tokens":420,"cached_tokens":18500,"total_tokens":22040},"duration_ms":1890}
+</code></pre>
+
+  <h3>Key Fields Tracked in Codex Rollout Logs:</h3>
+  <ul>
+    <li><strong><code>aiTitle</code></strong>: A concise, model-generated synopsis of the session's objective (e.g., <em>"Refactor JWT token validator with clock skew leeway"</em>). L2Cache uses this to render clean, readable session cards instead of cryptic UUID hashes.</li>
+    <li><strong><code>session_id</code> &amp; <code>model</code></strong>: Unique identifier along with the exact model (such as <code>o3-mini</code> or <code>gpt-4o</code>) utilized during that session.</li>
+    <li><strong><code>event_msg</code> &amp; <code>response_item</code></strong>: Full user prompt inputs paired with the assistant's final response and explanation.</li>
+    <li><strong><code>tool_call</code> &amp; <code>item_completed</code></strong>: Tool executions (such as file searching, command execution, or file editing) including inputs, return data, and inline git-style code diffs.</li>
+    <li><strong>Token Analytics &amp; Prompt Caching</strong>: Detailed breakdown of <code>prompt_tokens</code>, <code>completion_tokens</code>, and <code>cached_tokens</code> (showing tokens retrieved from OpenAI's prompt cache).</li>
+  </ul>
+
+  <h2>How to Resume OpenAI Codex Sessions</h2>
+  <p>To pick up where you left off in your current or recent coding session in the terminal:</p>
+
+<pre><code># Resume recent Codex sessions interactively in your shell
+codex resume
+</code></pre>
 
   <h3>Limitations of Directory-Based Rollout Files:</h3>
   <ul style="margin: 0 0 20px 24px; font-size: 16px; color: var(--text-muted);">
-    <li style="margin-bottom: 8px;"><strong>Date Fragmented:</strong> Because sessions are partitioned by <code>YYYY/MM/DD</code>, finding a prompt from 3 weeks ago requires recursively searching across multiple nested folders.</li>
+    <li style="margin-bottom: 8px;"><strong>Date Fragmented:</strong> Because sessions are partitioned by <code>YYYY/MM/DD</code>, finding a prompt from 3 weeks ago requires recursively searching across dozens of nested folders.</li>
     <li style="margin-bottom: 8px;"><strong>Nested Tool Payloads:</strong> Tool executions are stored as JSON strings inside JSON objects, making quick visual scanning difficult in standard text editors.</li>
+    <li style="margin-bottom: 8px;"><strong>Context Loss:</strong> The native CLI picker shows limited metadata without token counts or search across tool diffs.</li>
   </ul>
 
-  <h2>Parsing Codex Sessions via CLI</h2>
-  <p>You can search across all Codex session files recursively using <code>ripgrep</code> and <code>jq</code>:</p>
+  <h2>Searching Codex Sessions via Terminal (ripgrep &amp; jq)</h2>
+  <p>If you prefer shell scripting, you can search across all Codex session files recursively using <code>find</code>, <code>jq</code>, and <code>grep</code>:</p>
 
-  <pre># Search all past Codex prompts for a keyword
-find ~/.codex/sessions -name "rollout-*.jsonl" -exec jq -r 'select(.type=="USER_INPUT") | .content' {} + | grep -i "docker"
+<pre><code># Search all past Codex prompts for a keyword
+find ~/.codex/sessions -name "rollout-*.jsonl" -exec jq -r 'select(.type=="event_msg") | .content' {} + | grep -i "docker"
 
-# Find recently executed shell commands
-find ~/.codex/sessions -name "rollout-*.jsonl" -exec jq -r 'select(.tool_calls? != null) | .tool_calls[] | .args' {} +</pre>
+# Find recently executed tool commands and file paths
+find ~/.codex/sessions -name "rollout-*.jsonl" -exec jq -r 'select(.type=="tool_call") | .arguments' {} +
+</code></pre>
 
-  <h2>Automated Capture with L2Cache for Mac</h2>
-  <p>Rather than running multi-line shell pipelines to find old prompts, <strong>L2Cache for Mac</strong> runs natively in your menu bar:</p>
+  <h2>Seamless Session Resumption with L2Cache for Mac</h2>
+  <p>Rather than running complex shell pipelines to find old agent conversations, <strong>L2Cache for Mac</strong> runs natively in your menu bar with hotkey access (<code>⌥Space</code>):</p>
 
   <ul style="margin: 0 0 24px 24px; font-size: 16px; color: var(--text-muted);">
-    <li style="margin-bottom: 8px;"><strong>Automatic Developer Albums:</strong> Categorizes AI prompts, Git commands, SQL queries, and code blocks automatically.</li>
-    <li style="margin-bottom: 8px;"><strong>Sub-Millisecond Offline Search:</strong> Uses native SQLite FTS5 for lightning-fast retrieval across thousands of entries.</li>
-    <li style="margin-bottom: 8px;"><strong>Private & Encrypted:</strong> Keeps all history locally on your Mac with biometric Touch ID lock for sensitive API keys and tokens.</li>
+    <li style="margin-bottom: 8px;"><strong>1-Click Terminal Resume:</strong> Select any past Codex or Claude Code session and click <em>"Resume in Terminal"</em> to immediately attach a new shell window.</li>
+    <li style="margin-bottom: 8px;"><strong>Sub-Millisecond Offline Search:</strong> Uses native SQLite FTS5 for instant full-text search across all your past prompts, tool outputs, and modified files.</li>
+    <li style="margin-bottom: 8px;"><strong>Real-Time Token Analytics:</strong> Inspect total prompt tokens, completion tokens, prompt cache hit ratios, and session runtime across all projects.</li>
+    <li style="margin-bottom: 8px;"><strong>100% On-Device &amp; Private:</strong> All indexing and parsing happens strictly on your Mac with zero cloud telemetry.</li>
   </ul>
 
   <div class="cta-card">
-    <h2>Never Lose an AI Prompt or Shell Command</h2>
-    <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto 24px;">L2Cache gives you instant, private, offline access to every command, prompt, and code snippet you work with on macOS.</p>
+    <h2>Never Lose an AI Prompt or Agent Session</h2>
+    <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto 24px;">L2Cache gives you instant, private, offline access to every AI session, command, prompt, and code snippet you work with on macOS.</p>
     <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="btn-primary" target="_blank" rel="noopener">
       Download L2Cache on the Mac App Store
     </a>
-    <p style="font-size: 12px; color: var(--text-dim); margin-top: 14px;">macOS 13 Ventura or later · No subscription required</p>
+    <p style="font-size: 12px; color: var(--text-dim); margin-top: 14px;">macOS 13 Ventura or later · Free download</p>
   </div>
 
   <div class="faq">
     <h2>Frequently Asked Questions</h2>
+    <h3>Where does OpenAI Codex store session logs on Mac?</h3>
+    <p style="color: var(--text-muted);">OpenAI Codex stores session rollout files under <code>~/.codex/sessions/YYYY/MM/DD/rollout-*.jsonl</code> organized by date, with long-term memory in <code>~/.codex/memories.sqlite</code>.</p>
+
     <h3>How do I view Codex session rollouts visually?</h3>
     <p style="color: var(--text-muted);">Drop any <code>rollout-*.jsonl</code> into the free <a href="tools/claude-session-viewer.html" style="color: var(--purple); font-weight: 600;">L2Cache Session Viewer</a>. It parses and renders the entire step-by-step history right in your browser.</p>
 
@@ -328,12 +407,13 @@ find ~/.codex/sessions -name "rollout-*.jsonl" -exec jq -r 'select(.tool_calls? 
     <p style="color: var(--text-muted);">The local rollout files in <code>~/.codex/sessions</code> remain on your machine. Using L2Cache also guarantees zero-cloud data storage with on-device indexing.</p>
 
     <h3>Can I search Claude Code transcripts as well?</h3>
-    <p style="color: var(--text-muted);">Yes! Check out our guide on <a href="claude-code-session-history-mac.html" style="color: var(--purple); font-weight: 600;">searching Claude Code session history on Mac</a>.</p>
+    <p style="color: var(--text-muted);">Yes! Check out our guide on <a href="blog-agent-history-analytics.html" style="color: var(--purple); font-weight: 600;">How to Find &amp; Resume Claude Code Sessions on Mac</a>.</p>
   </div>
 
   <div style="margin-top: 32px; padding: 22px 24px; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; gap: 10px;">
     <div><strong>🗂️ Search sessions in L2Cache:</strong> Visit the <a href="/en/codex-history" style="color: var(--purple); font-weight: 600;">Codex CLI history viewer for Mac</a> to find earlier prompts and project context.</div>
-    <div><strong>🛠️ Free Tool:</strong> Use our <a href="tools/claude-session-viewer.html" style="color: var(--purple); font-weight: 600;">In-Browser Claude & Codex Session Viewer</a>.</div>
+    <div><strong>🛠️ Free Tool:</strong> Use our <a href="tools/claude-session-viewer.html" style="color: var(--purple); font-weight: 600;">In-Browser Claude &amp; Codex Session Viewer</a>.</div>
+    <div><strong>📖 Claude Code Guide:</strong> Read <a href="blog-agent-history-analytics.html" style="color: var(--purple); font-weight: 600;">How to Find &amp; Resume Claude Code Sessions on Mac</a>.</div>
     <div><strong>📖 Terminal Guide:</strong> Learn <a href="mac-command-history.html" style="color: var(--purple); font-weight: 600;">how to search and manage Mac terminal command history</a>.</div>
   </div>
 

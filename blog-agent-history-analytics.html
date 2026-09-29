@@ -5,8 +5,8 @@
   <meta name="theme-color" content="#0d1117"/>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>How to Track & Resume Claude Code Sessions on Mac</title>
-  <meta name="description" content="Track local Claude Code & Codex agent sessions, token usage, prompt cache hit ratios, and session replays with L2Cache on macOS. 100% private."/>
+  <title>How to Find &amp; Resume Claude Code Sessions on Mac</title>
+  <meta name="description" content="Complete guide on how to find and resume Claude Code sessions on Mac. Inspect transcript.jsonl logs, track token usage and prompt cache hit rates, and resume in 1 click."/>
   <link rel="icon" type="image/png" href="icon.png"/>
   <link rel="apple-touch-icon" href="icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -57,16 +57,16 @@
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="L2Cache">
   <meta property="og:url" content="https://l2cache.amvo.store/en/blog-agent-history-analytics">
-  <meta property="og:title" content="How to Track & Resume Claude Code Sessions on Mac">
-  <meta property="og:description" content="Learn how tracking local Claude Code and Codex CLI agent sessions, token usage, prompt cache hit ratios, and session replay inside L2Cache helps software engineers debug AI coding workflows.">
+  <meta property="og:title" content="How to Find &amp; Resume Claude Code Sessions on Mac">
+  <meta property="og:description" content="Learn how tracking local Claude Code agent sessions, transcript.jsonl schemas, token usage, and prompt cache hit ratios helps engineers resume workflows instantly.">
   <meta property="og:image" content="https://l2cache.amvo.store/screenshots/agent-history1.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="L2Cache AI Agent History and Token Analytics UI">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://l2cache.amvo.store/en/blog-agent-history-analytics">
-  <meta name="twitter:title" content="How to Track & Resume Claude Code Sessions on Mac">
-  <meta name="twitter:description" content="Learn how tracking local Claude Code and Codex CLI agent sessions, token usage, prompt cache hit ratios, and session replay inside L2Cache helps software engineers debug AI coding workflows.">
+  <meta name="twitter:title" content="How to Find &amp; Resume Claude Code Sessions on Mac">
+  <meta name="twitter:description" content="Learn how tracking local Claude Code agent sessions, transcript.jsonl schemas, token usage, and prompt cache hit ratios helps engineers resume workflows instantly.">
   <meta name="twitter:image" content="https://l2cache.amvo.store/screenshots/agent-history1.jpg">
 
   <script type="application/ld+json">
@@ -76,11 +76,11 @@
   "@graph": [
     {
       "@type": "BlogPosting",
-      "headline": "How to Track & Resume Claude Code Sessions on Mac",
-      "description": "Learn where Claude Code and Codex store local session logs on macOS, how to resume past sessions with token analytics, and prevent agent memory loss.",
+      "headline": "How to Find & Resume Claude Code Sessions on Mac",
+      "description": "Learn where Claude Code stores local session JSONL logs on macOS, what data is tracked inside transcript files, and how to resume past sessions with full context.",
       "url": "https://l2cache.amvo.store/en/blog-agent-history-analytics",
       "datePublished": "2026-02-10",
-      "dateModified": "2026-09-23",
+      "dateModified": "2026-09-30",
       "author": {
         "@type": "Organization",
         "name": "L2Cache Labs"
@@ -146,7 +146,7 @@
 
 <div class="container">
   <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
-  <h1>How to Track &amp; Resume Claude Code Sessions on Mac</h1>
+  <h1>How to Find &amp; Resume Claude Code Sessions on Mac</h1>
 
   <p>Software engineering workflows have undergone a massive shift. Developers no longer rely solely on basic autocomplete; today, we pair with autonomous CLI coding agents like <strong>Claude Code</strong> and <strong>Codex</strong> to execute multi-turn refactors, write unit tests, and resolve complex edge-case bugs across full repositories.</p>
 
@@ -189,17 +189,37 @@
   <h2 id="log-locations">Where Are Claude Code &amp; Codex Session Logs Stored on macOS?</h2>
   <p>When running agentic coding assistants in your terminal, every prompt, tool response, and diff is recorded locally on disk:</p>
   <ul>
-    <li><strong>Claude Code</strong> stores conversation logs inside your user home directory at <code>~/.claude/projects/</code>. Project directories contain raw JSONL session records with timestamps, tokens, and bash tool output.</li>
-    <li><strong>Codex CLI</strong> maintains session memories and tool execution databases inside <code>~/.codex/memories.sqlite</code>.</li>
+    <li><strong>Claude Code</strong> stores conversation logs inside your user home directory at <code>~/.claude/projects/&lt;project-folder&gt;/&lt;session-uuid&gt;.jsonl</code>. Project directories contain raw JSONL session records with timestamps, tokens, tool arguments, and bash tool output.</li>
+    <li><strong>OpenAI Codex CLI</strong> maintains session memories and tool execution logs under <code>~/.codex/sessions/YYYY/MM/DD/rollout-*.jsonl</code> as well as persistent memory in SQLite.</li>
   </ul>
-  <p>While these logs exist on disk, opening raw JSONL files in VS Code or querying SQLite manually while debugging is tedious. L2Cache continuously indexes these local directories in real time with zero server round-trips.</p>
+
+  <h2 id="transcript-jsonl">Inside the JSONL: What Claude Code Actually Tracks</h2>
+  <p>Every Claude Code session is a continuous <strong>JSON Lines (.jsonl)</strong> stream. Each line is an independent, valid JSON object recording a discrete event in the lifecycle of the session:</p>
+
+<pre><code class="language-json">{"type":"session_meta","sessionId":"a85fd1e8-3b4a-4f12-89cd-7e62a104f982","cwd":"/Users/developer/apps/l2cache","timestamp":"2026-09-30T07:15:22.104Z","model":"claude-3-7-sonnet-20250219","aiTitle":"Fix memory leak in panel animation timer"}
+{"type":"USER_INPUT","turn":1,"timestamp":"2026-09-30T07:15:23.002Z","content":"Fix the memory leak in panel animation where NSTimer is retained across window close"}
+{"type":"PLANNER_RESPONSE","turn":1,"content":"Let's search for timer allocations in PanelAnimation.swift.","tool_calls":[{"name":"grep_search","args":{"Query":"Timer.scheduledTimer","SearchPath":"/Users/developer/apps/l2cache/src"}}]}
+{"type":"TOOL_RESULT","turn":1,"tool_name":"grep_search","status":"DONE","output":"PanelAnimation.swift:42: self.animTimer = Timer.scheduledTimer(timeInterval: 0.016, target: self, ...)"}
+{"type":"PLANNER_RESPONSE","turn":1,"content":"I will replace the strong timer reference with a weak target and invalidate on deinit.","tool_calls":[{"name":"replace_file_content","args":{"TargetFile":"/Users/developer/apps/l2cache/src/PanelAnimation.swift","StartLine":42,"EndLine":46,"ReplacementContent":"self.animTimer = Timer.scheduledTimer(withTimeInterval: 0.016, repeats: true) { [weak self] _ in\n    self?.updateFrame()\n}"}}]}
+{"type":"TOOL_RESULT","turn":1,"tool_name":"replace_file_content","status":"DONE","output":"Successfully replaced lines 42-46 in PanelAnimation.swift"}
+{"type":"turn_metrics","turn":1,"metrics":{"input_tokens":1280,"output_tokens":310,"cache_creation_input_tokens":6400,"cache_read_input_tokens":48920,"duration_ms":1140}}
+</code></pre>
+
+  <h3>Key Fields Tracked in Every Agent Session:</h3>
+  <ul>
+    <li><strong><code>aiTitle</code></strong>: Claude Code generates a descriptive, high-level summary of the session's goal (e.g., <em>"Fix memory leak in panel animation timer"</em>). This title is crucial for finding past discussions quickly without reading raw terminal traces.</li>
+    <li><strong><code>USER_INPUT</code> vs. <code>PLANNER_RESPONSE</code></strong>: Full conversation flow between your requirements and the agent's internal chain-of-thought planning.</li>
+    <li><strong><code>tool_calls</code> &amp; Arguments</strong>: The exact tools invoked (<code>grep_search</code>, <code>run_command</code>, <code>replace_file_content</code>), target file paths, line numbers, and exact code diffs.</li>
+    <li><strong><code>TOOL_RESULT</code></strong>: Real-time stdout, stderr, compiler errors, unit test output, and return codes captured during execution.</li>
+    <li><strong>Prompt Cache Analytics</strong>: <code>cache_read_input_tokens</code> tracks how many tokens were served directly from Anthropic's prompt cache (saving 90% in cost and reducing latency by 80%), while <code>cache_creation_input_tokens</code> records new prompt state written to cache.</li>
+  </ul>
 
   <h2 id="resume-sessions">How to Search and Resume Past Claude Code Sessions</h2>
   <p>One of the most frustrating parts of using CLI agents is resuming a session after switching terminals or closing a window. While the native CLI <code>claude --resume</code> picker lists recent sessions, <strong>it only displays the initial prompt of each session</strong>. You cannot search across middle turns, tool outputs, terminal commands, error tracebacks, or modified file names across past projects:</p>
 
 <pre><code># Native session resumption in CLI
 claude --resume a85fd1e8-3b4a-4f12-89cd-7e62a104f982
-codex resume session_2026_09_08_build
+codex resume
 </code></pre>
 
   <p>With L2Cache, session resumption is seamless:</p>
@@ -231,11 +251,6 @@ codex resume session_2026_09_08_build
   <p>When an agent spends 20 turns debugging a subtle AppKit threading bug, a SQLite concurrency issue, or a custom build flag constraint, it learns vital facts about your codebase. But when that session finishes, those insights often stay buried in local log archives.</p>
 
   <p>L2Cache's <strong>Repository Knowledge Graph</strong> bridge converts transient agent discoveries into permanent repository documentation:</p>
-
-  <div class="screenshot-box">
-    <img loading="lazy" src="screenshots/agent-history2.jpg" alt="L2Cache Repository Knowledge Graph Gotchas Dashboard" class="screenshot-img"/>
-    <div class="screenshot-caption">Figure 2: L2Cache Repository Knowledge Graph surfacing discovered gotchas, fragile components, and 1-click promotion to AGENTS.md.</div>
-  </div>
 
 <pre><code># Example AGENTS.md rule promoted from agent session #a85fd1e8
 ## AppKit &amp; SwiftUI Concurrency Rules
