@@ -21,6 +21,10 @@
         {
           "key": "X-DNS-Prefetch-Control",
           "value": "on"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
         }
       ]
     }
@@ -119,7 +123,7 @@
       "permanent": true
     },
     {
-      "source": "/:page((?!en|zh-Hans|fr|de|it|ja|ko|pt-BR|es|vi|_vercel|tools|icon\\.png|theme\\.css|screenshots|sitemap\\.xml|robots\\.txt|benchmark_dataset_2026\\.csv|llms\\.txt|llms-full\\.txt)[^/]+)",
+      "source": "/:page((?!en|zh-Hans|fr|de|it|ja|ko|pt-BR|es|vi|_vercel|tools|icon\\.png|theme\\.css|screenshots|sitemap\\.xml|robots\\.txt|benchmark_dataset_2026\\.csv|llms\\.txt|llms-full\\.txt|f429f476aace450d98d63642289564df\\.txt|BingSiteAuth\\.xml)[^/]+)",
       "missing": [
         {
           "type": "host",

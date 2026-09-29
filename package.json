@@ -3,6 +3,14 @@
   "version": "1.0.0",
   "scripts": {
     "build": "python3 build.py",
-    "validate:seo": "python3 validate_seo.py"
+    "validate:seo": "python3 validate_seo.py",
+    "deploy": "./deploy.sh",
+    "seo:check": "python3 seo_health_check.py",
+    "indexnow": "python3 submit_indexnow.py",
+    "publish": "node publish.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "gray-matter": "^4.0.3"
   }
 }

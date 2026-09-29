@@ -328,7 +328,7 @@ jq -r 'select(.type=="PLANNER_RESPONSE") | .tool_calls[]? | select(.name=="run_c
   <div class="faq">
     <h2>Frequently Asked Questions</h2>
     <h3>Where is the Claude Code config located on Mac?</h3>
-    <p style="color: var(--text-muted);">Global settings, custom tools, and authentication for Claude Code are stored in <code>~/.claude/config.json</code> and <code>~/.gemini/config/</code>.</p>
+    <p style="color: var(--text-muted);">Global settings, custom tool permissions, and authentication for Claude Code are stored in <code>~/.claude/config.json</code> and <code>~/.claude/settings.json</code>.</p>
 
     <h3>Does the In-Browser Session Viewer upload my transcript?</h3>
     <p style="color: var(--text-muted);">No. The <a href="tools/claude-session-viewer.html" style="color: var(--purple); font-weight: 600;">L2Cache Claude Session Viewer</a> runs entirely client-side using JavaScript File API. Your data never touches any server.</p>

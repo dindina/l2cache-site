@@ -1,0 +1,11 @@
+.git
+.github
+.agents
+.claude
+.serena
+__pycache__
+*.pyc
+l2cache-amvo-store-audit
+l2cache.amvo.store-audit
+.DS_Store
+*.md
