@@ -1,3 +1,14 @@
+---
+title: "The Modern REST API Developer Toolkit: How to Build, Debug, and Secure APIs on macOS"
+description: "Stop leaking production JWTs to public websites. From cURL and Bruno to offline JSON formatting, certificate decoding, and biometric secret protection."
+tags: [api, webdev, security, devtools]
+canonical_url: "https://l2cache.amvo.store/en/rest-api-developer-tools"
+publish_to:
+  devto:
+    enabled: true
+    published: false
+---
+
 # The Modern REST API Developer Toolkit: How to Build, Debug, and Secure APIs on macOS
 
 *Stop leaking production JWTs to public websites. From cURL and Bruno to offline JSON formatting, certificate decoding, and biometric secret protection—here is the ultimate REST API development workflow.*

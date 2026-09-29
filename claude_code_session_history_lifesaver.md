@@ -2,7 +2,7 @@
 title: "How Claude Code Session History Can Save Your Production (and Your Sanity): 3 Real-World Scenarios"
 description: "When your AI agent refactors 20 files and the terminal closes—where does the context go? Why saving and searching AI coding transcripts is a must-have for modern developers."
 tags: [claudecode, productivity, devtools, programming]
-canonical_url: "https://l2cache.amvo.store/claude-code-session-history-lifesaver"
+canonical_url: "https://l2cache.amvo.store/en/claude-code-session-history-lifesaver"
 cover_image: ""
 
 publish_to:

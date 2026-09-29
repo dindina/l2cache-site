@@ -1,3 +1,14 @@
+---
+title: "A Day in the Life of a Modern Mac Developer (2026 Toolkit)"
+description: "From morning standup and OrbStack containers to offline JWT debugging, directory-aware terminal replay, and Claude Code AI agents."
+tags: [macos, programming, productivity, devtools]
+canonical_url: "https://l2cache.amvo.store/en/day-in-the-life-mac-developer"
+publish_to:
+  devto:
+    enabled: true
+    published: false
+---
+
 # A Day in the Life of a Modern Mac Developer: How 7 Tools Power My Daily Workflow in 2026
 
 *From morning standup and container orchestration to debugging JWTs, wrangling terminal scripts, and pairing with AI coding agents—here is how modern macOS developer tooling actually looks in practice.*

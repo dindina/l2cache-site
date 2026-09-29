@@ -2,9 +2,17 @@
 title: 10 Essential Mac Apps Every Developer Needs in 2026
 published: true
 description: From modern Rust terminals and lightweight container runtimes to offline clipboard encryption and AI coding agents, here are the top 10 macOS developer tools.
-tags: macos, programming, productivity, webdev
+tags: [macos, programming, productivity, webdev]
 canonical_url: https://l2cache.amvo.store/en/best-mac-developer-apps
 cover_image: https://l2cache.amvo.store/screenshots/agent-history1.jpg
+publish_to:
+  devto:
+    enabled: true
+    published: false
+  hashnode:
+    enabled: true
+    draft: true
+
 ---
 
 Setting up a new MacBook or looking to eliminate friction in your daily engineering toolchain?
