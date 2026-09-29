@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="author" content="Amvo"/>
+  <meta name="theme-color" content="#0d1117"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>How to View & Search OpenAI Codex CLI Sessions</title>
+  <meta name="description" content="Complete guide to OpenAI Codex terminal session history across macOS, Linux, and Windows. Learn where rollout JSONL logs are stored, how to search past prompts, and use the free in-browser viewer."/>
+  <link rel="canonical" href="https://l2cache.amvo.store/en/codex-session-history-mac">
+  <link rel="icon" type="image/png" href="icon.png"/>
+  <link rel="apple-touch-icon" href="icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+
+  <!-- SEO: SoftwareApplication schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "L2Cache & Codex Session Viewer",
+    "operatingSystem": "macOS, Web (All Platforms)",
+    "applicationCategory": "DeveloperApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    },
+    "description": "Free in-browser OpenAI Codex rollout JSONL viewer and native macOS developer clipboard & AI prompt history manager.",
+    "url": "https://l2cache.amvo.store/en/codex-session-history-mac"
+  }
+  </script>
+
+  <!-- SEO: TechArticle schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "How to View & Search OpenAI Codex CLI Sessions",
+    "description": "Complete guide to OpenAI Codex terminal session history across macOS, Linux, and Windows. Learn where rollout JSONL logs are stored, how to search past prompts, and use the free in-browser viewer.",
+    "author": { "@type": "Organization", "name": "Amvo" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Amvo",
+      "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" }
+    },
+    "mainEntityOfPage": "https://l2cache.amvo.store/en/codex-session-history-mac",
+    "datePublished": "2026-09-27",
+    "dateModified": "2026-09-27"
+  }
+  </script>
+
+  <!-- SEO: FAQPage schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Where does OpenAI Codex store session logs on Mac?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "OpenAI Codex stores session rollout files under `~/.codex/sessions/YYYY/MM/DD/rollout-*.jsonl` organized by date."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I resume an OpenAI Codex terminal session?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You can run `codex resume` in your terminal to select and continue previous coding sessions."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I search Codex session history without terminal scripts?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes! You can drop any rollout JSONL file into the free in-browser Codex Session Viewer on l2cache.amvo.store, or use L2Cache for Mac to automatically index and search all copied prompts and shell commands offline."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple:     #00C896;
+      --purple-dark:#00a87f;
+      --purple-deep:#2D2A5E;
+      --pink:       #F472B6;
+      --bg: #f7f7f5;
+      --bg2: #ffffff;
+      --bg3: #eeeeea;
+      --border: #e4e4e0;
+      --text: #0a0a0a;
+      --text-muted: #555550;
+      --text-dim: #999992;
+      --mono:       'DM Mono', monospace;
+      --serif:      "Playfair Display", serif;
+      --sans:       'DM Sans', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    .article-wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 130px 24px 80px;
+    }
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(32px, 5vw, 44px);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 18px;
+    }
+    h1 em { font-style: italic; color: var(--purple); }
+    .lede {
+      font-size: 19px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 24px;
+    }
+    .byline {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text-dim);
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 36px;
+    }
+    h2 {
+      font-family: var(--serif);
+      font-size: 26px;
+      font-weight: 700;
+      margin: 40px 0 16px;
+    }
+    h3 {
+      font-size: 19px;
+      font-weight: 600;
+      margin: 28px 0 12px;
+    }
+    p { margin-bottom: 18px; font-size: 17px; }
+    code {
+      font-family: var(--mono);
+      font-size: 14px;
+      background: var(--bg3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+    pre {
+      background: #111827;
+      color: #f3f4f6;
+      padding: 18px 20px;
+      border-radius: 10px;
+      overflow-x: auto;
+      margin: 20px 0 24px;
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .callout {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px 24px;
+      margin: 28px 0;
+    }
+    .callout-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--purple); color: white;
+      padding: 12px 24px; border-radius: 10px;
+      text-decoration: none; font-weight: 600; font-size: 14px;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover {
+      background: var(--purple-dark);
+      transform: translateY(-1px);
+    }
+    .cta-card {
+      background: linear-gradient(160deg, var(--bg2), var(--bg3));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 32px;
+      margin: 48px 0 24px;
+      text-align: center;
+    }
+    .cta-card h2 { margin-top: 0; }
+    .faq { margin-top: 48px; border-top: 1px solid var(--border); padding-top: 32px; }
+    .faq h3 { font-family: var(--serif); font-size: 20px; margin-top: 24px; }
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+      font-size: 14px;
+    }
+    .footer-links { display: flex; gap: 24px; list-style: none; }
+    .footer-links a { color: var(--text-muted); text-decoration: none; }
+    .footer-links a:hover { color: var(--text); }
+  </style>
+  <link rel="stylesheet" href="theme.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="icon.png" width="34" height="34" alt="L2Cache" style="border-radius:8px"/>
+    L2Cache
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#features">Features</a></li>
+    <li><a href="intelligence.html">Intelligence</a></li>
+    <li><a href="tools/index.html">Developer Tools</a></li>
+    <li><a href="blog.html">Blog</a></li>
+    <li><a href="support.html">Support</a></li>
+  </ul>
+  <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta" target="_blank" rel="noopener">Download L2Cache</a>
+</nav>
+
+<article class="article-wrap">
+
+  <div class="eyebrow">Developer Guide</div>
+  <h1>How to View & Search <em>OpenAI Codex CLI Sessions</em></h1>
+
+  <p class="lede">When using OpenAI Codex in your terminal, the agent executes complex shell scripts, builds test fixtures, and writes code across multiple directories. Finding past prompt reasoning and tool commands shouldn't require manual file hunting. Here is how to access and search Codex session rollouts across macOS, Linux, and Windows.</p>
+
+  <!-- Above-the-fold CTA Box -->
+  <div class="callout" style="background: rgba(0, 200, 150, 0.08); border-left: 4px solid var(--purple);">
+    <span class="callout-label" style="color: var(--purple); font-weight: 600;">⚡ Instant Session Inspection (Works on Any OS)</span>
+    <p style="margin-bottom: 8px;"><strong>Inspect any Codex <code>rollout-*.jsonl</code> session with zero cloud uploads:</strong></p>
+    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 14px;">Use our free, in-browser viewer to inspect user messages, system completions, and tool executions in any web browser.</p>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+      <a href="tools/claude-session-viewer.html" class="btn-primary" style="padding: 8px 16px; font-size: 13px;">
+        Open Free Session Viewer Tool ↗
+      </a>
+      <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="btn-primary" style="background: #2D2A5E; padding: 8px 16px; font-size: 13px;" target="_blank" rel="noopener">
+        Get L2Cache for Mac ↗
+      </a>
+    </div>
+  </div>
+
+  <p class="byline">Updated September 2026 · By the team behind L2Cache</p>
+
+  <h2>Where Are Codex Sessions Stored?</h2>
+  <p>OpenAI Codex organizes transcripts in date-based directories under your user home directory:</p>
+
+  <p><strong>macOS &amp; Linux:</strong></p>
+  <pre>~/.codex/sessions/YYYY/MM/DD/rollout-*.jsonl</pre>
+
+  <p><strong>Windows:</strong></p>
+  <pre>%USERPROFILE%\.codex\sessions\YYYY\MM\DD\rollout-*.jsonl</pre>
+
+  <p>Each session is assigned a unique rollout ID containing the full conversation history, agent actions, tool inputs, and return results formatted in JSON Lines.</p>
+
+  <h2>Built-in Command: Resuming Codex Sessions</h2>
+  <p>To pick up where you left off in your current or recent coding session:</p>
+
+  <pre># Resume recent Codex sessions interactively
+codex resume</pre>
+
+  <h3>Limitations of Directory-Based Rollout Files:</h3>
+  <ul style="margin: 0 0 20px 24px; font-size: 16px; color: var(--text-muted);">
+    <li style="margin-bottom: 8px;"><strong>Date Fragmented:</strong> Because sessions are partitioned by <code>YYYY/MM/DD</code>, finding a prompt from 3 weeks ago requires recursively searching across multiple nested folders.</li>
+    <li style="margin-bottom: 8px;"><strong>Nested Tool Payloads:</strong> Tool executions are stored as JSON strings inside JSON objects, making quick visual scanning difficult in standard text editors.</li>
+  </ul>
+
+  <h2>Parsing Codex Sessions via CLI</h2>
+  <p>You can search across all Codex session files recursively using <code>ripgrep</code> and <code>jq</code>:</p>
+
+  <pre># Search all past Codex prompts for a keyword
+find ~/.codex/sessions -name "rollout-*.jsonl" -exec jq -r 'select(.type=="USER_INPUT") | .content' {} + | grep -i "docker"
+
+# Find recently executed shell commands
+find ~/.codex/sessions -name "rollout-*.jsonl" -exec jq -r 'select(.tool_calls? != null) | .tool_calls[] | .args' {} +</pre>
+
+  <h2>Automated Capture with L2Cache for Mac</h2>
+  <p>Rather than running multi-line shell pipelines to find old prompts, <strong>L2Cache for Mac</strong> runs natively in your menu bar:</p>
+
+  <ul style="margin: 0 0 24px 24px; font-size: 16px; color: var(--text-muted);">
+    <li style="margin-bottom: 8px;"><strong>Automatic Developer Albums:</strong> Categorizes AI prompts, Git commands, SQL queries, and code blocks automatically.</li>
+    <li style="margin-bottom: 8px;"><strong>Sub-Millisecond Offline Search:</strong> Uses native SQLite FTS5 for lightning-fast retrieval across thousands of entries.</li>
+    <li style="margin-bottom: 8px;"><strong>Private & Encrypted:</strong> Keeps all history locally on your Mac with biometric Touch ID lock for sensitive API keys and tokens.</li>
+  </ul>
+
+  <div class="cta-card">
+    <h2>Never Lose an AI Prompt or Shell Command</h2>
+    <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto 24px;">L2Cache gives you instant, private, offline access to every command, prompt, and code snippet you work with on macOS.</p>
+    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="btn-primary" target="_blank" rel="noopener">
+      Download L2Cache on the Mac App Store
+    </a>
+    <p style="font-size: 12px; color: var(--text-dim); margin-top: 14px;">macOS 13 Ventura or later · No subscription required</p>
+  </div>
+
+  <div class="faq">
+    <h2>Frequently Asked Questions</h2>
+    <h3>How do I view Codex session rollouts visually?</h3>
+    <p style="color: var(--text-muted);">Drop any <code>rollout-*.jsonl</code> into the free <a href="tools/claude-session-viewer.html" style="color: var(--purple); font-weight: 600;">L2Cache Session Viewer</a>. It parses and renders the entire step-by-step history right in your browser.</p>
+
+    <h3>Does Codex session data leave my Mac?</h3>
+    <p style="color: var(--text-muted);">The local rollout files in <code>~/.codex/sessions</code> remain on your machine. Using L2Cache also guarantees zero-cloud data storage with on-device indexing.</p>
+
+    <h3>Can I search Claude Code transcripts as well?</h3>
+    <p style="color: var(--text-muted);">Yes! Check out our guide on <a href="claude-code-session-history-mac.html" style="color: var(--purple); font-weight: 600;">searching Claude Code session history on Mac</a>.</p>
+  </div>
+
+  <div style="margin-top: 32px; padding: 22px 24px; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; gap: 10px;">
+    <div><strong>🗂️ Search sessions in L2Cache:</strong> Visit the <a href="/en/codex-history" style="color: var(--purple); font-weight: 600;">Codex CLI history viewer for Mac</a> to find earlier prompts and project context.</div>
+    <div><strong>🛠️ Free Tool:</strong> Use our <a href="tools/claude-session-viewer.html" style="color: var(--purple); font-weight: 600;">In-Browser Claude & Codex Session Viewer</a>.</div>
+    <div><strong>📖 Terminal Guide:</strong> Learn <a href="mac-command-history.html" style="color: var(--purple); font-weight: 600;">how to search and manage Mac terminal command history</a>.</div>
+  </div>
+
+</article>
+
+<footer>
+  <ul class="footer-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="blog.html">Blog</a></li>
+    <li><a href="privacy.html">Privacy Policy</a></li>
+    <li><a href="support.html">Support</a></li>
+    <li><a href="tools/index.html">Developer Tools</a></li>
+  </ul>
+  <p style="font-family: var(--mono); font-size: 12px; color: var(--text-dim);">© 2026 Amvotech</p>
+</footer>
+
+</body>
+</html>

@@ -47,7 +47,7 @@ L2Cache is a native macOS application designed for software engineers, data scie
 - Pinning and tagging for frequently reused snippets and templates.
 
 ### 3.2 Developer Intelligence & Terminal History
-- **Mac Command History**: Captures commands run across bash, zsh, fish, and terminal sessions with syntax highlighting and instant fuzzy filtering.
+- **Mac Command History & Directory-Aware Replay**: Captures commands run across bash, zsh, fish, and terminal sessions with syntax highlighting, working directory association, and directory-aware search and replay.
 - **AI Coding Session Tracking**: Logs and analyzes prompts, token counts, and completion context from coding assistants (Claude Code, OpenAI Codex, Aider, Cursor).
 - **Apple Intelligence Integration**: Leverages macOS on-device Foundation Models for local text summarization, proofreading, and code conversion without sending prompt data to third-party cloud APIs.
 

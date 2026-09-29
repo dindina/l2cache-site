@@ -14,6 +14,24 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 
+  <!-- SEO: SoftwareApplication schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "L2Cache",
+    "operatingSystem": "macOS 13.0 or later",
+    "applicationCategory": "DeveloperApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "4.99",
+      "priceCurrency": "USD"
+    },
+    "description": "Native macOS developer clipboard, snippet, and terminal command history manager with zero-cloud on-device privacy.",
+    "url": "https://l2cache.amvo.store/en/mac-command-history"
+  }
+  </script>
+
   <!-- SEO: Article schema -->
   <script type="application/ld+json">
   {
@@ -29,7 +47,7 @@
     },
     "mainEntityOfPage": "https://l2cache.amvo.store/en/mac-command-history",
     "datePublished": "2026-07-29",
-    "dateModified": "2026-07-29"
+    "dateModified": "2026-09-27"
   }
   </script>
 
@@ -61,6 +79,14 @@
         "acceptedAnswer": {
           "@type": "Answer",
           "text": "Press `Ctrl + R` inside your terminal to open the reverse-i-search prompt. Start typing part of the command, and it will find the most recent match. Press `Ctrl + R` again to cycle through older matches."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does L2Cache compare to terminal history tools like Atuin or McFly?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Atuin and McFly are CLI-based shell hook daemons that record keystroke execution in terminal sessions. L2Cache is a native macOS developer clipboard and snippet manager that captures commands, code snippets, Claude Code & Codex AI prompts, and sensitive credentials across all IDEs and apps with Touch ID biometric encryption and sub-millisecond SQLite FTS5 search."
         }
       }
     ]
@@ -359,7 +385,17 @@
 
   <p class="lede">The Mac terminal remembers what you type, but finding that one complex curl command or ssh flag from last week can be incredibly frustrating. Here is how to use the built-in native command history, its limitations, and how power users never lose a command again.</p>
 
-  <p class="byline">Updated July 2026 · By the team behind L2Cache</p>
+  <div class="callout" style="background: rgba(0, 200, 150, 0.08); border-left: 4px solid var(--purple); margin: 24px 0; border-radius: 12px; padding: 20px 24px;">
+    <span class="callout-label" style="color: var(--purple); font-weight: 600; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;">⚡ Recommended Mac App</span>
+    <p style="margin-bottom: 8px; font-size: 16px; color: var(--text);"><strong>Looking for a native Mac app to search & organize terminal commands across all tabs?</strong></p>
+    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5;">L2Cache automatically captures terminal commands, code snippets, and AI prompts with instant offline FTS5 search, zero cloud tracking, and Touch ID encryption.</p>
+    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="btn-primary" style="padding: 9px 18px; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border-radius: 8px;" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12l2 2 4-4"/></svg>
+      Get L2Cache for Mac ↗
+    </a>
+  </div>
+
+  <p class="byline">Updated September 2026 · By the team behind L2Cache</p>
 
   <p>If you spend any time in the macOS Terminal (or iTerm2/Warp), you know the feeling: you finally get a Docker build command or an ffmpeg script working perfectly with 10 different flags. A week later, you need to run it again, but you can't remember the flags.</p>
 
@@ -423,6 +459,9 @@
     <img loading="lazy" src="screenshots/screenshot-10-terminal-history.webp" alt="Mac Terminal History in L2Cache" style="width: 100%; display: block;"/>
   </figure>
 
+  <h3>Directory-aware search &amp; instant replay</h3>
+  <p>L2Cache associates your terminal snippets and commands with their working directory. You can <strong>search and replay commands from the exact same directory or repository</strong> without having to manually retype flags or switch contexts.</p>
+
   <h3>AI-powered intelligence</h3>
   <p>L2Cache uses on-device Apple Intelligence to understand your snippets. It can automatically group your Terminal, Git, and Docker commands into smart albums. Instead of searching for an exact flag, you can search "that command to clear dns cache" and L2Cache finds it instantly.</p>
 
@@ -450,24 +489,29 @@
 
     <h3>How do I search my previous commands in Mac terminal?</h3>
     <p class="muted">Press <kbd>Ctrl + R</kbd> inside your terminal to open the reverse-i-search prompt. Start typing part of the command, and it will find the most recent match. Press <kbd>Ctrl + R</kbd> again to cycle through older matches.</p>
+
+    <h3>How does L2Cache compare to terminal history tools like Atuin or McFly?</h3>
+    <p class="muted">Atuin and McFly are CLI-only shell daemons that hook into <code>~/.zshrc</code> to log commands executed in that specific shell session. <strong>L2Cache</strong> is a native macOS menu bar app that captures developer snippets, terminal commands, Claude Code &amp; Codex AI prompt sessions, and secrets across all apps and IDEs with biometric Touch ID encryption and sub-millisecond SQLite FTS5 search.</p>
   </div>
 
 </article>
 
 <!-- FOOTER -->
 
-  <div style="margin-top: 32px; padding: 20px; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;">
-    <strong>AI Developer Productivity:</strong> Explore our deep dive on <a href="blog-agent-history-analytics.html" style="color: var(--purple); font-weight: 600;">tracking Claude Code &amp; Codex AI agent sessions with token analytics</a>.
+  <div style="margin-top: 32px; padding: 22px 24px; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; gap: 10px;">
+    <div><strong>🤖 AI Coding Agent Session Viewer:</strong> Inspect and search past Claude Code &amp; Codex CLI sessions with our <a href="tools/claude-session-viewer.html" style="color: var(--purple); font-weight: 600;">Free In-Browser Claude Session Viewer Tool</a>.</div>
+    <div><strong>📊 Analytics Deep Dive:</strong> Read our guide on <a href="blog-agent-history-analytics.html" style="color: var(--purple); font-weight: 600;">tracking Claude Code &amp; Codex AI agent sessions with token analytics</a>.</div>
+    <div><strong>🔎 Search beyond the current shell:</strong> See <a href="/en/terminal-history-mac" style="color: var(--purple); font-weight: 600;">L2Cache terminal history for Mac</a> for a searchable record of older developer commands.</div>
   </div>
 
 <footer>
   <ul class="footer-links">
     <li><a href="index.html">Home</a></li>
-    <li><a href="blog.html">Blog</a>
-  <a href="privacy.html">Privacy Policy</a></li>
     <li><a href="blog.html">Blog</a></li>
+    <li><a href="privacy.html">Privacy Policy</a></li>
     <li><a href="support.html">Support</a></li>
     <li><a href="clipboard-history-mac.html">Clipboard History on Mac</a></li>
+    <li><a href="tools/index.html">Developer Tools</a></li>
   </ul>
   <p class="footer-copy">© 2026 Amvotech</p>
 </footer>

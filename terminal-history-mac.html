@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Terminal History App for Mac — Search &amp; Replay Commands | L2Cache</title>
+  <meta name="description" content="Find terminal commands from days or months ago. L2Cache organizes searchable Mac terminal history alongside clipboard and AI coding sessions." />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/terminal-history-mac" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Terminal History App for Mac — Search &amp; Replay Commands | L2Cache" />
+  <meta property="og:description" content="Search older terminal commands on your Mac and bring useful command history back into your workflow." />
+  <meta property="og:url" content="https://l2cache.amvo.store/en/terminal-history-mac" />
+  <meta property="og:image" content="https://l2cache.amvo.store/screenshots/hero-poster.jpg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:url" content="https://l2cache.amvo.store/en/terminal-history-mac" />
+  <meta name="twitter:title" content="Terminal History App for Mac | L2Cache" />
+  <meta name="twitter:description" content="Search older terminal commands alongside your other developer history." />
+  <link rel="stylesheet" href="theme.css" />
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://l2cache.amvo.store/en"},{"@type":"ListItem","position":2,"name":"Terminal History for Mac","item":"https://l2cache.amvo.store/en/terminal-history-mac"}]}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"L2Cache","operatingSystem":"macOS 13 or later","applicationCategory":"DeveloperApplication","url":"https://l2cache.amvo.store/en/terminal-history-mac","description":"A native Mac app for searching developer history, including terminal commands, clipboard items, and supported AI coding sessions.","downloadUrl":"https://apps.apple.com/us/app/l2cache/id6774423992"}
+  </script>
+  <style>
+    main{max-width:1000px;margin:0 auto;padding:128px 24px 80px}.eyebrow{font:12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--purple)}
+    h1,h2{font-family:var(--serif);line-height:1.15}h1{font-size:clamp(42px,7vw,68px);max-width:820px;margin:14px 0 22px}h2{font-size:clamp(28px,4vw,40px);margin:0 0 18px}
+    p,li{color:var(--text-muted);font-size:17px;line-height:1.75}main section{padding:42px 0;border-top:1px solid var(--border)}.lead{max-width:760px;font-size:20px}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0 18px}.actions a{padding:12px 20px;border-radius:999px;text-decoration:none;font-weight:600}.primary{background:#0a0a0a;color:#fff}.secondary{border:1px solid var(--border);color:var(--text)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:24px}.card{padding:22px;background:var(--bg2);border:1px solid var(--border);border-radius:12px}.card h3{font:600 16px var(--mono);margin-bottom:8px}.card p{font-size:15px}
+    code,pre{font-family:var(--mono)}pre{white-space:pre-wrap;background:#111118;color:#e7e7e7;padding:20px;border-radius:12px;line-height:1.8;overflow-wrap:anywhere}main a:not(.actions a){color:var(--purple-dark)}footer{padding:32px 24px;text-align:center;border-top:1px solid var(--border);color:var(--text-muted)}
+    @media(max-width:700px){nav{padding:12px 16px;gap:8px}.nav-links{gap:10px;flex-wrap:wrap;justify-content:flex-end}.nav-links a{font-size:12px}.nav-cta{padding:7px 12px}main{padding:118px 20px 56px}.lead{font-size:18px}.actions a{font-size:14px}}
+  </style>
+</head>
+<body><div class="page-wrap">
+  <nav><a class="nav-logo" href="/en"><span class="nav-logo-icon">L</span>L2Cache</a><ul class="nav-links"><li><a href="/en/developer-clipboard">For Developers</a></li><li><a href="/en/blog">Guides</a></li><li><a class="nav-cta" href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12">Download for Mac</a></li></ul></nav>
+  <main>
+    <p class="eyebrow">Developer history · macOS</p>
+    <h1>Search Your Terminal History on Mac</h1>
+    <p class="lead">“I know I ran that <code>kubectl</code> command two weeks ago…” Shell history is handy for recent work, but the command you need can be buried, saved in another session, or hard to reconstruct. L2Cache captures and organizes terminal commands locally so you can find older work when you need it.</p>
+    <div class="actions"><a class="primary" href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12">Get L2Cache on the Mac App Store</a><a class="secondary" href="/en/mac-command-history">Read the Mac command history guide</a></div>
+    <section><h2>Find the command, not just a recent match</h2><p>Maybe it was the <code>docker</code> invocation that attached the right volume, a <code>brew</code> flag that fixed a build, or the exact <code>curl</code> request you used to reproduce an API bug. L2Cache gives you fast, developer-focused search across past terminal commands, so you can find a match and replay or reuse it instead of typing it from memory.</p>
+      <div class="grid"><article class="card"><h3>git · npm · python</h3><p>Recover a release command, a package script, or the one-off migration you ran against a local dataset.</p></article><article class="card"><h3>docker · kubectl</h3><p>Look up an older container invocation or cluster command by the flag, namespace, or resource you remember.</p></article><article class="card"><h3>ssh · brew · curl</h3><p>Find a connection option, install command, or API request from a previous debugging session.</p></article></div>
+    </section>
+    <section><h2>Why shell history can fall short</h2><p>The built-in <code>history</code> command and <code>Ctrl+R</code> are useful while the command is still easy to recall. But shell history is usually a chronological text log: it may not include commands from a different terminal that has not flushed its history, and a broad <code>grep</code> through <code>~/.zsh_history</code> can return noisy matches. Searching that file manually also means dealing with its timestamp and quoting format. None of these tools gives a convenient, searchable view across the rest of your developer work.</p><p>For occasional work, shell history may be enough. When you need an older command and only remember its purpose, L2Cache helps search the accumulated record and bring that command back into reach.</p>
+      <pre>$ history | grep kubectl
+$ grep -i "port-forward" ~/.zsh_history
+$ docker ps -a</pre>
+    </section>
+    <section><h2>Terminal commands alongside the rest of your developer history</h2><p>Commands rarely exist in isolation. You may have copied a token, captured an error screenshot, or asked Claude Code to debug the same service. L2Cache brings terminal history together with clipboard history and supported AI agent session history in one native Mac app. Local storage keeps these records on your Mac; it does not mean your shell history is synchronized between computers.</p><p>For practical shell-history techniques, see <a href="/en/mac-command-history">How to view and search Mac terminal command history</a>. Developers who also need to find copied snippets can explore the <a href="/en/developer-clipboard">developer clipboard guide</a>.</p></section>
+    <section><h2>Keep the useful command close</h2><p>Search for the tool, argument, path, or project clue you remember, inspect the matching historical command, then reuse it in your terminal. L2Cache is for developers who want command history to remain useful beyond the current shell session without replacing the shell itself.</p><div class="actions"><a class="primary" href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12">Download L2Cache</a><a class="secondary" href="/en">See all L2Cache features</a></div></section>
+  </main><footer><a href="/en">L2Cache</a> · <a href="/en/claude-code-history">Claude Code history</a> · <a href="/en/codex-history">Codex history</a> · <a href="/en/developer-clipboard">Developer clipboard</a></footer>
+</div></body></html>

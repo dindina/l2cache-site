@@ -24,6 +24,7 @@ SITE_URL = "https://l2cache.amvo.store"
 PUBLIC_PAGES = [
     "index.html", "support.html", "privacy.html", "intelligence.html",
     "changelog.html", "clipboard-history-mac.html", "mac-command-history.html",
+    "terminal-history-mac.html", "claude-code-history.html", "codex-history.html",
     "comparison.html", "benchmark.html", "best-mac-clipboard-managers.html",
     "clipboard-privacy-report.html", "developer-clipboard.html", "custom-actions.html",
     "jwt-decoder-mac.html", "json-formatter-mac.html", "regex-clipboard-mac.html",
@@ -97,7 +98,14 @@ def validate_sitemap() -> None:
     tree = ET.parse(path)
     namespace = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
     urls = [node.text for node in tree.findall("s:url/s:loc", namespace)]
-    expected = [public_url(filename) for filename in PUBLIC_PAGES]
+    # Sitemap coverage follows the build's published page list, including
+    # English-only landing pages and other pages not in the metadata smoke set.
+    sitemap_pages = [filename for filename in _build.HTML_FILES if (ROOT / filename).is_file()]
+    sitemap_pages += [
+        path.name for path in ROOT.glob("l2cache-vs-*.html")
+        if path.name not in sitemap_pages
+    ]
+    expected = [public_url(filename) for filename in sitemap_pages]
     # Tool pages are also built into /en/tools and included in the sitemap.
     # (tools/index.html maps to /en/tools itself, so no extra bare entry needed.)
     if (ROOT / "tools").is_dir():

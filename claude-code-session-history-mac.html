@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="author" content="Amvo"/>
+  <meta name="theme-color" content="#0d1117"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>How to Search, View & Resume Claude Code CLI Sessions</title>
+  <meta name="description" content="Complete guide to searching, viewing, and resuming Claude Code CLI sessions on macOS, Linux, and Windows. Inspect transcript.jsonl logs, search past prompts, and use the free in-browser viewer."/>
+  <link rel="canonical" href="https://l2cache.amvo.store/en/claude-code-session-history-mac">
+  <link rel="icon" type="image/png" href="icon.png"/>
+  <link rel="apple-touch-icon" href="icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+
+  <!-- SEO: SoftwareApplication schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "L2Cache & Claude Session Viewer",
+    "operatingSystem": "macOS, Web (All Platforms)",
+    "applicationCategory": "DeveloperApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    },
+    "description": "Free in-browser Claude Code transcript viewer and native macOS developer clipboard & AI prompt history manager.",
+    "url": "https://l2cache.amvo.store/en/claude-code-session-history-mac"
+  }
+  </script>
+
+  <!-- SEO: TechArticle schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "How to Search, View & Resume Claude Code CLI Sessions",
+    "description": "Complete guide to searching, viewing, and resuming Claude Code CLI sessions on macOS, Linux, and Windows. Inspect transcript.jsonl logs, search past prompts, and use the free in-browser viewer.",
+    "author": { "@type": "Organization", "name": "Amvo" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Amvo",
+      "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" }
+    },
+    "mainEntityOfPage": "https://l2cache.amvo.store/en/claude-code-session-history-mac",
+    "datePublished": "2026-09-27",
+    "dateModified": "2026-09-27"
+  }
+  </script>
+
+  <!-- SEO: FAQPage schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Where does Claude Code store session transcripts on Mac?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Claude Code stores raw session logs locally on macOS under `~/.claude/projects/<sanitized-project-path>/transcript.jsonl`."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I resume an earlier Claude Code session?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You can run `claude --resume` (or `claude -r`) inside your repository directory to open the interactive terminal session picker."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How can I search across all past Claude Code prompts and tool executions?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You can use the free in-browser Claude Session Viewer tool on l2cache.amvo.store, or use L2Cache for Mac to automatically index and search all copied prompts, shell commands, and code snippets offline."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple:     #00C896;
+      --purple-dark:#00a87f;
+      --purple-deep:#2D2A5E;
+      --pink:       #F472B6;
+      --bg: #f7f7f5;
+      --bg2: #ffffff;
+      --bg3: #eeeeea;
+      --border: #e4e4e0;
+      --text: #0a0a0a;
+      --text-muted: #555550;
+      --text-dim: #999992;
+      --mono:       'DM Mono', monospace;
+      --serif:      "Playfair Display", serif;
+      --sans:       'DM Sans', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    .article-wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 130px 24px 80px;
+    }
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(32px, 5vw, 44px);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 18px;
+    }
+    h1 em { font-style: italic; color: var(--purple); }
+    .lede {
+      font-size: 19px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 24px;
+    }
+    .byline {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text-dim);
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 36px;
+    }
+    h2 {
+      font-family: var(--serif);
+      font-size: 26px;
+      font-weight: 700;
+      margin: 40px 0 16px;
+    }
+    h3 {
+      font-size: 19px;
+      font-weight: 600;
+      margin: 28px 0 12px;
+    }
+    p { margin-bottom: 18px; font-size: 17px; }
+    code {
+      font-family: var(--mono);
+      font-size: 14px;
+      background: var(--bg3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+    pre {
+      background: #111827;
+      color: #f3f4f6;
+      padding: 18px 20px;
+      border-radius: 10px;
+      overflow-x: auto;
+      margin: 20px 0 24px;
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .callout {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px 24px;
+      margin: 28px 0;
+    }
+    .callout-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--purple); color: white;
+      padding: 12px 24px; border-radius: 10px;
+      text-decoration: none; font-weight: 600; font-size: 14px;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover {
+      background: var(--purple-dark);
+      transform: translateY(-1px);
+    }
+    .cta-card {
+      background: linear-gradient(160deg, var(--bg2), var(--bg3));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 32px;
+      margin: 48px 0 24px;
+      text-align: center;
+    }
+    .cta-card h2 { margin-top: 0; }
+    .faq { margin-top: 48px; border-top: 1px solid var(--border); padding-top: 32px; }
+    .faq h3 { font-family: var(--serif); font-size: 20px; margin-top: 24px; }
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+      font-size: 14px;
+    }
+    .footer-links { display: flex; gap: 24px; list-style: none; }
+    .footer-links a { color: var(--text-muted); text-decoration: none; }
+    .footer-links a:hover { color: var(--text); }
+  </style>
+  <link rel="stylesheet" href="theme.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="icon.png" width="34" height="34" alt="L2Cache" style="border-radius:8px"/>
+    L2Cache
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#features">Features</a></li>
+    <li><a href="intelligence.html">Intelligence</a></li>
+    <li><a href="tools/index.html">Developer Tools</a></li>
+    <li><a href="blog.html">Blog</a></li>
+    <li><a href="support.html">Support</a></li>
+  </ul>
+  <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta" target="_blank" rel="noopener">Download L2Cache</a>
+</nav>
+
+<article class="article-wrap">
+
+  <div class="eyebrow">Developer Guide</div>
+  <h1>How to Search, View & Resume <em>Claude Code Sessions</em></h1>
+
+  <p class="lede">Anthropic's <strong>Claude Code</strong> CLI gives developers superpowers right inside their terminal. But as you navigate complex repositories, finding past prompt rationales, tool executions, and file diffs from previous sessions can be painful. Here is everything you need to inspect, search, and resume your Claude Code history across macOS, Linux, and Windows.</p>
+
+  <!-- Above-the-fold CTA Box -->
+  <div class="callout" style="background: rgba(0, 200, 150, 0.08); border-left: 4px solid var(--purple);">
+    <span class="callout-label" style="color: var(--purple); font-weight: 600;">⚡ Instant In-Browser Viewer (Works on Any OS)</span>
+    <p style="margin-bottom: 8px;"><strong>Want to inspect a <code>transcript.jsonl</code> session right now with zero uploads?</strong></p>
+    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 14px;">Open our free, client-side session viewer to filter prompts, view tool call diffs, and inspect token consumption in any browser.</p>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+      <a href="tools/claude-session-viewer.html" class="btn-primary" style="padding: 8px 16px; font-size: 13px;">
+        Open Free Session Viewer Tool ↗
+      </a>
+      <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="btn-primary" style="background: #2D2A5E; padding: 8px 16px; font-size: 13px;" target="_blank" rel="noopener">
+        Get L2Cache for Mac ↗
+      </a>
+    </div>
+  </div>
+
+  <p class="byline">Updated September 2026 · By the team behind L2Cache</p>
+
+  <h2>Where Does Claude Code Store Transcripts?</h2>
+  <p>Whenever you execute <code>claude</code> in a repository, Anthropic records a complete step-by-step transcript of user inputs, assistant thoughts, tool calls (bash, ripgrep, file edits), and token metrics locally on your filesystem:</p>
+
+  <p><strong>macOS &amp; Linux:</strong></p>
+  <pre>~/.claude/projects/&lt;sanitized-project-path&gt;/transcript.jsonl</pre>
+
+  <p><strong>Windows:</strong></p>
+  <pre>%USERPROFILE%\.claude\projects\&lt;sanitized-project-path&gt;\transcript.jsonl</pre>
+
+  <p>For example, if your repository is at <code>/Users/you/work/api-server</code>, the transcript file is saved under:</p>
+
+  <pre>~/.claude/projects/Users-you-work-api-server/transcript.jsonl</pre>
+
+  <h2>Built-in Terminal Flags: Resuming Past Work</h2>
+  <p>Claude Code includes flags to resume recent conversations within your terminal:</p>
+
+  <pre># Interactive session picker for the current workspace
+claude --resume
+
+# Short form
+claude -r</pre>
+
+  <h3>Limitations of the Native CLI Resume:</h3>
+  <ul style="margin: 0 0 20px 24px; font-size: 16px; color: var(--text-muted);">
+    <li style="margin-bottom: 8px;"><strong>Workspace Isolated:</strong> <code>claude -r</code> only lists sessions from your current active directory. If you ran a command across a different repo or branch earlier today, you cannot search across projects.</li>
+    <li style="margin-bottom: 8px;"><strong>No Full-Text Search:</strong> You cannot quickly search for specific bash commands, code snippets, or error logs across past transcripts.</li>
+    <li style="margin-bottom: 8px;"><strong>Dense JSONL:</strong> Raw JSONL files are hard to parse in standard text editors due to nested JSON payloads and token objects.</li>
+  </ul>
+
+  <h2>How to Parse Claude Code History from Terminal</h2>
+  <p>If you want to quickly grep for past user prompts in a project transcript without opening the file, use <code>jq</code>:</p>
+
+  <pre># Extract all user prompts in chronological order
+jq -r 'select(.type=="USER_INPUT") | .content' ~/.claude/projects/YOUR_PROJECT/transcript.jsonl
+
+# Find all bash commands run by Claude Code
+jq -r 'select(.type=="PLANNER_RESPONSE") | .tool_calls[]? | select(.name=="run_command") | .args.CommandLine' ~/.claude/projects/YOUR_PROJECT/transcript.jsonl</pre>
+
+  <h2>Better Workflow: L2Cache Offline Developer Memory</h2>
+  <p>Rather than manually digging through dotfiles, <strong>L2Cache for Mac</strong> automatically captures and categorizes your terminal snippets, AI prompts, and code blocks the moment you copy or run them:</p>
+
+  <ul style="margin: 0 0 24px 24px; font-size: 16px; color: var(--text-muted);">
+    <li style="margin-bottom: 8px;"><strong>Instant FTS5 Search:</strong> Search through months of terminal commands, curl scripts, and prompts in under 1 millisecond.</li>
+    <li style="margin-bottom: 8px;"><strong>Zero-Cloud Privacy:</strong> Kept 100% on your Mac using native SQLite and on-device Apple Intelligence.</li>
+    <li style="margin-bottom: 8px;"><strong>Touch ID Encryption:</strong> Automatically detects API keys, tokens, and credentials and encrypts them securely.</li>
+  </ul>
+
+  <div class="cta-card">
+    <h2>Supercharge Your Mac Developer Workflow</h2>
+    <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto 24px;">L2Cache keeps an unlimited, private, instant-searchable history of your terminal commands, code, and AI prompts on macOS.</p>
+    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="btn-primary" target="_blank" rel="noopener">
+      Download L2Cache on the Mac App Store
+    </a>
+    <p style="font-size: 12px; color: var(--text-dim); margin-top: 14px;">macOS 13 Ventura or later · One-time purchase · Lifetime updates</p>
+  </div>
+
+  <div class="faq">
+    <h2>Frequently Asked Questions</h2>
+    <h3>Where is the Claude Code config located on Mac?</h3>
+    <p style="color: var(--text-muted);">Global settings, custom tools, and authentication for Claude Code are stored in <code>~/.claude/config.json</code> and <code>~/.gemini/config/</code>.</p>
+
+    <h3>Does the In-Browser Session Viewer upload my transcript?</h3>
+    <p style="color: var(--text-muted);">No. The <a href="tools/claude-session-viewer.html" style="color: var(--purple); font-weight: 600;">L2Cache Claude Session Viewer</a> runs entirely client-side using JavaScript File API. Your data never touches any server.</p>
+
+    <h3>Can I search OpenAI Codex transcripts too?</h3>
+    <p style="color: var(--text-muted);">Yes! Read our companion guide on <a href="codex-session-history-mac.html" style="color: var(--purple); font-weight: 600;">searching OpenAI Codex rollout history on macOS</a>.</p>
+  </div>
+
+  <div style="margin-top: 32px; padding: 22px 24px; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; gap: 10px;">
+    <div><strong>🗂️ Search sessions in L2Cache:</strong> Visit the <a href="/en/claude-code-history" style="color: var(--purple); font-weight: 600;">Claude Code history viewer for Mac</a> to find earlier debugging conversations and project context.</div>
+    <div><strong>🛠️ Free Tool:</strong> Use our <a href="tools/claude-session-viewer.html" style="color: var(--purple); font-weight: 600;">In-Browser Claude & Codex Session Viewer</a> to inspect transcripts.</div>
+    <div><strong>📖 Terminal Guide:</strong> Learn <a href="mac-command-history.html" style="color: var(--purple); font-weight: 600;">how to search and manage Mac terminal command history</a>.</div>
+  </div>
+
+</article>
+
+<footer>
+  <ul class="footer-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="blog.html">Blog</a></li>
+    <li><a href="privacy.html">Privacy Policy</a></li>
+    <li><a href="support.html">Support</a></li>
+    <li><a href="tools/index.html">Developer Tools</a></li>
+  </ul>
+  <p style="font-family: var(--mono); font-size: 12px; color: var(--text-dim);">© 2026 Amvotech</p>
+</footer>
+
+</body>
+</html>

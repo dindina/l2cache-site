@@ -9,7 +9,11 @@ L2Cache is designed specifically for software engineers, power users, and privac
 - [Homepage](https://l2cache.amvo.store/en): Overview of L2Cache features, native macOS performance, and App Store availability.
 - [Clipboard History for Mac](https://l2cache.amvo.store/en/clipboard-history-mac): 100% on-device SQLite FTS5 full-text search across unlimited clipboard items (text, images, code, files, colors).
 - [Developer Intelligence & AI](https://l2cache.amvo.store/en/intelligence): Local Apple Intelligence and on-device AI assistant integration, tracking AI coding session history (Claude Code, Codex, Aider) and token analytics without cloud exposure.
-- [Mac Command & Shell History](https://l2cache.amvo.store/en/mac-command-history): Dedicated terminal command capture with syntax highlighting, search, and one-click re-execution.
+- [Mac Command & Shell History](https://l2cache.amvo.store/en/mac-command-history): Dedicated terminal command capture with syntax highlighting, directory-aware command replay (search & re-execute commands specific to current working repository), and one-click execution.
+- [Claude Code Session History on Mac](https://l2cache.amvo.store/en/claude-code-session-history-mac): Complete guide to searching, viewing, and resuming Claude Code CLI transcript.jsonl sessions on macOS.
+- [OpenAI Codex Session History on Mac](https://l2cache.amvo.store/en/codex-session-history-mac): Guide to locating, parsing, and searching OpenAI Codex terminal rollout JSONL sessions on macOS.
+- [Free Claude & Codex Session Viewer](https://l2cache.amvo.store/en/tools/claude-session-viewer): In-browser, zero-upload tool to inspect and filter JSONL transcripts.
+- [10 Best Mac Apps for Developers in 2026](https://l2cache.amvo.store/en/best-mac-developer-apps): Curated guide to essential macOS developer utilities, terminals, container engines, editors, and offline clipboard security.
 - [Custom Actions & Workflows](https://l2cache.amvo.store/en/custom-actions): Automated clipboard transformations using regex, bash scripts, and custom formatting pipelines.
 - [Developer Clipboard Features](https://l2cache.amvo.store/en/developer-clipboard): Specialized developer workflows, code snippet management, and fast keyboard navigation.
 - [Performance Benchmarks](https://l2cache.amvo.store/en/benchmark): Independent memory and CPU benchmarks showing under 15MB RAM footprint and 0.0% idle CPU usage.
@@ -31,6 +35,7 @@ L2Cache offers free web versions of its built-in developer tools at https://l2ca
 ## Competitor Comparisons
 
 - [Best Mac Clipboard Managers (2026 Guide)](https://l2cache.amvo.store/en/best-mac-clipboard-managers): In-depth comparison of top macOS clipboard managers.
+- [L2Cache vs Atuin](https://l2cache.amvo.store/en/l2cache-vs-atuin): Comparison of native macOS GUI developer clipboard & snippet management vs CLI-only shell history daemons.
 - [L2Cache vs Maccy](https://l2cache.amvo.store/en/l2cache-vs-maccy): Comparison of UI, search capabilities, developer tooling, and memory efficiency.
 - [L2Cache vs Paste](https://l2cache.amvo.store/en/l2cache-vs-paste): Comparison between L2Cache's $4.99 one-time purchase model and Paste's annual subscription model.
 - [L2Cache vs Raycast](https://l2cache.amvo.store/en/l2cache-vs-raycast): Comparison of dedicated clipboard management vs general-purpose launcher extensions.
@@ -42,6 +47,9 @@ L2Cache offers free web versions of its built-in developer tools at https://l2ca
 ## Technical Blog & Architecture Deep Dives
 
 - [Engineering Blog](https://l2cache.amvo.store/en/blog): Technical articles on native macOS engineering, SQLite performance, and developer productivity.
+- [A Day in the Life of a Modern Mac Developer](https://l2cache.amvo.store/en/day-in-the-life-mac-developer): 2026 developer toolkit covering terminal history, lightweight containers, offline JWT debugging, and AI coding agents.
+- [The Modern REST API Developer Toolkit for macOS](https://l2cache.amvo.store/en/rest-api-developer-tools): How to build, debug, and secure REST APIs with offline JWT decoding, JSON formatting, and Touch ID biometric encryption.
+- [How Claude Code Session History Saves Production](https://l2cache.amvo.store/en/claude-code-session-history-lifesaver): 3 real-world developer scenarios for searching and resuming Claude Code and Codex CLI sessions.
 - [Preventing SQLite FTS5 Hangs in macOS Apps](https://l2cache.amvo.store/en/blog-sqlite-fts5-hangs): How L2Cache achieves sub-millisecond search across 100,000+ entries using SQLite WAL mode and custom concurrency controls.
 - [Swift SQLite Concurrency Best Practices](https://l2cache.amvo.store/en/blog-swift-sqlite-concurrency): Thread safety, connection pooling, and multi-threaded background writes in Swift.
 - [Clipboard Automation for Developer Workflows](https://l2cache.amvo.store/en/blog-clipboard-automation-developer-workflows): Streamlining developer tasks with custom script triggers.

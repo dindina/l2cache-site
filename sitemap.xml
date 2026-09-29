@@ -171,6 +171,11 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://l2cache.amvo.store/en/tools</loc>
+    <lastmod>2026-09-26</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://l2cache.amvo.store/en/support</loc>
     <lastmod>2026-09-26</lastmod>
     <priority>0.4</priority>
