@@ -1376,7 +1376,8 @@
             if (isSessionList) {
               return parsed.map((sessObj, sIdx) => {
                 const events = extractEventsFromObject(sessObj);
-                return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, filePath, modDate, rawText, file);
+                const explicitTitle = sessObj.aiTitle || sessObj.ai_title || sessObj.session_title || sessObj.sessionTitle || sessObj.title || '';
+                return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, filePath, modDate, rawText, file, '', '', explicitTitle);
               }).filter(Boolean);
             }
 
@@ -1396,13 +1397,15 @@
             if (Array.isArray(sessionsArray) && sessionsArray.length > 0) {
               return sessionsArray.map((sessObj, sIdx) => {
                 const events = extractEventsFromObject(sessObj);
-                return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, filePath, modDate, rawText, file);
+                const explicitTitle = sessObj.aiTitle || sessObj.ai_title || sessObj.session_title || sessObj.sessionTitle || sessObj.title || '';
+                return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, filePath, modDate, rawText, file, '', '', explicitTitle);
               }).filter(Boolean);
             }
 
             if (parsed.messages || parsed.turns || parsed.events || parsed.chat_messages || parsed.history || parsed.conversation || parsed.items || parsed.mapping) {
               const events = extractEventsFromObject(parsed);
-              const sess = createSessionRecord(events, parsed.id || parsed.session_id || `session-1`, project, filePath, modDate, rawText, file);
+              const explicitTitle = parsed.aiTitle || parsed.ai_title || parsed.session_title || parsed.sessionTitle || parsed.title || '';
+              const sess = createSessionRecord(events, parsed.id || parsed.session_id || `session-1`, project, filePath, modDate, rawText, file, '', '', explicitTitle);
               return sess ? [sess] : [];
             }
           }
@@ -1426,12 +1429,14 @@
         }
       }
 
-      // Pass 1: Pre-scan for Session Context, Metadata, and Claude Tool Results
+      // Pass 1: Pre-scan for Session Context, Metadata, AI Title, and Claude Tool Results
       const toolResults = new Map();
+      const sessionAiTitles = new Map();
       let preSessionID = '';
       let preCWD = '';
       let preBranch = '';
       let preModel = '';
+      let preAiTitle = '';
 
       for (const { raw } of parsedRecords) {
         // Claude tool results
@@ -1442,6 +1447,17 @@
             }
           }
         }
+        // AI Title detection (Claude Code & Codex)
+        const foundAiTitle = raw.aiTitle || raw.ai_title || raw.session_title || raw.sessionTitle ||
+          (raw.type === 'session_title' && (raw.title || raw.text)) ||
+          (raw.payload && (raw.payload.aiTitle || raw.payload.ai_title || raw.payload.session_title || raw.payload.title)) ||
+          (raw.message && (raw.message.aiTitle || raw.message.title));
+        if (foundAiTitle && typeof foundAiTitle === 'string' && foundAiTitle.trim().length > 0) {
+          preAiTitle = preAiTitle || foundAiTitle.trim();
+          const sId = raw.session_id || raw.sessionId || raw.sessionID || raw.conversation_id || (raw.payload && (raw.payload.session_id || raw.payload.turn_id));
+          if (sId) sessionAiTitles.set(sId, foundAiTitle.trim());
+        }
+
         // Claude metadata
         if (raw.sessionId) preSessionID = preSessionID || raw.sessionId;
         if (raw.cwd) preCWD = preCWD || raw.cwd;
@@ -1482,7 +1498,8 @@
         sessionGroups.forEach((events, sKey) => {
           if (events && events.length > 0) {
             events.forEach((ev, evIdx) => ev.index = evIdx + 1);
-            const sess = createSessionRecord(events, sKey, project, filePath, modDate, rawText, file, preCWD, preBranch);
+            const sessAiTitle = sessionAiTitles.get(sKey) || preAiTitle || '';
+            const sess = createSessionRecord(events, sKey, project, filePath, modDate, rawText, file, preCWD, preBranch, sessAiTitle);
             if (sess) resultSessions.push(sess);
           }
         });
@@ -1492,7 +1509,7 @@
       if (allEvents.length === 0) return [];
 
       allEvents.forEach((ev, evIdx) => ev.index = evIdx + 1);
-      const singleSession = createSessionRecord(allEvents, preSessionID || '', project, filePath, modDate, rawText, file, preCWD, preBranch);
+      const singleSession = createSessionRecord(allEvents, preSessionID || '', project, filePath, modDate, rawText, file, preCWD, preBranch, preAiTitle);
       return singleSession ? [singleSession] : [];
     }
 
@@ -1605,7 +1622,7 @@
       return { project, branch };
     }
 
-    function createSessionRecord(events, sessionKey, defaultProject, path, modDate, rawText, file, preCWD, preBranch) {
+    function createSessionRecord(events, sessionKey, defaultProject, path, modDate, rawText, file, preCWD, preBranch, preAiTitle) {
       if (!events || events.length === 0) return null;
 
       // Filter out empty turns with no text and no tool calls
@@ -1623,16 +1640,49 @@
       const hasMeaningfulContent = cleanEvents.some(e => (e.content && e.content.length > 8) || (e.toolCalls && e.toolCalls.length > 0));
       if (!hasUser && !hasMeaningfulContent) return null;
 
-      // Pick first genuine human user prompt (skipping system context / AGENTS.md injections)
-      const firstUser = cleanEvents.find(e => e.role === 'user' && !e.content.startsWith('[System Context]') && !e.content.startsWith('[System Prompt]'));
-      const firstPrompt = firstUser ? (firstUser.content || '') : (cleanEvents.find(e => e.role === 'user')?.content || cleanEvents[0]?.content || '');
-      let cleanTitle = firstPrompt
-        .replace(/<command-name>.*?<\/command-name>/g, '')
-        .replace(/<command-message>(.*?)<\/command-message>/g, '$1')
-        .replace(/[\r\n]+/g, ' ')
-        .trim();
-      let titleSnippet = cleanTitle.substring(0, 85) || 'Conversation Session';
-      if (sessionKey && sessionKey !== 'default_session') {
+      // Extract aiTitle if generated by Claude Code or Codex
+      let aiTitle = (preAiTitle || '').trim();
+      if (!aiTitle && events && events.length > 0) {
+        for (const ev of events) {
+          if (ev.aiTitle && typeof ev.aiTitle === 'string' && ev.aiTitle.trim()) {
+            aiTitle = ev.aiTitle.trim();
+            break;
+          }
+          if (ev.raw && typeof ev.raw === 'object') {
+            const t = ev.raw.aiTitle || ev.raw.ai_title || ev.raw.session_title || ev.raw.sessionTitle ||
+              (ev.raw.type === 'session_title' && (ev.raw.title || ev.raw.text)) ||
+              (ev.raw.payload && (ev.raw.payload.aiTitle || ev.raw.payload.ai_title || ev.raw.payload.session_title || ev.raw.payload.title));
+            if (t && typeof t === 'string' && t.trim()) {
+              aiTitle = t.trim();
+              break;
+            }
+          }
+        }
+      }
+      if (!aiTitle && rawText) {
+        const m = rawText.match(/"(?:aiTitle|ai_title|session_title|sessionTitle)"\s*:\s*"([^"]+)"/);
+        if (m && m[1] && m[1].trim()) {
+          aiTitle = m[1].trim();
+        }
+      }
+
+      let titleSnippet = '';
+      if (aiTitle) {
+        let cleanTitle = aiTitle.replace(/[\r\n]+/g, ' ').trim();
+        titleSnippet = cleanTitle.substring(0, 100);
+      } else {
+        // Pick first genuine human user prompt (skipping system context / AGENTS.md injections)
+        const firstUser = cleanEvents.find(e => e.role === 'user' && !e.content.startsWith('[System Context]') && !e.content.startsWith('[System Prompt]'));
+        const firstPrompt = firstUser ? (firstUser.content || '') : (cleanEvents.find(e => e.role === 'user')?.content || cleanEvents[0]?.content || '');
+        let cleanTitle = firstPrompt
+          .replace(/<command-name>.*?<\/command-name>/g, '')
+          .replace(/<command-message>(.*?)<\/command-message>/g, '$1')
+          .replace(/[\r\n]+/g, ' ')
+          .trim();
+        titleSnippet = cleanTitle.substring(0, 85) || 'Conversation Session';
+      }
+
+      if (sessionKey && sessionKey !== 'default_session' && !titleSnippet.startsWith('[')) {
         titleSnippet = `[${sessionKey.substring(0, 8)}] ${titleSnippet}`;
       }
 
