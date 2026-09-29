@@ -416,6 +416,46 @@
     <li><strong>Token Analytics &amp; Prompt Caching</strong>: Detailed breakdown of <code>prompt_tokens</code>, <code>completion_tokens</code>, and <code>cached_tokens</code> (showing tokens retrieved from OpenAI's prompt cache).</li>
   </ul>
 
+  <h2 id="why-history-matters">Why Codex Conversation History Changes How You Work</h2>
+  <p>Treating your Codex transcripts as a <strong>searchable repository memory</strong>—rather than a pile of disposable terminal sessions—fundamentally transforms day-to-day engineering velocity:</p>
+
+  <div style="display: grid; gap: 16px; margin: 24px 0 32px;">
+    <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+      <h3 style="margin-top: 0; font-size: 17px; color: #0a0a0a; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+        <span>🔄</span> Stop Re-Explaining Complex Modules
+      </h3>
+      <p style="margin-bottom: 0; font-size: 15px; color: #444440;">If you spent 15 turns giving Codex deep architectural context on your auth layer or SQLite schema, don't start from scratch. Resume that exact session to maintain full context instantly.</p>
+    </div>
+
+    <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+      <h3 style="margin-top: 0; font-size: 17px; color: #0a0a0a; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+        <span>🎯</span> Keep Architectural Decisions Consistent
+      </h3>
+      <p style="margin-bottom: 0; font-size: 15px; color: #444440;">Technical decisions compound across PRs. Resuming the original session prevents the agent from contradicting patterns, conventions, or design choices established days earlier.</p>
+    </div>
+
+    <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+      <h3 style="margin-top: 0; font-size: 17px; color: #0a0a0a; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+        <span>⚡</span> Slash Token Costs &amp; Prompt Latency
+      </h3>
+      <p style="margin-bottom: 0; font-size: 15px; color: #444440;">Re-explaining code burns input tokens and model warmup time. Continuing a warm session maximizes prompt cache hit rates, saving up to 90% on API costs and cutting response times.</p>
+    </div>
+
+    <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+      <h3 style="margin-top: 0; font-size: 17px; color: #0a0a0a; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+        <span>🧘</span> Manage Multi-Repo Contexts Calmly
+      </h3>
+      <p style="margin-bottom: 0; font-size: 15px; color: #444440;">When you can search and resume any Codex conversation across multiple projects in one global hotkey panel, repository hopping stops incurring a massive cognitive context switch.</p>
+    </div>
+
+    <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+      <h3 style="margin-top: 0; font-size: 17px; color: #0a0a0a; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+        <span>💡</span> Never Lose a Late-Night Fix
+      </h3>
+      <p style="margin-bottom: 0; font-size: 15px; color: #444440;">That brilliant regex or tricky concurrency workaround you found at midnight is indexed in your history. Search the tool output, resume the session, and reuse it effortlessly.</p>
+    </div>
+  </div>
+
   <h2>How to Resume OpenAI Codex Sessions</h2>
   <p>OpenAI Codex CLI provides built-in terminal commands to inspect and pick up where you left off in past coding sessions:</p>
 
@@ -468,15 +508,52 @@ find ~/.codex/sessions -name "rollout-*.jsonl" -exec jq -r 'select(.type=="event
 find ~/.codex/sessions -name "rollout-*.jsonl" -exec jq -r 'select(.type=="tool_call") | .arguments' {} +
 </code></pre>
 
-  <h2>Seamless Session Resumption with L2Cache for Mac</h2>
-  <p>Rather than running complex shell pipelines to find old agent conversations, <strong>L2Cache for Mac</strong> runs natively in your menu bar with hotkey access (<code>⌥Space</code>):</p>
+  <h2>Native Codex Resume vs. L2Cache History</h2>
+  <p>While the native <code>codex resume</code> CLI command is great for quick terminal rollbacks, <strong>L2Cache for Mac</strong> adds visual search, token analytics, and cross-project indexing:</p>
 
-  <ul style="margin: 0 0 24px 24px; font-size: 16px; color: var(--text-muted);">
-    <li style="margin-bottom: 8px;"><strong>1-Click Terminal Resume:</strong> Select any past Codex or Claude Code session and click <em>"Resume in Terminal"</em> to immediately attach a new shell window.</li>
-    <li style="margin-bottom: 8px;"><strong>Sub-Millisecond Offline Search:</strong> Uses native SQLite FTS5 for instant full-text search across all your past prompts, tool outputs, and modified files.</li>
-    <li style="margin-bottom: 8px;"><strong>Real-Time Token Analytics:</strong> Inspect total prompt tokens, completion tokens, prompt cache hit ratios, and session runtime across all projects.</li>
-    <li style="margin-bottom: 8px;"><strong>100% On-Device &amp; Private:</strong> All indexing and parsing happens strictly on your Mac with zero cloud telemetry.</li>
-  </ul>
+  <div style="background: var(--bg2); border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; margin: 24px 0 36px; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14.5px;">
+      <thead>
+        <tr style="background: var(--bg3); border-bottom: 2px solid var(--border); text-align: left;">
+          <th style="padding: 14px 16px; color: #0a0a0a; width: 30%; font-weight: 700;">Capability</th>
+          <th style="padding: 14px 16px; color: #555550; width: 35%; font-weight: 700;">Native Codex CLI (<code>codex resume</code>)</th>
+          <th style="padding: 14px 16px; color: #00a87f; width: 35%; font-weight: 700;">L2Cache for Mac</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 12px 16px; font-weight: 600;">Search Scope</td>
+          <td style="padding: 12px 16px; color: #555550;">First prompt only; no middle turns or tools</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">Full SQLite FTS5 search across prompts, tool outputs &amp; code diffs</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 12px 16px; font-weight: 600;">Session Titles</td>
+          <td style="padding: 12px 16px; color: #555550;">Cryptic rollout IDs or date paths</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">Auto-surfaces model-generated <code>aiTitle</code> for instant recognition</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 12px 16px; font-weight: 600;">Token &amp; Cost Analytics</td>
+          <td style="padding: 12px 16px; color: #555550;">None in CLI picker</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">Prompt tokens, completion tokens &amp; prompt cache hit ratios</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 12px 16px; font-weight: 600;">Resumption Method</td>
+          <td style="padding: 12px 16px; color: #555550;">Navigate to folder &amp; run shell command</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">1-Click "Resume in Terminal" from floating panel (<code>⌥Space</code>)</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 12px 16px; font-weight: 600;">Multi-Project Discovery</td>
+          <td style="padding: 12px 16px; color: #555550;">Requires manual <code>--all</code> flag</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">Unified timeline across all repositories and agent providers</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 16px; font-weight: 600;">Privacy &amp; Telemetry</td>
+          <td style="padding: 12px 16px; color: #555550;">Local disk</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">100% On-Device, zero-cloud encrypted storage</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <div class="cta-card">
     <h2>Never Lose an AI Prompt or Agent Session</h2>
