@@ -24,7 +24,7 @@ SITE_URL = "https://l2cache.amvo.store"
 PUBLIC_PAGES = [
     "index.html", "support.html", "privacy.html", "intelligence.html",
     "changelog.html", "clipboard-history-mac.html", "mac-command-history.html",
-    "terminal-history-mac.html", "claude-code-history.html", "codex-history.html",
+    "claude-code-history.html", "codex-history.html",
     "comparison.html", "benchmark.html", "best-mac-clipboard-managers.html",
     "clipboard-privacy-report.html", "developer-clipboard.html", "custom-actions.html",
     "jwt-decoder-mac.html", "json-formatter-mac.html", "regex-clipboard-mac.html",
