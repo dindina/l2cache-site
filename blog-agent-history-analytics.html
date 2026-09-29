@@ -214,20 +214,131 @@
     <li><strong>Prompt Cache Analytics</strong>: <code>cache_read_input_tokens</code> tracks how many tokens were served directly from Anthropic's prompt cache (saving 90% in cost and reducing latency by 80%), while <code>cache_creation_input_tokens</code> records new prompt state written to cache.</li>
   </ul>
 
-  <h2 id="resume-sessions">How to Search and Resume Past Claude Code Sessions</h2>
-  <p>One of the most frustrating parts of using CLI agents is resuming a session after switching terminals or closing a window. While the native CLI <code>claude --resume</code> picker lists recent sessions, <strong>it only displays the initial prompt of each session</strong>. You cannot search across middle turns, tool outputs, terminal commands, error tracebacks, or modified file names across past projects:</p>
+  <h2 id="why-history-matters">Why Agent Conversation History Changes How You Work</h2>
+  <p>Treating your Claude Code and Codex transcripts as a <strong>searchable repository memory</strong>—rather than a pile of disposable terminal sessions—fundamentally transforms day-to-day engineering velocity:</p>
 
-<pre><code># Native session resumption in CLI
-claude --resume a85fd1e8-3b4a-4f12-89cd-7e62a104f982
-codex resume
-</code></pre>
+  <div style="display: grid; gap: 16px; margin: 24px 0 32px;">
+    <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+      <h3 style="margin-top: 0; font-size: 17px; color: #0a0a0a; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+        <span>🔄</span> Stop Re-Explaining Complex Modules
+      </h3>
+      <p style="margin-bottom: 0; font-size: 15px; color: #444440;">If you spent 15 turns giving Claude or Codex deep architectural context on your auth layer or SQLite schema, don't start from scratch. Resume that exact session to maintain full context instantly.</p>
+    </div>
 
-  <p>With L2Cache, session resumption is seamless:</p>
-  <ul>
-    <li>Inspect any past session in the L2Cache floating panel (<code>⌥Space</code>) to see full turn-by-turn prompts, tool executions, and file edits.</li>
-    <li>Click <strong>"Resume in Terminal"</strong> to launch a fresh terminal window automatically attached to the selected agent session.</li>
-    <li>Never lose your place or re-explain context when returning to a complex multi-hour debugging session.</li>
-  </ul>
+    <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+      <h3 style="margin-top: 0; font-size: 17px; color: #0a0a0a; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+        <span>🎯</span> Keep Architectural Decisions Consistent
+      </h3>
+      <p style="margin-bottom: 0; font-size: 15px; color: #444440;">Technical decisions compound across PRs. Resuming the original session prevents the agent from contradicting patterns, conventions, or design choices established days earlier.</p>
+    </div>
+
+    <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+      <h3 style="margin-top: 0; font-size: 17px; color: #0a0a0a; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+        <span>⚡</span> Slash Token Costs &amp; Prompt Latency
+      </h3>
+      <p style="margin-bottom: 0; font-size: 15px; color: #444440;">Re-explaining code burns input tokens and model warmup time. Continuing a warm session maximizes prompt cache hit rates (<code>cacheReadTokens</code>), saving up to 90% on API costs and cutting response times.</p>
+    </div>
+
+    <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+      <h3 style="margin-top: 0; font-size: 17px; color: #0a0a0a; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+        <span>🧘</span> Manage Multi-Repo Contexts Calmly
+      </h3>
+      <p style="margin-bottom: 0; font-size: 15px; color: #444440;">When you can search and resume any agent conversation across multiple projects in one global hotkey panel, repository hopping stops incurring a massive cognitive context switch.</p>
+    </div>
+
+    <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+      <h3 style="margin-top: 0; font-size: 17px; color: #0a0a0a; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+        <span>💡</span> Never Lose a Late-Night Fix
+      </h3>
+      <p style="margin-bottom: 0; font-size: 15px; color: #444440;">That brilliant regex or tricky concurrency workaround you found at midnight is indexed in your history. Search the tool output, resume the session, and reuse it effortlessly.</p>
+    </div>
+  </div>
+
+  <h2 id="resume-sessions">How to Search and Resume Past Claude Code &amp; Codex Sessions</h2>
+  <p>Both Claude Code and Codex CLI offer built-in terminal resumption commands:</p>
+
+  <div style="background: var(--bg2); border: 1.5px solid var(--border); border-radius: 12px; padding: 22px; margin: 20px 0 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+    <h3 style="margin-top: 0; font-size: 17px; color: #0a0a0a; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+      <span>💻</span> Native CLI Resume Commands Cheat Sheet
+    </h3>
+    <table style="width: 100%; border-collapse: collapse; font-size: 14.5px;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--border); text-align: left;">
+          <th style="padding: 10px 8px; color: #0a0a0a; width: 42%; font-weight: 700;">Command</th>
+          <th style="padding: 10px 8px; color: #0a0a0a; font-weight: 700;">Tool &amp; Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 10px 8px;"><code>claude --resume</code> (or <code>claude -r</code>)</td>
+          <td style="padding: 10px 8px; color: #333330;">Open the interactive Claude Code session picker in current repo.</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 10px 8px;"><code>claude --resume SESSION_ID</code></td>
+          <td style="padding: 10px 8px; color: #333330;">Resume a specific Claude session directly by ID.</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 10px 8px;"><code>codex resume</code></td>
+          <td style="padding: 10px 8px; color: #333330;">Open the interactive OpenAI Codex session picker.</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 10px 8px;"><code>codex resume --last</code></td>
+          <td style="padding: 10px 8px; color: #333330;">Continue the most recent Codex session immediately.</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px 8px;"><code>codex resume --all</code></td>
+          <td style="padding: 10px 8px; color: #333330;">Include Codex sessions from all directories across your machine.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Native CLI Resume vs. L2Cache History Dashboard</h2>
+  <p>While native CLI commands are helpful for local directories, <strong>L2Cache for Mac</strong> bridges cross-project indexing, visual search, and token analytics:</p>
+
+  <div style="background: var(--bg2); border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; margin: 24px 0 36px; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14.5px;">
+      <thead>
+        <tr style="background: var(--bg3); border-bottom: 2px solid var(--border); text-align: left;">
+          <th style="padding: 14px 16px; color: #0a0a0a; width: 30%; font-weight: 700;">Capability</th>
+          <th style="padding: 14px 16px; color: #555550; width: 35%; font-weight: 700;">Native CLI (<code>claude -r</code> / <code>codex resume</code>)</th>
+          <th style="padding: 14px 16px; color: #00a87f; width: 35%; font-weight: 700;">L2Cache for Mac</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 12px 16px; font-weight: 600;">Search Scope</td>
+          <td style="padding: 12px 16px; color: #555550;">Initial prompt only in current folder</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">Full SQLite FTS5 search across all turns, tool outputs &amp; code diffs</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 12px 16px; font-weight: 600;">Session Titles</td>
+          <td style="padding: 12px 16px; color: #555550;">Truncated prompt strings or UUIDs</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">Auto-surfaces model-generated <code>aiTitle</code> for instant recognition</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 12px 16px; font-weight: 600;">Token &amp; Cache Tracking</td>
+          <td style="padding: 12px 16px; color: #555550;">None in CLI picker</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">Input/output tokens &amp; <code>cacheReadTokens</code> hit ratios</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 12px 16px; font-weight: 600;">Resumption Method</td>
+          <td style="padding: 12px 16px; color: #555550;">Run terminal command in repository</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">1-Click "Resume in Terminal" from floating panel (<code>⌥Space</code>)</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 12px 16px; font-weight: 600;">Multi-Provider Support</td>
+          <td style="padding: 12px 16px; color: #555550;">Isolated to one CLI tool at a time</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">Unified timeline across Claude Code, Codex, and shell history</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 16px; font-weight: 600;">Privacy &amp; Telemetry</td>
+          <td style="padding: 12px 16px; color: #555550;">Local filesystem files</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">100% On-Device, zero-cloud encrypted storage</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <h2 id="token-analytics">Tracking Claude Code Token Usage and Prompt Cache Hit Rates</h2>
   <p>In <strong>L2Cache 1.4</strong>, we introduced native <strong>AI Agent History &amp; Analytics</strong>—bringing full visibility to your CLI agent sessions directly from your Mac's menu bar or global hotkey.</p>

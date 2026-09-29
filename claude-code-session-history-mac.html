@@ -346,14 +346,80 @@
 
   <pre>~/.claude/projects/Users-you-work-api-server/transcript.jsonl</pre>
 
-  <h2>Built-in Terminal Flags: Resuming Past Work</h2>
-  <p>Claude Code includes flags to resume recent conversations within your terminal:</p>
+  <h2>Built-in Terminal Commands: Resuming Past Work</h2>
+  <p>Claude Code includes native terminal commands to resume recent conversations within your terminal:</p>
 
-  <pre># Interactive session picker for the current workspace
-claude --resume
+  <div style="background: var(--bg2); border: 1.5px solid var(--border); border-radius: 12px; padding: 22px; margin: 20px 0 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+    <h3 style="margin-top: 0; font-size: 17px; color: #0a0a0a; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+      <span>💻</span> Native Claude Code CLI History and Resume Commands
+    </h3>
+    <table style="width: 100%; border-collapse: collapse; font-size: 14.5px;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--border); text-align: left;">
+          <th style="padding: 10px 8px; color: #0a0a0a; width: 42%; font-weight: 700;">Command</th>
+          <th style="padding: 10px 8px; color: #0a0a0a; font-weight: 700;">Use</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 10px 8px;"><code>claude --resume</code> (or <code>claude -r</code>)</td>
+          <td style="padding: 10px 8px; color: #333330;">Open the interactive session picker for the current workspace.</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 10px 8px;"><code>claude --resume SESSION_ID</code></td>
+          <td style="padding: 10px 8px; color: #333330;">Resume a specific past session directly by ID.</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 10px 8px;"><code>claude --continue</code> (or <code>claude -c</code>)</td>
+          <td style="padding: 10px 8px; color: #333330;">Continue the most recent session in this directory without prompting.</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px 8px;"><code>claude --print</code></td>
+          <td style="padding: 10px 8px; color: #333330;">Print the last turn response to stdout for piping.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-# Short form
-claude -r</pre>
+  <h2 id="why-history-matters">Why Claude Code Conversation History Changes How You Work</h2>
+  <p>Treating your Claude Code transcripts as a <strong>searchable repository memory</strong>—rather than a pile of ephemeral sessions—fundamentally transforms day-to-day engineering velocity:</p>
+
+  <div style="display: grid; gap: 16px; margin: 24px 0 32px;">
+    <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+      <h3 style="margin-top: 0; font-size: 17px; color: #0a0a0a; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+        <span>🔄</span> Stop Re-Explaining Complex Modules
+      </h3>
+      <p style="margin-bottom: 0; font-size: 15px; color: #444440;">If you spent 15 turns giving Claude deep architectural context on your auth layer or SQLite schema, don't start from scratch. Resume that exact session to maintain full context instantly.</p>
+    </div>
+
+    <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+      <h3 style="margin-top: 0; font-size: 17px; color: #0a0a0a; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+        <span>🎯</span> Keep Architectural Decisions Consistent
+      </h3>
+      <p style="margin-bottom: 0; font-size: 15px; color: #444440;">Technical decisions compound across PRs. Resuming the original session prevents the agent from contradicting patterns, conventions, or design choices established days earlier.</p>
+    </div>
+
+    <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+      <h3 style="margin-top: 0; font-size: 17px; color: #0a0a0a; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+        <span>⚡</span> Slash Token Costs &amp; Prompt Latency
+      </h3>
+      <p style="margin-bottom: 0; font-size: 15px; color: #444440;">Re-explaining code burns input tokens and model warmup time. Continuing a warm session maximizes prompt cache hit rates (<code>cacheReadTokens</code>), saving up to 90% on API costs and cutting response times.</p>
+    </div>
+
+    <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+      <h3 style="margin-top: 0; font-size: 17px; color: #0a0a0a; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+        <span>🧘</span> Manage Multi-Repo Contexts Calmly
+      </h3>
+      <p style="margin-bottom: 0; font-size: 15px; color: #444440;">When you can search and resume any Claude conversation across multiple projects in one global hotkey panel, repository hopping stops incurring a massive cognitive context switch.</p>
+    </div>
+
+    <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+      <h3 style="margin-top: 0; font-size: 17px; color: #0a0a0a; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+        <span>💡</span> Never Lose a Late-Night Fix
+      </h3>
+      <p style="margin-bottom: 0; font-size: 15px; color: #444440;">That brilliant regex or tricky concurrency workaround you found at midnight is indexed in your history. Search the tool output, resume the session, and reuse it effortlessly.</p>
+    </div>
+  </div>
 
   <h3>Limitations of the Native CLI Resume:</h3>
   <ul style="margin: 0 0 20px 24px; font-size: 16px; color: var(--text-muted);">
@@ -365,20 +431,59 @@ claude -r</pre>
   <h2>How to Parse Claude Code History from Terminal</h2>
   <p>If you want to quickly grep for past user prompts in a project transcript without opening the file, use <code>jq</code>:</p>
 
-  <pre># Extract all user prompts in chronological order
+<pre><code># Extract all user prompts in chronological order
 jq -r 'select(.type=="USER_INPUT") | .content' ~/.claude/projects/YOUR_PROJECT/transcript.jsonl
 
 # Find all bash commands run by Claude Code
-jq -r 'select(.type=="PLANNER_RESPONSE") | .tool_calls[]? | select(.name=="run_command") | .args.CommandLine' ~/.claude/projects/YOUR_PROJECT/transcript.jsonl</pre>
+jq -r 'select(.type=="PLANNER_RESPONSE") | .tool_calls[]? | select(.name=="run_command") | .args.CommandLine' ~/.claude/projects/YOUR_PROJECT/transcript.jsonl
+</code></pre>
 
-  <h2>Better Workflow: L2Cache Offline Developer Memory</h2>
-  <p>Rather than manually digging through dotfiles, <strong>L2Cache for Mac</strong> automatically captures and categorizes your terminal snippets, AI prompts, and code blocks the moment you copy or run them:</p>
+  <h2>Native Claude Code Resume vs. L2Cache History</h2>
+  <p>While the native <code>claude --resume</code> CLI command is great for quick terminal rollbacks, <strong>L2Cache for Mac</strong> adds visual search, token analytics, and cross-project indexing:</p>
 
-  <ul style="margin: 0 0 24px 24px; font-size: 16px; color: var(--text-muted);">
-    <li style="margin-bottom: 8px;"><strong>Instant FTS5 Search:</strong> Search through months of terminal commands, curl scripts, and prompts in under 1 millisecond.</li>
-    <li style="margin-bottom: 8px;"><strong>Zero-Cloud Privacy:</strong> Kept 100% on your Mac using native SQLite and on-device Apple Intelligence.</li>
-    <li style="margin-bottom: 8px;"><strong>Touch ID Encryption:</strong> Automatically detects API keys, tokens, and credentials and encrypts them securely.</li>
-  </ul>
+  <div style="background: var(--bg2); border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; margin: 24px 0 36px; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14.5px;">
+      <thead>
+        <tr style="background: var(--bg3); border-bottom: 2px solid var(--border); text-align: left;">
+          <th style="padding: 14px 16px; color: #0a0a0a; width: 30%; font-weight: 700;">Capability</th>
+          <th style="padding: 14px 16px; color: #555550; width: 35%; font-weight: 700;">Native Claude Code CLI (<code>claude -r</code>)</th>
+          <th style="padding: 14px 16px; color: #00a87f; width: 35%; font-weight: 700;">L2Cache for Mac</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 12px 16px; font-weight: 600;">Search Scope</td>
+          <td style="padding: 12px 16px; color: #555550;">Initial prompt only in current repo</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">Full SQLite FTS5 search across all turns, tool outputs &amp; code diffs</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 12px 16px; font-weight: 600;">Session Titles</td>
+          <td style="padding: 12px 16px; color: #555550;">Truncated initial user prompt</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">Auto-surfaces model-generated <code>aiTitle</code> for instant recognition</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 12px 16px; font-weight: 600;">Prompt Cache Tracking</td>
+          <td style="padding: 12px 16px; color: #555550;">None in CLI picker</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">Real-time <code>cacheReadTokens</code> hit ratios &amp; token savings</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 12px 16px; font-weight: 600;">Resumption Method</td>
+          <td style="padding: 12px 16px; color: #555550;">Navigate to folder &amp; run shell command</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">1-Click "Resume in Terminal" from floating panel (<code>⌥Space</code>)</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding: 12px 16px; font-weight: 600;">Cross-Project Support</td>
+          <td style="padding: 12px 16px; color: #555550;">Single repository only</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">Unified timeline across all repositories and Claude/Codex agents</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 16px; font-weight: 600;">Privacy &amp; Telemetry</td>
+          <td style="padding: 12px 16px; color: #555550;">Local disk JSONL</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">100% On-Device, zero-cloud encrypted storage</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <div class="cta-card">
     <h2>Supercharge Your Mac Developer Workflow</h2>
