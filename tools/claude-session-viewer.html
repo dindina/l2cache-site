@@ -922,7 +922,7 @@
       <div id="viewer-results" style="display: none;">
         
         <!-- View Mode Switcher Header & Multi-Folder Actions -->
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 20px; background: var(--bg2); border: 1.5px solid #00C896; border-radius: 12px; padding: 14px 20px;">
+        <div id="viewer-top-toolbar" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 20px; background: var(--bg2); border: 1.5px solid #00C896; border-radius: 12px; padding: 14px 20px;">
           <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
             <span style="font-size: 15px; font-weight: 700; color: var(--text);">⚡ Unified Agent Index:</span>
             <span class="sidebar-count-badge" id="main-session-count">0</span>
@@ -1028,13 +1028,10 @@
 
         <!-- 2. Full Session History Workspace -->
         <div id="sessions-workspace-section" style="display: none;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+          <div style="margin-bottom: 20px;">
             <button class="tbtn tbtn-ghost" onclick="switchMainView('tree')" style="font-size: 13.5px; font-weight: 600; padding: 8px 18px; border-color: var(--border); display: inline-flex; align-items: center; gap: 6px;">
               ← Back to Project Tree
             </button>
-            <div style="display: flex; gap: 8px;">
-              <button class="tbtn tbtn-ghost" onclick="exportMarkdownSummary()" style="font-size: 12px; padding: 7px 14px;">📋 Export Markdown</button>
-            </div>
           </div>
 
           <div class="session-detail-pane" style="width: 100%;">
@@ -2837,6 +2834,7 @@
     }
 
     function switchMainView(mode) {
+      const topToolbar = document.getElementById('viewer-top-toolbar');
       const treeSec = document.getElementById('sessions-tree-section');
       const tilesSec = document.getElementById('sessions-tiles-section');
       const workspaceSec = document.getElementById('sessions-workspace-section');
@@ -2845,6 +2843,7 @@
       const btnSplit = document.getElementById('btn-view-split');
 
       if (mode === 'tree') {
+        if (topToolbar) topToolbar.style.display = 'flex';
         if (treeSec) treeSec.style.display = 'block';
         if (tilesSec) tilesSec.style.display = 'none';
         if (workspaceSec) workspaceSec.style.display = 'none';
@@ -2853,6 +2852,7 @@
         if (btnSplit) btnSplit.classList.remove('active');
         renderProjectTree();
       } else if (mode === 'tiles') {
+        if (topToolbar) topToolbar.style.display = 'flex';
         if (treeSec) treeSec.style.display = 'none';
         if (tilesSec) tilesSec.style.display = 'block';
         if (workspaceSec) workspaceSec.style.display = 'none';
@@ -2861,6 +2861,7 @@
         if (btnSplit) btnSplit.classList.remove('active');
         renderSessionTiles();
       } else {
+        if (topToolbar) topToolbar.style.display = 'none';
         if (treeSec) treeSec.style.display = 'none';
         if (tilesSec) tilesSec.style.display = 'none';
         if (workspaceSec) workspaceSec.style.display = 'block';
