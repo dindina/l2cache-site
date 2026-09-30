@@ -800,121 +800,124 @@
   <div class="page-wrap">
     <div class="article-wrap">
       
-      <!-- Hero Header -->
-      <span class="section-label">AI AGENT DEVELOPER TOOL</span>
-      <h1>Claude Code &amp; Codex Session Log Viewer</h1>
-      <p class="hero-sub">Inspect, filter, and analyze multi-turn Claude Code &amp; Codex CLI session transcripts (<code>transcript.jsonl</code>) in a clean chat interface. 100% private &amp; in-browser.</p>
+      <!-- Top Intro Section (Hero, Download Banner, 3 Import Cards, Promo, Dropzone) -->
+      <div id="viewer-intro-section">
+        <!-- Hero Header -->
+        <span class="section-label">AI AGENT DEVELOPER TOOL</span>
+        <h1>Claude Code &amp; Codex Session Log Viewer</h1>
+        <p class="hero-sub">Inspect, filter, and analyze multi-turn Claude Code &amp; Codex CLI session transcripts (<code>transcript.jsonl</code>) in a clean chat interface. 100% private &amp; in-browser.</p>
 
-      <!-- App Install / Download Banner -->
-      <div id="pwa-install-card" style="background: var(--bg2); border: 1.5px solid #00C896; border-radius: 12px; padding: 14px 20px; margin: 20px 0 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; box-shadow: 0 4px 14px rgba(0,200,150,0.06);">
-        <div style="display: flex; align-items: center; gap: 14px;">
-          <div style="width: 40px; height: 40px; border-radius: 10px; background: #0D0C1A; border: 1.5px solid #00C896; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;">
-            ⚡
+        <!-- App Install / Download Banner -->
+        <div id="pwa-install-card" style="background: var(--bg2); border: 1.5px solid #00C896; border-radius: 12px; padding: 14px 20px; margin: 20px 0 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; box-shadow: 0 4px 14px rgba(0,200,150,0.06);">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div style="width: 40px; height: 40px; border-radius: 10px; background: #0D0C1A; border: 1.5px solid #00C896; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;">
+              ⚡
+            </div>
+            <div>
+              <div style="font-weight: 700; font-size: 14.5px; color: var(--text);">Run as Standalone Desktop App</div>
+              <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">Install directly to your Mac Dock or download as a 100% offline standalone HTML app.</div>
+            </div>
           </div>
-          <div>
-            <div style="font-weight: 700; font-size: 14.5px; color: var(--text);">Run as Standalone Desktop App</div>
-            <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">Install directly to your Mac Dock or download as a 100% offline standalone HTML app.</div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" class="tbtn tbtn-primary" onclick="downloadOfflineApp()" style="font-size: 13px; padding: 8px 16px;">
+              💾 Download App (.html)
+            </button>
+            <button id="pwa-install-btn" type="button" class="tbtn tbtn-ghost" onclick="triggerPwaInstall()" style="font-size: 13px; padding: 8px 16px; border-color: #00C896; color: #008765; font-weight: 700;">
+              ⬇️ Install as App
+            </button>
           </div>
         </div>
-        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <button type="button" class="tbtn tbtn-primary" onclick="downloadOfflineApp()" style="font-size: 13px; padding: 8px 16px;">
-            💾 Download App (.html)
-          </button>
-          <button id="pwa-install-btn" type="button" class="tbtn tbtn-ghost" onclick="triggerPwaInstall()" style="font-size: 13px; padding: 8px 16px; border-color: #00C896; color: #008765; font-weight: 700;">
-            ⬇️ Install as App
-          </button>
-        </div>
-      </div>
 
-      <!-- 3 Quick Ways to Load -->
-      <div class="guide-steps-grid">
-        <div class="guide-step-card" style="border-top: 3px solid #00C896;">
-          <div class="guide-step-title">
-            <span class="step-badge">A</span> 📁 Pick Claude &amp; Codex Folders (Zero Upload)
-          </div>
-          <p class="guide-step-desc">
-            Choose your <code>~/.claude</code>, <code>~/.codex</code>, or workspace folders. Both are saved locally and can be refreshed in 1-click:
-            <br/><br/>
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-              <div style="display: flex; gap: 6px;">
-                <button type="button" class="tbtn tbtn-primary" onclick="openFolderPicker('claude')" style="flex: 1; justify-content: center; font-size: 12px; padding: 8px 6px;">
-                  🤖 ~/.claude
-                </button>
-                <button type="button" class="tbtn tbtn-primary" onclick="openFolderPicker('codex')" style="flex: 1; justify-content: center; font-size: 12px; padding: 8px 6px; background: #008765; border-color: #00C896;">
-                  🟢 ~/.codex
+        <!-- 3 Quick Ways to Load -->
+        <div class="guide-steps-grid">
+          <div class="guide-step-card" style="border-top: 3px solid #00C896;">
+            <div class="guide-step-title">
+              <span class="step-badge">A</span> 📁 Pick Claude &amp; Codex Folders (Zero Upload)
+            </div>
+            <p class="guide-step-desc">
+              Choose your <code>~/.claude</code>, <code>~/.codex</code>, or workspace folders. Both are saved locally and can be refreshed in 1-click:
+              <br/><br/>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; gap: 6px;">
+                  <button type="button" class="tbtn tbtn-primary" onclick="openFolderPicker('claude')" style="flex: 1; justify-content: center; font-size: 12px; padding: 8px 6px;">
+                    🤖 ~/.claude
+                  </button>
+                  <button type="button" class="tbtn tbtn-primary" onclick="openFolderPicker('codex')" style="flex: 1; justify-content: center; font-size: 12px; padding: 8px 6px; background: #008765; border-color: #00C896;">
+                    🟢 ~/.codex
+                  </button>
+                </div>
+                <button type="button" class="tbtn tbtn-ghost btn-refresh-folders" onclick="refreshLinkedFolders()" style="width: 100%; justify-content: center; font-size: 12px; padding: 7px 10px; background: rgba(0,200,150,0.08); border-color: #00C896; color: #008765; font-weight: 700;">
+                  🔄 Refresh Linked Folders (No Re-upload)
                 </button>
               </div>
-              <button type="button" class="tbtn tbtn-ghost btn-refresh-folders" onclick="refreshLinkedFolders()" style="width: 100%; justify-content: center; font-size: 12px; padding: 7px 10px; background: rgba(0,200,150,0.08); border-color: #00C896; color: #008765; font-weight: 700;">
-                🔄 Refresh Linked Folders (No Re-upload)
-              </button>
+              <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;" onchange="handleFolderSelect(event)"/>
+            </p>
+          </div>
+
+          <div class="guide-step-card" style="border-top: 3px solid #7F77DD;">
+            <div class="guide-step-title">
+              <span class="step-badge">B</span> 📋 1-Click Clipboard Paste
             </div>
-            <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;" onchange="handleFolderSelect(event)"/>
-          </p>
-        </div>
-
-        <div class="guide-step-card" style="border-top: 3px solid #7F77DD;">
-          <div class="guide-step-title">
-            <span class="step-badge">B</span> 📋 1-Click Clipboard Paste
+            <p class="guide-step-desc">
+              Copy log text or run the terminal one-liner below, then click to load instantly:
+              <br/><br/>
+              <button type="button" class="tbtn tbtn-ghost" onclick="readFromClipboard()" style="width: 100%; justify-content: center; font-size: 13px; padding: 9px 12px; background: var(--bg3); border-color: var(--border);">
+                📋 Paste from Clipboard (1-Click)
+              </button>
+            </p>
           </div>
-          <p class="guide-step-desc">
-            Copy log text or run the terminal one-liner below, then click to load instantly:
-            <br/><br/>
-            <button type="button" class="tbtn tbtn-ghost" onclick="readFromClipboard()" style="width: 100%; justify-content: center; font-size: 13px; padding: 9px 12px; background: var(--bg3); border-color: var(--border);">
-              📋 Paste from Clipboard (1-Click)
-            </button>
-          </p>
-        </div>
 
-        <div class="guide-step-card" style="border-top: 3px solid #f59e0b;">
-          <div class="guide-step-title">
-            <span class="step-badge">C</span> ⚡ Terminal Quick Copy One-Liner
+          <div class="guide-step-card" style="border-top: 3px solid #f59e0b;">
+            <div class="guide-step-title">
+              <span class="step-badge">C</span> ⚡ Terminal Quick Copy One-Liner
+            </div>
+            <p class="guide-step-desc">
+              Copies your latest Claude Code or Codex session directly to your clipboard:
+              <br/><br/>
+              <span class="copy-cmd-inline" onclick="copyTerminalCmd('cat $(ls -t ~/.claude/projects/*/*/transcript.jsonl 2>/dev/null | head -n1) | pbcopy', this)" title="Click to copy one-liner" style="font-size: 11px; word-break: break-all; width: 100%; justify-content: center;">
+                📋 <code>cat $(ls -t ~/.claude/... | head -n1) | pbcopy</code>
+              </span>
+            </p>
           </div>
-          <p class="guide-step-desc">
-            Copies your latest Claude Code or Codex session directly to your clipboard:
-            <br/><br/>
-            <span class="copy-cmd-inline" onclick="copyTerminalCmd('cat $(ls -t ~/.claude/projects/*/*/transcript.jsonl 2>/dev/null | head -n1) | pbcopy', this)" title="Click to copy one-liner" style="font-size: 11px; word-break: break-all; width: 100%; justify-content: center;">
-              📋 <code>cat $(ls -t ~/.claude/... | head -n1) | pbcopy</code>
-            </span>
-          </p>
         </div>
-      </div>
 
-      <!-- Native App Promo Banner -->
-      <div style="background: rgba(0,200,150,0.08); border: 1.5px solid rgba(0,200,150,0.3); border-radius: 12px; padding: 18px 24px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
-        <div style="font-size: 14px; color: var(--text);">
-          <strong style="color: #008765;">⚡ Want live floating session tracking in macOS?</strong>
-          <span style="color: var(--text-muted); display: block; margin-top: 2px;">L2Cache for Mac automatically monitors Claude Code &amp; Codex sessions in your menu bar with 1-click terminal resumption.</span>
+        <!-- Native App Promo Banner -->
+        <div style="background: rgba(0,200,150,0.08); border: 1.5px solid rgba(0,200,150,0.3); border-radius: 12px; padding: 18px 24px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+          <div style="font-size: 14px; color: var(--text);">
+            <strong style="color: #008765;">⚡ Want live floating session tracking in macOS?</strong>
+            <span style="color: var(--text-muted); display: block; margin-top: 2px;">L2Cache for Mac automatically monitors Claude Code &amp; Codex sessions in your menu bar with 1-click terminal resumption.</span>
+          </div>
+          <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="tbtn tbtn-primary" style="text-decoration: none; padding: 8px 18px; font-size: 13.5px;">Get L2Cache ($4.99)</a>
         </div>
-        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="tbtn tbtn-primary" style="text-decoration: none; padding: 8px 18px; font-size: 13.5px;">Get L2Cache ($4.99)</a>
-      </div>
 
-      <!-- Dropzone & Upload Box -->
-      <div class="dropzone-box" id="dropzone" onclick="openFolderPicker('auto')">
-        <input type="file" id="file-input" accept=".jsonl,.json,.txt" multiple style="display: none;" onchange="handleFileSelect(event)"/>
-        <div style="font-size: 32px; margin-bottom: 10px;">📂</div>
-        <div style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px;">
-          Drag &amp; Drop Claude or Codex <code>transcript.jsonl</code> files or folders here
+        <!-- Dropzone & Upload Box -->
+        <div class="dropzone-box" id="dropzone" onclick="openFolderPicker('auto')">
+          <input type="file" id="file-input" accept=".jsonl,.json,.txt" multiple style="display: none;" onchange="handleFileSelect(event)"/>
+          <div style="font-size: 32px; margin-bottom: 10px;">📂</div>
+          <div style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px;">
+            Drag &amp; Drop Claude or Codex <code>transcript.jsonl</code> files or folders here
+          </div>
+          <div style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 14px;">
+            Indexes Claude Code transcripts, OpenAI Codex memories, and Antigravity logs into one unified index.
+          </div>
+          <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
+            <button type="button" class="tbtn tbtn-primary" onclick="event.stopPropagation(); openFolderPicker('claude');">🤖 + Claude Folder</button>
+            <button type="button" class="tbtn tbtn-primary" onclick="event.stopPropagation(); openFolderPicker('codex');" style="background: #008765; border-color: #00C896;">🟢 + Codex Folder</button>
+            <button type="button" class="tbtn tbtn-ghost btn-refresh-folders" onclick="event.stopPropagation(); refreshLinkedFolders();" style="border-color: #00C896; color: #008765; font-weight: 700;">🔄 Refresh &amp; Sync</button>
+            <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); document.getElementById('file-input').click();">📄 Pick Files</button>
+            <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); readFromClipboard();">📋 Paste Clipboard</button>
+            <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); loadSampleSession();">⚡ Load Sample Index</button>
+          </div>
         </div>
-        <div style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 14px;">
-          Indexes Claude Code transcripts, OpenAI Codex memories, and Antigravity logs into one unified index.
-        </div>
-        <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
-          <button type="button" class="tbtn tbtn-primary" onclick="event.stopPropagation(); openFolderPicker('claude');">🤖 + Claude Folder</button>
-          <button type="button" class="tbtn tbtn-primary" onclick="event.stopPropagation(); openFolderPicker('codex');" style="background: #008765; border-color: #00C896;">🟢 + Codex Folder</button>
-          <button type="button" class="tbtn tbtn-ghost btn-refresh-folders" onclick="event.stopPropagation(); refreshLinkedFolders();" style="border-color: #00C896; color: #008765; font-weight: 700;">🔄 Refresh &amp; Sync</button>
-          <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); document.getElementById('file-input').click();">📄 Pick Files</button>
-          <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); readFromClipboard();">📋 Paste Clipboard</button>
-          <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); loadSampleSession();">⚡ Load Sample Index</button>
-        </div>
-      </div>
 
-      <!-- Paste Area (Collapsible) -->
-      <div id="paste-drawer" style="display: none; margin-bottom: 24px;">
-        <div style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;">Paste Raw JSONL Lines:</div>
-        <textarea id="raw-jsonl-input" class="tool-textarea" style="height: 140px; font-family: var(--mono); font-size: 12.5px;" placeholder='{"type":"USER_INPUT","content":"Fix the database connection leak..."}&#10;{"type":"PLANNER_RESPONSE","content":"I analyzed the SQLite pool..."}'></textarea>
-        <div style="margin-top: 10px; display: flex; gap: 10px;">
-          <button class="tbtn tbtn-primary" onclick="parsePastedJSONL()">🔍 Parse Pasted Logs</button>
-          <button class="tbtn tbtn-ghost" onclick="document.getElementById('raw-jsonl-input').value=''">Clear</button>
+        <!-- Paste Area (Collapsible) -->
+        <div id="paste-drawer" style="display: none; margin-bottom: 24px;">
+          <div style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;">Paste Raw JSONL Lines:</div>
+          <textarea id="raw-jsonl-input" class="tool-textarea" style="height: 140px; font-family: var(--mono); font-size: 12.5px;" placeholder='{"type":"USER_INPUT","content":"Fix the database connection leak..."}&#10;{"type":"PLANNER_RESPONSE","content":"I analyzed the SQLite pool..."}'></textarea>
+          <div style="margin-top: 10px; display: flex; gap: 10px;">
+            <button class="tbtn tbtn-primary" onclick="parsePastedJSONL()">🔍 Parse Pasted Logs</button>
+            <button class="tbtn tbtn-ghost" onclick="document.getElementById('raw-jsonl-input').value=''">Clear</button>
+          </div>
         </div>
       </div>
 
@@ -1079,7 +1082,7 @@
       </div>
 
       <!-- FAQ Section -->
-      <div class="faq-section" style="margin-top: 56px; border-top: 1px solid var(--border); padding-top: 36px;">
+      <div id="viewer-faq-section" class="faq-section" style="margin-top: 56px; border-top: 1px solid var(--border); padding-top: 36px;">
         <h2 style="font-family: var(--serif); font-size: 24px; font-weight: 700; margin-bottom: 20px;">Frequently Asked Questions</h2>
         
         <div class="guide-step-card" style="margin-bottom: 16px;">
@@ -2834,6 +2837,8 @@
     }
 
     function switchMainView(mode) {
+      const introSec = document.getElementById('viewer-intro-section');
+      const faqSec = document.getElementById('viewer-faq-section');
       const topToolbar = document.getElementById('viewer-top-toolbar');
       const treeSec = document.getElementById('sessions-tree-section');
       const tilesSec = document.getElementById('sessions-tiles-section');
@@ -2843,6 +2848,8 @@
       const btnSplit = document.getElementById('btn-view-split');
 
       if (mode === 'tree') {
+        if (introSec) introSec.style.display = 'block';
+        if (faqSec) faqSec.style.display = 'block';
         if (topToolbar) topToolbar.style.display = 'flex';
         if (treeSec) treeSec.style.display = 'block';
         if (tilesSec) tilesSec.style.display = 'none';
@@ -2852,6 +2859,8 @@
         if (btnSplit) btnSplit.classList.remove('active');
         renderProjectTree();
       } else if (mode === 'tiles') {
+        if (introSec) introSec.style.display = 'block';
+        if (faqSec) faqSec.style.display = 'block';
         if (topToolbar) topToolbar.style.display = 'flex';
         if (treeSec) treeSec.style.display = 'none';
         if (tilesSec) tilesSec.style.display = 'block';
@@ -2861,6 +2870,9 @@
         if (btnSplit) btnSplit.classList.remove('active');
         renderSessionTiles();
       } else {
+        // Detailed Session History: HIDE ALL TOP PORTIONS & FAQ, SHOW ONLY HISTORY!
+        if (introSec) introSec.style.display = 'none';
+        if (faqSec) faqSec.style.display = 'none';
         if (topToolbar) topToolbar.style.display = 'none';
         if (treeSec) treeSec.style.display = 'none';
         if (tilesSec) tilesSec.style.display = 'none';
@@ -2871,6 +2883,7 @@
         currentFilter = 'all';
         turnSearchQuery = '';
         renderTimeline();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
 
