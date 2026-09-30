@@ -936,7 +936,7 @@
             <button class="tbtn tbtn-ghost" onclick="clearAllPersistedData()" style="font-size: 12px; padding: 6px 10px; color: #ef4444;" title="Clear index cache">🗑️ Clear</button>
             <button id="btn-view-tree" class="filter-btn active" onclick="switchMainView('tree')">📁 Project Tree</button>
             <button id="btn-view-tiles" class="filter-btn" onclick="switchMainView('tiles')">▦ Grid Tiles</button>
-            <button id="btn-view-split" class="filter-btn" onclick="switchMainView('split')">💬 Conversation Workspace</button>
+            <button id="btn-view-split" class="filter-btn" onclick="switchMainView('split')">💬 Full History</button>
           </div>
         </div>
 
@@ -1026,107 +1026,55 @@
           </div>
         </div>
 
-        <!-- 2. Master-Detail Conversation Workspace -->
+        <!-- 2. Full Session History Workspace -->
         <div id="sessions-workspace-section" style="display: none;">
-          <div style="margin-bottom: 16px;">
-            <button class="tbtn tbtn-ghost" onclick="switchMainView('tree')" style="font-size: 13px; padding: 7px 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+            <button class="tbtn tbtn-ghost" onclick="switchMainView('tree')" style="font-size: 13.5px; font-weight: 600; padding: 8px 18px; border-color: var(--border); display: inline-flex; align-items: center; gap: 6px;">
               ← Back to Project Tree
             </button>
+            <div style="display: flex; gap: 8px;">
+              <button class="tbtn tbtn-ghost" onclick="exportMarkdownSummary()" style="font-size: 12px; padding: 7px 14px;">📋 Export Markdown</button>
+            </div>
           </div>
 
-          <div class="workspace-layout" style="margin-top: 0;">
+          <div class="session-detail-pane" style="width: 100%;">
             
-            <!-- Left Column: Sessions Sidebar -->
-            <div class="sessions-sidebar-card">
-              <div class="sidebar-header">
-                <div class="sidebar-title">
-                  <span>📂</span> Sessions <span class="sidebar-count-badge" id="sidebar-session-count">0</span>
+            <!-- Active Session Header Banner -->
+            <div class="active-session-banner">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap;">
+                  <span class="agent-badge agent-badge-claude" id="active-agent-tag">🤖 Claude Code</span>
+                  <span class="session-badge-project" id="active-project-tag">PROJECT</span>
+                  <span class="session-badge-branch" id="active-branch-tag">🌿 main</span>
+                  <span style="font-size: 12px; color: var(--text-dim); font-family: var(--mono);" id="active-session-date">Just now</span>
                 </div>
-                <div style="display: flex; gap: 4px;">
-                  <button class="tbtn tbtn-ghost btn-refresh-folders" onclick="refreshLinkedFolders()" style="padding: 4px 6px; font-size: 11px;" title="Refresh linked folders">🔄</button>
-                  <button class="tbtn tbtn-ghost" onclick="openFolderPicker('auto')" style="padding: 4px 8px; font-size: 11.5px;">+ Open</button>
-                </div>
-              </div>
-
-              <!-- Filter Dropdowns for Agent, Project and Branch in Sidebar -->
-              <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
-                <input type="text" id="session-search-input" placeholder="🔍 Search sessions..." oninput="filterSessionList(this.value)" style="width: 100%; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 12.5px; background: var(--bg); color: var(--text);"/>
-                <div style="display: flex; gap: 6px;">
-                  <select id="sidebar-agent-filter" class="tree-agent-select" style="flex: 1; font-size: 11px; padding: 4px 6px;" onchange="setAgentFilter(this.value, null)">
-                    <option value="all">All Agents</option>
-                  </select>
-                  <select id="sidebar-project-filter" class="tree-project-select" style="flex: 1; font-size: 11px; padding: 4px 6px;" onchange="setProjectFilter(this.value)">
-                    <option value="all">All Projects</option>
-                  </select>
-                  <select id="sidebar-branch-filter" class="tree-branch-select" style="flex: 1; font-size: 11px; padding: 4px 6px;" onchange="setBranchFilter(this.value)">
-                    <option value="all">All Branches</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Scrollable Session Cards List -->
-              <div class="sessions-scroll-list" id="sessions-list-container">
-                <!-- Dynamically populated session cards -->
+                <div style="font-weight: 700; font-size: 16px; color: var(--text);" id="active-session-title">Selected Session</div>
+                <div style="font-size: 12px; color: var(--text-muted); font-family: var(--mono); margin-top: 3px;" id="active-session-path">~/.claude/projects/...</div>
               </div>
             </div>
 
-            <!-- Right Column: Active Session Conversation Detail -->
-            <div class="session-detail-pane">
-              
-              <!-- Active Session Header Banner -->
-              <div class="active-session-banner">
-                <div>
-                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
-                    <span class="agent-badge agent-badge-claude" id="active-agent-tag">🤖 Claude Code</span>
-                    <span class="session-badge-project" id="active-project-tag">PROJECT</span>
-                    <span class="session-badge-branch" id="active-branch-tag">🌿 main</span>
-                    <span style="font-size: 12px; color: var(--text-dim); font-family: var(--mono);" id="active-session-date">Just now</span>
-                  </div>
-                  <div style="font-weight: 700; font-size: 15px; color: var(--text);" id="active-session-title">Selected Session</div>
-                  <div style="font-size: 12px; color: var(--text-muted); font-family: var(--mono); margin-top: 2px;" id="active-session-path">~/.claude/projects/...</div>
-                </div>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                  <button class="tbtn tbtn-ghost" onclick="exportMarkdownSummary()" style="font-size: 12px; padding: 6px 12px;">📋 Export Markdown</button>
-                </div>
+            <!-- Stats Summary -->
+            <div class="stats-bar">
+              <div class="stat-pill-card">
+                <div class="stat-pill-val" id="stat-turns">0</div>
+                <div class="stat-pill-lbl">Total Turns</div>
               </div>
-
-              <!-- Stats Summary -->
-              <div class="stats-bar">
-                <div class="stat-pill-card">
-                  <div class="stat-pill-val" id="stat-turns">0</div>
-                  <div class="stat-pill-lbl">Total Turns</div>
-                </div>
-                <div class="stat-pill-card">
-                  <div class="stat-pill-val" id="stat-prompts">0</div>
-                  <div class="stat-pill-lbl">User Prompts</div>
-                </div>
-                <div class="stat-pill-card">
-                  <div class="stat-pill-val" id="stat-tools">0</div>
-                  <div class="stat-pill-lbl">Tool Executions</div>
-                </div>
-                <div class="stat-pill-card">
-                  <div class="stat-pill-val" id="stat-model-msgs">0</div>
-                  <div class="stat-pill-lbl">Assistant Replies</div>
-                </div>
+              <div class="stat-pill-card">
+                <div class="stat-pill-val" id="stat-prompts">0</div>
+                <div class="stat-pill-lbl">User Prompts</div>
               </div>
-
-              <!-- Filter Bar & In-Conversation Search -->
-              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
-                <div class="filter-tabs-row" style="margin-bottom: 0;">
-                  <button class="filter-btn active" onclick="setFilter('all', this)">All Events</button>
-                  <button class="filter-btn" onclick="setFilter('user', this)">👤 Prompts Only</button>
-                  <button class="filter-btn" onclick="setFilter('assistant', this)">🤖 Assistant Only</button>
-                  <button class="filter-btn" onclick="setFilter('tool', this)">🛠️ Tool Calls Only</button>
-                </div>
-                <div style="flex: 1; max-width: 260px; min-width: 180px;">
-                  <input type="text" id="turn-search-input" placeholder="🔍 Search in conversation..." oninput="filterTurns(this.value)" style="width: 100%; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 12.5px; background: var(--bg2); color: var(--text);"/>
-                </div>
+              <div class="stat-pill-card">
+                <div class="stat-pill-val" id="stat-tools">0</div>
+                <div class="stat-pill-lbl">Tool Executions</div>
               </div>
-
-              <!-- Interactive Timeline -->
-              <div id="timeline-container" class="chat-timeline"></div>
+              <div class="stat-pill-card">
+                <div class="stat-pill-val" id="stat-model-msgs">0</div>
+                <div class="stat-pill-lbl">Assistant Replies</div>
+              </div>
             </div>
 
+            <!-- Interactive Timeline (Full History) -->
+            <div id="timeline-container" class="chat-timeline"></div>
           </div>
 
         </div>
@@ -2919,8 +2867,9 @@
         if (btnTree) btnTree.classList.remove('active');
         if (btnTiles) btnTiles.classList.remove('active');
         if (btnSplit) btnSplit.classList.add('active');
+        currentFilter = 'all';
+        turnSearchQuery = '';
         renderTimeline();
-        renderSessionsSidebar();
       }
     }
 
