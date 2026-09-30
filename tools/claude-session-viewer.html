@@ -279,6 +279,11 @@
       color: #9d95f5;
       border: 1px solid rgba(127,119,221,0.3);
     }
+    .agent-badge-grok {
+      background: rgba(255, 140, 0, 0.1);
+      color: #FF8C00;
+      border-color: rgba(255, 140, 0, 0.3);
+    }
     .agent-badge-codex {
       background: rgba(0,200,150,0.15);
       color: #00C896;
@@ -450,6 +455,7 @@
       background: rgba(245, 158, 11, 0.12);
       font-weight: 700;
     }
+    .tree-agent-pill-btn.btn-grok.active { background: rgba(255,140,0,0.1); border-color: #FF8C00; color: #FF8C00; }
     .tree-agent-pill-btn.btn-codex.active {
       border-color: #00C896;
       color: #008765;
@@ -874,6 +880,9 @@
                   <button type="button" class="tbtn tbtn-primary" onclick="openFolderPicker('copilot')" style="flex: 1; justify-content: center; font-size: 12px; padding: 8px 6px; background: rgba(43, 49, 55, 0.8); border-color: #24292e;">
                     ✈️ ~/.copilot
                   </button>
+                  <button type="button" class="tbtn tbtn-primary" onclick="openFolderPicker('grok')" style="flex: 1; justify-content: center; font-size: 12px; padding: 8px 6px; background: #2f2f2f; border-color: #FF8C00; color: #FF8C00;">
+                    ⚡ ~/.grok
+                  </button>
                 </div>
                 <button type="button" class="tbtn tbtn-ghost btn-refresh-folders" onclick="refreshLinkedFolders()" style="width: 100%; justify-content: center; font-size: 12px; padding: 7px 10px; background: rgba(0,200,150,0.08); border-color: #00C896; color: #008765; font-weight: 700;">
                   🔄 Refresh Linked Folders (No Re-upload)
@@ -933,6 +942,7 @@
             <button type="button" class="tbtn tbtn-primary" onclick="event.stopPropagation(); openFolderPicker('claude');">🤖 + Claude Folder</button>
             <button type="button" class="tbtn tbtn-primary" onclick="event.stopPropagation(); openFolderPicker('codex');" style="background: #008765; border-color: #00C896;">🟢 + Codex Folder</button>
             <button type="button" class="tbtn tbtn-primary" onclick="event.stopPropagation(); openFolderPicker('copilot');" style="background: rgba(43, 49, 55, 0.8); border-color: #24292e;">✈️ + Copilot Folder</button>
+            <button type="button" class="tbtn tbtn-primary" onclick="event.stopPropagation(); openFolderPicker('grok');" style="background: #2f2f2f; border-color: #FF8C00; color: #FF8C00;">⚡ + Grok Folder</button>
             <button type="button" class="tbtn tbtn-ghost btn-refresh-folders" onclick="event.stopPropagation(); refreshLinkedFolders();" style="border-color: #00C896; color: #008765; font-weight: 700;">🔄 Refresh &amp; Sync</button>
             <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); document.getElementById('file-input').click();">📄 Pick Files</button>
             <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); readFromClipboard();">📋 Paste Clipboard</button>
@@ -966,6 +976,7 @@
             <button class="tbtn tbtn-ghost" onclick="openFolderPicker('claude')" style="font-size: 12px; padding: 6px 10px;">+ 🤖 Claude</button>
             <button class="tbtn tbtn-ghost" onclick="openFolderPicker('codex')" style="font-size: 12px; padding: 6px 10px;">+ 🟢 Codex</button>
             <button class="tbtn tbtn-ghost" onclick="openFolderPicker('copilot')" style="font-size: 12px; padding: 6px 10px;">+ ✈️ Copilot</button>
+            <button class="tbtn tbtn-ghost" onclick="openFolderPicker('grok')" style="font-size: 12px; padding: 6px 10px;">+ ⚡ Grok</button>
             <button class="tbtn tbtn-ghost" onclick="openFolderPicker('auto')" style="font-size: 12px; padding: 6px 10px;">+ 📁 Folder</button>
             <button class="tbtn tbtn-ghost" onclick="clearAllPersistedData()" style="font-size: 12px; padding: 6px 10px; color: #ef4444;" title="Clear index cache">🗑️ Clear</button>
             <button id="btn-view-tree" class="filter-btn active" onclick="switchMainView('tree')">📁 Project Tree</button>
@@ -1004,6 +1015,7 @@
                 <button type="button" class="tree-agent-pill-btn btn-claude" id="tree-agent-claude-btn" onclick="setAgentFilter('claude', this)">🤖 Claude (<span id="tree-count-agent-claude">0</span>)</button>
                 <button type="button" class="tree-agent-pill-btn btn-codex" id="tree-agent-codex-btn" onclick="setAgentFilter('codex', this)">🟢 Codex (<span id="tree-count-agent-codex">0</span>)</button>
                 <button type="button" class="tree-agent-pill-btn btn-copilot" id="tree-agent-copilot-btn" onclick="setAgentFilter('copilot', this)">✈️ Copilot (<span id="tree-count-agent-copilot">0</span>)</button>
+                <button type="button" class="tree-agent-pill-btn btn-grok" id="tree-agent-grok-btn" onclick="setAgentFilter('grok', this)">⚡ Grok (<span id="tree-count-agent-grok">0</span>)</button>
                 <button type="button" class="tree-icon-btn btn-refresh-folders" title="Refresh linked folders" onclick="refreshLinkedFolders()">↻</button>
               </div>
             </div>
@@ -1040,6 +1052,7 @@
                 <button class="filter-btn" id="agent-filter-claude" onclick="setAgentFilter('claude', this)">🤖 Claude Code (<span id="count-agent-claude">0</span>)</button>
                 <button class="filter-btn" id="agent-filter-codex" onclick="setAgentFilter('codex', this)">🟢 OpenAI Codex (<span id="count-agent-codex">0</span>)</button>
                 <button class="filter-btn" id="agent-filter-copilot" onclick="setAgentFilter('copilot', this)">✈️ GitHub Copilot (<span id="count-agent-copilot">0</span>)</button>
+                <button class="filter-btn" id="agent-filter-grok" onclick="setAgentFilter('grok', this)">⚡ Grok Build (<span id="count-agent-grok">0</span>)</button>
                 <button class="filter-btn" id="agent-filter-other" onclick="setAgentFilter('other', this)">⚡ Other (<span id="count-agent-other">0</span>)</button>
               </div>
               <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
@@ -1362,6 +1375,14 @@
           className: 'agent-badge-claude'
         };
       }
+      if (p.includes('.grok') || p.includes('grok')) {
+        return {
+          type: 'grok',
+          label: '⚡ Grok Build',
+          icon: '⚡',
+          className: 'agent-badge-grok'
+        };
+      }
       if (p.includes('.copilot') || p.includes('github-copilot')) {
         return {
           type: 'copilot',
@@ -1392,7 +1413,10 @@
         const t = text.substring(0, 15000).toLowerCase();
         // Codex signature markers
         if (t.includes('user.message') && t.includes('assistant.message') && (t.includes('copilot') || t.includes('model.messages_snapshot'))) {
-          return { type: 'copilot', label: '✈️ GitHub Copilot', icon: '✈️', className: 'agent-badge-copilot' };
+          if (t.includes('"model_id":"grok') || t.includes('grok-4')) {
+          return { type: 'grok', label: '⚡ Grok Build', icon: '⚡', className: 'agent-badge-grok' };
+        }
+        return { type: 'copilot', label: '✈️ GitHub Copilot', icon: '✈️', className: 'agent-badge-copilot' };
         }
         if (t.includes('"session_meta"') || t.includes('"turn_context"') || t.includes('"event_msg"') || t.includes('"item_completed"') || t.includes('"custom_tool_call"') || t.includes('codex') || t.includes('gpt-4') || t.includes('openai') || t.includes('o1-') || t.includes('o3-')) {
           return { type: 'codex', label: '🟢 OpenAI Codex', icon: '🟢', className: 'agent-badge-codex' };
@@ -1701,7 +1725,8 @@
       const claudeCount = sessionsList.filter(s => s.agentType === 'claude').length;
       const codexCount = sessionsList.filter(s => s.agentType === 'codex').length;
       const copilotCount = sessionsList.filter(s => s.agentType === 'copilot').length;
-      const otherCount = sessionsList.filter(s => s.agentType !== 'claude' && s.agentType !== 'codex' && s.agentType !== 'copilot').length;
+      const grokCount = sessionsList.filter(s => s.agentType === 'grok').length;
+      const otherCount = sessionsList.filter(s => s.agentType !== 'claude' && s.agentType !== 'codex' && s.agentType !== 'copilot' && s.agentType !== 'grok').length;
 
       const totalTurns = sessionsList.reduce((acc, s) => acc + s.events.length, 0);
       const totalTools = sessionsList.reduce((acc, s) => acc + s.toolsCount, 0);
@@ -1735,6 +1760,10 @@
       if (cCopilot) cCopilot.innerText = `${copilotCount}`;
       const treeCCopilot = document.getElementById('tree-count-agent-copilot');
       if (treeCCopilot) treeCCopilot.innerText = `${copilotCount}`;
+      const cGrok = document.getElementById('count-agent-grok');
+      if (cGrok) cGrok.innerText = `${grokCount}`;
+      const treeCGrok = document.getElementById('tree-count-agent-grok');
+      if (treeCGrok) treeCGrok.innerText = `${grokCount}`;
     }
 
     // --- Smart Multi-Session & Agent Parser (Matching CodexHistoryAdapter & ClaudeHistoryAdapter) ---
@@ -2557,6 +2586,8 @@
       else if (typeof obj.prompt === 'string') content = obj.prompt.trim();
       else if (typeof obj.response === 'string') content = obj.response.trim();
       else if (typeof obj.instruction === 'string') content = obj.instruction.trim();
+      else if (Array.isArray(obj.content)) content = obj.content.map(c => typeof c === 'string' ? c : (c.text || '')).join('\n').trim();
+      else if (Array.isArray(obj.summary)) content = obj.summary.map(c => typeof c === 'string' ? c : (c.text || '')).join('\n').trim();
 
       if (obj.tool_calls || obj.toolCalls) {
         const rawTools = obj.tool_calls || obj.toolCalls;
