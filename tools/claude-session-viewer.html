@@ -3,23 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Claude Code &amp; Codex Session Log Viewer | L2Cache</title>
-  <meta name="description" content="View, inspect, and analyze Claude Code and Codex CLI session logs (transcript.jsonl) in your browser. 100% private, offline client-side parser." />
-  <meta name="keywords" content="claude code log viewer, claude code transcript viewer, codex session viewer, claude code jsonl viewer, view claude code history, claude code resume" />
+  <title>Claude Code, Codex &amp; Copilot Session Viewer | L2Cache</title>
+  <meta name="description" content="View, inspect, and analyze Claude Code, Codex, and GitHub Copilot CLI session logs (transcript.jsonl) in your browser. 100% private, offline client-side parser." />
+  <meta name="keywords" content="claude code log viewer, codex session viewer, github copilot cli history, copilot session log, claude code transcript viewer, claude code jsonl viewer, view claude code history, claude code resume" />
   <link rel="canonical" href="https://l2cache.amvo.store/en/tools/claude-session-viewer" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="L2Cache" />
   <meta property="og:url" content="https://l2cache.amvo.store/en/tools/claude-session-viewer" />
-  <meta property="og:title" content="Claude Code &amp; Codex Session Log Viewer | L2Cache" />
-  <meta property="og:description" content="View, inspect, and analyze Claude Code and Codex CLI session logs (transcript.jsonl) in your browser. 100% private, offline client-side parser." />
+  <meta property="og:title" content="Claude Code, Codex &amp; Copilot Session Viewer | L2Cache" />
+  <meta property="og:description" content="View, inspect, and analyze Claude Code, Codex, and GitHub Copilot CLI session logs (transcript.jsonl) in your browser. 100% private, offline client-side parser." />
   <meta property="og:image" content="https://l2cache.amvo.store/icon.png" />
   <meta property="og:image:width" content="512" />
   <meta property="og:image:height" content="512" />
   <meta property="og:image:alt" content="L2Cache app icon" />
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:url" content="https://l2cache.amvo.store/en/tools/claude-session-viewer" />
-  <meta name="twitter:title" content="Claude Code &amp; Codex Session Log Viewer | L2Cache" />
-  <meta name="twitter:description" content="View, inspect, and analyze Claude Code and Codex CLI session logs (transcript.jsonl) in your browser. 100% private, offline client-side parser." />
+  <meta name="twitter:title" content="Claude Code, Codex &amp; Copilot Session Viewer | L2Cache" />
+  <meta name="twitter:description" content="View, inspect, and analyze Claude Code, Codex, and GitHub Copilot CLI session logs (transcript.jsonl) in your browser. 100% private, offline client-side parser." />
   <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png" />
 
   <link rel="stylesheet" href="/en/tools/theme.css" />
@@ -284,6 +284,11 @@
       color: #00C896;
       border: 1px solid rgba(0,200,150,0.3);
     }
+    .agent-badge-copilot {
+      background: rgba(43, 49, 55, 0.12);
+      color: #24292e;
+      border: 1px solid rgba(43, 49, 55, 0.2);
+    }
     .agent-badge-antigravity {
       background: rgba(59,130,246,0.15);
       color: #60a5fa;
@@ -449,6 +454,12 @@
       border-color: #00C896;
       color: #008765;
       background: rgba(0, 200, 150, 0.12);
+      font-weight: 700;
+    }
+    .tree-agent-pill-btn.btn-copilot.active {
+      border-color: #24292e;
+      color: #24292e;
+      background: rgba(43, 49, 55, 0.12);
       font-weight: 700;
     }
     .tree-icon-btn {
@@ -630,6 +641,9 @@
     .agent-icon-codex {
       color: #0284c7;
     }
+    .agent-icon-copilot {
+      color: #24292e;
+    }
     .agent-icon-other {
       color: #00C896;
     }
@@ -714,7 +728,7 @@
     "@graph": [
       {
         "@type": "WebApplication",
-        "name": "Claude Code & Codex Session Log Viewer",
+        "name": "Claude Code, Codex & Copilot Session Log Viewer",
         "url": "https://l2cache.amvo.store/en/tools/claude-session-viewer",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "All",
@@ -816,8 +830,8 @@
       <div id="viewer-intro-section">
         <!-- Hero Header -->
         <span class="section-label">AI AGENT DEVELOPER TOOL</span>
-        <h1>Claude Code &amp; Codex Session Log Viewer</h1>
-        <p class="hero-sub">Inspect, filter, and analyze multi-turn Claude Code &amp; Codex CLI session transcripts (<code>transcript.jsonl</code>) in a clean chat interface. 100% private &amp; in-browser.</p>
+        <h1>Claude Code, Codex &amp; Copilot Session Viewer</h1>
+        <p class="hero-sub">Inspect, filter, and analyze multi-turn Claude Code, Codex, &amp; GitHub Copilot CLI session transcripts in a clean chat interface. 100% private &amp; in-browser.</p>
 
         <!-- App Install / Download Banner -->
         <div id="pwa-install-card" style="background: var(--bg2); border: 1.5px solid #00C896; border-radius: 12px; padding: 14px 20px; margin: 20px 0 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; box-shadow: 0 4px 14px rgba(0,200,150,0.06);">
@@ -856,6 +870,9 @@
                   </button>
                   <button type="button" class="tbtn tbtn-primary" onclick="openFolderPicker('codex')" style="flex: 1; justify-content: center; font-size: 12px; padding: 8px 6px; background: #008765; border-color: #00C896;">
                     🟢 ~/.codex
+                  </button>
+                  <button type="button" class="tbtn tbtn-primary" onclick="openFolderPicker('copilot')" style="flex: 1; justify-content: center; font-size: 12px; padding: 8px 6px; background: rgba(43, 49, 55, 0.8); border-color: #24292e;">
+                    ✈️ ~/.copilot
                   </button>
                 </div>
                 <button type="button" class="tbtn tbtn-ghost btn-refresh-folders" onclick="refreshLinkedFolders()" style="width: 100%; justify-content: center; font-size: 12px; padding: 7px 10px; background: rgba(0,200,150,0.08); border-color: #00C896; color: #008765; font-weight: 700;">
@@ -915,6 +932,7 @@
           <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
             <button type="button" class="tbtn tbtn-primary" onclick="event.stopPropagation(); openFolderPicker('claude');">🤖 + Claude Folder</button>
             <button type="button" class="tbtn tbtn-primary" onclick="event.stopPropagation(); openFolderPicker('codex');" style="background: #008765; border-color: #00C896;">🟢 + Codex Folder</button>
+            <button type="button" class="tbtn tbtn-primary" onclick="event.stopPropagation(); openFolderPicker('copilot');" style="background: rgba(43, 49, 55, 0.8); border-color: #24292e;">✈️ + Copilot Folder</button>
             <button type="button" class="tbtn tbtn-ghost btn-refresh-folders" onclick="event.stopPropagation(); refreshLinkedFolders();" style="border-color: #00C896; color: #008765; font-weight: 700;">🔄 Refresh &amp; Sync</button>
             <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); document.getElementById('file-input').click();">📄 Pick Files</button>
             <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); readFromClipboard();">📋 Paste Clipboard</button>
@@ -947,6 +965,7 @@
             <button class="tbtn tbtn-ghost btn-refresh-folders" onclick="refreshLinkedFolders()" style="font-size: 12px; padding: 6px 12px; border-color: #00C896; color: #008765; font-weight: 700;">🔄 Refresh &amp; Sync</button>
             <button class="tbtn tbtn-ghost" onclick="openFolderPicker('claude')" style="font-size: 12px; padding: 6px 10px;">+ 🤖 Claude</button>
             <button class="tbtn tbtn-ghost" onclick="openFolderPicker('codex')" style="font-size: 12px; padding: 6px 10px;">+ 🟢 Codex</button>
+            <button class="tbtn tbtn-ghost" onclick="openFolderPicker('copilot')" style="font-size: 12px; padding: 6px 10px;">+ ✈️ Copilot</button>
             <button class="tbtn tbtn-ghost" onclick="openFolderPicker('auto')" style="font-size: 12px; padding: 6px 10px;">+ 📁 Folder</button>
             <button class="tbtn tbtn-ghost" onclick="clearAllPersistedData()" style="font-size: 12px; padding: 6px 10px; color: #ef4444;" title="Clear index cache">🗑️ Clear</button>
             <button id="btn-view-tree" class="filter-btn active" onclick="switchMainView('tree')">📁 Project Tree</button>
@@ -984,6 +1003,7 @@
                 <button type="button" class="tree-agent-pill-btn active" id="tree-agent-all-btn" onclick="setAgentFilter('all', this)">All (<span id="tree-count-agent-all">0</span>)</button>
                 <button type="button" class="tree-agent-pill-btn btn-claude" id="tree-agent-claude-btn" onclick="setAgentFilter('claude', this)">🤖 Claude (<span id="tree-count-agent-claude">0</span>)</button>
                 <button type="button" class="tree-agent-pill-btn btn-codex" id="tree-agent-codex-btn" onclick="setAgentFilter('codex', this)">🟢 Codex (<span id="tree-count-agent-codex">0</span>)</button>
+                <button type="button" class="tree-agent-pill-btn btn-copilot" id="tree-agent-copilot-btn" onclick="setAgentFilter('copilot', this)">✈️ Copilot (<span id="tree-count-agent-copilot">0</span>)</button>
                 <button type="button" class="tree-icon-btn btn-refresh-folders" title="Refresh linked folders" onclick="refreshLinkedFolders()">↻</button>
               </div>
             </div>
@@ -1019,6 +1039,7 @@
                 <button class="filter-btn active" id="agent-filter-all" onclick="setAgentFilter('all', this)">All Agents (<span id="count-agent-all">0</span>)</button>
                 <button class="filter-btn" id="agent-filter-claude" onclick="setAgentFilter('claude', this)">🤖 Claude Code (<span id="count-agent-claude">0</span>)</button>
                 <button class="filter-btn" id="agent-filter-codex" onclick="setAgentFilter('codex', this)">🟢 OpenAI Codex (<span id="count-agent-codex">0</span>)</button>
+                <button class="filter-btn" id="agent-filter-copilot" onclick="setAgentFilter('copilot', this)">✈️ GitHub Copilot (<span id="count-agent-copilot">0</span>)</button>
                 <button class="filter-btn" id="agent-filter-other" onclick="setAgentFilter('other', this)">⚡ Other (<span id="count-agent-other">0</span>)</button>
               </div>
               <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
@@ -1341,6 +1362,14 @@
           className: 'agent-badge-claude'
         };
       }
+      if (p.includes('.copilot') || p.includes('github-copilot')) {
+        return {
+          type: 'copilot',
+          label: '✈️ GitHub Copilot',
+          icon: '✈️',
+          className: 'agent-badge-copilot'
+        };
+      }
       if (p.includes('.codex') || p.includes('codex') || p.includes('openai') || p.includes('chatgpt') || p.includes('memories.sqlite')) {
         return {
           type: 'codex',
@@ -1362,6 +1391,9 @@
       if (text) {
         const t = text.substring(0, 15000).toLowerCase();
         // Codex signature markers
+        if (t.includes('user.message') && t.includes('assistant.message') && (t.includes('copilot') || t.includes('model.messages_snapshot'))) {
+          return { type: 'copilot', label: '✈️ GitHub Copilot', icon: '✈️', className: 'agent-badge-copilot' };
+        }
         if (t.includes('"session_meta"') || t.includes('"turn_context"') || t.includes('"event_msg"') || t.includes('"item_completed"') || t.includes('"custom_tool_call"') || t.includes('codex') || t.includes('gpt-4') || t.includes('openai') || t.includes('o1-') || t.includes('o3-')) {
           return { type: 'codex', label: '🟢 OpenAI Codex', icon: '🟢', className: 'agent-badge-codex' };
         }
@@ -1668,7 +1700,8 @@
       const total = sessionsList.length;
       const claudeCount = sessionsList.filter(s => s.agentType === 'claude').length;
       const codexCount = sessionsList.filter(s => s.agentType === 'codex').length;
-      const otherCount = sessionsList.filter(s => s.agentType !== 'claude' && s.agentType !== 'codex').length;
+      const copilotCount = sessionsList.filter(s => s.agentType === 'copilot').length;
+      const otherCount = sessionsList.filter(s => s.agentType !== 'claude' && s.agentType !== 'codex' && s.agentType !== 'copilot').length;
 
       const totalTurns = sessionsList.reduce((acc, s) => acc + s.events.length, 0);
       const totalTools = sessionsList.reduce((acc, s) => acc + s.toolsCount, 0);
@@ -1698,6 +1731,10 @@
       if (treeCAll) treeCAll.innerText = `${total}`;
       if (treeCClaude) treeCClaude.innerText = `${claudeCount}`;
       if (treeCCodex) treeCCodex.innerText = `${codexCount}`;
+      const cCopilot = document.getElementById('count-agent-copilot');
+      if (cCopilot) cCopilot.innerText = `${copilotCount}`;
+      const treeCCopilot = document.getElementById('tree-count-agent-copilot');
+      if (treeCCopilot) treeCCopilot.innerText = `${copilotCount}`;
     }
 
     // --- Smart Multi-Session & Agent Parser (Matching CodexHistoryAdapter & ClaudeHistoryAdapter) ---
@@ -2443,6 +2480,51 @@
           role: isSys ? 'assistant' : 'user',
           type: isSys ? 'SYSTEM_PROMPT' : 'USER_PROMPT',
           content: isSys ? (fullPrompt.startsWith('[System Context]') ? fullPrompt : `[System Context] ${fullPrompt}`) : fullPrompt,
+          toolCalls: []
+        }];
+      }
+
+      // 5.5 GitHub Copilot CLI format
+      if (type === 'user.message' && obj.data && obj.data.content) {
+        return [{
+          index: lineIdx + 1,
+          role: 'user',
+          type: 'USER_PROMPT',
+          content: obj.data.content,
+          toolCalls: []
+        }];
+      }
+      if (type === 'assistant.message' && obj.data) {
+        const events = [];
+        if (obj.data.content) {
+          events.push({
+            index: lineIdx + 1,
+            role: 'assistant',
+            type: 'ASSISTANT_RESPONSE',
+            content: obj.data.content,
+            toolCalls: []
+          });
+        }
+        if (obj.data.toolRequests && Array.isArray(obj.data.toolRequests)) {
+          obj.data.toolRequests.forEach((req, bIdx) => {
+            events.push({
+              index: lineIdx * 10 + bIdx + 2,
+              role: 'tool',
+              type: 'TOOL_CALL',
+              content: `${req.name}: ${req.intentionSummary || ''}`,
+              toolCalls: [{ name: req.name || 'tool', arguments: req.arguments }]
+            });
+          });
+        }
+        if (events.length > 0) return events;
+      }
+      if (type === 'tool.execution_complete' && obj.data) {
+        const outStr = typeof obj.data.output === 'string' ? obj.data.output : JSON.stringify(obj.data.output || '');
+        return [{
+          index: lineIdx + 1,
+          role: 'tool',
+          type: 'TOOL_RESULT',
+          content: outStr,
           toolCalls: []
         }];
       }
@@ -3612,8 +3694,8 @@
     </div>
   </div>
 
-  <!-- Floating Send Feedback Action (Matching Layout) -->
-  <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" target="_blank" class="floating-feedback-btn">
+  <!-- Floating Send Feedback Action -->
+  <a href="/en/support" class="floating-feedback-btn">
     <span>💬</span> Send Feedback
   </a>
 </body>
