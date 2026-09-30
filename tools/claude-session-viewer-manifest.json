@@ -1,7 +1,7 @@
 {
-  "name": "Claude Code & Codex Session Viewer",
+  "name": "Claude Code, Codex, Copilot & Grok Session Viewer",
   "short_name": "Session Viewer",
-  "description": "Offline-first viewer & conversation inspector for Claude Code, Codex, and AI CLI transcripts.",
+  "description": "Offline-first viewer & conversation inspector for Claude Code, OpenAI Codex, GitHub Copilot, and xAI Grok Build CLI transcripts.",
   "start_url": "/en/tools/claude-session-viewer",
   "scope": "/en/tools/",
   "display": "standalone",

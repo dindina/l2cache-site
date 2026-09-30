@@ -3,23 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Claude Code, Codex &amp; Copilot Session Viewer | L2Cache</title>
-  <meta name="description" content="View, inspect, and analyze Claude Code, Codex, and GitHub Copilot CLI session logs (transcript.jsonl) in your browser. 100% private, offline client-side parser." />
-  <meta name="keywords" content="claude code log viewer, codex session viewer, github copilot cli history, copilot session log, claude code transcript viewer, claude code jsonl viewer, view claude code history, claude code resume" />
+  <title>Claude Code, Codex, Copilot &amp; Grok Session Viewer | L2Cache</title>
+  <meta name="description" content="View, inspect, and analyze Claude Code, OpenAI Codex, GitHub Copilot, and xAI Grok Build CLI session logs (transcript.jsonl &amp; chat_history.jsonl) in your browser. 100% private, offline client-side parser." />
+  <meta name="keywords" content="claude code log viewer, codex session viewer, github copilot cli history, grok session viewer, grok build cli history, grok chat history jsonl, xai grok build log viewer, claude code transcript viewer, claude code jsonl viewer, view claude code history, grok build history mac" />
   <link rel="canonical" href="https://l2cache.amvo.store/en/tools/claude-session-viewer" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="L2Cache" />
   <meta property="og:url" content="https://l2cache.amvo.store/en/tools/claude-session-viewer" />
-  <meta property="og:title" content="Claude Code, Codex &amp; Copilot Session Viewer | L2Cache" />
-  <meta property="og:description" content="View, inspect, and analyze Claude Code, Codex, and GitHub Copilot CLI session logs (transcript.jsonl) in your browser. 100% private, offline client-side parser." />
+  <meta property="og:title" content="Claude Code, Codex, Copilot &amp; Grok Session Viewer | L2Cache" />
+  <meta property="og:description" content="View, inspect, and analyze Claude Code, OpenAI Codex, GitHub Copilot, and xAI Grok Build CLI session logs (transcript.jsonl &amp; chat_history.jsonl) in your browser. 100% private, offline client-side parser." />
   <meta property="og:image" content="https://l2cache.amvo.store/icon.png" />
   <meta property="og:image:width" content="512" />
   <meta property="og:image:height" content="512" />
   <meta property="og:image:alt" content="L2Cache app icon" />
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:url" content="https://l2cache.amvo.store/en/tools/claude-session-viewer" />
-  <meta name="twitter:title" content="Claude Code, Codex &amp; Copilot Session Viewer | L2Cache" />
-  <meta name="twitter:description" content="View, inspect, and analyze Claude Code, Codex, and GitHub Copilot CLI session logs (transcript.jsonl) in your browser. 100% private, offline client-side parser." />
+  <meta name="twitter:title" content="Claude Code, Codex, Copilot &amp; Grok Session Viewer | L2Cache" />
+  <meta name="twitter:description" content="View, inspect, and analyze Claude Code, OpenAI Codex, GitHub Copilot, and xAI Grok Build CLI session logs (transcript.jsonl &amp; chat_history.jsonl) in your browser. 100% private, offline client-side parser." />
   <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png" />
 
   <link rel="stylesheet" href="/en/tools/theme.css" />
@@ -734,7 +734,7 @@
     "@graph": [
       {
         "@type": "WebApplication",
-        "name": "Claude Code, Codex & Copilot Session Log Viewer",
+        "name": "Claude Code, Codex, Copilot & Grok Session Log Viewer",
         "url": "https://l2cache.amvo.store/en/tools/claude-session-viewer",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "All",
@@ -762,6 +762,14 @@
           },
           {
             "@type": "Question",
+            "name": "Where are xAI Grok Build CLI session history logs saved on macOS?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "xAI Grok Build CLI session logs and titles are stored in ~/.grok/sessions/<encoded-project>/<uuid>/chat_history.jsonl and summary.json. Pick your ~/.grok folder to inspect all past Grok sessions locally."
+            }
+          },
+          {
+            "@type": "Question",
             "name": "Does this tool upload my transcripts or proprietary code to any server?",
             "acceptedAnswer": {
               "@type": "Answer",
@@ -773,7 +781,7 @@
             "name": "What file formats and agents does this viewer support?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "The tool supports Claude Code (transcript.jsonl), OpenAI Codex (rollout-*.jsonl, history.jsonl), ChatGPT conversation exports, Alpaca/fine-tuning instruction pairs, and standard multi-turn JSON/JSONL transcripts."
+              "text": "The tool supports Claude Code (transcript.jsonl), OpenAI Codex (rollout-*.jsonl, history.jsonl), xAI Grok Build CLI (chat_history.jsonl, summary.json), GitHub Copilot CLI logs, ChatGPT conversation exports, Alpaca/fine-tuning instruction pairs, and standard multi-turn JSON/JSONL transcripts."
             }
           },
           {
@@ -836,8 +844,8 @@
       <div id="viewer-intro-section">
         <!-- Hero Header -->
         <span class="section-label">AI AGENT DEVELOPER TOOL</span>
-        <h1>Claude Code, Codex &amp; Copilot Session Viewer</h1>
-        <p class="hero-sub">Inspect, filter, and analyze multi-turn Claude Code, Codex, &amp; GitHub Copilot CLI session transcripts in a clean chat interface. 100% private &amp; in-browser.</p>
+        <h1>Claude Code, Codex, Copilot &amp; Grok Session Viewer</h1>
+        <p class="hero-sub">Inspect, filter, and analyze multi-turn Claude Code, OpenAI Codex, GitHub Copilot, &amp; xAI Grok Build CLI session transcripts in a clean chat interface. 100% private &amp; in-browser.</p>
 
         <!-- App Install / Download Banner -->
         <div id="pwa-install-card" style="background: var(--bg2); border: 1.5px solid #00C896; border-radius: 12px; padding: 14px 20px; margin: 20px 0 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; box-shadow: 0 4px 14px rgba(0,200,150,0.06);">
@@ -864,10 +872,10 @@
         <div class="guide-steps-grid">
           <div class="guide-step-card" style="border-top: 3px solid #00C896;">
             <div class="guide-step-title">
-              <span class="step-badge">A</span> 📁 Pick Claude &amp; Codex Folders (Zero Upload)
+              <span class="step-badge">A</span> 📁 Pick Claude, Codex &amp; Grok Folders (Zero Upload)
             </div>
             <p class="guide-step-desc">
-              Choose your <code>~/.claude</code>, <code>~/.codex</code>, or workspace folders. Both are saved locally and can be refreshed in 1-click:
+              Choose your <code>~/.claude</code>, <code>~/.codex</code>, <code>~/.copilot</code>, or <code>~/.grok</code> workspace folders. All are saved locally and can be refreshed in 1-click:
               <br/><br/>
               <div style="display: flex; flex-direction: column; gap: 8px;">
                 <div style="display: flex; gap: 6px;">
@@ -910,7 +918,7 @@
               <span class="step-badge">C</span> ⚡ Terminal Quick Copy One-Liner
             </div>
             <p class="guide-step-desc">
-              Copies your latest Claude Code or Codex session directly to your clipboard:
+              Copies your latest Claude Code, Codex, or Grok session directly to your clipboard:
               <br/><br/>
               <span class="copy-cmd-inline" onclick="copyTerminalCmd('cat $(ls -t ~/.claude/projects/*/*/transcript.jsonl 2>/dev/null | head -n1) | pbcopy', this)" title="Click to copy one-liner" style="font-size: 11px; word-break: break-all; width: 100%; justify-content: center;">
                 📋 <code>cat $(ls -t ~/.claude/... | head -n1) | pbcopy</code>
@@ -923,7 +931,7 @@
         <div style="background: rgba(0,200,150,0.08); border: 1.5px solid rgba(0,200,150,0.3); border-radius: 12px; padding: 18px 24px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
           <div style="font-size: 14px; color: var(--text);">
             <strong style="color: #008765;">⚡ Want live floating session tracking in macOS?</strong>
-            <span style="color: var(--text-muted); display: block; margin-top: 2px;">L2Cache for Mac automatically monitors Claude Code &amp; Codex sessions in your menu bar with 1-click terminal resumption.</span>
+            <span style="color: var(--text-muted); display: block; margin-top: 2px;">L2Cache for Mac automatically monitors Claude Code, Codex &amp; Grok Build sessions in your menu bar with 1-click terminal resumption.</span>
           </div>
           <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="tbtn tbtn-primary" style="text-decoration: none; padding: 8px 18px; font-size: 13.5px;">Get L2Cache ($4.99)</a>
         </div>
@@ -933,10 +941,10 @@
           <input type="file" id="file-input" accept=".jsonl,.json,.txt" multiple style="display: none;" onchange="handleFileSelect(event)"/>
           <div style="font-size: 32px; margin-bottom: 10px;">📂</div>
           <div style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px;">
-            Drag &amp; Drop Claude or Codex <code>transcript.jsonl</code> files or folders here
+            Drag &amp; Drop Claude, Codex, or Grok <code>transcript.jsonl</code> / <code>chat_history.jsonl</code> files or folders here
           </div>
           <div style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 14px;">
-            Indexes Claude Code transcripts, OpenAI Codex memories, and Antigravity logs into one unified index.
+            Indexes Claude Code transcripts, OpenAI Codex memories, xAI Grok Build CLI sessions, and Antigravity logs into one unified index.
           </div>
           <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
             <button type="button" class="tbtn tbtn-primary" onclick="event.stopPropagation(); openFolderPicker('claude');">🤖 + Claude Folder</button>
@@ -1162,9 +1170,16 @@
         </div>
 
         <div class="guide-step-card" style="margin-bottom: 16px;">
+          <h3 style="font-size: 16px; margin-bottom: 6px;">❓ Where are xAI Grok Build CLI session history logs saved on macOS?</h3>
+          <p style="font-size: 14px; color: var(--text-muted); margin: 0;">
+            xAI Grok Build CLI stores session logs and history in <code>~/.grok/sessions/&lt;encoded-project&gt;/&lt;uuid&gt;/chat_history.jsonl</code> and <code>summary.json</code>. Pick your <code>~/.grok</code> folder to view all your Grok CLI sessions automatically parsed and titled.
+          </p>
+        </div>
+
+        <div class="guide-step-card" style="margin-bottom: 16px;">
           <h3 style="font-size: 16px; margin-bottom: 6px;">❓ What log formats and AI agents are supported?</h3>
           <p style="font-size: 14px; color: var(--text-muted); margin: 0;">
-            This tool natively parses Claude Code (<code>transcript.jsonl</code>), OpenAI Codex (<code>rollout-*.jsonl</code>), ChatGPT conversation exports, Alpaca/fine-tuning Q&amp;A pairs, and standard multi-turn AI developer logs.
+            This tool natively parses Claude Code (<code>transcript.jsonl</code>), OpenAI Codex (<code>rollout-*.jsonl</code>), xAI Grok Build CLI (<code>chat_history.jsonl</code> &amp; <code>summary.json</code>), GitHub Copilot CLI logs, ChatGPT conversation exports, Alpaca/fine-tuning Q&amp;A pairs, and standard multi-turn AI developer logs.
           </p>
         </div>
 
@@ -1176,9 +1191,9 @@
         </div>
 
         <div class="guide-step-card" style="margin-bottom: 16px;">
-          <h3 style="font-size: 16px; margin-bottom: 6px;">❓ How can I search past Claude Code &amp; Codex sessions natively on Mac?</h3>
+          <h3 style="font-size: 16px; margin-bottom: 6px;">❓ How can I search past Claude Code, Codex &amp; Grok sessions natively on Mac?</h3>
           <p style="font-size: 14px; color: var(--text-muted); margin: 0;">
-            <a href="https://l2cache.amvo.store" style="color: #00a87f; font-weight: 600;">L2Cache for Mac</a> automatically indexes your local <code>~/.claude/projects/</code> and <code>~/.codex/sessions/</code> in real time, giving you global hotkey access (<code>⌥ + Space</code>), fast FTS5 search across all turns, and 1-click terminal resumption.
+            <a href="https://l2cache.amvo.store" style="color: #00a87f; font-weight: 600;">L2Cache for Mac</a> automatically indexes your local <code>~/.claude/projects/</code>, <code>~/.codex/sessions/</code>, and <code>~/.grok/sessions/</code> in real time, giving you global hotkey access (<code>⌥ + Space</code>), fast FTS5 search across all turns, and 1-click terminal resumption.
           </p>
         </div>
       </div>
