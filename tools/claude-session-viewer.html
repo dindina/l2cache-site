@@ -1655,6 +1655,85 @@
     }
 
     // --- Smart Multi-Session & Agent Parser (Matching CodexHistoryAdapter & ClaudeHistoryAdapter) ---
+    function isSystemContextText(text) {
+      if (!text || typeof text !== 'string') return false;
+      const trimmed = text.trim();
+      if (!trimmed) return true;
+      if (/^\[System (Context|Prompt)\]/i.test(trimmed)) return true;
+      if (/^#*\s*(AGENTS\.md|CLAUDE\.md|PROMPT\.md|SYSTEM_PROMPT|INSTRUCTIONS|ENVIRONMENT|RULES|WORKFLOW)/i.test(trimmed)) return true;
+      if (/^<(recommended_plugins|permissions|multi_agent_mode|environment_context|skills_instructions|INSTRUCTIONS|instructions|system-reminder|system|context|file_context|uploaded_files|scratchpad|local-command-stdout|command-stdout|local-command-stderr|terminal-output|doc_context)[\s>]/i.test(trimmed)) return true;
+      if (/^(Base directory|Current working directory|Working directory|Session directory):\s*/i.test(trimmed)) return true;
+      if (/^You are in (non-interactive|agent|autonomous|pair programming) mode/i.test(trimmed)) return true;
+      if (/^System:\s*/i.test(trimmed)) return true;
+      if (/^<command-(name|message|args|stdout|stderr)>/i.test(trimmed)) return true;
+      return false;
+    }
+
+    function extractTitleFromRaw(raw) {
+      if (!raw || typeof raw !== 'object') return '';
+      // Direct title attributes
+      const directCandidates = [
+        raw.aiTitle, raw.ai_title, raw.customTitle, raw.custom_title,
+        raw.session_title, raw.sessionTitle, raw.custom_name, raw.name
+      ];
+      for (const c of directCandidates) {
+        if (typeof c === 'string' && c.trim().length > 0 && !isSystemContextText(c)) {
+          return c.trim();
+        }
+      }
+
+      // Type-specific titles
+      const tType = (raw.type || '').toLowerCase();
+      if (['custom-title', 'custom_title', 'session_title', 'session-title', 'title', 'summary'].includes(tType)) {
+        const tVal = raw.title || raw.customTitle || raw.custom_title || raw.text || raw.content || raw.summary || raw.message;
+        if (typeof tVal === 'string' && tVal.trim().length > 0 && !isSystemContextText(tVal)) {
+          return tVal.trim();
+        }
+      }
+
+      // Payload attributes (Codex & Claude formats)
+      if (raw.payload && typeof raw.payload === 'object') {
+        const p = raw.payload;
+        const pCandidates = [
+          p.aiTitle, p.ai_title, p.customTitle, p.custom_title,
+          p.session_title, p.sessionTitle, p.title, p.custom_name, p.name, p.summary
+        ];
+        for (const c of pCandidates) {
+          if (typeof c === 'string' && c.trim().length > 0 && !isSystemContextText(c)) {
+            return c.trim();
+          }
+        }
+        const pType = (p.type || '').toLowerCase();
+        if (['custom-title', 'custom_title', 'session_title', 'session-title', 'title', 'summary'].includes(pType)) {
+          const pVal = p.title || p.customTitle || p.custom_title || p.text || p.content || p.summary || p.message;
+          if (typeof pVal === 'string' && pVal.trim().length > 0 && !isSystemContextText(pVal)) {
+            return pVal.trim();
+          }
+        }
+      }
+
+      // Message attributes
+      if (raw.message && typeof raw.message === 'object') {
+        const m = raw.message;
+        const mCandidates = [
+          m.aiTitle, m.ai_title, m.customTitle, m.custom_title,
+          m.session_title, m.sessionTitle, m.title
+        ];
+        for (const c of mCandidates) {
+          if (typeof c === 'string' && c.trim().length > 0 && !isSystemContextText(c)) {
+            return c.trim();
+          }
+        }
+      }
+
+      // Generic raw.title if string and > 3 chars and not system context
+      if (typeof raw.title === 'string' && raw.title.trim().length > 3 && !isSystemContextText(raw.title) && !raw.title.includes('<') && !raw.title.includes('{')) {
+        return raw.title.trim();
+      }
+
+      return '';
+    }
+
     function extractTextHelper(val) {
       if (!val) return '';
       if (typeof val === 'string') return val.trim();
@@ -1739,7 +1818,7 @@
             if (isSessionList) {
               return parsed.map((sessObj, sIdx) => {
                 const events = extractEventsFromObject(sessObj);
-                const explicitTitle = sessObj.aiTitle || sessObj.ai_title || sessObj.session_title || sessObj.sessionTitle || sessObj.title || '';
+                const explicitTitle = extractTitleFromRaw(sessObj);
                 return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, filePath, modDate, rawText, file, '', '', explicitTitle);
               }).filter(Boolean);
             }
@@ -1760,14 +1839,14 @@
             if (Array.isArray(sessionsArray) && sessionsArray.length > 0) {
               return sessionsArray.map((sessObj, sIdx) => {
                 const events = extractEventsFromObject(sessObj);
-                const explicitTitle = sessObj.aiTitle || sessObj.ai_title || sessObj.session_title || sessObj.sessionTitle || sessObj.title || '';
+                const explicitTitle = extractTitleFromRaw(sessObj);
                 return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, filePath, modDate, rawText, file, '', '', explicitTitle);
               }).filter(Boolean);
             }
 
             if (parsed.messages || parsed.turns || parsed.events || parsed.chat_messages || parsed.history || parsed.conversation || parsed.items || parsed.mapping) {
               const events = extractEventsFromObject(parsed);
-              const explicitTitle = parsed.aiTitle || parsed.ai_title || parsed.session_title || parsed.sessionTitle || parsed.title || '';
+              const explicitTitle = extractTitleFromRaw(parsed);
               const sess = createSessionRecord(events, parsed.id || parsed.session_id || `session-1`, project, filePath, modDate, rawText, file, '', '', explicitTitle);
               return sess ? [sess] : [];
             }
@@ -1810,15 +1889,12 @@
             }
           }
         }
-        // AI Title detection (Claude Code & Codex)
-        const foundAiTitle = raw.aiTitle || raw.ai_title || raw.session_title || raw.sessionTitle ||
-          (raw.type === 'session_title' && (raw.title || raw.text)) ||
-          (raw.payload && (raw.payload.aiTitle || raw.payload.ai_title || raw.payload.session_title || raw.payload.title)) ||
-          (raw.message && (raw.message.aiTitle || raw.message.title));
-        if (foundAiTitle && typeof foundAiTitle === 'string' && foundAiTitle.trim().length > 0) {
-          preAiTitle = preAiTitle || foundAiTitle.trim();
+        // AI Title / Custom Title detection (Claude Code & Codex)
+        const foundAiTitle = extractTitleFromRaw(raw);
+        if (foundAiTitle) {
+          preAiTitle = preAiTitle || foundAiTitle;
           const sId = raw.session_id || raw.sessionId || raw.sessionID || raw.conversation_id || (raw.payload && (raw.payload.session_id || raw.payload.turn_id));
-          if (sId) sessionAiTitles.set(sId, foundAiTitle.trim());
+          if (sId) sessionAiTitles.set(sId, foundAiTitle);
         }
 
         // Claude metadata
@@ -2003,50 +2079,63 @@
       const hasMeaningfulContent = cleanEvents.some(e => (e.content && e.content.length > 8) || (e.toolCalls && e.toolCalls.length > 0));
       if (!hasUser && !hasMeaningfulContent) return null;
 
-      // Extract aiTitle if generated by Claude Code or Codex
+      // Extract aiTitle / custom title if generated by Claude Code or Codex
       let aiTitle = (preAiTitle || '').trim();
       if (!aiTitle && events && events.length > 0) {
         for (const ev of events) {
-          if (ev.aiTitle && typeof ev.aiTitle === 'string' && ev.aiTitle.trim()) {
+          if (ev.aiTitle && typeof ev.aiTitle === 'string' && ev.aiTitle.trim() && !isSystemContextText(ev.aiTitle)) {
             aiTitle = ev.aiTitle.trim();
             break;
           }
           if (ev.raw && typeof ev.raw === 'object') {
-            const t = ev.raw.aiTitle || ev.raw.ai_title || ev.raw.session_title || ev.raw.sessionTitle ||
-              (ev.raw.type === 'session_title' && (ev.raw.title || ev.raw.text)) ||
-              (ev.raw.payload && (ev.raw.payload.aiTitle || ev.raw.payload.ai_title || ev.raw.payload.session_title || ev.raw.payload.title));
-            if (t && typeof t === 'string' && t.trim()) {
-              aiTitle = t.trim();
+            const t = extractTitleFromRaw(ev.raw);
+            if (t && !isSystemContextText(t)) {
+              aiTitle = t;
               break;
             }
           }
         }
       }
       if (!aiTitle && rawText) {
-        const m = rawText.match(/"(?:aiTitle|ai_title|session_title|sessionTitle)"\s*:\s*"([^"]+)"/);
+        const m = rawText.match(/"(?:aiTitle|ai_title|customTitle|custom_title|session_title|sessionTitle)"\s*:\s*"([^"\\]*(?:\\.[^"\\]*)*)"/i);
         if (m && m[1] && m[1].trim()) {
-          aiTitle = m[1].trim();
+          const candidate = m[1].replace(/\\"/g, '"').replace(/\\n/g, ' ').trim();
+          if (!isSystemContextText(candidate)) {
+            aiTitle = candidate;
+          }
         }
       }
 
       let titleSnippet = '';
       if (aiTitle) {
-        let cleanTitle = aiTitle.replace(/[\r\n]+/g, ' ').trim();
+        let cleanTitle = aiTitle.replace(/[\r\n]+/g, ' ').replace(/^#+\s*/, '').trim();
         titleSnippet = cleanTitle.substring(0, 100);
       } else {
-        // Pick first genuine human user prompt (skipping system context / AGENTS.md injections)
-        const firstUser = cleanEvents.find(e => e.role === 'user' && !e.content.startsWith('[System Context]') && !e.content.startsWith('[System Prompt]'));
-        const firstPrompt = firstUser ? (firstUser.content || '') : (cleanEvents.find(e => e.role === 'user')?.content || cleanEvents[0]?.content || '');
-        let cleanTitle = firstPrompt
-          .replace(/<command-name>.*?<\/command-name>/g, '')
-          .replace(/<command-message>(.*?)<\/command-message>/g, '$1')
-          .replace(/[\r\n]+/g, ' ')
-          .trim();
-        titleSnippet = cleanTitle.substring(0, 85) || 'Conversation Session';
-      }
+        // Pick first genuine human user prompt (skipping system context / AGENTS.md / CLAUDE.md injections)
+        const humanUserEvents = cleanEvents.filter(e => e.role === 'user' && !isSystemContextText(e.content) && !e.content.startsWith('[System Context]') && !e.content.startsWith('[System Prompt]'));
+        let chosenPrompt = '';
+        for (const ev of humanUserEvents) {
+          let p = (ev.content || '')
+            .replace(/<command-name>.*?<\/command-name>/gs, '')
+            .replace(/<command-message>(.*?)<\/command-message>/gs, '$1')
+            .replace(/<[^>]+>/g, '')
+            .replace(/[\r\n]+/g, ' ')
+            .replace(/^#+\s*/, '')
+            .trim();
+          if (p.length > 2 && !isSystemContextText(p)) {
+            chosenPrompt = p;
+            break;
+          }
+        }
 
-      if (sessionKey && sessionKey !== 'default_session' && !titleSnippet.startsWith('[')) {
-        titleSnippet = `[${sessionKey.substring(0, 8)}] ${titleSnippet}`;
+        if (!chosenPrompt) {
+          const firstAny = cleanEvents.find(e => !isSystemContextText(e.content) && !e.content.startsWith('[System'));
+          if (firstAny && firstAny.content) {
+            chosenPrompt = firstAny.content.replace(/<[^>]+>/g, '').replace(/[\r\n]+/g, ' ').replace(/^#+\s*/, '').trim();
+          }
+        }
+
+        titleSnippet = (chosenPrompt ? chosenPrompt.substring(0, 85) : 'Conversation Session').trim();
       }
 
       const agentInfo = detectAgent(path, file ? file.name : '', rawText);
@@ -2102,7 +2191,16 @@
 
         if (isUser) {
           const text = extractTextHelper(item.content || item.text || item.message || item.prompt);
-          if (text) return [{ index: lineIdx + 1, role: 'user', type: 'USER_PROMPT', content: text, toolCalls: [] }];
+          if (text) {
+            const isSys = isSystemContextText(text);
+            return [{
+              index: lineIdx + 1,
+              role: isSys ? 'assistant' : 'user',
+              type: isSys ? 'SYSTEM_PROMPT' : 'USER_PROMPT',
+              content: isSys ? (text.startsWith('[System Context]') ? text : `[System Context] ${text}`) : text,
+              toolCalls: []
+            }];
+          }
         } else if (isAgent) {
           const text = extractTextHelper(item.content || item.text || item.message);
           if (text) return [{ index: lineIdx + 1, role: 'assistant', type: 'ASSISTANT_RESPONSE', content: text, toolCalls: [] }];
@@ -2124,12 +2222,21 @@
       // 2. Codex Format 2: event_msg direct
       if (type === 'event_msg' && payload) {
         const pType = (payload.type || '').toLowerCase();
-        const isUser = pType === 'user_message' || pType === 'usermessage' || pType === 'user' || pType === 'prompt' || (payload.role || '').toLowerCase() === 'user';
+        const isUser = pType === 'user_message' || pType === 'usermessage' || pType === 'prompt' || (payload.role || '').toLowerCase() === 'user';
         const isAgent = pType === 'agent_message' || pType === 'agentmessage' || pType === 'assistant' || pType === 'agent' || (payload.role || '').toLowerCase() === 'assistant';
 
         if (isUser) {
           const text = extractTextHelper(payload.message || payload.text || payload.content || payload.prompt);
-          if (text) return [{ index: lineIdx + 1, role: 'user', type: 'USER_PROMPT', content: text, toolCalls: [] }];
+          if (text) {
+            const isSys = isSystemContextText(text);
+            return [{
+              index: lineIdx + 1,
+              role: isSys ? 'assistant' : 'user',
+              type: isSys ? 'SYSTEM_PROMPT' : 'USER_PROMPT',
+              content: isSys ? (text.startsWith('[System Context]') ? text : `[System Context] ${text}`) : text,
+              toolCalls: []
+            }];
+          }
         } else if (isAgent) {
           const text = extractTextHelper(payload.message || payload.text || payload.content);
           if (text && !text.startsWith('<EXTERNAL SESSION IMPORTED>')) {
@@ -2161,7 +2268,16 @@
           }
         } else if (pRole === 'user' || pType === 'user_message' || pType === 'user') {
           const text = extractTextHelper(payload.content || payload.message || payload.text || payload.prompt);
-          if (text) return [{ index: lineIdx + 1, role: 'user', type: 'USER_PROMPT', content: text, toolCalls: [] }];
+          if (text) {
+            const isSys = isSystemContextText(text);
+            return [{
+              index: lineIdx + 1,
+              role: isSys ? 'assistant' : 'user',
+              type: isSys ? 'SYSTEM_PROMPT' : 'USER_PROMPT',
+              content: isSys ? (text.startsWith('[System Context]') ? text : `[System Context] ${text}`) : text,
+              toolCalls: []
+            }];
+          }
         } else if (pRole === 'developer' || pRole === 'system') {
           const text = extractTextHelper(payload.content || payload.message || payload.text);
           if (text) return [{ index: lineIdx + 1, role: 'assistant', type: 'SYSTEM_PROMPT', content: '[System Prompt] ' + text, toolCalls: [] }];
@@ -2179,12 +2295,12 @@
       if (type === 'user' && obj.message) {
         const text = extractTextHelper(obj.message.content || obj.message.text);
         if (text) {
-          const isSys = text.startsWith('<recommended_plugins>') || text.startsWith('<permissions') || text.startsWith('<multi_agent_mode') || text.startsWith('<environment_context>') || text.startsWith('<skills_instructions>') || text.startsWith('<INSTRUCTIONS>') || text.startsWith('# AGENTS.md') || text.startsWith('AGENTS.md') || text.startsWith('<local-command-stdout>');
+          const isSys = isSystemContextText(text);
           return [{
             index: lineIdx + 1,
             role: isSys ? 'assistant' : 'user',
             type: isSys ? 'SYSTEM_PROMPT' : 'USER_PROMPT',
-            content: isSys ? (`[System Context] ${text}`) : text,
+            content: isSys ? (text.startsWith('[System Context]') ? text : `[System Context] ${text}`) : text,
             toolCalls: []
           }];
         }
@@ -2228,7 +2344,14 @@
           const sortedPasted = Object.values(obj.pastedContents).map(d => d && d.content).filter(Boolean);
           if (sortedPasted.length > 0) fullPrompt += '\n' + sortedPasted.join('\n');
         }
-        return [{ index: lineIdx + 1, role: 'user', type: 'USER_PROMPT', content: fullPrompt, toolCalls: [] }];
+        const isSys = isSystemContextText(fullPrompt);
+        return [{
+          index: lineIdx + 1,
+          role: isSys ? 'assistant' : 'user',
+          type: isSys ? 'SYSTEM_PROMPT' : 'USER_PROMPT',
+          content: isSys ? (fullPrompt.startsWith('[System Context]') ? fullPrompt : `[System Context] ${fullPrompt}`) : fullPrompt,
+          toolCalls: []
+        }];
       }
 
       // 6. Generic array wrapper / conversations / Alpaca / ChatGPT choices
@@ -2275,12 +2398,17 @@
         role = 'tool';
       }
 
+      if (role === 'user' && isSystemContextText(content)) {
+        role = 'assistant';
+        if (!content.startsWith('[System Context]')) content = `[System Context] ${content}`;
+      }
+
       if (!content && toolCalls.length === 0) return null;
 
       return {
         index: idx + 1,
         role: role,
-        type: role === 'user' ? 'USER_PROMPT' : (role === 'tool' ? 'TOOL_CALL' : 'ASSISTANT_RESPONSE'),
+        type: role === 'user' ? 'USER_PROMPT' : (role === 'tool' ? 'TOOL_CALL' : (content.startsWith('[System') ? 'SYSTEM_PROMPT' : 'ASSISTANT_RESPONSE')),
         content: content,
         toolCalls: toolCalls,
         timestamp: obj.timestamp || ''
