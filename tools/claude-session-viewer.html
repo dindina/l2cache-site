@@ -1073,6 +1073,22 @@
               </div>
             </div>
 
+            <!-- Session Detail Filter Bar & In-Conversation Search -->
+            <div class="detail-filter-bar" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin: 20px 0 16px; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px;">
+              <div class="filter-tabs-row" id="detail-filter-tabs" style="margin-bottom: 0;">
+                <button type="button" class="filter-btn active" id="detail-filter-all" onclick="setDetailFilter('all', this)">All (<span id="detail-count-all">0</span>)</button>
+                <button type="button" class="filter-btn" id="detail-filter-user" onclick="setDetailFilter('user', this)">👤 Prompts (<span id="detail-count-user">0</span>)</button>
+                <button type="button" class="filter-btn" id="detail-filter-assistant" onclick="setDetailFilter('assistant', this)">🤖 Assistant (<span id="detail-count-assistant">0</span>)</button>
+                <button type="button" class="filter-btn" id="detail-filter-tool" onclick="setDetailFilter('tool', this)">🛠️ Tools (<span id="detail-count-tool">0</span>)</button>
+                <button type="button" class="filter-btn" id="detail-filter-error" onclick="setDetailFilter('error', this)" style="color: #ef4444;">⚠️ Errors (<span id="detail-count-error">0</span>)</button>
+                <button type="button" class="filter-btn" id="detail-filter-thinking" onclick="setDetailFilter('thinking', this)" style="display: none;">💭 Thinking (<span id="detail-count-thinking">0</span>)</button>
+              </div>
+              <div style="flex: 1; max-width: 280px; min-width: 180px; position: relative;">
+                <input type="text" id="turn-search-input" placeholder="🔍 Search in turns / code..." oninput="filterTurns(this.value)" style="width: 100%; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 12.5px; background: var(--bg); color: var(--text);"/>
+                <span id="turn-search-matches-count" style="display: none; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 11px; font-family: var(--mono); color: #00C896; background: var(--bg3); padding: 1px 5px; border-radius: 4px;">0</span>
+              </div>
+            </div>
+
             <!-- Interactive Timeline (Full History) -->
             <div id="timeline-container" class="chat-timeline"></div>
           </div>
@@ -3042,11 +3058,31 @@
       renderTimeline();
     }
 
-    function setFilter(filter, btn) {
+    function isErrorTurn(e) {
+      if (!e) return false;
+      if (e.isError === true) return true;
+      if (e.toolCalls && Array.isArray(e.toolCalls)) {
+        for (const tc of e.toolCalls) {
+          if (tc.arguments && (tc.arguments.is_error === true || tc.arguments.exit_code > 0)) return true;
+          if (tc.is_error === true || tc.exit_code > 0) return true;
+        }
+      }
+      const text = (e.content || '').toLowerCase();
+      if (e.role === 'tool' || e.type === 'TOOL_RESULT' || e.type === 'COMMAND_EXECUTION') {
+        if (text.includes('error:') || text.includes('failed with exit code') || text.includes('command not found') || text.includes('exception:') || text.includes('fatal:')) return true;
+      }
+      return false;
+    }
+
+    function setDetailFilter(filter, btn) {
       currentFilter = filter;
-      document.querySelectorAll('.filter-tabs-row .filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      document.querySelectorAll('#detail-filter-tabs .filter-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
       renderTimeline();
+    }
+
+    function setFilter(filter, btn) {
+      setDetailFilter(filter, btn);
     }
 
     function filterTurns(query) {
@@ -3061,13 +3097,41 @@
       const session = sessionsList.find(s => s.id === activeSessionId) || sessionsList[0];
       if (!session) return;
 
+      // Dynamic counts for active session
+      const countAll = session.events.length;
+      const countUser = session.events.filter(e => e.role === 'user').length;
+      const countAssistant = session.events.filter(e => e.role === 'assistant' && e.type !== 'THINKING').length;
+      const countTool = session.events.filter(e => e.role === 'tool' || (e.toolCalls && e.toolCalls.length > 0)).length;
+      const countError = session.events.filter(e => isErrorTurn(e)).length;
+      const countThinking = session.events.filter(e => e.type === 'THINKING' || (e.content && e.content.includes('💭 **Reasoning:**'))).length;
+
+      const elAll = document.getElementById('detail-count-all');
+      if (elAll) elAll.innerText = countAll;
+      const elUser = document.getElementById('detail-count-user');
+      if (elUser) elUser.innerText = countUser;
+      const elAssistant = document.getElementById('detail-count-assistant');
+      if (elAssistant) elAssistant.innerText = countAssistant;
+      const elTool = document.getElementById('detail-count-tool');
+      if (elTool) elTool.innerText = countTool;
+      const elError = document.getElementById('detail-count-error');
+      if (elError) elError.innerText = countError;
+
+      const btnThinking = document.getElementById('detail-filter-thinking');
+      const elThinking = document.getElementById('detail-count-thinking');
+      if (btnThinking && elThinking) {
+        elThinking.innerText = countThinking;
+        btnThinking.style.display = countThinking > 0 ? 'inline-block' : 'none';
+      }
+
       const q = turnSearchQuery.toLowerCase().trim();
 
       const filtered = session.events.filter(e => {
-        // Role filter
+        // Role / Event filter
         if (currentFilter === 'user' && e.role !== 'user') return false;
-        if (currentFilter === 'assistant' && e.role !== 'assistant') return false;
+        if (currentFilter === 'assistant' && (e.role !== 'assistant' || e.type === 'THINKING')) return false;
         if (currentFilter === 'tool' && e.role !== 'tool' && (!e.toolCalls || e.toolCalls.length === 0)) return false;
+        if (currentFilter === 'error' && !isErrorTurn(e)) return false;
+        if (currentFilter === 'thinking' && e.type !== 'THINKING' && !(e.content && e.content.includes('💭 **Reasoning:**'))) return false;
 
         // Search query filter
         if (q) {
@@ -3078,6 +3142,16 @@
 
         return true;
       });
+
+      const matchBadge = document.getElementById('turn-search-matches-count');
+      if (matchBadge) {
+        if (q) {
+          matchBadge.style.display = 'inline-block';
+          matchBadge.innerText = `${filtered.length} match${filtered.length === 1 ? '' : 'es'}`;
+        } else {
+          matchBadge.style.display = 'none';
+        }
+      }
 
       if (filtered.length === 0) {
         container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--text-muted); background: var(--bg2); border-radius: 12px; border: 1px dashed var(--border);">No conversation turns match this filter or search query.</div>';
