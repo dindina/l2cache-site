@@ -365,13 +365,14 @@
       gap: 12px;
     }
     /* Screenshot-inspired Dark Tree & Project Layout */
+    /* Clean Theme-matched Tree & Project Layout */
     .project-browser-card {
-      background: #11101d;
-      border: 1px solid #232238;
+      background: var(--bg2);
+      border: 1px solid var(--border);
       border-radius: 14px;
       padding: 20px 24px;
       margin-bottom: 24px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
     }
     .tree-top-bar {
       display: flex;
@@ -392,9 +393,9 @@
       gap: 6px;
     }
     .tree-project-select, .tree-branch-select, .tree-agent-select {
-      background: #181726;
-      color: #FFFFFF;
-      border: 1px solid #2c2a40;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
       border-radius: 8px;
       padding: 6px 12px;
       font-size: 13.5px;
@@ -408,7 +409,7 @@
     }
     .tree-project-stats {
       font-size: 12.5px;
-      color: #9CA3AF;
+      color: var(--text-muted);
       font-family: var(--mono);
       letter-spacing: 0.02em;
     }
@@ -419,9 +420,9 @@
       flex-wrap: wrap;
     }
     .tree-agent-pill-btn {
-      background: #181726;
-      border: 1px solid #2c2a40;
-      color: #9CA3AF;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
       border-radius: 8px;
       padding: 6px 10px;
       font-size: 12px;
@@ -433,24 +434,27 @@
       transition: all 0.15s ease;
     }
     .tree-agent-pill-btn:hover, .tree-agent-pill-btn.active {
-      background: #232238;
-      color: #FFFFFF;
+      background: rgba(0, 200, 150, 0.12);
+      color: #008765;
       border-color: #00C896;
+      font-weight: 700;
     }
     .tree-agent-pill-btn.btn-claude.active {
       border-color: #f59e0b;
-      color: #f59e0b;
-      background: rgba(245, 158, 11, 0.15);
+      color: #b45309;
+      background: rgba(245, 158, 11, 0.12);
+      font-weight: 700;
     }
     .tree-agent-pill-btn.btn-codex.active {
       border-color: #00C896;
-      color: #00C896;
-      background: rgba(0, 200, 150, 0.15);
+      color: #008765;
+      background: rgba(0, 200, 150, 0.12);
+      font-weight: 700;
     }
     .tree-icon-btn {
-      background: #181726;
-      border: 1px solid #2c2a40;
-      color: #9CA3AF;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
       width: 34px;
       height: 34px;
       border-radius: 8px;
@@ -462,8 +466,8 @@
       transition: all 0.15s ease;
     }
     .tree-icon-btn:hover, .tree-icon-btn.active {
-      background: #232238;
-      color: #FFFFFF;
+      background: rgba(0, 200, 150, 0.1);
+      color: #008765;
       border-color: #00C896;
     }
     .tree-search-bar {
@@ -472,26 +476,26 @@
     }
     .tree-search-input {
       width: 100%;
-      background: #161524;
-      border: 1px solid #28273d;
+      background: var(--bg);
+      border: 1px solid var(--border);
       border-radius: 10px;
       padding: 12px 42px 12px 38px;
       font-size: 14px;
-      color: #FFFFFF;
+      color: var(--text);
       outline: none;
       transition: all 0.2s;
     }
     .tree-search-input:focus {
       border-color: #00C896;
       box-shadow: 0 0 0 3px rgba(0,200,150,0.15);
-      background: #1a192c;
+      background: var(--bg2);
     }
     .tree-search-icon-left {
       position: absolute;
       left: 12px;
       top: 50%;
       transform: translateY(-50%);
-      color: #6B7280;
+      color: var(--text-dim);
       font-size: 15px;
       pointer-events: none;
     }
@@ -500,11 +504,16 @@
       right: 12px;
       top: 50%;
       transform: translateY(-50%);
-      color: #6B7280;
+      color: var(--text-dim);
       display: flex;
       align-items: center;
       gap: 6px;
       font-size: 13px;
+    }
+    .tree-search-icon-right span {
+      background: var(--bg3) !important;
+      border: 1px solid var(--border) !important;
+      color: var(--text-muted) !important;
     }
 
     /* Accordion Project Groups */
@@ -528,7 +537,7 @@
       transition: background 0.15s ease;
     }
     .project-group-header:hover {
-      background: rgba(255,255,255,0.04);
+      background: var(--bg3);
     }
     .project-header-left {
       display: flex;
@@ -536,11 +545,11 @@
       gap: 8px;
       font-size: 14.5px;
       font-weight: 700;
-      color: #E5E7EB;
+      color: var(--text);
     }
     .project-chevron {
       font-size: 11px;
-      color: #9CA3AF;
+      color: var(--text-muted);
       width: 14px;
       display: inline-block;
       transition: transform 0.2s ease;
@@ -563,10 +572,10 @@
       gap: 12px;
       font-size: 13px;
       font-family: var(--mono);
-      color: #9CA3AF;
+      color: var(--text-muted);
     }
     .project-cost-text {
-      color: #D1D5DB;
+      color: var(--text-muted);
     }
     .project-sessions-container {
       margin-top: 4px;
@@ -586,15 +595,18 @@
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.15s ease;
-      color: #E5E7EB;
+      color: var(--text);
       gap: 12px;
+      border: 1px solid transparent;
     }
     .tree-session-row:hover {
-      background: #1d1c2c;
+      background: var(--bg3);
+      border-color: var(--border);
     }
     .tree-session-row.active {
-      background: #252438;
-      border-left: 3px solid #00C896;
+      background: rgba(0, 200, 150, 0.08);
+      border-color: rgba(0, 200, 150, 0.3);
+      border-left: 3.5px solid #00C896;
     }
     .tree-session-left {
       display: flex;
@@ -616,7 +628,7 @@
       color: #f97316;
     }
     .agent-icon-codex {
-      color: #38bdf8;
+      color: #0284c7;
     }
     .agent-icon-other {
       color: #00C896;
@@ -624,7 +636,7 @@
     .tree-session-title {
       font-size: 13.5px;
       font-weight: 500;
-      color: #F3F4F6;
+      color: var(--text);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -635,7 +647,7 @@
       gap: 8px;
       flex-shrink: 0;
       font-size: 12px;
-      color: #9CA3AF;
+      color: var(--text-dim);
       font-family: var(--mono);
     }
     .status-dot-active {
@@ -649,7 +661,7 @@
     .tree-show-more-btn {
       background: none;
       border: none;
-      color: #9CA3AF;
+      color: var(--text-muted);
       font-size: 12.5px;
       cursor: pointer;
       padding: 8px 12px;
@@ -981,8 +993,8 @@
               <span class="tree-search-icon-left">🔍</span>
               <input type="text" id="tree-search-input" class="tree-search-input" placeholder="Search messages, tools, or code..." oninput="filterSessionList(this.value)"/>
               <div class="tree-search-icon-right">
-                <span style="background: #252438; border: 1px solid #36344d; border-radius: 4px; padding: 2px 6px; font-size: 11px; font-family: var(--mono);">⥯</span>
-                <span style="background: #252438; border: 1px solid #36344d; border-radius: 4px; padding: 2px 6px; font-size: 11px; font-family: var(--mono);">↵</span>
+                <span style="background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; font-size: 11px; font-family: var(--mono); color: var(--text-muted);">⥯</span>
+                <span style="background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; font-size: 11px; font-family: var(--mono); color: var(--text-muted);">↵</span>
               </div>
             </div>
 
@@ -2708,7 +2720,7 @@
       }
 
       if (filtered.length === 0) {
-        container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--text-muted); background: #161524; border-radius: 10px; border: 1px dashed #28273d;">No sessions match query or filters.</div>';
+        container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--text-muted); background: var(--bg); border-radius: 10px; border: 1px dashed var(--border);">No sessions match query or filters.</div>';
         return;
       }
 
