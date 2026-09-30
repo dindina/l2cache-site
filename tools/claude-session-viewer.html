@@ -364,6 +364,298 @@
       flex-wrap: wrap;
       gap: 12px;
     }
+    /* Screenshot-inspired Dark Tree & Project Layout */
+    .project-browser-card {
+      background: #11101d;
+      border: 1px solid #232238;
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+    .tree-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .tree-top-left {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .project-select-wrapper {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tree-project-select, .tree-branch-select {
+      background: #181726;
+      color: #FFFFFF;
+      border: 1px solid #2c2a40;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+    .tree-project-select:hover, .tree-branch-select:hover {
+      border-color: #00C896;
+    }
+    .tree-project-stats {
+      font-size: 12.5px;
+      color: #9CA3AF;
+      font-family: var(--mono);
+      letter-spacing: 0.02em;
+    }
+    .tree-top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tree-icon-btn {
+      background: #181726;
+      border: 1px solid #2c2a40;
+      color: #9CA3AF;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.15s ease;
+    }
+    .tree-icon-btn:hover, .tree-icon-btn.active {
+      background: #232238;
+      color: #FFFFFF;
+      border-color: #00C896;
+    }
+    .tree-search-bar {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .tree-search-input {
+      width: 100%;
+      background: #161524;
+      border: 1px solid #28273d;
+      border-radius: 10px;
+      padding: 12px 42px 12px 38px;
+      font-size: 14px;
+      color: #FFFFFF;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .tree-search-input:focus {
+      border-color: #00C896;
+      box-shadow: 0 0 0 3px rgba(0,200,150,0.15);
+      background: #1a192c;
+    }
+    .tree-search-icon-left {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6B7280;
+      font-size: 15px;
+      pointer-events: none;
+    }
+    .tree-search-icon-right {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6B7280;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    /* Accordion Project Groups */
+    .project-group-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .project-group-item {
+      background: transparent;
+      border-radius: 10px;
+    }
+    .project-group-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      cursor: pointer;
+      user-select: none;
+      border-radius: 8px;
+      transition: background 0.15s ease;
+    }
+    .project-group-header:hover {
+      background: rgba(255,255,255,0.04);
+    }
+    .project-header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #E5E7EB;
+    }
+    .project-chevron {
+      font-size: 11px;
+      color: #9CA3AF;
+      width: 14px;
+      display: inline-block;
+      transition: transform 0.2s ease;
+    }
+    .project-group-item.collapsed .project-chevron {
+      transform: rotate(-90deg);
+    }
+    .project-badge-current {
+      background: #0284c7;
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      letter-spacing: 0.02em;
+    }
+    .project-header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      font-family: var(--mono);
+      color: #9CA3AF;
+    }
+    .project-cost-text {
+      color: #D1D5DB;
+    }
+    .project-sessions-container {
+      margin-top: 4px;
+      margin-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .project-group-item.collapsed .project-sessions-container {
+      display: none;
+    }
+    .tree-session-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      color: #E5E7EB;
+      gap: 12px;
+    }
+    .tree-session-row:hover {
+      background: #1d1c2c;
+    }
+    .tree-session-row.active {
+      background: #252438;
+      border-left: 3px solid #00C896;
+    }
+    .tree-session-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow: hidden;
+      flex: 1;
+    }
+    .tree-agent-icon {
+      font-size: 14px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+    }
+    .agent-icon-claude {
+      color: #f97316;
+    }
+    .agent-icon-codex {
+      color: #38bdf8;
+    }
+    .agent-icon-other {
+      color: #00C896;
+    }
+    .tree-session-title {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #F3F4F6;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tree-session-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      font-size: 12px;
+      color: #9CA3AF;
+      font-family: var(--mono);
+    }
+    .status-dot-active {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10B981;
+      display: inline-block;
+      box-shadow: 0 0 6px rgba(16,185,129,0.8);
+    }
+    .tree-show-more-btn {
+      background: none;
+      border: none;
+      color: #9CA3AF;
+      font-size: 12.5px;
+      cursor: pointer;
+      padding: 8px 12px;
+      text-align: left;
+      margin-left: 20px;
+      transition: color 0.15s;
+    }
+    .tree-show-more-btn:hover {
+      color: #00C896;
+      text-decoration: underline;
+    }
+    .floating-feedback-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 999;
+      background: #0284c7;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 24px;
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(2,132,199,0.4);
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .floating-feedback-btn:hover {
+      background: #0369a1;
+      transform: translateY(-2px);
+    }
     #toast-notification {
       position: fixed; bottom: 28px; right: 28px; z-index: 9999;
       background: #0D0C1A; color: #FFFFFF; border: 1.5px solid #00C896;
@@ -607,31 +899,89 @@
             <span class="sidebar-count-badge" id="main-session-count">0</span>
             <span style="font-size: 12.5px; color: var(--text-muted);" id="index-stat-text">0 total turns indexed</span>
           </div>
-          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
             <button class="tbtn tbtn-ghost btn-refresh-folders" onclick="refreshLinkedFolders()" style="font-size: 12px; padding: 6px 12px; border-color: #00C896; color: #008765; font-weight: 700;">🔄 Refresh &amp; Sync</button>
             <button class="tbtn tbtn-ghost" onclick="openFolderPicker('claude')" style="font-size: 12px; padding: 6px 10px;">+ 🤖 Claude</button>
             <button class="tbtn tbtn-ghost" onclick="openFolderPicker('codex')" style="font-size: 12px; padding: 6px 10px;">+ 🟢 Codex</button>
             <button class="tbtn tbtn-ghost" onclick="openFolderPicker('auto')" style="font-size: 12px; padding: 6px 10px;">+ 📁 Folder</button>
             <button class="tbtn tbtn-ghost" onclick="clearAllPersistedData()" style="font-size: 12px; padding: 6px 10px; color: #ef4444;" title="Clear index cache">🗑️ Clear</button>
-            <button id="btn-view-tiles" class="filter-btn active" onclick="switchMainView('tiles')">▦ All Session Tiles</button>
+            <button id="btn-view-tree" class="filter-btn active" onclick="switchMainView('tree')">📁 Project Tree</button>
+            <button id="btn-view-tiles" class="filter-btn" onclick="switchMainView('tiles')">▦ Grid Tiles</button>
             <button id="btn-view-split" class="filter-btn" onclick="switchMainView('split')">💬 Conversation Workspace</button>
           </div>
         </div>
 
+        <!-- 0. Project Grouped Tree View (Screenshot Layout) -->
+        <div id="sessions-tree-section">
+          <div class="project-browser-card">
+            <!-- Top Bar -->
+            <div class="tree-top-bar">
+              <div class="tree-top-left">
+                <div class="project-select-wrapper">
+                  <span style="font-size: 16px;">🌐</span>
+                  <select id="tree-project-filter" class="tree-project-select" onchange="setProjectFilter(this.value)">
+                    <option value="all">All projects ⌄</option>
+                  </select>
+                </div>
+                <div class="tree-project-stats" id="tree-top-stats">0 sessions • $0.00</div>
+              </div>
+              <div class="tree-top-actions">
+                <button type="button" class="tree-icon-btn" title="Quick tag filter" onclick="showToast('Filtered by active sessions', '🏷️')">🏷️</button>
+                <div style="display: inline-flex; align-items: center; gap: 4px;">
+                  <span style="font-size: 13px; color: #9CA3AF;">⑂</span>
+                  <select id="tree-branch-filter" class="tree-branch-select" style="font-size: 12px; padding: 4px 8px;" onchange="setBranchFilter(this.value)">
+                    <option value="all">All branches ⌄</option>
+                  </select>
+                </div>
+                <button type="button" class="tree-icon-btn active" id="tree-agent-all-btn" title="All agents" onclick="setAgentFilter('all', this)">✳️</button>
+                <button type="button" class="tree-icon-btn" id="tree-agent-claude-btn" title="Claude Code" onclick="setAgentFilter('claude', this)" style="color: #f97316;">🤖</button>
+                <button type="button" class="tree-icon-btn" id="tree-agent-codex-btn" title="OpenAI Codex" onclick="setAgentFilter('codex', this)" style="color: #38bdf8;">🌐</button>
+                <button type="button" class="tree-icon-btn" title="Switch to tile cards" onclick="switchMainView('tiles')">⥯</button>
+                <button type="button" class="tree-icon-btn btn-refresh-folders" title="Refresh linked folders" onclick="refreshLinkedFolders()">↻</button>
+              </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="tree-search-bar">
+              <span class="tree-search-icon-left">🔍</span>
+              <input type="text" id="tree-search-input" class="tree-search-input" placeholder="Search messages, tools, or code..." oninput="filterSessionList(this.value)"/>
+              <div class="tree-search-icon-right">
+                <span style="background: #252438; border: 1px solid #36344d; border-radius: 4px; padding: 2px 6px; font-size: 11px; font-family: var(--mono);">⥯</span>
+                <span style="background: #252438; border: 1px solid #36344d; border-radius: 4px; padding: 2px 6px; font-size: 11px; font-family: var(--mono);">↵</span>
+              </div>
+            </div>
+
+            <!-- Accordion Grouped Projects List -->
+            <div class="project-group-list" id="project-group-list-container">
+              <!-- Dynamically populated project folders & session rows -->
+            </div>
+          </div>
+        </div>
+
         <!-- 1. Session Tiles Grid Gallery & Global Search -->
-        <div id="sessions-tiles-section">
+        <div id="sessions-tiles-section" style="display: none;">
           
           <!-- Global Search & Agent Filter Bar -->
           <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px;">
             <div style="margin-bottom: 12px;">
               <input type="text" id="tiles-search-input" placeholder="🔍 Search across ALL indexed sessions, turns, tool commands, code, errors..." oninput="filterSessionList(this.value)" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); font-size: 13.5px; background: var(--bg); color: var(--text);"/>
             </div>
-            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
-              <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Filter Agent:</span>
-              <button class="filter-btn active" id="agent-filter-all" onclick="setAgentFilter('all', this)">All Agents (<span id="count-agent-all">0</span>)</button>
-              <button class="filter-btn" id="agent-filter-claude" onclick="setAgentFilter('claude', this)">🤖 Claude Code (<span id="count-agent-claude">0</span>)</button>
-              <button class="filter-btn" id="agent-filter-codex" onclick="setAgentFilter('codex', this)">🟢 OpenAI Codex (<span id="count-agent-codex">0</span>)</button>
-              <button class="filter-btn" id="agent-filter-other" onclick="setAgentFilter('other', this)">⚡ Other (<span id="count-agent-other">0</span>)</button>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Filter Agent:</span>
+                <button class="filter-btn active" id="agent-filter-all" onclick="setAgentFilter('all', this)">All Agents (<span id="count-agent-all">0</span>)</button>
+                <button class="filter-btn" id="agent-filter-claude" onclick="setAgentFilter('claude', this)">🤖 Claude Code (<span id="count-agent-claude">0</span>)</button>
+                <button class="filter-btn" id="agent-filter-codex" onclick="setAgentFilter('codex', this)">🟢 OpenAI Codex (<span id="count-agent-codex">0</span>)</button>
+                <button class="filter-btn" id="agent-filter-other" onclick="setAgentFilter('other', this)">⚡ Other (<span id="count-agent-other">0</span>)</button>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                <select id="tiles-project-filter" class="tree-project-select" style="font-size: 12.5px; padding: 5px 10px;" onchange="setProjectFilter(this.value)">
+                  <option value="all">All Projects</option>
+                </select>
+                <select id="tiles-branch-filter" class="tree-branch-select" style="font-size: 12.5px; padding: 5px 10px;" onchange="setBranchFilter(this.value)">
+                  <option value="all">All Branches</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -644,8 +994,8 @@
         <!-- 2. Master-Detail Conversation Workspace -->
         <div id="sessions-workspace-section" style="display: none;">
           <div style="margin-bottom: 16px;">
-            <button class="tbtn tbtn-ghost" onclick="switchMainView('tiles')" style="font-size: 13px; padding: 7px 14px;">
-              ← Back to All Session Tiles
+            <button class="tbtn tbtn-ghost" onclick="switchMainView('tree')" style="font-size: 13px; padding: 7px 14px;">
+              ← Back to Project Tree
             </button>
           </div>
 
@@ -663,9 +1013,17 @@
                 </div>
               </div>
 
-              <!-- Search Sessions -->
-              <div style="margin-bottom: 12px;">
+              <!-- Filter Dropdowns for Project and Branch in Sidebar -->
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
                 <input type="text" id="session-search-input" placeholder="🔍 Search sessions..." oninput="filterSessionList(this.value)" style="width: 100%; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 12.5px; background: var(--bg); color: var(--text);"/>
+                <div style="display: flex; gap: 6px;">
+                  <select id="sidebar-project-filter" class="tree-project-select" style="flex: 1; font-size: 11.5px; padding: 4px 6px;" onchange="setProjectFilter(this.value)">
+                    <option value="all">All Projects</option>
+                  </select>
+                  <select id="sidebar-branch-filter" class="tree-branch-select" style="flex: 1; font-size: 11.5px; padding: 4px 6px;" onchange="setBranchFilter(this.value)">
+                    <option value="all">All Branches</option>
+                  </select>
+                </div>
               </div>
 
               <!-- Scrollable Session Cards List -->
@@ -822,10 +1180,14 @@
     let activeSessionId = 0;
     let currentFilter = 'all';
     let currentAgentFilter = 'all';
+    let currentProjectFilter = 'all';
+    let currentBranchFilter = 'all';
     let sessionSearchQuery = '';
     let turnSearchQuery = '';
     let toastTimeout;
     let dbInstance = null;
+    const collapsedProjects = new Set();
+    const projectExpandedCount = new Map();
 
     // --- IndexedDB Persistence Layer ---
     function getDB() {
@@ -1251,7 +1613,8 @@
 
       document.getElementById('viewer-results').style.display = 'block';
       updateAgentCounters();
-      
+      populateProjectAndBranchDropdowns();
+      renderProjectTree();
       renderSessionTiles();
       renderSessionsSidebar();
       if (activeSessionId === null || activeSessionId >= sessionsList.length) {
@@ -1259,7 +1622,7 @@
       } else {
         selectSession(activeSessionId);
       }
-      switchMainView('tiles');
+      switchMainView('tree');
       showToast(`Indexed ${sessionsList.length} session${sessionsList.length > 1 ? 's' : ''} across Claude & Codex!`, '⚡');
     }
 
@@ -1924,14 +2287,248 @@
       };
     }
 
-    function setAgentFilter(agent, btn) {
-      currentAgentFilter = agent;
-      document.querySelectorAll('#sessions-tiles-section .filter-btn').forEach(b => {
-        if (b.id && b.id.startsWith('agent-filter-')) b.classList.remove('active');
+    function populateProjectAndBranchDropdowns() {
+      const projects = Array.from(new Set(sessionsList.map(s => (s.project && s.project !== 'undefined') ? s.project : 'project'))).sort();
+      const branches = Array.from(new Set(sessionsList.map(s => (s.branch && s.branch !== 'undefined') ? s.branch : 'main'))).sort();
+
+      const projectSelects = [
+        document.getElementById('tree-project-filter'),
+        document.getElementById('tiles-project-filter'),
+        document.getElementById('sidebar-project-filter')
+      ];
+
+      projectSelects.forEach(sel => {
+        if (!sel) return;
+        const prev = currentProjectFilter;
+        sel.innerHTML = '<option value="all">All projects ⌄</option>' + 
+          projects.map(p => {
+            const count = sessionsList.filter(s => (s.project || 'project') === p).length;
+            return `<option value="${escapeHtml(p)}">${escapeHtml(p)} (${count})</option>`;
+          }).join('');
+        if (projects.includes(prev)) sel.value = prev;
+        else sel.value = 'all';
       });
-      if (btn) btn.classList.add('active');
+
+      const branchSelects = [
+        document.getElementById('tree-branch-filter'),
+        document.getElementById('tiles-branch-filter'),
+        document.getElementById('sidebar-branch-filter')
+      ];
+
+      branchSelects.forEach(sel => {
+        if (!sel) return;
+        const prev = currentBranchFilter;
+        sel.innerHTML = '<option value="all">All branches ⌄</option>' + 
+          branches.map(b => {
+            const count = sessionsList.filter(s => (s.branch || 'main') === b).length;
+            return `<option value="${escapeHtml(b)}">${escapeHtml(b)} (${count})</option>`;
+          }).join('');
+        if (branches.includes(prev)) sel.value = prev;
+        else sel.value = 'all';
+      });
+    }
+
+    function setProjectFilter(val) {
+      currentProjectFilter = val;
+      const projectSelects = [
+        document.getElementById('tree-project-filter'),
+        document.getElementById('tiles-project-filter'),
+        document.getElementById('sidebar-project-filter')
+      ];
+      projectSelects.forEach(sel => { if (sel && sel.value !== val) sel.value = val; });
+      renderProjectTree();
       renderSessionTiles();
       renderSessionsSidebar();
+    }
+
+    function setBranchFilter(val) {
+      currentBranchFilter = val;
+      const branchSelects = [
+        document.getElementById('tree-branch-filter'),
+        document.getElementById('tiles-branch-filter'),
+        document.getElementById('sidebar-branch-filter')
+      ];
+      branchSelects.forEach(sel => { if (sel && sel.value !== val) sel.value = val; });
+      renderProjectTree();
+      renderSessionTiles();
+      renderSessionsSidebar();
+    }
+
+    function setAgentFilter(agent, btn) {
+      currentAgentFilter = agent;
+      document.querySelectorAll('#sessions-tiles-section .filter-btn, .tree-top-actions .tree-icon-btn').forEach(b => {
+        if (b.id && (b.id.startsWith('agent-filter-') || b.id.startsWith('tree-agent-'))) b.classList.remove('active');
+      });
+      if (btn) btn.classList.add('active');
+      const twinBtn = document.getElementById(btn && btn.id ? (btn.id.startsWith('tree-') ? btn.id.replace('tree-', '') : `tree-${btn.id}`) : '');
+      if (twinBtn) twinBtn.classList.add('active');
+      renderProjectTree();
+      renderSessionTiles();
+      renderSessionsSidebar();
+    }
+
+    function formatRelativeTime(dateOrMs) {
+      if (!dateOrMs) return '23h ago';
+      let ms = typeof dateOrMs === 'number' ? dateOrMs : new Date(dateOrMs).getTime();
+      if (isNaN(ms)) return 'recent';
+      const diffSec = Math.max(0, Math.floor((Date.now() - ms) / 1000));
+      if (diffSec < 60) return 'just now';
+      const diffMin = Math.floor(diffSec / 60);
+      if (diffMin < 60) return `${diffMin}m ago`;
+      const diffHours = Math.floor(diffMin / 60);
+      if (diffHours < 24) return `${diffHours}h ago`;
+      const diffDays = Math.floor(diffHours / 24);
+      if (diffDays < 30) return `${diffDays}d ago`;
+      const diffMonths = Math.floor(diffDays / 30);
+      return `${diffMonths}mo ago`;
+    }
+
+    function estimateSessionCost(session) {
+      let totalTokens = 0;
+      if (session.events) {
+        session.events.forEach(e => {
+          if (e.raw && e.raw.usage) {
+            totalTokens += (e.raw.usage.total_tokens || (e.raw.usage.input_tokens || 0) + (e.raw.usage.output_tokens || 0));
+          }
+        });
+      }
+      if (totalTokens > 0) {
+        return totalTokens * 0.000008;
+      }
+      const prompts = session.promptsCount || 1;
+      const assistants = session.assistantCount || 1;
+      const tools = session.toolsCount || 0;
+      const turns = session.events ? session.events.length : (prompts + assistants + tools);
+      return Math.max(0.18, (prompts * 0.06) + (assistants * 0.12) + (tools * 0.04) + (turns * 0.03));
+    }
+
+    function toggleProjectCollapse(projectName) {
+      if (collapsedProjects.has(projectName)) {
+        collapsedProjects.delete(projectName);
+      } else {
+        collapsedProjects.add(projectName);
+      }
+      renderProjectTree();
+    }
+
+    function toggleShowMoreSessions(projectName) {
+      const current = projectExpandedCount.get(projectName) || 5;
+      projectExpandedCount.set(projectName, current === 5 ? 50 : 5);
+      renderProjectTree();
+    }
+
+    function renderProjectTree() {
+      const container = document.getElementById('project-group-list-container');
+      const statsEl = document.getElementById('tree-top-stats');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const query = sessionSearchQuery.toLowerCase().trim();
+
+      const filtered = sessionsList.filter(s => {
+        if (currentAgentFilter !== 'all') {
+          if (currentAgentFilter === 'claude' && s.agentType !== 'claude') return false;
+          if (currentAgentFilter === 'codex' && s.agentType !== 'codex') return false;
+          if (currentAgentFilter === 'other' && (s.agentType === 'claude' || s.agentType === 'codex')) return false;
+        }
+        if (currentProjectFilter !== 'all' && (s.project || 'project') !== currentProjectFilter) return false;
+        if (currentBranchFilter !== 'all' && (s.branch || 'main') !== currentBranchFilter) return false;
+
+        if (query) {
+          const count = countOccurrences(s.searchIndexText, query);
+          s.currentMatchCount = count;
+          return count > 0;
+        }
+        s.currentMatchCount = 0;
+        return true;
+      });
+
+      const totalCost = filtered.reduce((acc, s) => acc + estimateSessionCost(s), 0);
+      if (statsEl) {
+        statsEl.innerText = `${filtered.length} sessions • $${totalCost.toFixed(2)}`;
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--text-muted); background: #161524; border-radius: 10px; border: 1px dashed #28273d;">No sessions match query or filters.</div>';
+        return;
+      }
+
+      // Group by project
+      const projectGroups = new Map();
+      filtered.forEach(s => {
+        const p = (s.project && s.project !== 'undefined') ? s.project : 'project';
+        if (!projectGroups.has(p)) projectGroups.set(p, []);
+        projectGroups.get(p).push(s);
+      });
+
+      let groupIdx = 0;
+      projectGroups.forEach((sessions, projectName) => {
+        groupIdx++;
+        const isCollapsed = collapsedProjects.has(projectName);
+        const limit = projectExpandedCount.get(projectName) || 5;
+        const visibleSessions = sessions.slice(0, limit);
+        const remaining = sessions.length - visibleSessions.length;
+        const groupCost = sessions.reduce((acc, s) => acc + estimateSessionCost(s), 0);
+        const isCurrent = groupIdx === 1 || projectName === 'l2cache-site' || projectName === 'L2Cache';
+
+        const groupDiv = document.createElement('div');
+        groupDiv.className = `project-group-item ${isCollapsed ? 'collapsed' : ''}`;
+
+        let sessionsHtml = '';
+        visibleSessions.forEach((s, sIdx) => {
+          const isActive = s.id === activeSessionId;
+          const relTime = s.relativeTime || formatRelativeTime(s.events && s.events[0] ? s.events[0].timestamp : null);
+          const isRecent = sIdx === 0 && groupIdx <= 2;
+          
+          let agentIcon = '⚡';
+          let agentClass = 'agent-icon-other';
+          if (s.agentType === 'claude') { agentIcon = '✳️'; agentClass = 'agent-icon-claude'; }
+          else if (s.agentType === 'codex') { agentIcon = '🌐'; agentClass = 'agent-icon-codex'; }
+
+          sessionsHtml += `
+            <div class="tree-session-row ${isActive ? 'active' : ''}" onclick="selectSession(${s.id}); switchMainView('split');">
+              <div class="tree-session-left">
+                <span class="tree-agent-icon ${agentClass}">${agentIcon}</span>
+                <span class="tree-session-title" title="${escapeHtml(s.title)}">${escapeHtml(s.title)}</span>
+              </div>
+              <div class="tree-session-right">
+                <span>${escapeHtml(relTime)}</span>
+                ${isRecent ? '<span class="status-dot-active" title="Active session"></span>' : ''}
+              </div>
+            </div>
+          `;
+        });
+
+        let showMoreHtml = '';
+        if (sessions.length > 5) {
+          if (limit <= 5) {
+            showMoreHtml = `<button type="button" class="tree-show-more-btn" onclick="toggleShowMoreSessions('${escapeHtml(projectName)}')">Show ${remaining} more</button>`;
+          } else {
+            showMoreHtml = `<button type="button" class="tree-show-more-btn" onclick="toggleShowMoreSessions('${escapeHtml(projectName)}')">Show less</button>`;
+          }
+        }
+
+        groupDiv.innerHTML = `
+          <div class="project-group-header" onclick="toggleProjectCollapse('${escapeHtml(projectName)}')">
+            <div class="project-header-left">
+              <span class="project-chevron">⌄</span>
+              <span>📁</span>
+              <span>${escapeHtml(projectName)}</span>
+              ${isCurrent ? '<span class="project-badge-current">current</span>' : ''}
+            </div>
+            <div class="project-header-right">
+              <span>${sessions.length}</span>
+              <span class="project-cost-text">$${groupCost.toFixed(2)}</span>
+            </div>
+          </div>
+          <div class="project-sessions-container">
+            ${sessionsHtml}
+            ${showMoreHtml}
+          </div>
+        `;
+
+        container.appendChild(groupDiv);
+      });
     }
 
     function renderSessionTiles() {
@@ -1948,6 +2545,12 @@
           if (currentAgentFilter === 'other' && (s.agentType === 'claude' || s.agentType === 'codex')) return false;
         }
 
+        // Project filter
+        if (currentProjectFilter !== 'all' && (s.project || 'project') !== currentProjectFilter) return false;
+
+        // Branch filter
+        if (currentBranchFilter !== 'all' && (s.branch || 'main') !== currentBranchFilter) return false;
+
         // Full-Text In-Browser Search
         if (query) {
           const count = countOccurrences(s.searchIndexText, query);
@@ -1959,7 +2562,7 @@
       });
 
       if (filtered.length === 0) {
-        container.innerHTML = '<div style="grid-column: 1 / -1; padding: 36px; text-align: center; color: var(--text-muted); background: var(--bg2); border-radius: 12px; border: 1px dashed var(--border);">No session tiles match query or agent filter.</div>';
+        container.innerHTML = '<div style="grid-column: 1 / -1; padding: 36px; text-align: center; color: var(--text-muted); background: var(--bg2); border-radius: 12px; border: 1px dashed var(--border);">No session tiles match query or filters.</div>';
         return;
       }
 
@@ -2021,23 +2624,38 @@
     }
 
     function switchMainView(mode) {
+      const treeSec = document.getElementById('sessions-tree-section');
       const tilesSec = document.getElementById('sessions-tiles-section');
       const workspaceSec = document.getElementById('sessions-workspace-section');
+      const btnTree = document.getElementById('btn-view-tree');
       const btnTiles = document.getElementById('btn-view-tiles');
       const btnSplit = document.getElementById('btn-view-split');
 
-      if (mode === 'tiles') {
-        tilesSec.style.display = 'block';
-        workspaceSec.style.display = 'none';
-        btnTiles.classList.add('active');
-        btnSplit.classList.remove('active');
+      if (mode === 'tree') {
+        if (treeSec) treeSec.style.display = 'block';
+        if (tilesSec) tilesSec.style.display = 'none';
+        if (workspaceSec) workspaceSec.style.display = 'none';
+        if (btnTree) btnTree.classList.add('active');
+        if (btnTiles) btnTiles.classList.remove('active');
+        if (btnSplit) btnSplit.classList.remove('active');
+        renderProjectTree();
+      } else if (mode === 'tiles') {
+        if (treeSec) treeSec.style.display = 'none';
+        if (tilesSec) tilesSec.style.display = 'block';
+        if (workspaceSec) workspaceSec.style.display = 'none';
+        if (btnTree) btnTree.classList.remove('active');
+        if (btnTiles) btnTiles.classList.add('active');
+        if (btnSplit) btnSplit.classList.remove('active');
         renderSessionTiles();
       } else {
-        tilesSec.style.display = 'none';
-        workspaceSec.style.display = 'block';
-        btnTiles.classList.remove('active');
-        btnSplit.classList.add('active');
+        if (treeSec) treeSec.style.display = 'none';
+        if (tilesSec) tilesSec.style.display = 'none';
+        if (workspaceSec) workspaceSec.style.display = 'block';
+        if (btnTree) btnTree.classList.remove('active');
+        if (btnTiles) btnTiles.classList.remove('active');
+        if (btnSplit) btnSplit.classList.add('active');
         renderTimeline();
+        renderSessionsSidebar();
       }
     }
 
@@ -2054,6 +2672,9 @@
           if (currentAgentFilter === 'codex' && s.agentType !== 'codex') return false;
           if (currentAgentFilter === 'other' && (s.agentType === 'claude' || s.agentType === 'codex')) return false;
         }
+        if (currentProjectFilter !== 'all' && (s.project || 'project') !== currentProjectFilter) return false;
+        if (currentBranchFilter !== 'all' && (s.branch || 'main') !== currentBranchFilter) return false;
+
         if (!query) return true;
         return s.currentMatchCount > 0 || countOccurrences(s.searchIndexText, query) > 0;
       });
@@ -2097,10 +2718,13 @@
 
     function filterSessionList(val) {
       sessionSearchQuery = val;
+      const treeInput = document.getElementById('tree-search-input');
       const tilesInput = document.getElementById('tiles-search-input');
       const sidebarInput = document.getElementById('session-search-input');
+      if (treeInput && treeInput.value !== val) treeInput.value = val;
       if (tilesInput && tilesInput.value !== val) tilesInput.value = val;
       if (sidebarInput && sidebarInput.value !== val) sidebarInput.value = val;
+      renderProjectTree();
       renderSessionTiles();
       renderSessionsSidebar();
     }
@@ -2134,7 +2758,8 @@
       document.getElementById('stat-tools').innerText = session.toolsCount;
       document.getElementById('stat-model-msgs').innerText = session.assistantCount;
 
-      // Re-highlight active in sidebar & tiles
+      // Re-highlight active in sidebar & tiles & tree
+      renderProjectTree();
       renderSessionsSidebar();
       renderSessionTiles();
 
@@ -2287,10 +2912,12 @@
 
         document.getElementById('viewer-results').style.display = 'block';
         updateAgentCounters();
+        populateProjectAndBranchDropdowns();
+        renderProjectTree();
         renderSessionTiles();
         renderSessionsSidebar();
         selectSession(0);
-        switchMainView('split');
+        switchMainView('tree');
         showToast(`Parsed ${newSessions.length} session${newSessions.length > 1 ? 's' : ''} successfully!`, '🚀');
       } else {
         showToast('Could not parse valid session events from text.', '⚠️');
@@ -2337,70 +2964,115 @@
     }
 
     function loadSampleSession() {
-      const sample1 = [
-        `{"git_branch":"main","type":"USER_INPUT","content":"Let's refactor SQLite connection pool to use Swift Actors and prevent concurrency deadlocks on macOS."}`,
-        `{"type":"PLANNER_RESPONSE","content":"I will inspect DatabasePool.swift and wrap read/write operations in an actor-isolated queue."}`,
-        `{"type":"TOOL_EXECUTION","toolAction":"Grep for DatabasePool in codebase","CommandLine":"grep -rn 'DatabasePool' ./Sources"}`,
-        `{"type":"PLANNER_RESPONSE","content":"Found 3 call sites in ClipboardRepository.swift. I am applying the actor isolation patch now."}`,
-        `{"type":"TOOL_EXECUTION","toolAction":"Update DatabasePool.swift with actor isolation","tool_calls":[{"name":"replace_file_content","parameters":{"file":"DatabasePool.swift","patch":"actor DatabaseQueue { ... }"}}]}`,
-        `{"type":"PLANNER_RESPONSE","content":"Refactor complete. All 24 unit tests passed with 0 concurrency warnings under Swift 6 strict concurrency."}`
-      ].join('\n');
+      // 1. l2cache-site project sessions
+      const s1 = parseFileIntoSessions([
+        `{"git_branch":"main","type":"USER_INPUT","content":"Improve L2Cache SEO"}`,
+        `{"type":"PLANNER_RESPONSE","content":"I analyzed keyword clustering and added technical guide schema to boost organic impressions."}`
+      ].join('\n'), { name: 'transcript.jsonl', customRelativePath: '.claude/projects/l2cache-site/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 26 }, 0);
+      if (s1[0]) { s1[0].relativeTime = '26m ago'; s1[0].agentType = 'codex'; s1[0].agentLabel = '🟢 OpenAI Codex'; s1[0].agentClass = 'agent-badge-codex'; }
 
-      const sample2 = [
-        `{"branch":"feature/pkce-rotation","role":"user","content":"Implement OAuth2 PKCE login flow and secure JWT token refresh rotation with Redis."}`,
-        `{"role":"assistant","content":"I will set up the PKCE code challenge generation in AuthService.ts and store hashed refresh tokens in Redis."}`,
-        `{"role":"tool","toolAction":"Search authentication middlewares","CommandLine":"find ./src/auth -name '*.ts'"}`,
-        `{"role":"assistant","content":"Generated token rotation middleware. Old refresh tokens are invalidated immediately upon replay."}`,
-        `{"role":"tool","toolAction":"Run OAuth2 test suite","CommandLine":"npm test -- auth.test.ts"}`,
-        `{"role":"assistant","content":"All auth integration tests passed! Token refresh rotation is active."}`
-      ].join('\n');
+      const s2 = parseFileIntoSessions([
+        `{"git_branch":"feat/multi-platform-agent","type":"USER_INPUT","content":"Build multi-platform article publishing agent"}`,
+        `{"type":"PLANNER_RESPONSE","content":"Created automated RSS and static markdown syndication script with retry logic."}`
+      ].join('\n'), { name: 'transcript.jsonl', customRelativePath: '.claude/projects/l2cache-site/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 23 }, 1);
+      if (s2[0]) { s2[0].relativeTime = '23h ago'; s2[0].agentType = 'claude'; s2[0].agentLabel = '🤖 Claude Code'; s2[0].agentClass = 'agent-badge-claude'; }
 
-      const sample3 = [
-        `{"git_branch":"perf/vector-search","role":"user","content":"Optimize vector search indexing on ClickHouse and benchmark query latency under 10k RPS."}`,
-        `{"role":"assistant","content":"I will configure an HNSW index on the embeddings column and test batch insert throughput."}`,
-        `{"role":"tool","toolAction":"Run benchmark k6 script","CommandLine":"k6 run benchmarks/vector-search.js"}`,
-        `{"role":"assistant","content":"p99 latency dropped from 145ms down to 8.2ms! Vector search is ready for production."}`
-      ].join('\n');
+      const s3 = parseFileIntoSessions([
+        `{"git_branch":"main","type":"USER_INPUT","content":"Clarify usage limit"}`,
+        `{"type":"PLANNER_RESPONSE","content":"Updated pricing table with transparent token allowance documentation."}`
+      ].join('\n'), { name: 'transcript.jsonl', customRelativePath: '.claude/projects/l2cache-site/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 23 }, 2);
+      if (s3[0]) { s3[0].relativeTime = '23h ago'; s3[0].agentType = 'codex'; s3[0].agentLabel = '🟢 OpenAI Codex'; s3[0].agentClass = 'agent-badge-codex'; }
 
-      const sample4 = [
-        `{"git_branch":"seo/opengraph-cards","type":"USER_INPUT","content":"Generate dynamic OpenGraph social share cards and configure Next.js App Router metadata for SEO."}`,
-        `{"type":"PLANNER_RESPONSE","content":"I will create an opengraph-image.tsx route handler with @vercel/og font rasterization."}`,
-        `{"type":"TOOL_EXECUTION","toolAction":"Create opengraph-image.tsx","CommandLine":"touch app/opengraph-image.tsx"}`,
-        `{"type":"PLANNER_RESPONSE","content":"Generated dynamic SVG-to-PNG social card with brand gradients and automatic title embedding."}`
-      ].join('\n');
+      const s4 = parseFileIntoSessions([
+        `{"git_branch":"main","type":"USER_INPUT","content":"Untitled Session"}`,
+        `{"type":"PLANNER_RESPONSE","content":"Quick script generation for CSS glassmorphism token verification."}`
+      ].join('\n'), { name: 'transcript.jsonl', customRelativePath: '.claude/projects/l2cache-site/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 72 }, 3);
+      if (s4[0]) { s4[0].relativeTime = '3d ago'; s4[0].agentType = 'claude'; s4[0].agentLabel = '🤖 Claude Code'; s4[0].agentClass = 'agent-badge-claude'; }
 
-      const sample5 = [
-        `{"branch":"feat/fastapi-websockets","role":"user","content":"Build an async FastAPI streaming WebSocket handler with Redis pub/sub backplane for real-time notifications."}`,
-        `{"role":"assistant","content":"I will implement the connection manager using redis.asyncio pubsub and broadcaster."}`,
-        `{"role":"tool","toolAction":"Install redis-py async dependencies","CommandLine":"uv add 'redis[hiredis]>=5.0.0'"}`,
-        `{"role":"assistant","content":"Broadcaster active. Successfully load tested 50,000 concurrent streaming WebSocket client connections."}`
-      ].join('\n');
+      const s5 = parseFileIntoSessions([
+        `{"git_branch":"main","type":"USER_INPUT","content":"Explain Reddit feedback on L2cache site"}`,
+        `{"type":"PLANNER_RESPONSE","content":"Synthesized developer feedback on terminal history search and offline privacy."}`
+      ].join('\n'), { name: 'transcript.jsonl', customRelativePath: '.claude/projects/l2cache-site/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 72 }, 4);
+      if (s5[0]) { s5[0].relativeTime = '3d ago'; s5[0].agentType = 'claude'; s5[0].agentLabel = '🤖 Claude Code'; s5[0].agentClass = 'agent-badge-claude'; }
 
-      const sample6 = [
-        `{"git_branch":"coreml-quantize-int4","type":"USER_INPUT","content":"Build an automatic CoreML model quantization pipeline from PyTorch ONNX exports with 4-bit INT quantization."}`,
-        `{"type":"PLANNER_RESPONSE","content":"I will use coremltools.models.neural_network.quantization_utils to perform INT4 linear post-training quantization."}`,
-        `{"type":"TOOL_EXECUTION","toolAction":"Run model export script","CommandLine":"python3 export_coreml.py --quantize int4"}`,
-        `{"type":"PLANNER_RESPONSE","content":"Model size reduced from 1.4GB to 185MB with 99.4% precision retention on Apple Neural Engine."}`
-      ].join('\n');
+      // Extra sessions for l2cache-site to demonstrate "Show 5 more"
+      const s5b = parseFileIntoSessions([
+        `{"git_branch":"docs/faq","type":"USER_INPUT","content":"Add offline privacy badge & PWA install guide"}`,
+        `{"type":"PLANNER_RESPONSE","content":"Configured standalone web app manifest and Airplane Mode verification tests."}`
+      ].join('\n'), { name: 'transcript.jsonl', customRelativePath: '.claude/projects/l2cache-site/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 96 }, 5);
+      if (s5b[0]) { s5b[0].relativeTime = '4d ago'; s5b[0].agentType = 'claude'; }
 
-      const s1 = parseFileIntoSessions(sample1, { name: 'transcript.jsonl', customRelativePath: '.claude/projects/l2cache-mac/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 15 }, 0);
-      const s2 = parseFileIntoSessions(sample2, { name: 'sessions.jsonl', customRelativePath: '.codex/sessions/auth-service/session.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 3 }, 1);
-      const s3 = parseFileIntoSessions(sample3, { name: 'sessions.jsonl', customRelativePath: '.codex/sessions/analytics-engine/session.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 24 }, 2);
-      const s4 = parseFileIntoSessions(sample4, { name: 'transcript.jsonl', customRelativePath: '.claude/projects/site-landing/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 48 }, 3);
-      const s5 = parseFileIntoSessions(sample5, { name: 'chats.jsonl', customRelativePath: '.codex/sessions/websocket-gateway/chat.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 72 }, 4);
-      const s6 = parseFileIntoSessions(sample6, { name: 'agent-log.jsonl', customRelativePath: '.gemini/antigravity-ide/ml-pipeline/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 96 }, 5);
+      // 2. L2Cache native app project sessions
+      const s6 = parseFileIntoSessions([
+        `{"git_branch":"main","type":"USER_INPUT","content":"Add killer terminal history app features"}`,
+        `{"type":"PLANNER_RESPONSE","content":"Implemented fast FTS5 SQLite search with instant fuzzy session matching."}`
+      ].join('\n'), { name: 'session.jsonl', customRelativePath: '.codex/sessions/L2Cache/session.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 18 }, 6);
+      if (s6[0]) { s6[0].relativeTime = '18h ago'; s6[0].agentType = 'claude'; }
 
-      sessionsList = [s1, s2, s3, s4, s5, s6].flat().filter(Boolean);
+      const s7 = parseFileIntoSessions([
+        `{"git_branch":"main","type":"USER_INPUT","content":"Build clipboard error-to-session search feature"}`,
+        `{"type":"PLANNER_RESPONSE","content":"Added regex parser to detect compiler error snippets and link directly to past fix sessions."}`
+      ].join('\n'), { name: 'session.jsonl', customRelativePath: '.codex/sessions/L2Cache/session.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 23 }, 7);
+      if (s7[0]) { s7[0].relativeTime = '23h ago'; s7[0].agentType = 'claude'; }
+
+      const s8 = parseFileIntoSessions([
+        `{"git_branch":"feature/homebrew-smart-actions","type":"USER_INPUT","content":"homebrew-smart-actions-feature"}`,
+        `{"type":"PLANNER_RESPONSE","content":"Built formula generator and automated notarization pipeline for macOS."}`
+      ].join('\n'), { name: 'session.jsonl', customRelativePath: '.codex/sessions/L2Cache/session.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 48 }, 8);
+      if (s8[0]) { s8[0].relativeTime = '2d ago'; s8[0].agentType = 'claude'; }
+
+      const s9 = parseFileIntoSessions([
+        `{"git_branch":"main","type":"USER_INPUT","content":"Untitled Session"}`,
+        `{"type":"PLANNER_RESPONSE","content":"Performance profiling with Instruments to ensure < 15MB RAM idle consumption."}`
+      ].join('\n'), { name: 'session.jsonl', customRelativePath: '.codex/sessions/L2Cache/session.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 48 }, 9);
+      if (s9[0]) { s9[0].relativeTime = '2d ago'; s9[0].agentType = 'claude'; }
+
+      const s10 = parseFileIntoSessions([
+        `{"git_branch":"marketing/launch-post","type":"USER_INPUT","content":"Write X post for app launch"}`,
+        `{"type":"PLANNER_RESPONSE","content":"Drafted 5 viral developer launch hooks comparing raw JSONL digging vs instant hotkey search."}`
+      ].join('\n'), { name: 'session.jsonl', customRelativePath: '.codex/sessions/L2Cache/session.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 48 }, 10);
+      if (s10[0]) { s10[0].relativeTime = '2d ago'; s10[0].agentType = 'claude'; }
+
+      // Extra projects: HingeJoy, dinesh, IronTrack, cuddly-goggles-38a7feb4
+      const s11 = parseFileIntoSessions([
+        `{"git_branch":"main","type":"USER_INPUT","content":"Refactor user matching recommendations pipeline"}`,
+        `{"type":"PLANNER_RESPONSE","content":"Optimized vectorized cosine similarity index in Python."}`
+      ].join('\n'), { name: 'session.jsonl', customRelativePath: '.codex/sessions/HingeJoy/session.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 120 }, 11);
+
+      const s12 = parseFileIntoSessions([
+        `{"git_branch":"main","type":"USER_INPUT","content":"Setup personal dotfiles and zsh aliases"}`,
+        `{"type":"PLANNER_RESPONSE","content":"Created symlinks for ~/.zshrc, ~/.tmux.conf, and starship prompt."}`
+      ].join('\n'), { name: 'transcript.jsonl', customRelativePath: '.claude/projects/dinesh/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 140 }, 12);
+
+      const s13 = parseFileIntoSessions([
+        `{"git_branch":"feature/workout-logging","type":"USER_INPUT","content":"Build progressive overload tracking algorithm"}`,
+        `{"type":"PLANNER_RESPONSE","content":"Implemented 1RM calculations with Epley and Brzycki formulas in Swift."}`
+      ].join('\n'), { name: 'session.jsonl', customRelativePath: '.codex/sessions/IronTrack/session.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 160 }, 13);
+
+      const s14 = parseFileIntoSessions([
+        `{"git_branch":"main","type":"USER_INPUT","content":"Scaffold experimental Next.js fullstack playground"}`,
+        `{"type":"PLANNER_RESPONSE","content":"Initialized App Router project with Tailwind and Drizzle ORM."}`
+      ].join('\n'), { name: 'transcript.jsonl', customRelativePath: '.claude/projects/cuddly-goggles-38a7feb4/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 180 }, 14);
+
+      // Add project collapse state defaults
+      collapsedProjects.add('HingeJoy');
+      collapsedProjects.add('dinesh');
+      collapsedProjects.add('IronTrack');
+      collapsedProjects.add('cuddly-goggles-38a7feb4');
+
+      sessionsList = [s1, s2, s3, s4, s5, s5b, s6, s7, s8, s9, s10, s11, s12, s13, s14].flat().filter(Boolean);
       sessionsList.forEach((s, idx) => s.id = idx);
       saveSessionsToCache(sessionsList);
 
       document.getElementById('viewer-results').style.display = 'block';
       updateAgentCounters();
+      populateProjectAndBranchDropdowns();
+      renderProjectTree();
       renderSessionTiles();
       renderSessionsSidebar();
       selectSession(0);
-      switchMainView('tiles');
-      showToast(`Loaded ${sessionsList.length} sample multi-agent session tiles with Git branch info!`, '🚀');
+      switchMainView('tree');
+      showToast(`Loaded ${sessionsList.length} sample sessions across 6 project folders!`, '🚀');
     }
 
     // Auto-restore cached sessions from IndexedDB on startup
@@ -2433,10 +3105,15 @@
         saveSessionsToCache(sessionsList);
         document.getElementById('viewer-results').style.display = 'block';
         updateAgentCounters();
+        populateProjectAndBranchDropdowns();
+        renderProjectTree();
         renderSessionTiles();
         renderSessionsSidebar();
         selectSession(0);
-        switchMainView('tiles');
+        switchMainView('tree');
+      } else if (sessionsList.length === 0) {
+        // Load default rich sample index automatically for immediate wow factor!
+        loadSampleSession();
       }
 
       // Check linked folders count
@@ -2573,5 +3250,10 @@
       </div>
     </div>
   </div>
+
+  <!-- Floating Send Feedback Action (Matching Layout) -->
+  <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" target="_blank" class="floating-feedback-btn">
+    <span>💬</span> Send Feedback
+  </a>
 </body>
 </html>
