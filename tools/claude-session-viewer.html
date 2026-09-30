@@ -1533,7 +1533,10 @@
 
     async function traverseFileTree(entry, fileList, path = '') {
       if (entry.isFile) {
-        if (isTranscriptFile(entry.name, path)) {
+        const lowerPath = path.toLowerCase();
+        const isGrokDir = lowerPath.includes('.grok') || lowerPath.includes('grok');
+        const isGrokMeta = isGrokDir && entry.name.toLowerCase() === 'summary.json';
+        if (isTranscriptFile(entry.name, path) || isGrokMeta) {
           await new Promise((resolve) => {
             entry.file((f) => {
               f.customRelativePath = path ? `${path}/${f.name}` : f.name;
@@ -1601,7 +1604,11 @@
           if (['node_modules', '.git', 'dist', 'build', '.venv', 'venv', 'deriveddata', '__pycache__'].includes(lowerName)) continue;
 
           if (handle.kind === 'file') {
-            if (isTranscriptFile(name, currentPath)) {
+            const lowerCurrent = currentPath.toLowerCase();
+            const isGrokDir = lowerCurrent.includes('.grok') || lowerCurrent.includes('grok') || dirHandle.name === '.grok';
+            // For Grok paths, also collect summary.json (used for metadata, not as a session)
+            const isGrokMeta = isGrokDir && lowerName === 'summary.json';
+            if (isTranscriptFile(name, currentPath) || isGrokMeta) {
               const file = await handle.getFile();
               file.customRelativePath = currentPath ? `${currentPath}/${name}` : name;
               fileList.push(file);
