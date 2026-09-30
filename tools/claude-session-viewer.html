@@ -1225,6 +1225,8 @@
   <!-- Script: Parser, Multi-Agent Indexer, IndexedDB Persistence & Workspace Logic -->
   <script>
     let sessionsList = [];
+    // Grok Build CLI: UUID → { title, cwd, branch } from summary.json files
+    const grokMetaCache = new Map();
     let activeSessionId = 0;
     let currentFilter = 'all';
     let currentAgentFilter = 'all';
@@ -1660,7 +1662,45 @@
     }
 
     async function handleDiscoveredFiles(fileList, mergeIncremental = true) {
-      const validFiles = fileList.filter(f => isTranscriptFile(f.name, f.customRelativePath || f.webkitRelativePath || ''));
+      const allPath = f => f.customRelativePath || f.webkitRelativePath || '';
+      const validFiles = fileList.filter(f => isTranscriptFile(f.name, allPath(f)));
+
+      // Also collect Grok summary.json files separately (not in validFiles to avoid session duplicates)
+      const grokSummaryFiles = fileList.filter(f => {
+        const p = allPath(f).toLowerCase();
+        return (p.includes('.grok') || p.includes('grok/sessions')) && f.name.toLowerCase() === 'summary.json';
+      });
+
+      if (validFiles.length === 0 && grokSummaryFiles.length === 0) {
+        showToast('No transcript (.jsonl/.json) files found in selection.', '⚠️');
+        return;
+      }
+
+      // Pass A: Pre-load Grok summary.json files to populate grokMetaCache (UUID → title/cwd/branch)
+      if (grokSummaryFiles.length > 0) {
+        await Promise.all(grokSummaryFiles.map(f => new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = e => {
+            try {
+              const meta = JSON.parse(e.target.result);
+              // Extract UUID from path: .grok/sessions/<encoded-proj>/<uuid>/summary.json
+              const parts = allPath(f).split('/');
+              const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+              const uuidPart = parts.find(p => uuidRegex.test(p)) || (meta.info && meta.info.id) || '';
+              if (uuidPart) {
+                grokMetaCache.set(uuidPart, {
+                  title: meta.generated_title || meta.session_summary || '',
+                  cwd: (meta.info && meta.info.cwd) || '',
+                  branch: meta.head_branch || '',
+                  model: meta.current_model_id || ''
+                });
+              }
+            } catch(e) { /* ignore malformed */ }
+            resolve();
+          };
+          reader.readAsText(f);
+        })));
+      }
 
       if (validFiles.length === 0) {
         showToast('No transcript (.jsonl/.json) files found in selection.', '⚠️');
@@ -1685,10 +1725,7 @@
       const loadedNested = await Promise.all(parsedPromises);
       const newValidSessions = loadedNested.flat().filter(s => s && s.events && s.events.length > 0);
 
-      if (newValidSessions.length === 0) {
-        showToast('No valid conversation logs found in selected files.', '⚠️');
-        return;
-      }
+
 
       if (mergeIncremental && sessionsList.length > 0) {
         // Merge without duplicates by fullPath / session key
@@ -2065,6 +2102,15 @@
         const uuidPart = parts[parts.length - 2]; // second-to-last segment = UUID folder
         const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
         if (uuidRegex.test(uuidPart)) preSessionID = uuidPart;
+      }
+
+      // For Grok sessions, pull title/cwd/branch from the pre-loaded grokMetaCache (summary.json)
+      if (isGrokPath && preSessionID && grokMetaCache.has(preSessionID)) {
+        const meta = grokMetaCache.get(preSessionID);
+        if (meta.title) preAiTitle = preAiTitle || meta.title;
+        if (meta.cwd) preCWD = preCWD || meta.cwd;
+        if (meta.branch) preBranch = preBranch || meta.branch;
+        if (meta.model) preModel = preModel || meta.model;
       }
 
       // Pass 2: Normalize events
