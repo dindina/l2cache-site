@@ -391,19 +391,19 @@
       align-items: center;
       gap: 6px;
     }
-    .tree-project-select, .tree-branch-select {
+    .tree-project-select, .tree-branch-select, .tree-agent-select {
       background: #181726;
       color: #FFFFFF;
       border: 1px solid #2c2a40;
       border-radius: 8px;
       padding: 6px 12px;
-      font-size: 15px;
+      font-size: 13.5px;
       font-weight: 700;
       cursor: pointer;
       outline: none;
       transition: all 0.15s ease;
     }
-    .tree-project-select:hover, .tree-branch-select:hover {
+    .tree-project-select:hover, .tree-branch-select:hover, .tree-agent-select:hover {
       border-color: #00C896;
     }
     .tree-project-stats {
@@ -417,6 +417,35 @@
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
+    }
+    .tree-agent-pill-btn {
+      background: #181726;
+      border: 1px solid #2c2a40;
+      color: #9CA3AF;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+    }
+    .tree-agent-pill-btn:hover, .tree-agent-pill-btn.active {
+      background: #232238;
+      color: #FFFFFF;
+      border-color: #00C896;
+    }
+    .tree-agent-pill-btn.btn-claude.active {
+      border-color: #f59e0b;
+      color: #f59e0b;
+      background: rgba(245, 158, 11, 0.15);
+    }
+    .tree-agent-pill-btn.btn-codex.active {
+      border-color: #00C896;
+      color: #00C896;
+      background: rgba(0, 200, 150, 0.15);
     }
     .tree-icon-btn {
       background: #181726;
@@ -926,17 +955,20 @@
                 <div class="tree-project-stats" id="tree-top-stats">0 sessions • $0.00</div>
               </div>
               <div class="tree-top-actions">
-                <button type="button" class="tree-icon-btn" title="Quick tag filter" onclick="showToast('Filtered by active sessions', '🏷️')">🏷️</button>
                 <div style="display: inline-flex; align-items: center; gap: 4px;">
                   <span style="font-size: 13px; color: #9CA3AF;">⑂</span>
                   <select id="tree-branch-filter" class="tree-branch-select" style="font-size: 12px; padding: 4px 8px;" onchange="setBranchFilter(this.value)">
                     <option value="all">All branches ⌄</option>
                   </select>
                 </div>
-                <button type="button" class="tree-icon-btn active" id="tree-agent-all-btn" title="All agents" onclick="setAgentFilter('all', this)">✳️</button>
-                <button type="button" class="tree-icon-btn" id="tree-agent-claude-btn" title="Claude Code" onclick="setAgentFilter('claude', this)" style="color: #f97316;">🤖</button>
-                <button type="button" class="tree-icon-btn" id="tree-agent-codex-btn" title="OpenAI Codex" onclick="setAgentFilter('codex', this)" style="color: #38bdf8;">🌐</button>
-                <button type="button" class="tree-icon-btn" title="Switch to tile cards" onclick="switchMainView('tiles')">⥯</button>
+                <div style="display: inline-flex; align-items: center; gap: 4px;">
+                  <select id="tree-agent-filter" class="tree-agent-select" style="font-size: 12px; padding: 4px 8px;" onchange="setAgentFilter(this.value, null)">
+                    <option value="all">🤖 All Agents ⌄</option>
+                  </select>
+                </div>
+                <button type="button" class="tree-agent-pill-btn active" id="tree-agent-all-btn" onclick="setAgentFilter('all', this)">All (<span id="tree-count-agent-all">0</span>)</button>
+                <button type="button" class="tree-agent-pill-btn btn-claude" id="tree-agent-claude-btn" onclick="setAgentFilter('claude', this)">🤖 Claude (<span id="tree-count-agent-claude">0</span>)</button>
+                <button type="button" class="tree-agent-pill-btn btn-codex" id="tree-agent-codex-btn" onclick="setAgentFilter('codex', this)">🟢 Codex (<span id="tree-count-agent-codex">0</span>)</button>
                 <button type="button" class="tree-icon-btn btn-refresh-folders" title="Refresh linked folders" onclick="refreshLinkedFolders()">↻</button>
               </div>
             </div>
@@ -975,6 +1007,9 @@
                 <button class="filter-btn" id="agent-filter-other" onclick="setAgentFilter('other', this)">⚡ Other (<span id="count-agent-other">0</span>)</button>
               </div>
               <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                <select id="tiles-agent-filter" class="tree-agent-select" style="font-size: 12.5px; padding: 5px 10px;" onchange="setAgentFilter(this.value, null)">
+                  <option value="all">All Agents</option>
+                </select>
                 <select id="tiles-project-filter" class="tree-project-select" style="font-size: 12.5px; padding: 5px 10px;" onchange="setProjectFilter(this.value)">
                   <option value="all">All Projects</option>
                 </select>
@@ -1013,14 +1048,17 @@
                 </div>
               </div>
 
-              <!-- Filter Dropdowns for Project and Branch in Sidebar -->
+              <!-- Filter Dropdowns for Agent, Project and Branch in Sidebar -->
               <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
                 <input type="text" id="session-search-input" placeholder="🔍 Search sessions..." oninput="filterSessionList(this.value)" style="width: 100%; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 12.5px; background: var(--bg); color: var(--text);"/>
                 <div style="display: flex; gap: 6px;">
-                  <select id="sidebar-project-filter" class="tree-project-select" style="flex: 1; font-size: 11.5px; padding: 4px 6px;" onchange="setProjectFilter(this.value)">
+                  <select id="sidebar-agent-filter" class="tree-agent-select" style="flex: 1; font-size: 11px; padding: 4px 6px;" onchange="setAgentFilter(this.value, null)">
+                    <option value="all">All Agents</option>
+                  </select>
+                  <select id="sidebar-project-filter" class="tree-project-select" style="flex: 1; font-size: 11px; padding: 4px 6px;" onchange="setProjectFilter(this.value)">
                     <option value="all">All Projects</option>
                   </select>
-                  <select id="sidebar-branch-filter" class="tree-branch-select" style="flex: 1; font-size: 11.5px; padding: 4px 6px;" onchange="setBranchFilter(this.value)">
+                  <select id="sidebar-branch-filter" class="tree-branch-select" style="flex: 1; font-size: 11px; padding: 4px 6px;" onchange="setBranchFilter(this.value)">
                     <option value="all">All Branches</option>
                   </select>
                 </div>
@@ -1317,19 +1355,21 @@
     }
 
     // --- Agent Detection ---
-    function detectAgent(path = '', name = '', text = '') {
+    function detectAgent(path = '', name = '', text = '', events = []) {
       const p = (path + ' ' + name).toLowerCase();
       if (p.includes('.claude') || p.includes('claude') || p.includes('anthropic')) {
         return {
           type: 'claude',
           label: '🤖 Claude Code',
+          icon: '🤖',
           className: 'agent-badge-claude'
         };
       }
-      if (p.includes('.codex') || p.includes('codex') || p.includes('openai') || p.includes('chatgpt') || p.includes('memories.sqlite') || p.includes('gpt-')) {
+      if (p.includes('.codex') || p.includes('codex') || p.includes('openai') || p.includes('chatgpt') || p.includes('memories.sqlite')) {
         return {
           type: 'codex',
           label: '🟢 OpenAI Codex',
+          icon: '🟢',
           className: 'agent-badge-codex'
         };
       }
@@ -1337,25 +1377,47 @@
         return {
           type: 'antigravity',
           label: '⚡ Antigravity',
+          icon: '⚡',
           className: 'agent-badge-antigravity'
         };
       }
-      // Inspect content if path is generic
+
+      // Deep inspection of content / rawText
       if (text) {
-        const t = text.substring(0, 1500).toLowerCase();
-        if (t.includes('claude') || t.includes('anthropic')) {
-          return { type: 'claude', label: '🤖 Claude Code', className: 'agent-badge-claude' };
+        const t = text.substring(0, 15000).toLowerCase();
+        // Codex signature markers
+        if (t.includes('"session_meta"') || t.includes('"turn_context"') || t.includes('"event_msg"') || t.includes('"item_completed"') || t.includes('"custom_tool_call"') || t.includes('codex') || t.includes('gpt-4') || t.includes('openai') || t.includes('o1-') || t.includes('o3-')) {
+          return { type: 'codex', label: '🟢 OpenAI Codex', icon: '🟢', className: 'agent-badge-codex' };
         }
-        if (t.includes('codex') || t.includes('openai') || t.includes('gpt-') || t.includes('chatgpt') || t.includes('davinci')) {
-          return { type: 'codex', label: '🟢 OpenAI Codex', className: 'agent-badge-codex' };
+        // Claude signature markers
+        if (t.includes('claude-3') || t.includes('claude-sonnet') || t.includes('claude-opus') || t.includes('claude-haiku') || t.includes('"custom-title"') || t.includes('"tool_result"') || t.includes('"tool_use"') || t.includes('anthropic') || t.includes('claude.md') || t.includes('agents.md')) {
+          return { type: 'claude', label: '🤖 Claude Code', icon: '🤖', className: 'agent-badge-claude' };
         }
+        // Antigravity / Gemini markers
         if (t.includes('gemini') || t.includes('antigravity')) {
-          return { type: 'antigravity', label: '⚡ Antigravity', className: 'agent-badge-antigravity' };
+          return { type: 'antigravity', label: '⚡ Antigravity', icon: '⚡', className: 'agent-badge-antigravity' };
         }
       }
+
+      // Check event structure if available
+      if (events && events.length > 0) {
+        for (const ev of events) {
+          if (ev.raw && typeof ev.raw === 'object') {
+            const rType = ev.raw.type || '';
+            if (rType === 'session_meta' || rType === 'turn_context' || rType === 'event_msg' || rType === 'response_item') {
+              return { type: 'codex', label: '🟢 OpenAI Codex', icon: '🟢', className: 'agent-badge-codex' };
+            }
+            if (ev.raw.sessionId || rType === 'custom-title' || (ev.raw.message && ev.raw.message.model && ev.raw.message.model.includes('claude'))) {
+              return { type: 'claude', label: '🤖 Claude Code', icon: '🤖', className: 'agent-badge-claude' };
+            }
+          }
+        }
+      }
+
       return {
         type: 'other',
         label: '⚡ CLI Agent',
+        icon: '⚡',
         className: 'agent-badge-generic'
       };
     }
@@ -1652,6 +1714,14 @@
       if (cClaude) cClaude.innerText = `${claudeCount}`;
       if (cCodex) cCodex.innerText = `${codexCount}`;
       if (cOther) cOther.innerText = `${otherCount}`;
+
+      const treeCAll = document.getElementById('tree-count-agent-all');
+      const treeCClaude = document.getElementById('tree-count-agent-claude');
+      const treeCCodex = document.getElementById('tree-count-agent-codex');
+
+      if (treeCAll) treeCAll.innerText = `${total}`;
+      if (treeCClaude) treeCClaude.innerText = `${claudeCount}`;
+      if (treeCCodex) treeCCodex.innerText = `${codexCount}`;
     }
 
     // --- Smart Multi-Session & Agent Parser (Matching CodexHistoryAdapter & ClaudeHistoryAdapter) ---
@@ -2138,7 +2208,7 @@
         titleSnippet = (chosenPrompt ? chosenPrompt.substring(0, 85) : 'Conversation Session').trim();
       }
 
-      const agentInfo = detectAgent(path, file ? file.name : '', rawText);
+      const agentInfo = detectAgent(path, file ? file.name : '', rawText, cleanEvents);
       const meta = detectBranchAndProject(path, file, rawText, cleanEvents, preCWD, preBranch);
       const project = meta.project || defaultProject || 'project';
       const branch = meta.branch || 'main';
@@ -2415,7 +2485,7 @@
       };
     }
 
-    function populateProjectAndBranchDropdowns() {
+    function populateFilterDropdowns() {
       const projects = Array.from(new Set(sessionsList.map(s => (s.project && s.project !== 'undefined') ? s.project : 'project'))).sort();
       const branches = Array.from(new Set(sessionsList.map(s => (s.branch && s.branch !== 'undefined') ? s.branch : 'main'))).sort();
 
@@ -2454,7 +2524,30 @@
         if (branches.includes(prev)) sel.value = prev;
         else sel.value = 'all';
       });
+
+      const claudeCount = sessionsList.filter(s => s.agentType === 'claude').length;
+      const codexCount = sessionsList.filter(s => s.agentType === 'codex').length;
+      const otherCount = sessionsList.filter(s => s.agentType !== 'claude' && s.agentType !== 'codex').length;
+      const totalCount = sessionsList.length;
+
+      const agentSelects = [
+        document.getElementById('tree-agent-filter'),
+        document.getElementById('tiles-agent-filter'),
+        document.getElementById('sidebar-agent-filter')
+      ];
+
+      agentSelects.forEach(sel => {
+        if (!sel) return;
+        sel.innerHTML = `
+          <option value="all">🤖 All Agents (${totalCount})</option>
+          <option value="claude">🤖 Claude Code (${claudeCount})</option>
+          <option value="codex">🟢 OpenAI Codex (${codexCount})</option>
+          ${otherCount > 0 ? `<option value="other">⚡ Other CLI (${otherCount})</option>` : ''}
+        `;
+        sel.value = currentAgentFilter || 'all';
+      });
     }
+    const populateProjectAndBranchDropdowns = populateFilterDropdowns;
 
     function setProjectFilter(val) {
       currentProjectFilter = val;
@@ -2483,13 +2576,40 @@
     }
 
     function setAgentFilter(agent, btn) {
-      currentAgentFilter = agent;
-      document.querySelectorAll('#sessions-tiles-section .filter-btn, .tree-top-actions .tree-icon-btn').forEach(b => {
-        if (b.id && (b.id.startsWith('agent-filter-') || b.id.startsWith('tree-agent-'))) b.classList.remove('active');
+      currentAgentFilter = agent || 'all';
+      const agentSelects = [
+        document.getElementById('tree-agent-filter'),
+        document.getElementById('tiles-agent-filter'),
+        document.getElementById('sidebar-agent-filter')
+      ];
+      agentSelects.forEach(sel => { if (sel && sel.value !== currentAgentFilter) sel.value = currentAgentFilter; });
+
+      document.querySelectorAll('#sessions-tiles-section .filter-btn, .tree-top-actions .tree-agent-pill-btn, .tree-top-actions .tree-icon-btn').forEach(b => {
+        b.classList.remove('active');
       });
-      if (btn) btn.classList.add('active');
-      const twinBtn = document.getElementById(btn && btn.id ? (btn.id.startsWith('tree-') ? btn.id.replace('tree-', '') : `tree-${btn.id}`) : '');
-      if (twinBtn) twinBtn.classList.add('active');
+
+      const btnAll = document.getElementById('agent-filter-all');
+      const btnClaude = document.getElementById('agent-filter-claude');
+      const btnCodex = document.getElementById('agent-filter-codex');
+      const btnOther = document.getElementById('agent-filter-other');
+
+      const treeBtnAll = document.getElementById('tree-agent-all-btn');
+      const treeBtnClaude = document.getElementById('tree-agent-claude-btn');
+      const treeBtnCodex = document.getElementById('tree-agent-codex-btn');
+
+      if (currentAgentFilter === 'all') {
+        if (btnAll) btnAll.classList.add('active');
+        if (treeBtnAll) treeBtnAll.classList.add('active');
+      } else if (currentAgentFilter === 'claude') {
+        if (btnClaude) btnClaude.classList.add('active');
+        if (treeBtnClaude) treeBtnClaude.classList.add('active');
+      } else if (currentAgentFilter === 'codex') {
+        if (btnCodex) btnCodex.classList.add('active');
+        if (treeBtnCodex) treeBtnCodex.classList.add('active');
+      } else if (currentAgentFilter === 'other') {
+        if (btnOther) btnOther.classList.add('active');
+      }
+
       renderProjectTree();
       renderSessionTiles();
       renderSessionsSidebar();
@@ -2608,18 +2728,35 @@
           const relTime = s.relativeTime || formatRelativeTime(s.events && s.events[0] ? s.events[0].timestamp : null);
           const isRecent = sIdx === 0 && groupIdx <= 2;
           
-          let agentIcon = '⚡';
-          let agentClass = 'agent-icon-other';
-          if (s.agentType === 'claude') { agentIcon = '✳️'; agentClass = 'agent-icon-claude'; }
-          else if (s.agentType === 'codex') { agentIcon = '🌐'; agentClass = 'agent-icon-codex'; }
+          let agentIcon = '🤖';
+          let agentLabel = 'Claude Code';
+          let agentBadgeClass = 'agent-badge-claude';
+          if (s.agentType === 'codex') {
+            agentIcon = '🟢';
+            agentLabel = 'OpenAI Codex';
+            agentBadgeClass = 'agent-badge-codex';
+          } else if (s.agentType === 'claude') {
+            agentIcon = '🤖';
+            agentLabel = 'Claude Code';
+            agentBadgeClass = 'agent-badge-claude';
+          } else if (s.agentType === 'antigravity') {
+            agentIcon = '⚡';
+            agentLabel = 'Antigravity';
+            agentBadgeClass = 'agent-badge-antigravity';
+          } else {
+            agentIcon = '⚡';
+            agentLabel = s.agentLabel || 'CLI Agent';
+            agentBadgeClass = 'agent-badge-generic';
+          }
 
           sessionsHtml += `
             <div class="tree-session-row ${isActive ? 'active' : ''}" onclick="selectSession(${s.id}); switchMainView('split');">
               <div class="tree-session-left">
-                <span class="tree-agent-icon ${agentClass}">${agentIcon}</span>
+                <span class="agent-badge ${agentBadgeClass}" style="font-size: 10px; padding: 2px 7px; flex-shrink: 0; font-weight: 700;">${agentIcon} ${escapeHtml(agentLabel)}</span>
                 <span class="tree-session-title" title="${escapeHtml(s.title)}">${escapeHtml(s.title)}</span>
               </div>
               <div class="tree-session-right">
+                <span class="session-badge-branch" style="font-size: 10px; padding: 1px 6px; opacity: 0.85;">🌿 ${escapeHtml(s.branch || 'main')}</span>
                 <span>${escapeHtml(relTime)}</span>
                 ${isRecent ? '<span class="status-dot-active" title="Active session"></span>' : ''}
               </div>
