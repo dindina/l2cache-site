@@ -1502,13 +1502,10 @@
       ];
       if (blacklistFiles.includes(fileName)) return false;
 
-      // Grok-specific: always include chat_history.jsonl and summary.json under .grok paths
+      // Grok Build CLI: ONLY parse chat_history.jsonl — it's the canonical conversation file.
+      // summary.json, prompt_history.jsonl, events.jsonl etc. are metadata/index files — skip all.
       if (lowerPath.includes('.grok') || lowerPath.includes('grok/sessions')) {
-        if (fileName === 'chat_history.jsonl' || fileName === 'summary.json') return true;
-        // Skip Grok's non-conversation files
-        if (['events.jsonl', 'rewind_points.jsonl', 'updates.jsonl', 'announcement_state.json',
-             'signals.json', 'usage.json', 'tool_definitions.json', 'prompt_context.json',
-             'system_prompt.txt', 'title_refresh_idx'].includes(fileName)) return false;
+        return fileName === 'chat_history.jsonl';
       }
 
       // Skip temporary/lock files
@@ -1922,7 +1919,21 @@
 
       const parts = filePath.split('/');
       let project = 'project';
-      if (parts.length > 1) {
+
+      // Grok Build CLI: path looks like:
+      //   .grok/sessions/%2FUsers%2Fdinesh%2Ftech%2FL2Cache/<uuid>/chat_history.jsonl
+      // parts[-1] = chat_history.jsonl, parts[-2] = uuid, parts[-3] = %2F...-encoded project
+      const isGrokPath = filePath.toLowerCase().includes('.grok') || filePath.toLowerCase().includes('grok/sessions');
+      if (isGrokPath && parts.length >= 3) {
+        try {
+          const encodedProject = parts[parts.length - 3]; // URL-encoded project path
+          const decoded = decodeURIComponent(encodedProject); // e.g. /Users/dinesh/tech/L2Cache
+          const decodedParts = decoded.split('/').filter(Boolean);
+          project = decodedParts[decodedParts.length - 1] || decoded; // last segment = folder name
+        } catch(e) {
+          project = parts[parts.length - 3] || 'grok-session';
+        }
+      } else if (parts.length > 1) {
         project = parts[parts.length - 2];
       } else if (file && file.name) {
         project = file.name.replace('.transcript.jsonl', '').replace('.jsonl', '').replace('.json', '').replace('transcript-', '');
@@ -2048,10 +2059,19 @@
         }
       }
 
+      // Grok Build CLI: extract the session UUID from the path
+      // path: .grok/sessions/<encoded-project>/<uuid>/chat_history.jsonl
+      if (isGrokPath && !preSessionID) {
+        const uuidPart = parts[parts.length - 2]; // second-to-last segment = UUID folder
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (uuidRegex.test(uuidPart)) preSessionID = uuidPart;
+      }
+
       // Pass 2: Normalize events
       const allEvents = [];
       const sessionGroups = new Map();
-      const isMultiSessionFile = filePath.toLowerCase().includes('history') || filePath.toLowerCase().includes('all_sessions') || filePath.toLowerCase().includes('memories');
+      // Grok chat_history.jsonl is always a single session — never treat as multi-session
+      const isMultiSessionFile = !isGrokPath && (filePath.toLowerCase().includes('history') || filePath.toLowerCase().includes('all_sessions') || filePath.toLowerCase().includes('memories'));
 
       for (const { raw, lineIdx } of parsedRecords) {
         const sId = raw.session_id || raw.sessionId || raw.sessionID || raw.conversation_id || (raw.payload && (raw.payload.session_id || raw.payload.turn_id)) || preSessionID;
@@ -2065,6 +2085,7 @@
           }
         }
       }
+
 
       if (sessionGroups.size > 0) {
         const resultSessions = [];
