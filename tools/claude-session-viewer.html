@@ -1761,7 +1761,7 @@
           if (typeof item === 'string' && item.trim()) parts.push(item.trim());
           else if (item && typeof item === 'object') {
             const type = (item.type || '').toLowerCase();
-            if (type === 'thinking' || type === 'reasoning' || type === 'encrypted_content') continue;
+            if (type === 'thinking' || type === 'reasoning' || type === 'encrypted_content' || type === 'tool_result' || type === 'tool_use' || type === 'tool' || type === 'image') continue;
             const t = item.text || item.content || item.value;
             if (typeof t === 'string' && t.trim()) parts.push(t.trim());
           }
@@ -2311,7 +2311,54 @@
 
       // 4. Claude transcripts: type: "user" | "assistant"
       if (type === 'user' && obj.message) {
-        const text = extractTextHelper(obj.message.content || obj.message.text);
+        const contentVal = obj.message.content || obj.message.text;
+
+        // If content is an array, check if it contains tool results
+        if (Array.isArray(contentVal)) {
+          const events = [];
+          const textBlocks = [];
+
+          for (let bIdx = 0; bIdx < contentVal.length; bIdx++) {
+            const block = contentVal[bIdx];
+            if (!block) continue;
+            if (typeof block === 'string' && block.trim()) {
+              textBlocks.push(block.trim());
+            } else if (typeof block === 'object') {
+              const bType = (block.type || '').toLowerCase();
+              if (bType === 'tool_result') {
+                const resContent = typeof block.content === 'string'
+                  ? block.content
+                  : (Array.isArray(block.content) ? block.content.map(c => typeof c === 'string' ? c : (c.text || '')).join('\n') : JSON.stringify(block.content || ''));
+                events.push({
+                  index: lineIdx * 10 + bIdx + 1,
+                  role: 'tool',
+                  type: 'TOOL_RESULT',
+                  content: resContent || 'Tool Result',
+                  toolCalls: [{ name: 'tool_result', arguments: { tool_use_id: block.tool_use_id, is_error: block.is_error === true } }]
+                });
+              } else if (bType === 'text' && block.text && block.text.trim()) {
+                textBlocks.push(block.text.trim());
+              }
+            }
+          }
+
+          if (textBlocks.length > 0) {
+            const text = textBlocks.join('\n').trim();
+            const isSys = isSystemContextText(text);
+            events.unshift({
+              index: lineIdx + 1,
+              role: isSys ? 'assistant' : 'user',
+              type: isSys ? 'SYSTEM_PROMPT' : 'USER_PROMPT',
+              content: isSys ? (text.startsWith('[System Context]') ? text : `[System Context] ${text}`) : text,
+              toolCalls: []
+            });
+          }
+
+          if (events.length > 0) return events;
+          return [];
+        }
+
+        const text = extractTextHelper(contentVal);
         if (text) {
           const isSys = isSystemContextText(text);
           return [{
