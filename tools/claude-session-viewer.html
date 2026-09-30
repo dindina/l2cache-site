@@ -2570,7 +2570,8 @@
       }
 
       // 7. Generic Fallback
-      return normalizeEvent(obj, lineIdx);
+      const ev = normalizeEvent(obj, lineIdx);
+      return ev ? [ev] : [];
     }
 
     function normalizeEvent(obj, idx) {
