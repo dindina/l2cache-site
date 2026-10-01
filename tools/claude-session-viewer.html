@@ -113,6 +113,29 @@
     }
     .copy-cmd-inline:hover { background: rgba(0,200,150,0.2); transform: translateY(-1px); }
     .copy-cmd-inline.copied { background: #00a87f; color: #ffffff; border-color: #008765; }
+
+    /* Action Inbox */
+    .insights-shell {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 14px;
+      padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    }
+    .insights-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+    .insights-title { font-size: 24px; color: var(--text); margin: 0 0 5px; }
+    .insights-subtitle { font-size: 14px; color: var(--text-muted); margin: 0; max-width: 650px; }
+    .insights-filters { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 20px; }
+    .insights-search { flex: 1; min-width: 220px; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); }
+    .insights-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 22px; }
+    .insight-list { display: flex; flex-direction: column; gap: 12px; }
+    .insight-card { border: 1px solid var(--border); border-left: 4px solid #f59e0b; border-radius: 11px; padding: 17px 18px; background: var(--bg); }
+    .insight-card.high { border-left-color: #ef4444; }
+    .insight-card.low { border-left-color: #60a5fa; }
+    .insight-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .insight-card-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+    .insight-confidence { font: 600 10px var(--mono); text-transform: uppercase; letter-spacing: .05em; padding: 3px 7px; border-radius: 999px; background: var(--bg3); color: var(--text-muted); white-space: nowrap; }
+    .insight-evidence { font-size: 13.5px; line-height: 1.55; color: var(--text); margin-top: 8px; }
+    .insight-why { font-size: 12.5px; line-height: 1.5; color: var(--text-muted); margin-top: 6px; }
+    .insight-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 13px; }
+    .insight-empty { padding: 38px 20px; text-align: center; border: 1px dashed var(--border); border-radius: 11px; color: var(--text-muted); background: var(--bg); }
     
     /* Workspace Master-Detail Split */
     .workspace-layout {
@@ -954,8 +977,7 @@
             <button type="button" class="tbtn tbtn-ghost btn-refresh-folders" onclick="event.stopPropagation(); refreshLinkedFolders();" style="border-color: #00C896; color: #008765; font-weight: 700;">🔄 Refresh &amp; Sync</button>
             <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); document.getElementById('file-input').click();">📄 Pick Files</button>
             <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); readFromClipboard();">📋 Paste Clipboard</button>
-            <button type="button" class="tbtn tbtn-ghost" onclick="event.stopPropagation(); loadSampleSession();">⚡ Load Sample Index</button>
-          </div>
+                      </div>
         </div>
 
         <!-- Paste Area (Collapsible) -->
@@ -987,13 +1009,49 @@
             <button class="tbtn tbtn-ghost" onclick="openFolderPicker('grok')" style="font-size: 12px; padding: 6px 10px;">+ ⚡ Grok</button>
             <button class="tbtn tbtn-ghost" onclick="openFolderPicker('auto')" style="font-size: 12px; padding: 6px 10px;">+ 📁 Folder</button>
             <button class="tbtn tbtn-ghost" onclick="clearAllPersistedData()" style="font-size: 12px; padding: 6px 10px; color: #ef4444;" title="Clear index cache">🗑️ Clear</button>
+            <button id="btn-view-insights" class="filter-btn" onclick="switchMainView('insights')">✨ Insights</button>
             <button id="btn-view-tree" class="filter-btn active" onclick="switchMainView('tree')">📁 Project Tree</button>
             <button id="btn-view-tiles" class="filter-btn" onclick="switchMainView('tiles')">▦ Grid Tiles</button>
             <button id="btn-view-split" class="filter-btn" onclick="switchMainView('split')">💬 Full History</button>
           </div>
         </div>
 
-        <!-- 0. Project Grouped Tree View (Screenshot Layout) -->
+        <!-- 0. Action Inbox -->
+        <div id="sessions-insights-section" style="display: none;">
+          <div class="insights-shell">
+            <div class="insights-header">
+              <div>
+                <h2 class="insights-title">Action Inbox</h2>
+                <p class="insights-subtitle">Ranked recommendations from observable session evidence. Open the supporting session, copy a follow-up prompt, or dismiss an item.</p>
+              </div>
+              <span class="sidebar-count-badge" id="insights-count-badge">0 actions</span>
+            </div>
+
+            <div class="insights-filters">
+              <input type="text" id="insights-search-input" class="insights-search" placeholder="🔍 Scope insights by messages, tools, code, or errors..." oninput="filterSessionList(this.value)" />
+              <select id="insights-project-filter" class="tree-project-select" onchange="setProjectFilter(this.value)">
+                <option value="all">All Projects</option>
+              </select>
+              <select id="insights-branch-filter" class="tree-branch-select" onchange="setBranchFilter(this.value)">
+                <option value="all">All Branches</option>
+              </select>
+              <select id="insights-agent-filter" class="tree-agent-select" onchange="setAgentFilter(this.value, null)">
+                <option value="all">All Agents</option>
+              </select>
+            </div>
+
+            <div class="insights-summary">
+              <div class="stat-pill-card"><div class="stat-pill-val" id="insight-stat-sessions">0</div><div class="stat-pill-lbl">Sessions analyzed</div></div>
+              <div class="stat-pill-card"><div class="stat-pill-val" id="insight-stat-attention">0</div><div class="stat-pill-lbl">Need attention</div></div>
+              <div class="stat-pill-card"><div class="stat-pill-val" id="insight-stat-files">0</div><div class="stat-pill-lbl">Confirmed files</div></div>
+              <div class="stat-pill-card"><div class="stat-pill-val" id="insight-stat-coverage">0%</div><div class="stat-pill-lbl">Token coverage</div></div>
+            </div>
+
+            <div class="insight-list" id="insight-list-container"></div>
+          </div>
+        </div>
+
+        <!-- 1. Project Grouped Tree View (Screenshot Layout) -->
         <div id="sessions-tree-section">
           <div class="project-browser-card">
             <!-- Top Bar -->
@@ -1005,7 +1063,7 @@
                     <option value="all">All projects ⌄</option>
                   </select>
                 </div>
-                <div class="tree-project-stats" id="tree-top-stats">0 sessions • $0.00</div>
+                <div class="tree-project-stats" id="tree-top-stats">0 sessions • usage unavailable</div>
               </div>
               <div class="tree-top-actions">
                 <div style="display: inline-flex; align-items: center; gap: 4px;">
@@ -1251,8 +1309,11 @@
     let turnSearchQuery = '';
     let toastTimeout;
     let dbInstance = null;
+    let staleSessionCacheDetected = false;
     const collapsedProjects = new Set();
     const projectExpandedCount = new Map();
+    const dismissedInsightIds = new Set();
+    let currentInsightItems = [];
 
     // --- IndexedDB Persistence Layer ---
     function getDB() {
@@ -1313,7 +1374,7 @@
       }
     }
 
-    const PARSER_SCHEMA_VERSION = 'v2026_09_23_v10';
+    const PARSER_SCHEMA_VERSION = 'v2026_09_30_analytics_v11';
 
     async function saveSessionsToCache(sessions) {
       try {
@@ -1341,6 +1402,9 @@
           const req = store.get('sessions_index');
           req.onsuccess = () => {
             if (req.result && req.result.version === PARSER_SCHEMA_VERSION && req.result.sessions && req.result.sessions.length > 0) {
+              resolve(req.result.sessions);
+            } else if (req.result && req.result.sessions && req.result.sessions.length > 0) {
+              staleSessionCacheDetected = true;
               resolve(req.result.sessions);
             } else {
               resolve(null);
@@ -2011,7 +2075,7 @@
               return parsed.map((sessObj, sIdx) => {
                 const events = extractEventsFromObject(sessObj);
                 const explicitTitle = extractTitleFromRaw(sessObj);
-                return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, filePath, modDate, rawText, file, '', '', explicitTitle);
+                return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, filePath, modDate, rawText, file, '', '', explicitTitle, sessObj.model || '', extractUsageMetadata(sessObj), extractExplicitCost(sessObj));
               }).filter(Boolean);
             }
 
@@ -2021,7 +2085,7 @@
                 const normList = normalizeRawLine(turnObj, tIdx, new Map(), '');
                 if (normList && normList.length > 0) events.push(...normList);
               });
-              const sess = createSessionRecord(events, `session-1`, project, filePath, modDate, rawText, file);
+              const sess = createSessionRecord(events, `session-1`, project, filePath, modDate, rawText, file, '', '', '', '', extractUsageMetadata(parsed), extractExplicitCost(parsed));
               return sess ? [sess] : [];
             }
           }
@@ -2032,14 +2096,14 @@
               return sessionsArray.map((sessObj, sIdx) => {
                 const events = extractEventsFromObject(sessObj);
                 const explicitTitle = extractTitleFromRaw(sessObj);
-                return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, filePath, modDate, rawText, file, '', '', explicitTitle);
+                return createSessionRecord(events, sessObj.id || sessObj.sessionId || `session-${sIdx+1}`, project, filePath, modDate, rawText, file, '', '', explicitTitle, sessObj.model || '', extractUsageMetadata(sessObj), extractExplicitCost(sessObj));
               }).filter(Boolean);
             }
 
             if (parsed.messages || parsed.turns || parsed.events || parsed.chat_messages || parsed.history || parsed.conversation || parsed.items || parsed.mapping) {
               const events = extractEventsFromObject(parsed);
               const explicitTitle = extractTitleFromRaw(parsed);
-              const sess = createSessionRecord(events, parsed.id || parsed.session_id || `session-1`, project, filePath, modDate, rawText, file, '', '', explicitTitle);
+              const sess = createSessionRecord(events, parsed.id || parsed.session_id || `session-1`, project, filePath, modDate, rawText, file, '', '', explicitTitle, parsed.model || '', extractUsageMetadata(parsed), extractExplicitCost(parsed));
               return sess ? [sess] : [];
             }
           }
@@ -2071,6 +2135,8 @@
       let preBranch = '';
       let preModel = '';
       let preAiTitle = '';
+      let preUsage = null;
+      let preActualCost = null;
 
       for (const { raw } of parsedRecords) {
         // Claude tool results
@@ -2098,6 +2164,10 @@
         // Codex metadata
         const type = raw.type;
         const payload = raw.payload;
+        if (payload && (payload.type === 'token_count' || type === 'session_meta' || type === 'turn_context')) {
+          preUsage = extractUsageMetadata(raw) || preUsage;
+          preActualCost = extractExplicitCost(raw) ?? preActualCost;
+        }
         if ((type === 'session_meta' || type === 'turn_context') && payload) {
           preSessionID = preSessionID || payload.session_id || payload.id || payload.turn_id;
           preCWD = preCWD || payload.cwd;
@@ -2161,7 +2231,7 @@
           if (events && events.length > 0) {
             events.forEach((ev, evIdx) => ev.index = evIdx + 1);
             const sessAiTitle = sessionAiTitles.get(sKey) || preAiTitle || '';
-            const sess = createSessionRecord(events, sKey, project, filePath, modDate, rawText, file, preCWD, preBranch, sessAiTitle);
+            const sess = createSessionRecord(events, sKey, project, filePath, modDate, rawText, file, preCWD, preBranch, sessAiTitle, preModel);
             if (sess) resultSessions.push(sess);
           }
         });
@@ -2171,7 +2241,7 @@
       if (allEvents.length === 0) return [];
 
       allEvents.forEach((ev, evIdx) => ev.index = evIdx + 1);
-      const singleSession = createSessionRecord(allEvents, preSessionID || '', project, filePath, modDate, rawText, file, preCWD, preBranch, preAiTitle);
+      const singleSession = createSessionRecord(allEvents, preSessionID || '', project, filePath, modDate, rawText, file, preCWD, preBranch, preAiTitle, preModel, preUsage, preActualCost);
       return singleSession ? [singleSession] : [];
     }
 
@@ -2284,7 +2354,261 @@
       return { project, branch };
     }
 
-    function createSessionRecord(events, sessionKey, defaultProject, path, modDate, rawText, file, preCWD, preBranch, preAiTitle) {
+    function numberOrNull(value) {
+      if (value === null || value === undefined || value === '') return null;
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : null;
+    }
+
+    function firstDefined(objects, keys) {
+      for (const obj of objects) {
+        if (!obj || typeof obj !== 'object') continue;
+        for (const key of keys) {
+          if (obj[key] !== undefined && obj[key] !== null) return obj[key];
+        }
+      }
+      return null;
+    }
+
+    function extractUsageMetadata(obj) {
+      const payload = obj && obj.payload;
+      const item = payload && payload.item;
+      const message = obj && obj.message;
+      const candidates = [
+        obj && obj.usage,
+        message && message.usage,
+        payload && payload.usage,
+        item && item.usage,
+        obj && obj.token_usage,
+        payload && payload.token_usage,
+        payload && payload.info && payload.info.total_token_usage,
+        payload && payload.info && payload.info.last_token_usage
+      ].filter(Boolean);
+      if (candidates.length === 0) return null;
+
+      const inputTokens = numberOrNull(firstDefined(candidates, ['input_tokens', 'inputTokens', 'prompt_tokens', 'promptTokens']));
+      const outputTokens = numberOrNull(firstDefined(candidates, ['output_tokens', 'outputTokens', 'completion_tokens', 'completionTokens']));
+      const cacheReadTokens = numberOrNull(firstDefined(candidates, ['cache_read_input_tokens', 'cacheReadInputTokens', 'cache_read_tokens', 'cacheReadTokens', 'cached_input_tokens', 'cachedInputTokens']));
+      const cacheCreationTokens = numberOrNull(firstDefined(candidates, ['cache_creation_input_tokens', 'cacheCreationInputTokens', 'cache_creation_tokens', 'cacheCreationTokens']));
+      const reasoningDetails = firstDefined(candidates, ['output_tokens_details', 'outputTokensDetails']);
+      const reasoningTokens = numberOrNull(
+        firstDefined(candidates, ['reasoning_tokens', 'reasoningTokens']) ??
+        (reasoningDetails && firstDefined([reasoningDetails], ['reasoning_tokens', 'reasoningTokens']))
+      );
+      let totalTokens = numberOrNull(firstDefined(candidates, ['total_tokens', 'totalTokens']));
+      if (totalTokens === null && (inputTokens !== null || outputTokens !== null)) {
+        const anthropicCacheIsAdditional = candidates.some(candidate =>
+          candidate.cache_read_input_tokens !== undefined || candidate.cache_creation_input_tokens !== undefined
+        );
+        totalTokens = (inputTokens || 0) + (outputTokens || 0) +
+          (anthropicCacheIsAdditional ? (cacheReadTokens || 0) + (cacheCreationTokens || 0) : 0);
+      }
+
+      if ([inputTokens, outputTokens, cacheReadTokens, cacheCreationTokens, reasoningTokens, totalTokens].every(v => v === null)) {
+        return null;
+      }
+      return { inputTokens, outputTokens, cacheReadTokens, cacheCreationTokens, reasoningTokens, totalTokens };
+    }
+
+    function extractExplicitCost(obj) {
+      const payload = obj && obj.payload;
+      const candidates = [obj, obj && obj.usage, obj && obj.message && obj.message.usage, payload, payload && payload.usage].filter(Boolean);
+      const cumulative = numberOrNull(firstDefined(candidates, ['total_cost_usd', 'totalCostUsd']));
+      if (cumulative !== null) return { amount: cumulative, kind: 'cumulative' };
+      const incremental = numberOrNull(firstDefined(candidates, ['cost_usd', 'costUsd', 'cost']));
+      return incremental !== null ? { amount: incremental, kind: 'incremental' } : null;
+    }
+
+    function normalizeFilePath(value) {
+      if (typeof value !== 'string') return '';
+      const cleaned = value.trim().replace(/^['"]|['"]$/g, '');
+      if (!cleaned || cleaned.includes('://') || cleaned === '.' || cleaned === '..') return '';
+      return cleaned.replace(/\\/g, '/').replace(/\/+/g, '/');
+    }
+
+    function classifyFileOperation(toolName) {
+      const name = String(toolName || '').toLowerCase();
+      if (/(delete|remove)/.test(name)) return 'delete';
+      if (/(write|create)/.test(name)) return 'write';
+      if (/(edit|replace|patch|move|rename|notebookedit)/.test(name)) return 'edit';
+      if (/(grep|search|glob|find|list)/.test(name)) return 'search';
+      if (/(read|view|open)/.test(name)) return 'read';
+      return 'mention';
+    }
+
+    function extractFileOperations(toolCalls) {
+      const operations = [];
+      (toolCalls || []).forEach(tc => {
+        const toolName = tc && (tc.name || (tc.function && tc.function.name) || tc.toolAction) || 'tool';
+        const args = tc && (tc.arguments || tc.parameters || (tc.function && tc.function.arguments));
+        const parsedArgs = typeof args === 'string' ? (() => { try { return JSON.parse(args); } catch (_) { return { input: args }; } })() : (args || {});
+        const values = [];
+        ['file_path', 'filePath', 'path', 'target_file', 'targetFile', 'TargetFile', 'notebook_path'].forEach(key => {
+          if (typeof parsedArgs[key] === 'string') values.push(parsedArgs[key]);
+        });
+        ['files', 'paths'].forEach(key => {
+          if (Array.isArray(parsedArgs[key])) values.push(...parsedArgs[key]);
+        });
+        if (Array.isArray(parsedArgs.changes)) {
+          parsedArgs.changes.forEach(change => {
+            if (typeof change === 'string') values.push(change);
+            else if (change && typeof change === 'object') {
+              const changedPath = change.file_path || change.filePath || change.path || change.target_file || change.targetFile;
+              if (changedPath) values.push(changedPath);
+            }
+          });
+        }
+        const patchText = parsedArgs.patch || parsedArgs.diff || parsedArgs.input;
+        if (typeof patchText === 'string') {
+          const patchMatches = patchText.matchAll(/^\*\*\* (?:Add|Update|Delete) File:\s*(.+)$/gm);
+          for (const match of patchMatches) values.push(match[1]);
+        }
+        const operation = classifyFileOperation(toolName);
+        values.forEach(value => {
+          const filePath = normalizeFilePath(value);
+          if (filePath) operations.push({ path: filePath, operation, toolName });
+        });
+      });
+      return operations.filter((op, index, all) => all.findIndex(other => other.path === op.path && other.operation === op.operation && other.toolName === op.toolName) === index);
+    }
+
+    function enrichNormalizedEvents(events, obj, lineIdx, toolResults) {
+      if (!Array.isArray(events)) return [];
+      const payload = obj && obj.payload;
+      const item = payload && payload.item;
+      const message = obj && obj.message;
+      const timestamp = firstDefined([obj, message, payload, item], ['timestamp', 'created_at', 'createdAt', 'time']) || '';
+      const model = firstDefined([obj, message, payload, item], ['model', 'model_id', 'modelId', 'current_model_id']) || '';
+      const usage = extractUsageMetadata(obj);
+      const explicitCost = extractExplicitCost(obj);
+      const rawBlocks = message && Array.isArray(message.content) ? message.content.filter(block => block && typeof block === 'object') : [];
+      let toolBlockIndex = 0;
+
+      return events.map(event => {
+        const enriched = { ...event, sourceLine: lineIdx };
+        if (!enriched.timestamp && timestamp) enriched.timestamp = timestamp;
+        if (!enriched.model && model) enriched.model = model;
+        if (!enriched.usage && usage) enriched.usage = usage;
+        if (enriched.costMetadata === undefined && explicitCost !== null) enriched.costMetadata = explicitCost;
+
+        const firstTool = enriched.toolCalls && enriched.toolCalls[0];
+        const args = firstTool && (firstTool.arguments || firstTool.parameters) || {};
+        let toolCallId = enriched.toolCallId || firstTool && (firstTool.id || firstTool.tool_use_id || firstTool.call_id) || args.tool_use_id || args.call_id || '';
+        if (!toolCallId && enriched.type === 'TOOL_CALL') {
+          const rawTool = rawBlocks.filter(block => block.type === 'tool_use')[toolBlockIndex++];
+          if (rawTool) toolCallId = rawTool.id || rawTool.tool_use_id || '';
+        }
+        enriched.toolCallId = toolCallId;
+
+        const exitCode = numberOrNull(args.exit_code ?? args.exitCode ?? (firstTool && firstTool.exit_code));
+        const durationMs = numberOrNull(args.duration_ms ?? args.durationMs ?? args.duration ?? (firstTool && firstTool.duration));
+        const mappedResult = toolCallId && toolResults && toolResults.get(toolCallId);
+        const explicitStatus = args.status || (firstTool && firstTool.status) || '';
+        const normalizedStatus = /(?:fail|error|cancel)/i.test(explicitStatus) ? 'error' : (/(?:success|done|complete)/i.test(explicitStatus) ? 'success' : explicitStatus);
+        const isError = enriched.isError === true || args.is_error === true || (firstTool && firstTool.is_error === true) || (exitCode !== null && exitCode > 0) || normalizedStatus === 'error' || (mappedResult && mappedResult.isError === true);
+        enriched.exitCode = exitCode;
+        enriched.durationMs = durationMs;
+        enriched.isError = isError;
+        const inferredSuccess = exitCode === 0 && ['COMMAND_EXECUTION', 'TOOL_RESULT', 'TOOL_OUTPUT'].includes(enriched.type);
+        enriched.toolStatus = isError ? 'error' : (normalizedStatus || (mappedResult || inferredSuccess ? 'success' : (enriched.type === 'TOOL_RESULT' ? 'success' : 'unknown')));
+        enriched.fileOperations = extractFileOperations(enriched.toolCalls);
+        return enriched;
+      });
+    }
+
+    function aggregateSessionAnalytics(events, fallbackModel, fallbackUsage, fallbackCost) {
+      const usageByLine = new Map();
+      const costByLine = new Map();
+      const timestamps = [];
+      const models = new Set();
+      const toolStatusById = new Map();
+      const fileOperations = new Map();
+
+      events.forEach((event, index) => {
+        const sourceKey = event.sourceLine !== undefined ? event.sourceLine : index;
+        if (event.usage && !usageByLine.has(sourceKey)) usageByLine.set(sourceKey, event.usage);
+        if (event.costMetadata && numberOrNull(event.costMetadata.amount) !== null && !costByLine.has(sourceKey)) costByLine.set(sourceKey, event.costMetadata);
+        const timeMs = event.timestamp ? new Date(event.timestamp).getTime() : NaN;
+        if (Number.isFinite(timeMs)) timestamps.push(timeMs);
+        if (event.model) models.add(event.model);
+        if (event.toolCallId && event.toolStatus && event.toolStatus !== 'unknown') toolStatusById.set(event.toolCallId, event.toolStatus);
+      });
+
+      if (usageByLine.size === 0 && fallbackUsage) usageByLine.set('session', fallbackUsage);
+      if (costByLine.size === 0 && fallbackCost && numberOrNull(fallbackCost.amount) !== null) costByLine.set('session', fallbackCost);
+
+      const totals = { inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, cacheCreationTokens: 0, reasoningTokens: 0, totalTokens: 0 };
+      const measuredTokenFields = Object.fromEntries(Object.keys(totals).map(key => [key, false]));
+      usageByLine.forEach(usage => {
+        Object.keys(totals).forEach(key => {
+          if (numberOrNull(usage[key]) !== null) {
+            totals[key] += numberOrNull(usage[key]);
+            measuredTokenFields[key] = true;
+          }
+        });
+      });
+      const hasUsage = usageByLine.size > 0;
+
+      events.forEach(event => {
+        (event.fileOperations || []).forEach(op => {
+          const key = `${op.path}|${op.operation}`;
+          const resolvedStatus = event.toolCallId ? toolStatusById.get(event.toolCallId) : event.toolStatus;
+          if (!fileOperations.has(key)) {
+            fileOperations.set(key, { path: op.path, operation: op.operation, toolNames: [], toolCallIds: [], failed: false, occurrences: 0 });
+          }
+          const entry = fileOperations.get(key);
+          entry.occurrences++;
+          if (op.toolName && !entry.toolNames.includes(op.toolName)) entry.toolNames.push(op.toolName);
+          if (event.toolCallId && !entry.toolCallIds.includes(event.toolCallId)) entry.toolCallIds.push(event.toolCallId);
+          if (resolvedStatus === 'error' || event.isError === true) entry.failed = true;
+        });
+      });
+
+      if (fallbackModel) models.add(fallbackModel);
+      timestamps.sort((a, b) => a - b);
+      const startTimestamp = timestamps.length > 0 ? new Date(timestamps[0]).toISOString() : null;
+      const endTimestamp = timestamps.length > 0 ? new Date(timestamps[timestamps.length - 1]).toISOString() : null;
+      const durationMs = timestamps.length > 1 ? timestamps[timestamps.length - 1] - timestamps[0] : null;
+      const toolCalls = events.filter(event => event.type !== 'TOOL_RESULT' && event.type !== 'TOOL_OUTPUT' && (event.role === 'tool' || (event.toolCalls && event.toolCalls.length > 0)));
+      const executionMap = new Map();
+      toolCalls.forEach((event, index) => {
+        const key = event.toolCallId || `event:${event.sourceLine ?? index}:${index}`;
+        const resolvedStatus = event.toolCallId ? toolStatusById.get(event.toolCallId) : event.toolStatus;
+        executionMap.set(key, { failed: resolvedStatus === 'error' || event.isError === true, statusKnown: Boolean(resolvedStatus && resolvedStatus !== 'unknown') });
+      });
+      const executions = Array.from(executionMap.values());
+      const costValues = Array.from(costByLine.values());
+      const cumulativeCosts = costValues.filter(value => value.kind === 'cumulative').map(value => value.amount);
+      const actualCost = cumulativeCosts.length > 0
+        ? Math.max(...cumulativeCosts)
+        : (costValues.length > 0 ? costValues.reduce((sum, value) => sum + value.amount, 0) : null);
+
+      return {
+        model: models.values().next().value || null,
+        models: Array.from(models),
+        metrics: {
+          ...Object.fromEntries(Object.entries(totals).map(([key, value]) => [key, measuredTokenFields[key] ? value : null])),
+          actualCost,
+          costBasis: actualCost !== null ? 'source' : 'unavailable',
+          startTimestamp,
+          endTimestamp,
+          durationMs,
+          toolExecutions: executions.length,
+          failedToolExecutions: executions.filter(execution => execution.failed).length
+        },
+        coverage: {
+          tokens: hasUsage,
+          timestamps: events.length > 0 ? timestamps.length / events.length : 0,
+          model: models.size > 0,
+          toolStatus: executions.length > 0 ? executions.filter(execution => execution.statusKnown).length / executions.length : 0,
+          fileOperations: fileOperations.size > 0,
+          cost: actualCost !== null
+        },
+        filesTouched: Array.from(fileOperations.values())
+      };
+    }
+
+    function createSessionRecord(events, sessionKey, defaultProject, path, modDate, rawText, file, preCWD, preBranch, preAiTitle, preModel, preUsage, preActualCost) {
       if (!events || events.length === 0) return null;
 
       // Filter out empty turns with no text and no tool calls
@@ -2365,6 +2689,7 @@
       const meta = detectBranchAndProject(path, file, rawText, cleanEvents, preCWD, preBranch);
       const project = meta.project || defaultProject || 'project';
       const branch = meta.branch || 'main';
+      const analytics = aggregateSessionAnalytics(cleanEvents, preModel, preUsage, preActualCost);
 
       // Build search index tokens for lightning fast full-text query matching
       const indexTokens = [
@@ -2387,6 +2712,11 @@
         fullPath: path,
         dateStr: modDate,
         events: cleanEvents,
+        model: analytics.model,
+        models: analytics.models,
+        metrics: analytics.metrics,
+        coverage: analytics.coverage,
+        filesTouched: analytics.filesTouched,
         agentType: agentInfo.type,
         agentLabel: agentInfo.label,
         agentClass: agentInfo.className,
@@ -2399,6 +2729,10 @@
     }
 
     function normalizeRawLine(obj, lineIdx, toolResults, defaultCWD) {
+      return enrichNormalizedEvents(normalizeRawLineCore(obj, lineIdx, toolResults, defaultCWD), obj, lineIdx, toolResults);
+    }
+
+    function normalizeRawLineCore(obj, lineIdx, toolResults, defaultCWD) {
       if (!obj || typeof obj !== 'object') return [];
 
       const type = obj.type;
@@ -2429,13 +2763,18 @@
           if (text) return [{ index: lineIdx + 1, role: 'assistant', type: 'ASSISTANT_RESPONSE', content: text, toolCalls: [] }];
         } else if (isCmd) {
           const cmd = extractCommandHelper(item);
-          if (cmd) {
+          if (cmd || itemType === 'filechange') {
+            const commandText = cmd || extractTextHelper(item.changes || item.path || item.file_path) || 'File change';
             return [{
               index: lineIdx + 1,
               role: 'tool',
               type: 'COMMAND_EXECUTION',
-              content: cmd,
-              toolCalls: [{ name: item.type || 'exec', arguments: { command: cmd, cwd: item.cwd || defaultCWD, exit_code: item.exit_code, duration: item.duration } }]
+              content: commandText,
+              toolCalls: [{
+                id: item.call_id || item.id || '',
+                name: item.type || 'exec',
+                arguments: { command: commandText, changes: item.changes, path: item.path || item.file_path, cwd: item.cwd || defaultCWD, exit_code: item.exit_code, duration: item.duration, status: item.status }
+              }]
             }];
           }
         }
@@ -2477,18 +2816,30 @@
         if (pType === 'custom_tool_call' || pType === 'tool_call' || pType === 'function_call') {
           const extracted = extractToolCallCommandHelper(payload.input);
           const cmd = extracted ? extracted.command : '';
+          const callId = payload.call_id || payload.id || '';
           return [{
             index: lineIdx + 1,
             role: 'tool',
             type: 'TOOL_CALL',
             content: cmd,
-            toolCalls: [{ name: payload.name || 'exec', arguments: payload.input || {} }]
+            toolCallId: callId,
+            toolCalls: [{ id: callId, name: payload.name || 'exec', arguments: payload.input || {} }]
           }];
         } else if (pType === 'custom_tool_call_output' || pType === 'tool_call_output' || pType === 'function_call_output') {
           const outText = extractTextHelper(payload.output);
-          if (outText) {
-            return [{ index: lineIdx + 1, role: 'tool', type: 'TOOL_OUTPUT', content: outText, toolCalls: [] }];
-          }
+          const callId = payload.call_id || payload.id || '';
+          const exitCode = numberOrNull(payload.exit_code ?? payload.exitCode);
+          const status = payload.status || '';
+          const isError = payload.is_error === true || (exitCode !== null && exitCode > 0) || /(?:fail|error)/i.test(status);
+          return [{
+            index: lineIdx + 1,
+            role: 'tool',
+            type: 'TOOL_RESULT',
+            content: outText || 'Tool output',
+            toolCallId: callId,
+            isError,
+            toolCalls: [{ id: callId, name: 'tool_result', arguments: { tool_use_id: callId, is_error: isError, exit_code: exitCode, status } }]
+          }];
         } else if (pRole === 'user' || pType === 'user_message' || pType === 'user') {
           const text = extractTextHelper(payload.content || payload.message || payload.text || payload.prompt);
           if (text) {
@@ -2791,6 +3142,7 @@
       const projectSelects = [
         document.getElementById('tree-project-filter'),
         document.getElementById('tiles-project-filter'),
+        document.getElementById('insights-project-filter'),
         document.getElementById('sidebar-project-filter')
       ];
 
@@ -2809,6 +3161,7 @@
       const branchSelects = [
         document.getElementById('tree-branch-filter'),
         document.getElementById('tiles-branch-filter'),
+        document.getElementById('insights-branch-filter'),
         document.getElementById('sidebar-branch-filter')
       ];
 
@@ -2832,6 +3185,7 @@
       const agentSelects = [
         document.getElementById('tree-agent-filter'),
         document.getElementById('tiles-agent-filter'),
+        document.getElementById('insights-agent-filter'),
         document.getElementById('sidebar-agent-filter')
       ];
 
@@ -2853,12 +3207,14 @@
       const projectSelects = [
         document.getElementById('tree-project-filter'),
         document.getElementById('tiles-project-filter'),
+        document.getElementById('insights-project-filter'),
         document.getElementById('sidebar-project-filter')
       ];
       projectSelects.forEach(sel => { if (sel && sel.value !== val) sel.value = val; });
       renderProjectTree();
       renderSessionTiles();
       renderSessionsSidebar();
+      renderInsights();
     }
 
     function setBranchFilter(val) {
@@ -2866,12 +3222,14 @@
       const branchSelects = [
         document.getElementById('tree-branch-filter'),
         document.getElementById('tiles-branch-filter'),
+        document.getElementById('insights-branch-filter'),
         document.getElementById('sidebar-branch-filter')
       ];
       branchSelects.forEach(sel => { if (sel && sel.value !== val) sel.value = val; });
       renderProjectTree();
       renderSessionTiles();
       renderSessionsSidebar();
+      renderInsights();
     }
 
     function setAgentFilter(agent, btn) {
@@ -2879,6 +3237,7 @@
       const agentSelects = [
         document.getElementById('tree-agent-filter'),
         document.getElementById('tiles-agent-filter'),
+        document.getElementById('insights-agent-filter'),
         document.getElementById('sidebar-agent-filter')
       ];
       agentSelects.forEach(sel => { if (sel && sel.value !== currentAgentFilter) sel.value = currentAgentFilter; });
@@ -2912,6 +3271,7 @@
       renderProjectTree();
       renderSessionTiles();
       renderSessionsSidebar();
+      renderInsights();
     }
 
     function formatRelativeTime(dateOrMs) {
@@ -2930,23 +3290,36 @@
       return `${diffMonths}mo ago`;
     }
 
-    function estimateSessionCost(session) {
-      let totalTokens = 0;
-      if (session.events) {
-        session.events.forEach(e => {
-          if (e.raw && e.raw.usage) {
-            totalTokens += (e.raw.usage.total_tokens || (e.raw.usage.input_tokens || 0) + (e.raw.usage.output_tokens || 0));
-          }
-        });
+    function summarizeMeasuredUsage(sessions) {
+      const summary = { total: sessions.length, usageSessions: 0, costSessions: 0, totalTokens: 0, actualCost: 0 };
+      sessions.forEach(session => {
+        const metrics = session.metrics || {};
+        const hasUsage = ['inputTokens', 'outputTokens', 'cacheReadTokens', 'cacheCreationTokens', 'reasoningTokens', 'totalTokens']
+          .some(key => Number.isFinite(metrics[key]) && metrics[key] >= 0);
+        if (hasUsage) {
+          summary.usageSessions++;
+          if (Number.isFinite(metrics.totalTokens)) summary.totalTokens += metrics.totalTokens;
+        }
+        if (Number.isFinite(metrics.actualCost) && metrics.actualCost >= 0) {
+          summary.costSessions++;
+          summary.actualCost += metrics.actualCost;
+        }
+      });
+      return summary;
+    }
+
+    function formatMeasuredUsage(sessions) {
+      const summary = summarizeMeasuredUsage(sessions);
+      if (summary.costSessions > 0) {
+        const coverage = summary.costSessions === summary.total ? '' : ` · cost ${summary.costSessions}/${summary.total}`;
+        return `$${summary.actualCost.toFixed(2)} measured${coverage}`;
       }
-      if (totalTokens > 0) {
-        return totalTokens * 0.000008;
+      if (summary.usageSessions > 0) {
+        const tokenLabel = summary.totalTokens > 0 ? `${summary.totalTokens.toLocaleString()} measured tokens` : `token usage ${summary.usageSessions}/${summary.total}`;
+        const coverage = summary.usageSessions === summary.total ? '' : ` · usage ${summary.usageSessions}/${summary.total}`;
+        return `${tokenLabel}${coverage} · cost unavailable`;
       }
-      const prompts = session.promptsCount || 1;
-      const assistants = session.assistantCount || 1;
-      const tools = session.toolsCount || 0;
-      const turns = session.events ? session.events.length : (prompts + assistants + tools);
-      return Math.max(0.18, (prompts * 0.06) + (assistants * 0.12) + (tools * 0.04) + (turns * 0.03));
+      return 'usage unavailable';
     }
 
     function toggleProjectCollapse(projectName) {
@@ -2990,9 +3363,8 @@
         return true;
       });
 
-      const totalCost = filtered.reduce((acc, s) => acc + estimateSessionCost(s), 0);
       if (statsEl) {
-        statsEl.innerText = `${filtered.length} sessions • $${totalCost.toFixed(2)}`;
+        statsEl.innerText = `${filtered.length} sessions • ${formatMeasuredUsage(filtered)}`;
       }
 
       if (filtered.length === 0) {
@@ -3015,7 +3387,6 @@
         const limit = projectExpandedCount.get(projectName) || 5;
         const visibleSessions = sessions.slice(0, limit);
         const remaining = sessions.length - visibleSessions.length;
-        const groupCost = sessions.reduce((acc, s) => acc + estimateSessionCost(s), 0);
         const isCurrent = groupIdx === 1 || projectName === 'l2cache-site' || projectName === 'L2Cache';
 
         const groupDiv = document.createElement('div');
@@ -3082,7 +3453,7 @@
             </div>
             <div class="project-header-right">
               <span>${sessions.length}</span>
-              <span class="project-cost-text">$${groupCost.toFixed(2)}</span>
+              <span class="project-cost-text">${escapeHtml(formatMeasuredUsage(sessions))}</span>
             </div>
           </div>
           <div class="project-sessions-container">
@@ -3187,24 +3558,296 @@
       return count;
     }
 
+    function getInsightScopedSessions() {
+      const query = sessionSearchQuery.toLowerCase().trim();
+      return sessionsList.filter(session => {
+        if (currentAgentFilter !== 'all') {
+          if (currentAgentFilter === 'other') {
+            if (['claude', 'codex'].includes(session.agentType)) return false;
+          } else if (session.agentType !== currentAgentFilter) {
+            return false;
+          }
+        }
+        if (currentProjectFilter !== 'all' && (session.project || 'project') !== currentProjectFilter) return false;
+        if (currentBranchFilter !== 'all' && (session.branch || 'main') !== currentBranchFilter) return false;
+        if (query && !(session.searchIndexText || '').includes(query)) return false;
+        return true;
+      });
+    }
+
+    function getSessionToolExecutions(session) {
+      const events = session.events || [];
+      const statusById = new Map();
+      events.forEach(event => {
+        if (event.toolCallId && event.toolStatus && event.toolStatus !== 'unknown') {
+          statusById.set(event.toolCallId, { toolStatus: event.toolStatus, isError: event.isError === true, exitCode: event.exitCode });
+        }
+      });
+      return events.filter(event =>
+        event.type !== 'TOOL_RESULT' && event.type !== 'TOOL_OUTPUT' &&
+        (event.role === 'tool' || (event.toolCalls && event.toolCalls.length > 0))
+      ).map(event => {
+        const result = event.toolCallId ? statusById.get(event.toolCallId) : null;
+        return result ? { ...event, ...result } : event;
+      });
+    }
+
+    function getToolEventDetails(event) {
+      const tool = event.toolCalls && event.toolCalls[0];
+      const name = tool && (tool.name || (tool.function && tool.function.name)) || event.type || 'tool';
+      const args = tool && (tool.arguments || tool.parameters || (tool.function && tool.function.arguments)) || {};
+      let parsedArgs = args;
+      if (typeof args === 'string') {
+        try { parsedArgs = JSON.parse(args); } catch (_) { parsedArgs = { input: args }; }
+      }
+      const command = parsedArgs.command || parsedArgs.cmd || parsedArgs.input || event.content || '';
+      const target = parsedArgs.file_path || parsedArgs.filePath || parsedArgs.path || parsedArgs.target_file || parsedArgs.targetFile || '';
+      return { name: String(name), command: String(command), target: String(target) };
+    }
+
+    function isSuccessfulVerification(event) {
+      const details = getToolEventDetails(event);
+      const signature = `${details.name} ${details.command}`.toLowerCase();
+      const verifies = /(npm|pnpm|yarn).*(test|lint|build)|pytest|cargo\s+(test|build|check)|go\s+test|swift\s+test|xcodebuild|gradle.*test|mvn.*test|dotnet\s+test|git\s+diff/.test(signature);
+      const succeeded = event.isError !== true && (event.toolStatus === 'success' || event.exitCode === 0);
+      return verifies && succeeded;
+    }
+
+    function buildActionInsights(sessions) {
+      const insights = [];
+      const fileMap = new Map();
+
+      sessions.forEach(session => {
+        const executions = getSessionToolExecutions(session);
+        const failedBySignature = new Map();
+        executions.forEach(event => {
+          if (event.isError !== true && event.toolStatus !== 'error') return;
+          const details = getToolEventDetails(event);
+          const signature = `${details.name.toLowerCase()}|${(details.command || details.target).replace(/\s+/g, ' ').trim().slice(0, 160)}`;
+          failedBySignature.set(signature, (failedBySignature.get(signature) || 0) + 1);
+        });
+        const repeatedFailure = Array.from(failedBySignature.entries()).sort((a, b) => b[1] - a[1])[0];
+        if (repeatedFailure && repeatedFailure[1] >= 2) {
+          const toolLabel = repeatedFailure[0].split('|')[0] || 'tool';
+          insights.push({
+            id: `failure-loop:${session.id}:${toolLabel}`,
+            type: 'failure', icon: '⚠️', confidence: 'High', score: 100 + repeatedFailure[1],
+            title: 'Repeated failure loop',
+            evidence: `${session.title}: the same ${toolLabel} operation failed ${repeatedFailure[1]} times.`,
+            why: 'Repeating an unchanged failing operation consumes time and context without testing a new hypothesis.',
+            sessionIds: [session.id],
+            prompt: 'Stop retrying the failing command. Inspect the first root error, explain the likely cause, make one targeted change, then rerun the narrowest relevant check.'
+          });
+        } else if ((session.metrics && session.metrics.failedToolExecutions || 0) >= 3) {
+          insights.push({
+            id: `error-heavy:${session.id}`,
+            type: 'failure', icon: '⚠️', confidence: 'High', score: 90,
+            title: 'Error-heavy session',
+            evidence: `${session.title} recorded ${session.metrics.failedToolExecutions} failed tool executions.`,
+            why: 'Several failures in one session often indicate that the approach or environment needs reassessment.',
+            sessionIds: [session.id],
+            prompt: 'Review the failures in order, identify the earliest root cause, and propose the smallest corrective step before running another command.'
+          });
+        }
+
+        const changedFiles = (session.filesTouched || []).filter(file => ['edit', 'write', 'delete'].includes(file.operation));
+        if (changedFiles.length > 0 && !executions.some(isSuccessfulVerification)) {
+          insights.push({
+            id: `missing-verification:${session.id}`,
+            type: 'verification', icon: '🧪', confidence: 'High', score: 80 + Math.min(changedFiles.length, 10),
+            title: 'Changes ended without recorded verification',
+            evidence: `${session.title} changed ${changedFiles.length} file${changedFiles.length === 1 ? '' : 's'}, with no successful test, build, lint, or final diff command in the transcript.`,
+            why: 'The change may be correct, but the session history contains no evidence that it was checked.',
+            sessionIds: [session.id],
+            prompt: 'Run the narrowest relevant tests or build, inspect the final diff, and summarize any remaining failures or risks.'
+          });
+        }
+
+        const repeatedEdits = changedFiles.filter(file => (file.occurrences || 0) >= 3);
+        if (repeatedEdits.length > 0) {
+          const top = repeatedEdits.sort((a, b) => b.occurrences - a.occurrences)[0];
+          insights.push({
+            id: `rework:${session.id}:${top.path}`,
+            type: 'rework', icon: '🔁', confidence: 'Medium', score: 70 + top.occurrences,
+            title: 'Repeated edits suggest rework',
+            evidence: `${top.path} was changed ${top.occurrences} times during ${session.title}.`,
+            why: 'Repeated edits can indicate incomplete upfront inspection or an unstable implementation direction.',
+            sessionIds: [session.id], searchTerm: top.path,
+            prompt: `Before editing ${top.path} again, inspect its callers, tests, and constraints. Explain the intended change and verification plan first.`
+          });
+        }
+
+        const seenInSession = new Set();
+        (session.filesTouched || []).forEach(file => {
+          if (!file.path || seenInSession.has(file.path)) return;
+          seenInSession.add(file.path);
+          if (!fileMap.has(file.path)) fileMap.set(file.path, { sessionIds: new Set(), failures: 0, operations: 0 });
+          const entry = fileMap.get(file.path);
+          entry.sessionIds.add(session.id);
+          entry.failures += file.failed ? 1 : 0;
+          entry.operations += file.occurrences || 1;
+        });
+      });
+
+      Array.from(fileMap.entries())
+        .filter(([, data]) => data.sessionIds.size >= 2)
+        .sort((a, b) => (b[1].sessionIds.size * 10 + b[1].failures) - (a[1].sessionIds.size * 10 + a[1].failures))
+        .slice(0, 3)
+        .forEach(([path, data]) => {
+          insights.push({
+            id: `hotspot:${path}`,
+            type: 'hotspot', icon: '🔥', confidence: data.failures > 0 ? 'High' : 'Medium', score: 60 + data.sessionIds.size * 5 + data.failures,
+            title: data.failures > 0 ? 'Frequently revisited file with failures' : 'Frequently revisited file',
+            evidence: `${path} appeared in ${data.sessionIds.size} sessions across ${data.operations} recorded file operations${data.failures ? `, including ${data.failures} failure${data.failures === 1 ? '' : 's'}` : ''}.`,
+            why: data.failures > 0 ? 'Repeated work plus failures makes this file a strong candidate for focused tests or simplification.' : 'Frequent activity is worth reviewing for missing documentation, tests, or hidden coupling.',
+            sessionIds: Array.from(data.sessionIds), searchTerm: path,
+            prompt: `Review ${path} across recent sessions. Identify repeated problems, missing tests, and any repository guidance that would prevent rediscovery.`
+          });
+        });
+
+      const measuredSessions = sessions.filter(session => session.coverage && session.coverage.tokens).length;
+      if (sessions.length > 0 && measuredSessions < sessions.length) {
+        insights.push({
+          id: `coverage:${sessions.map(session => session.id).join(',')}`,
+          type: 'coverage', icon: '📊', confidence: 'High', score: 20,
+          title: 'Token analytics coverage is incomplete',
+          evidence: `Measured token usage is available for ${measuredSessions} of ${sessions.length} scoped sessions.`,
+          why: 'Token comparisons and outlier detection will remain partial until the source logs include usage metadata.',
+          sessionIds: sessions.filter(session => !(session.coverage && session.coverage.tokens)).map(session => session.id)
+        });
+      }
+
+      return insights.sort((a, b) => b.score - a.score);
+    }
+
+    function openInsightEvidence(insightId) {
+      const insight = currentInsightItems.find(item => item.id === insightId);
+      if (!insight) return;
+      if (insight.searchTerm) filterSessionList(insight.searchTerm);
+      if (insight.sessionIds && insight.sessionIds.length === 1) {
+        selectSession(insight.sessionIds[0]);
+        switchMainView('split');
+      } else {
+        switchMainView('tiles');
+      }
+    }
+
+    async function copyInsightPrompt(insightId) {
+      const insight = currentInsightItems.find(item => item.id === insightId);
+      if (!insight || !insight.prompt) return;
+      try {
+        await navigator.clipboard.writeText(insight.prompt);
+        showToast('Follow-up prompt copied.', '📋');
+      } catch (_) {
+        const textarea = document.createElement('textarea');
+        textarea.value = insight.prompt;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+        showToast('Follow-up prompt copied.', '📋');
+      }
+    }
+
+    function dismissInsight(insightId) {
+      dismissedInsightIds.add(insightId);
+      renderInsights();
+    }
+
+    function renderInsights() {
+      const container = document.getElementById('insight-list-container');
+      if (!container) return;
+      const sessions = getInsightScopedSessions();
+      const allInsights = buildActionInsights(sessions);
+      currentInsightItems = allInsights.filter(item => !dismissedInsightIds.has(item.id)).slice(0, 12);
+
+      const uniqueFiles = new Set(sessions.flatMap(session => (session.filesTouched || []).map(file => file.path).filter(Boolean)));
+      const tokenCoverage = sessions.length > 0 ? Math.round(sessions.filter(session => session.coverage && session.coverage.tokens).length / sessions.length * 100) : 0;
+      const statSessions = document.getElementById('insight-stat-sessions');
+      const statAttention = document.getElementById('insight-stat-attention');
+      const statFiles = document.getElementById('insight-stat-files');
+      const statCoverage = document.getElementById('insight-stat-coverage');
+      const countBadge = document.getElementById('insights-count-badge');
+      if (statSessions) statSessions.innerText = sessions.length;
+      if (statAttention) statAttention.innerText = currentInsightItems.length;
+      if (statFiles) statFiles.innerText = uniqueFiles.size;
+      if (statCoverage) statCoverage.innerText = `${tokenCoverage}%`;
+      if (countBadge) countBadge.innerText = `${currentInsightItems.length} action${currentInsightItems.length === 1 ? '' : 's'}`;
+
+      container.innerHTML = '';
+      if (sessions.length === 0) {
+        container.innerHTML = '<div class="insight-empty"><strong>No sessions match this scope.</strong><br/>Clear a filter or search term to analyze more history.</div>';
+        return;
+      }
+      if (currentInsightItems.length === 0) {
+        const dismissedCount = allInsights.length;
+        container.innerHTML = `<div class="insight-empty"><strong>No open recommendations.</strong><br/>${dismissedCount ? 'Recommendations in this scope have been dismissed.' : 'The available session evidence does not trigger an action yet.'}</div>`;
+        return;
+      }
+
+      currentInsightItems.forEach(insight => {
+        const card = document.createElement('article');
+        const severity = insight.score >= 90 ? 'high' : (insight.score < 40 ? 'low' : 'medium');
+        card.className = `insight-card ${severity}`;
+        card.innerHTML = `
+          <div class="insight-card-top">
+            <div>
+              <div class="insight-card-title">${insight.icon} ${escapeHtml(insight.title)}</div>
+              <div class="insight-evidence">${escapeHtml(insight.evidence)}</div>
+              <div class="insight-why">Why it matters: ${escapeHtml(insight.why)}</div>
+            </div>
+            <span class="insight-confidence">${escapeHtml(insight.confidence)} confidence</span>
+          </div>
+          <div class="insight-actions">
+            <button type="button" class="tbtn tbtn-primary insight-view-btn" style="font-size:12px;padding:6px 11px;">View evidence</button>
+            ${insight.prompt ? '<button type="button" class="tbtn tbtn-ghost insight-copy-btn" style="font-size:12px;padding:6px 11px;">📋 Copy follow-up prompt</button>' : ''}
+            <button type="button" class="tbtn tbtn-ghost insight-dismiss-btn" style="font-size:12px;padding:6px 11px;margin-left:auto;">Dismiss</button>
+          </div>`;
+        card.querySelector('.insight-view-btn').addEventListener('click', () => openInsightEvidence(insight.id));
+        const copyBtn = card.querySelector('.insight-copy-btn');
+        if (copyBtn) copyBtn.addEventListener('click', () => copyInsightPrompt(insight.id));
+        card.querySelector('.insight-dismiss-btn').addEventListener('click', () => dismissInsight(insight.id));
+        container.appendChild(card);
+      });
+    }
+
     function switchMainView(mode) {
       const introSec = document.getElementById('viewer-intro-section');
       const faqSec = document.getElementById('viewer-faq-section');
       const topToolbar = document.getElementById('viewer-top-toolbar');
+      const insightsSec = document.getElementById('sessions-insights-section');
       const treeSec = document.getElementById('sessions-tree-section');
       const tilesSec = document.getElementById('sessions-tiles-section');
       const workspaceSec = document.getElementById('sessions-workspace-section');
+      const btnInsights = document.getElementById('btn-view-insights');
       const btnTree = document.getElementById('btn-view-tree');
       const btnTiles = document.getElementById('btn-view-tiles');
       const btnSplit = document.getElementById('btn-view-split');
 
-      if (mode === 'tree') {
+      if (mode === 'insights') {
         if (introSec) introSec.style.display = 'block';
         if (faqSec) faqSec.style.display = 'block';
         if (topToolbar) topToolbar.style.display = 'flex';
+        if (insightsSec) insightsSec.style.display = 'block';
+        if (treeSec) treeSec.style.display = 'none';
+        if (tilesSec) tilesSec.style.display = 'none';
+        if (workspaceSec) workspaceSec.style.display = 'none';
+        if (btnInsights) btnInsights.classList.add('active');
+        if (btnTree) btnTree.classList.remove('active');
+        if (btnTiles) btnTiles.classList.remove('active');
+        if (btnSplit) btnSplit.classList.remove('active');
+        renderInsights();
+      } else if (mode === 'tree') {
+        if (introSec) introSec.style.display = 'block';
+        if (faqSec) faqSec.style.display = 'block';
+        if (topToolbar) topToolbar.style.display = 'flex';
+        if (insightsSec) insightsSec.style.display = 'none';
         if (treeSec) treeSec.style.display = 'block';
         if (tilesSec) tilesSec.style.display = 'none';
         if (workspaceSec) workspaceSec.style.display = 'none';
+        if (btnInsights) btnInsights.classList.remove('active');
         if (btnTree) btnTree.classList.add('active');
         if (btnTiles) btnTiles.classList.remove('active');
         if (btnSplit) btnSplit.classList.remove('active');
@@ -3213,9 +3856,11 @@
         if (introSec) introSec.style.display = 'block';
         if (faqSec) faqSec.style.display = 'block';
         if (topToolbar) topToolbar.style.display = 'flex';
+        if (insightsSec) insightsSec.style.display = 'none';
         if (treeSec) treeSec.style.display = 'none';
         if (tilesSec) tilesSec.style.display = 'block';
         if (workspaceSec) workspaceSec.style.display = 'none';
+        if (btnInsights) btnInsights.classList.remove('active');
         if (btnTree) btnTree.classList.remove('active');
         if (btnTiles) btnTiles.classList.add('active');
         if (btnSplit) btnSplit.classList.remove('active');
@@ -3225,9 +3870,11 @@
         if (introSec) introSec.style.display = 'none';
         if (faqSec) faqSec.style.display = 'none';
         if (topToolbar) topToolbar.style.display = 'none';
+        if (insightsSec) insightsSec.style.display = 'none';
         if (treeSec) treeSec.style.display = 'none';
         if (tilesSec) tilesSec.style.display = 'none';
         if (workspaceSec) workspaceSec.style.display = 'block';
+        if (btnInsights) btnInsights.classList.remove('active');
         if (btnTree) btnTree.classList.remove('active');
         if (btnTiles) btnTiles.classList.remove('active');
         if (btnSplit) btnSplit.classList.add('active');
@@ -3299,13 +3946,16 @@
       sessionSearchQuery = val;
       const treeInput = document.getElementById('tree-search-input');
       const tilesInput = document.getElementById('tiles-search-input');
+      const insightsInput = document.getElementById('insights-search-input');
       const sidebarInput = document.getElementById('session-search-input');
       if (treeInput && treeInput.value !== val) treeInput.value = val;
       if (tilesInput && tilesInput.value !== val) tilesInput.value = val;
+      if (insightsInput && insightsInput.value !== val) insightsInput.value = val;
       if (sidebarInput && sidebarInput.value !== val) sidebarInput.value = val;
       renderProjectTree();
       renderSessionTiles();
       renderSessionsSidebar();
+      renderInsights();
     }
 
     function selectSession(id) {
@@ -3545,7 +4195,7 @@
       if (newSessions && newSessions.length > 0) {
         sessionsList.unshift(...newSessions);
         sessionsList.forEach((s, idx) => s.id = idx);
-        saveSessionsToCache(sessionsList);
+        if (!staleSessionCacheDetected) saveSessionsToCache(sessionsList);
 
         document.getElementById('viewer-results').style.display = 'block';
         updateAgentCounters();
@@ -3600,121 +4250,10 @@
       });
     }
 
-    function loadSampleSession() {
-      // 1. l2cache-site project sessions
-      const s1 = parseFileIntoSessions([
-        `{"git_branch":"main","type":"USER_INPUT","content":"Improve L2Cache SEO"}`,
-        `{"type":"PLANNER_RESPONSE","content":"I analyzed keyword clustering and added technical guide schema to boost organic impressions."}`
-      ].join('\n'), { name: 'transcript.jsonl', customRelativePath: '.claude/projects/l2cache-site/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 26 }, 0);
-      if (s1[0]) { s1[0].relativeTime = '26m ago'; s1[0].agentType = 'codex'; s1[0].agentLabel = '🟢 OpenAI Codex'; s1[0].agentClass = 'agent-badge-codex'; }
-
-      const s2 = parseFileIntoSessions([
-        `{"git_branch":"feat/multi-platform-agent","type":"USER_INPUT","content":"Build multi-platform article publishing agent"}`,
-        `{"type":"PLANNER_RESPONSE","content":"Created automated RSS and static markdown syndication script with retry logic."}`
-      ].join('\n'), { name: 'transcript.jsonl', customRelativePath: '.claude/projects/l2cache-site/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 23 }, 1);
-      if (s2[0]) { s2[0].relativeTime = '23h ago'; s2[0].agentType = 'claude'; s2[0].agentLabel = '🤖 Claude Code'; s2[0].agentClass = 'agent-badge-claude'; }
-
-      const s3 = parseFileIntoSessions([
-        `{"git_branch":"main","type":"USER_INPUT","content":"Clarify usage limit"}`,
-        `{"type":"PLANNER_RESPONSE","content":"Updated pricing table with transparent token allowance documentation."}`
-      ].join('\n'), { name: 'transcript.jsonl', customRelativePath: '.claude/projects/l2cache-site/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 23 }, 2);
-      if (s3[0]) { s3[0].relativeTime = '23h ago'; s3[0].agentType = 'codex'; s3[0].agentLabel = '🟢 OpenAI Codex'; s3[0].agentClass = 'agent-badge-codex'; }
-
-      const s4 = parseFileIntoSessions([
-        `{"git_branch":"main","type":"USER_INPUT","content":"Untitled Session"}`,
-        `{"type":"PLANNER_RESPONSE","content":"Quick script generation for CSS glassmorphism token verification."}`
-      ].join('\n'), { name: 'transcript.jsonl', customRelativePath: '.claude/projects/l2cache-site/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 72 }, 3);
-      if (s4[0]) { s4[0].relativeTime = '3d ago'; s4[0].agentType = 'claude'; s4[0].agentLabel = '🤖 Claude Code'; s4[0].agentClass = 'agent-badge-claude'; }
-
-      const s5 = parseFileIntoSessions([
-        `{"git_branch":"main","type":"USER_INPUT","content":"Explain Reddit feedback on L2cache site"}`,
-        `{"type":"PLANNER_RESPONSE","content":"Synthesized developer feedback on terminal history search and offline privacy."}`
-      ].join('\n'), { name: 'transcript.jsonl', customRelativePath: '.claude/projects/l2cache-site/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 72 }, 4);
-      if (s5[0]) { s5[0].relativeTime = '3d ago'; s5[0].agentType = 'claude'; s5[0].agentLabel = '🤖 Claude Code'; s5[0].agentClass = 'agent-badge-claude'; }
-
-      // Extra sessions for l2cache-site to demonstrate "Show 5 more"
-      const s5b = parseFileIntoSessions([
-        `{"git_branch":"docs/faq","type":"USER_INPUT","content":"Add offline privacy badge & PWA install guide"}`,
-        `{"type":"PLANNER_RESPONSE","content":"Configured standalone web app manifest and Airplane Mode verification tests."}`
-      ].join('\n'), { name: 'transcript.jsonl', customRelativePath: '.claude/projects/l2cache-site/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 96 }, 5);
-      if (s5b[0]) { s5b[0].relativeTime = '4d ago'; s5b[0].agentType = 'claude'; }
-
-      // 2. L2Cache native app project sessions
-      const s6 = parseFileIntoSessions([
-        `{"git_branch":"main","type":"USER_INPUT","content":"Add killer terminal history app features"}`,
-        `{"type":"PLANNER_RESPONSE","content":"Implemented fast FTS5 SQLite search with instant fuzzy session matching."}`
-      ].join('\n'), { name: 'session.jsonl', customRelativePath: '.codex/sessions/L2Cache/session.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 18 }, 6);
-      if (s6[0]) { s6[0].relativeTime = '18h ago'; s6[0].agentType = 'claude'; }
-
-      const s7 = parseFileIntoSessions([
-        `{"git_branch":"main","type":"USER_INPUT","content":"Build clipboard error-to-session search feature"}`,
-        `{"type":"PLANNER_RESPONSE","content":"Added regex parser to detect compiler error snippets and link directly to past fix sessions."}`
-      ].join('\n'), { name: 'session.jsonl', customRelativePath: '.codex/sessions/L2Cache/session.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 23 }, 7);
-      if (s7[0]) { s7[0].relativeTime = '23h ago'; s7[0].agentType = 'claude'; }
-
-      const s8 = parseFileIntoSessions([
-        `{"git_branch":"feature/homebrew-smart-actions","type":"USER_INPUT","content":"homebrew-smart-actions-feature"}`,
-        `{"type":"PLANNER_RESPONSE","content":"Built formula generator and automated notarization pipeline for macOS."}`
-      ].join('\n'), { name: 'session.jsonl', customRelativePath: '.codex/sessions/L2Cache/session.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 48 }, 8);
-      if (s8[0]) { s8[0].relativeTime = '2d ago'; s8[0].agentType = 'claude'; }
-
-      const s9 = parseFileIntoSessions([
-        `{"git_branch":"main","type":"USER_INPUT","content":"Untitled Session"}`,
-        `{"type":"PLANNER_RESPONSE","content":"Performance profiling with Instruments to ensure < 15MB RAM idle consumption."}`
-      ].join('\n'), { name: 'session.jsonl', customRelativePath: '.codex/sessions/L2Cache/session.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 48 }, 9);
-      if (s9[0]) { s9[0].relativeTime = '2d ago'; s9[0].agentType = 'claude'; }
-
-      const s10 = parseFileIntoSessions([
-        `{"git_branch":"marketing/launch-post","type":"USER_INPUT","content":"Write X post for app launch"}`,
-        `{"type":"PLANNER_RESPONSE","content":"Drafted 5 viral developer launch hooks comparing raw JSONL digging vs instant hotkey search."}`
-      ].join('\n'), { name: 'session.jsonl', customRelativePath: '.codex/sessions/L2Cache/session.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 48 }, 10);
-      if (s10[0]) { s10[0].relativeTime = '2d ago'; s10[0].agentType = 'claude'; }
-
-      // Extra projects: HingeJoy, dinesh, IronTrack, cuddly-goggles-38a7feb4
-      const s11 = parseFileIntoSessions([
-        `{"git_branch":"main","type":"USER_INPUT","content":"Refactor user matching recommendations pipeline"}`,
-        `{"type":"PLANNER_RESPONSE","content":"Optimized vectorized cosine similarity index in Python."}`
-      ].join('\n'), { name: 'session.jsonl', customRelativePath: '.codex/sessions/HingeJoy/session.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 120 }, 11);
-
-      const s12 = parseFileIntoSessions([
-        `{"git_branch":"main","type":"USER_INPUT","content":"Setup personal dotfiles and zsh aliases"}`,
-        `{"type":"PLANNER_RESPONSE","content":"Created symlinks for ~/.zshrc, ~/.tmux.conf, and starship prompt."}`
-      ].join('\n'), { name: 'transcript.jsonl', customRelativePath: '.claude/projects/dinesh/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 140 }, 12);
-
-      const s13 = parseFileIntoSessions([
-        `{"git_branch":"feature/workout-logging","type":"USER_INPUT","content":"Build progressive overload tracking algorithm"}`,
-        `{"type":"PLANNER_RESPONSE","content":"Implemented 1RM calculations with Epley and Brzycki formulas in Swift."}`
-      ].join('\n'), { name: 'session.jsonl', customRelativePath: '.codex/sessions/IronTrack/session.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 160 }, 13);
-
-      const s14 = parseFileIntoSessions([
-        `{"git_branch":"main","type":"USER_INPUT","content":"Scaffold experimental Next.js fullstack playground"}`,
-        `{"type":"PLANNER_RESPONSE","content":"Initialized App Router project with Tailwind and Drizzle ORM."}`
-      ].join('\n'), { name: 'transcript.jsonl', customRelativePath: '.claude/projects/cuddly-goggles-38a7feb4/transcript.jsonl', lastModified: Date.now() - 1000 * 60 * 60 * 180 }, 14);
-
-      // Add project collapse state defaults
-      collapsedProjects.add('HingeJoy');
-      collapsedProjects.add('dinesh');
-      collapsedProjects.add('IronTrack');
-      collapsedProjects.add('cuddly-goggles-38a7feb4');
-
-      sessionsList = [s1, s2, s3, s4, s5, s5b, s6, s7, s8, s9, s10, s11, s12, s13, s14].flat().filter(Boolean);
-      sessionsList.forEach((s, idx) => s.id = idx);
-      saveSessionsToCache(sessionsList);
-
-      document.getElementById('viewer-results').style.display = 'block';
-      updateAgentCounters();
-      populateProjectAndBranchDropdowns();
-      renderProjectTree();
-      renderSessionTiles();
-      renderSessionsSidebar();
-      selectSession(0);
-      switchMainView('tree');
-      showToast(`Loaded ${sessionsList.length} sample sessions across 6 project folders!`, '🚀');
-    }
 
     // Auto-restore cached sessions from IndexedDB on startup
     window.addEventListener('DOMContentLoaded', async () => {
-      const cached = await loadSessionsFromCache();
+      const [cached, handles] = await Promise.all([loadSessionsFromCache(), getAllDirectoryHandles()]);
       if (cached && cached.length > 0 && sessionsList.length === 0) {
         sessionsList = cached.map((s, idx) => {
           s.id = idx;
@@ -3748,18 +4287,19 @@
         renderSessionsSidebar();
         selectSession(0);
         switchMainView('tree');
-      } else if (sessionsList.length === 0) {
-        // Load default rich sample index automatically for immediate wow factor!
-        loadSampleSession();
+      } else if (sessionsList.length === 0 && handles.length > 0) {
+        showToast('Session analytics changed. Refresh & Sync to rebuild your local index.', '🔄');
       }
 
       // Check linked folders count
-      const handles = await getAllDirectoryHandles();
       if (handles.length > 0) {
         const refreshBtns = document.querySelectorAll('.btn-refresh-folders');
         refreshBtns.forEach(btn => {
           btn.style.display = 'inline-flex';
         });
+      }
+      if (staleSessionCacheDetected) {
+        showToast('Session analytics changed. Refresh & Sync or re-import logs to rebuild metrics; your existing index is still available.', '🔄');
       }
     });
 

@@ -48,8 +48,8 @@ body::before {
 
 /* ── Navigation ── */
 nav {
-  position: fixed; top: 0; left: 0; right: 0;
-  z-index: 100;
+  position: sticky; top: 0; left: 0; right: 0;
+  z-index: 1000;
   display: flex; align-items: center; justify-content: space-between;
   padding: 16px 48px;
   background: rgba(247, 247, 245, 0.92);
@@ -85,7 +85,7 @@ nav {
 
 /* ── Sticky Offline Challenge Bar ── */
 #offline-challenge-bar {
-  position: sticky; top: 0; z-index: 1000;
+  position: relative; z-index: 1001;
   background: #0a0a0a;
   border-bottom: 2px solid rgba(0, 200, 150, 0.4);
   padding: 10px 24px;
@@ -142,7 +142,7 @@ nav {
 .article-wrap {
   max-width: 1160px;
   margin: 0 auto;
-  padding: 130px 28px 90px;
+  padding: 40px 28px 90px;
   position: relative;
 }
 .section-label {
