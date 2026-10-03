@@ -626,6 +626,147 @@
       background: rgba(0, 200, 150, 0.03);
     }
 
+    /* Mac App Nudge & Showcase Sections */
+    .mac-app-export-nudge {
+      margin-top: 18px;
+      padding: 16px;
+      background: linear-gradient(135deg, rgba(0, 200, 150, 0.06) 0%, rgba(56, 189, 248, 0.04) 100%);
+      border: 1px solid rgba(0, 200, 150, 0.25);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .mac-nudge-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .mac-nudge-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: #00C896;
+      background: rgba(0, 200, 150, 0.12);
+      padding: 2px 8px;
+      border-radius: 100px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .mac-nudge-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.4;
+    }
+    .mac-nudge-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin: 0;
+    }
+    .mac-nudge-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: #00C896;
+      color: #002d20;
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 7px;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      box-shadow: 0 2px 8px rgba(0, 200, 150, 0.2);
+    }
+    .mac-nudge-btn:hover {
+      background: #00e0a7;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 200, 150, 0.3);
+      color: #002d20;
+    }
+
+    .mac-showcase-section {
+      margin-top: 60px;
+      background: linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 44px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .mac-showcase-section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 20%;
+      right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #00C896, transparent);
+    }
+    .mac-showcase-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 40px;
+      align-items: center;
+    }
+    @media (max-width: 900px) {
+      .mac-showcase-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+    }
+    .mac-showcase-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 24px 0 28px;
+    }
+    @media (max-width: 600px) {
+      .mac-showcase-features {
+        grid-template-columns: 1fr;
+      }
+    }
+    .mac-feature-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .mac-feature-icon {
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+    .mac-feature-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .mac-feature-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin: 0;
+    }
+    .mac-showcase-img-wrap {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.18);
+      background: #000;
+    }
+    .mac-showcase-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    .mac-showcase-img:hover {
+      transform: scale(1.02);
+    }
+
     /* Toast Notification */
     #qr-toast {
       position: fixed;
@@ -1369,8 +1510,77 @@
           </button>
         </div>
 
+        <!-- In-App QR Generation Nudge -->
+        <div class="mac-app-export-nudge">
+          <div class="mac-nudge-header">
+            <span class="mac-nudge-badge"> Mac Menu Bar App</span>
+            <span style="font-size: 11px; color: #00C896; font-weight: 700;">1-Click Instant</span>
+          </div>
+          <div class="mac-nudge-title">Need QR Codes Constantly from Your Clipboard?</div>
+          <p class="mac-nudge-desc">
+            Skip browser tabs. Turn any copied link, Wi-Fi password, or snippet into a QR code in <strong>1 click</strong> from your Mac menu bar with <strong>L2Cache</strong>.
+          </p>
+          <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" target="_blank" rel="noopener" class="mac-nudge-btn">
+            <span>🍎</span> Download L2Cache for Mac (App Store)
+          </a>
+        </div>
+
       </div>
 
+    </div>
+
+    <!-- Mac App In-App QR Showcase Banner -->
+    <div class="mac-showcase-section">
+      <div class="mac-showcase-grid">
+        <div class="mac-showcase-text">
+          <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px;">
+            <span class="mac-nudge-badge" style="background: rgba(0,200,150,0.15); color: #008765; font-size: 11.5px; padding: 4px 10px;"> L2Cache for macOS</span>
+            <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Native Clipboard Accelerator</span>
+          </div>
+          <h2 style="font-size: 28px; font-weight: 800; line-height: 1.25; margin-bottom: 14px; color: var(--text);">
+            Turn Any Copied Link into a QR Code in 1 Click
+          </h2>
+          <p style="font-size: 15px; line-height: 1.6; color: var(--text-muted); margin-bottom: 0;">
+            Stop opening browser tabs just to beam URLs to your phone or share Wi-Fi credentials with colleagues. <strong>L2Cache for Mac</strong> lives right in your menu bar. Copy any text, press your shortcut (<kbd style="background: var(--bg3); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; font-size: 12px; font-family: var(--mono);">⌥ Space</kbd>), and generate an instant, high-contrast QR code on your screen.
+          </p>
+
+          <div class="mac-showcase-features">
+            <div class="mac-feature-box">
+              <div class="mac-feature-icon">⚡</div>
+              <div class="mac-feature-title">1-Click Menu Bar Access</div>
+              <p class="mac-feature-desc">Generate or preview QR codes directly from your active clipboard or history with zero web round-trips.</p>
+            </div>
+            <div class="mac-feature-box">
+              <div class="mac-feature-icon">🔒</div>
+              <div class="mac-feature-title">100% Private CoreImage</div>
+              <p class="mac-feature-desc">Rendered natively on-device via Apple Vision &amp; CoreImage filters with zero cloud telemetry.</p>
+            </div>
+            <div class="mac-feature-box">
+              <div class="mac-feature-icon">📸</div>
+              <div class="mac-feature-title">Barcode OCR &amp; Wi-Fi Decode</div>
+              <p class="mac-feature-desc">Copy any image with a QR code and L2Cache automatically decodes and parses the contents.</p>
+            </div>
+            <div class="mac-feature-box">
+              <div class="mac-feature-icon">📋</div>
+              <div class="mac-feature-title">Unlimited Clip History</div>
+              <p class="mac-feature-desc">Never lose past URLs, code snippets, tokens, or customer links across your apps.</p>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+            <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" target="_blank" rel="noopener" class="btn-export-primary" style="padding: 12px 22px; text-decoration: none; font-size: 14px; box-shadow: 0 4px 14px rgba(0, 200, 150, 0.3);">
+              <span>🍎</span> Download L2Cache for Mac
+            </a>
+            <a href="/en/developer-clipboard" class="btn-export-secondary" style="padding: 11px 18px; text-decoration: none; font-size: 13.5px;">
+              Learn More About L2Cache &rarr;
+            </a>
+          </div>
+        </div>
+
+        <div class="mac-showcase-img-wrap">
+          <img src="/screenshots/screenshot-9-qrcode.webp" alt="L2Cache for Mac In-App QR Code Generation" class="mac-showcase-img" loading="lazy" />
+        </div>
+      </div>
     </div>
 
     <!-- SEO & Educational Guide Section -->
@@ -1420,6 +1630,12 @@
           <summary style="font-weight: 700; font-size: 15px; cursor: pointer;">Do these QR codes ever expire?</summary>
           <p style="margin-top: 10px; font-size: 14px; line-height: 1.6; color: var(--text-muted);">
             No. These are <strong>static QR codes</strong>. The destination URL or Wi-Fi password is encoded directly into the pattern itself. There are zero redirects, zero accounts, and zero expiration dates.
+          </p>
+        </details>
+        <details style="background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px;">
+          <summary style="font-weight: 700; font-size: 15px; cursor: pointer;">Can I generate QR codes instantly without opening a browser?</summary>
+          <p style="margin-top: 10px; font-size: 14px; line-height: 1.6; color: var(--text-muted);">
+            Yes! With <strong>L2Cache for Mac</strong>, you can turn any copied link, Wi-Fi credential, or text snippet into a scannable QR code in a single click directly from your Mac menu bar. Press your global shortcut (<kbd style="background: var(--bg); border: 1px solid var(--border); padding: 1px 5px; border-radius: 4px; font-size: 12px; font-family: var(--mono);">⌥ Space</kbd>), highlight any clipboard item, and select <em>Generate QR Code</em> to display or copy it immediately. <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" target="_blank" rel="noopener" style="color: #00C896; font-weight: 600;">Download L2Cache on the Mac App Store &rarr;</a>
           </p>
         </details>
       </div>
