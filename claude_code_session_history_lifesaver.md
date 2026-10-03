@@ -169,6 +169,13 @@ Treating their prompts and reasoning transcripts as searchable developer assets 
 
 ### Tools to Inspect & Search Your AI Sessions Today
 
-* **[L2Cache on the Mac App Store](https://apps.apple.com/us/app/l2cache/id6774423992?mt=12)**: The native macOS developer clipboard & AI history manager. Automatically indexes Claude Code and OpenAI Codex sessions offline with Touch ID security ($4.99 lifetime).
-* **[Free Online Claude & Codex Session Viewer](https://l2cache.amvo.store/en/tools/claude-session-viewer)**: In-browser, 100% client-side tool to parse, search, and inspect `transcript.jsonl` files without uploading your code to any server.
-* **[Claude Code Session History Guide](https://l2cache.amvo.store/en/claude-code-session-history-mac)**: Complete technical guide on transcript paths, JSON schema structures, and CLI resume commands.
+* **[Free Online Claude & Codex Session Viewer](https://l2cache.amvo.store/en/tools/claude-session-viewer)**: In-browser, 100% client-side tool to parse, search, and inspect `transcript.jsonl` files without uploading your code to any server. Features 1-click folder access, full-text turn search, tool call diffs, and token analytics.
+* **[L2Cache on the Mac App Store](https://apps.apple.com/us/app/l2cache/id6774423992?mt=12)**: The native macOS developer clipboard & AI history manager. Automatically indexes Claude Code and OpenAI Codex sessions offline with Touch ID security and instant global hotkey search (`⌥ + Space`) ($4.99 lifetime).
+* **[Claude Code History Viewer for Mac](https://l2cache.amvo.store/en/claude-code-history)**: Browse and search supported local Claude Code debugging conversations alongside your terminal and clipboard history.
+* **[Claude Code Session History Guide](https://l2cache.amvo.store/en/claude-code-session-history-mac)**: Complete technical guide on transcript paths (`~/.claude/projects/`), JSON schema structures, and CLI resume commands (`claude --resume`).
+* **[OpenAI Codex Session History Guide](https://l2cache.amvo.store/en/codex-session-history-mac)**: Walkthrough on locating and recovering OpenAI Codex CLI `rollout-*.jsonl` sessions and `~/.codex/memories.sqlite`.
+* **[PasteGuard: Secret Sanitizer for AI Prompts](https://l2cache.amvo.store/en/tools/pasteguard)**: Free client-side tool to sanitize API keys, credentials, and tokens before pasting prompts into Claude Code or LLMs.
+* **[Free Mermaid Diagram Viewer & Live Editor](https://l2cache.amvo.store/en/tools/mermaid-viewer)**: In-browser offline viewer and editor for Mermaid flowcharts, sequence diagrams, and user journey graphs with SVG/PNG export.
+* **[65+ Free Offline Developer Tools](https://l2cache.amvo.store/en/tools)**: Suite of in-browser, private developer utilities including JSON formatters, JWT decoders, regex testers, and data converters.
+
+

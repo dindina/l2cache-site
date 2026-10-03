@@ -1,0 +1,2238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Mermaid Diagram Viewer &amp; Live Editor (Offline) | L2Cache</title>
+  <meta name="description" content="Render, edit, pan-zoom, and export Mermaid diagrams offline in your browser. Live preview flowcharts, sequence diagrams, class, state, ER, and git graphs with SVG and PNG export." />
+  <meta name="keywords" content="mermaid diagram viewer, mermaid live editor offline, mermaid to svg, mermaid to png, sequence diagram generator, flowchart maker, private mermaid viewer, render mermaid client side, architecture diagram visualizer, er diagram tool" />
+  <link rel="canonical" href="https://l2cache.amvo.store/en/tools/mermaid-viewer" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="L2Cache" />
+  <meta property="og:url" content="https://l2cache.amvo.store/en/tools/mermaid-viewer" />
+  <meta property="og:title" content="Free Mermaid Diagram Viewer &amp; Live Editor (Offline) | L2Cache" />
+  <meta property="og:description" content="Render, edit, pan-zoom, and export Mermaid diagrams offline in your browser. Live preview flowcharts, sequence diagrams, class, state, ER, and git graphs with SVG and PNG export." />
+  <meta property="og:image" content="https://l2cache.amvo.store/icon.png" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <meta property="og:image:alt" content="L2Cache app icon" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:url" content="https://l2cache.amvo.store/en/tools/mermaid-viewer" />
+  <meta name="twitter:title" content="Free Mermaid Diagram Viewer &amp; Live Editor (Offline) | L2Cache" />
+  <meta name="twitter:description" content="Render, edit, pan-zoom, and export Mermaid diagrams offline in your browser. Live preview flowcharts, sequence diagrams, class, state, ER, and git graphs with SVG and PNG export." />
+  <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png" />
+
+  <link rel="stylesheet" href="/en/tools/theme.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Mermaid Diagram Viewer & Live Editor",
+        "url": "https://l2cache.amvo.store/en/tools/mermaid-viewer",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "description": "Free, privacy-first in-browser Mermaid diagram viewer and live editor. Render flowcharts, sequence diagrams, state machines, and architecture graphs with 100% client-side SVG and PNG export."
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Does this Mermaid viewer send my diagram code to a server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The L2Cache Mermaid Diagram Viewer runs 100% in your browser using local client-side JavaScript. Your architectural designs, database schemas, and proprietary code never leave your device."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I export Mermaid diagrams as high-resolution PNG or vector SVG?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! You can instantly export raw vector SVG files for Figma, Illustrator, and web documents, or export crisp 2x retina PNG images directly to your downloads."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which Mermaid diagram types are supported?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "All major Mermaid diagram types are supported: Flowcharts, Sequence Diagrams, Class Diagrams, State Diagrams, Entity Relationship (ER) diagrams, User Journeys, Git Graphs, Gantt charts, Mindmaps, and Pie Charts."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does pan and zoom work?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Click and drag anywhere on the visual canvas to pan. Use your mouse scroll wheel, trackpad pinch, or the on-screen zoom buttons (+, -, Fit, 100%) to inspect complex enterprise diagrams."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    /* Extended Wide Page Canvas Layout */
+    .article-wrap {
+      max-width: 1760px !important;
+      width: 96% !important;
+      padding: 24px 20px 80px !important;
+    }
+    .hero-sub {
+      max-width: 860px;
+    }
+    .mermaid-workspace {
+      background: #0d0c1a;
+      border: 1px solid #28283a;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 32px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+      width: 100%;
+    }
+    .mermaid-toolbar {
+      background: #141324;
+      border-bottom: 1px solid #28283a;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .toolbar-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: #888899;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-right: 4px;
+    }
+    .toolbar-select {
+      background: #141324;
+      border: 1px solid #3b3a54;
+      color: #f8fafc;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 10px;
+      border-radius: 6px;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .toolbar-select:focus, .toolbar-select:hover {
+      border-color: #00E5AA;
+      box-shadow: 0 0 0 2px rgba(0, 229, 170, 0.15);
+    }
+    .toolbar-btn {
+      background: #1a192e;
+      border: 1px solid #3b3a54;
+      color: #ffffff;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .toolbar-btn:hover {
+      background: #272642;
+      border-color: #00E5AA;
+      color: #ffffff;
+    }
+    .toolbar-btn.primary {
+      background: #00C896;
+      border-color: #00E5AA;
+      color: #00281e;
+      font-weight: 700;
+    }
+    .toolbar-btn.primary:hover {
+      background: #00db9e;
+      color: #001f16;
+    }
+
+    /* Dual Panes Grid with Extended Full Canvas Mode */
+    .mermaid-split-view {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      min-height: 700px;
+      height: 82vh;
+      max-height: 980px;
+      position: relative;
+      transition: grid-template-columns 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .mermaid-split-view.full-canvas-mode {
+      grid-template-columns: 0px 1fr;
+    }
+    .mermaid-split-view.full-canvas-mode .editor-pane {
+      overflow: hidden;
+      border-right: none;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .mermaid-split-view.full-canvas-mode #show-editor-floating-btn {
+      display: inline-flex !important;
+    }
+    .mermaid-split-view.full-canvas-mode .diagram-status-pill {
+      left: 140px;
+    }
+
+    .show-editor-btn {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 20;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      background: rgba(20, 19, 36, 0.94);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid #00E5AA;
+      color: #00E5AA;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 100px;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      transition: all 0.15s ease;
+    }
+    .show-editor-btn:hover {
+      background: #00E5AA;
+      color: #00281e;
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 960px) {
+      .mermaid-split-view {
+        grid-template-columns: 1fr;
+        height: auto;
+        min-height: auto;
+        max-height: none;
+      }
+      .mermaid-split-view.full-canvas-mode {
+        grid-template-columns: 1fr;
+      }
+      .mermaid-split-view.full-canvas-mode .editor-pane {
+        display: none;
+      }
+    }
+
+    /* Left Pane: Code Editor */
+    .editor-pane {
+      background: #09090e;
+      border-right: 1px solid #28283a;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      min-height: 320px;
+      transition: opacity 0.2s ease;
+    }
+    .editor-header {
+      background: #10101c;
+      padding: 8px 14px;
+      border-bottom: 1px solid #222232;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: #888899;
+    }
+    .editor-textarea {
+      flex: 1;
+      width: 100%;
+      background: transparent;
+      border: none;
+      padding: 16px;
+      color: #e6e6ef;
+      font-family: var(--mono);
+      font-size: 13.5px;
+      line-height: 1.6;
+      resize: none;
+      outline: none;
+      white-space: pre;
+      overflow-y: auto;
+      tab-size: 2;
+    }
+    .editor-textarea::selection {
+      background: rgba(0, 200, 150, 0.3);
+    }
+    .editor-footer {
+      padding: 8px 14px;
+      background: #10101c;
+      border-top: 1px solid #222232;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: #777788;
+    }
+
+    /* Error Notification Banner */
+    .syntax-error-banner {
+      background: rgba(239, 68, 68, 0.15);
+      border-top: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+      padding: 10px 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      display: none;
+      align-items: flex-start;
+      gap: 8px;
+      max-height: 100px;
+      overflow-y: auto;
+    }
+    .syntax-error-banner.active {
+      display: flex;
+    }
+
+    /* Right Pane: Diagram Viewer Stage */
+    .viewer-pane {
+      background: #0b0a14;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+      transition: background 0.2s ease;
+    }
+    .viewer-pane.bg-dark {
+      background: #0b0a14;
+    }
+    .viewer-pane.bg-navy {
+      background: #111a2e;
+    }
+    .viewer-pane.bg-light {
+      background: #ffffff;
+    }
+    .viewer-pane.bg-transparent {
+      background-color: #12121e;
+      background-image: linear-gradient(45deg, #1b1b2a 25%, transparent 25%), linear-gradient(-45deg, #1b1b2a 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1b1b2a 75%), linear-gradient(-45deg, transparent 75%, #1b1b2a 75%);
+      background-size: 24px 24px;
+      background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
+    }
+
+    /* Subtle dot grid pattern */
+    .viewer-canvas-bg {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .viewer-pane.bg-light .viewer-canvas-bg {
+      background-image: radial-gradient(rgba(0, 0, 0, 0.12) 1px, transparent 1px);
+    }
+    .viewer-pane.bg-transparent .viewer-canvas-bg {
+      display: none;
+    }
+
+    .canvas-viewport {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+    .canvas-viewport.grabbing {
+      cursor: grabbing;
+    }
+    .diagram-stage {
+      position: absolute;
+      transform-origin: center center;
+      transition: transform 0.05s ease-out;
+      will-change: transform;
+      padding: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .diagram-stage svg {
+      max-width: none !important;
+      display: block;
+      filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.45));
+    }
+
+    /* ========================================================
+       CRITICAL CONTRAST FIXES: Dark & Navy Canvas Scoped Rules
+       Ensures zero black-on-black or illegible text across all diagrams
+       ======================================================== */
+    .viewer-pane:not(.bg-light) .diagram-stage text {
+      fill: #ffffff !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .label {
+      color: #ffffff !important;
+      fill: #ffffff !important;
+    }
+
+    /* Flowchart Node Text */
+    .viewer-pane:not(.bg-light) .diagram-stage .node .label,
+    .viewer-pane:not(.bg-light) .diagram-stage .node .label span,
+    .viewer-pane:not(.bg-light) .diagram-stage .node text {
+      color: #ffffff !important;
+      fill: #ffffff !important;
+      font-weight: 500;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .node.primary text,
+    .viewer-pane:not(.bg-light) .diagram-stage .node.primary .label,
+    .viewer-pane:not(.bg-light) .diagram-stage .node.primary .label span {
+      color: #00261b !important;
+      fill: #00261b !important;
+      font-weight: 700 !important;
+    }
+
+    /* Flowchart Edge / Link Labels (Prevents invisible black connector text) */
+    .viewer-pane:not(.bg-light) .diagram-stage .edgeLabel,
+    .viewer-pane:not(.bg-light) .diagram-stage .edgeLabel span,
+    .viewer-pane:not(.bg-light) .diagram-stage .edgeLabel p,
+    .viewer-pane:not(.bg-light) .diagram-stage foreignObject div,
+    .viewer-pane:not(.bg-light) .diagram-stage foreignObject span {
+      color: #ffffff !important;
+      fill: #ffffff !important;
+      font-weight: 600 !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .edgeLabel span,
+    .viewer-pane:not(.bg-light) .diagram-stage .edgeLabel p {
+      background: #1c1b30 !important;
+      padding: 3px 8px !important;
+      border-radius: 6px !important;
+      border: 1px solid #3f3e62 !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+      display: inline-block !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .edgePath .path,
+    .viewer-pane:not(.bg-light) .diagram-stage path.flowchart-link {
+      stroke: #00E5AA !important;
+      stroke-width: 1.8px !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .marker {
+      fill: #00E5AA !important;
+      stroke: #00E5AA !important;
+    }
+
+    /* Sequence Diagram High Contrast */
+    .viewer-pane:not(.bg-light) .diagram-stage .actor {
+      fill: #18172b !important;
+      stroke: #00C896 !important;
+      stroke-width: 1.5px !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .actor text,
+    .viewer-pane:not(.bg-light) .diagram-stage text.actor > tspan {
+      fill: #ffffff !important;
+      font-weight: 600 !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .messageText {
+      fill: #38bdf8 !important;
+      stroke: none !important;
+      font-weight: 600 !important;
+      font-size: 13px !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .messageLine0,
+    .viewer-pane:not(.bg-light) .diagram-stage .messageLine1 {
+      stroke: #38bdf8 !important;
+      stroke-width: 1.5px !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .note {
+      fill: #1c1a2e !important;
+      stroke: #a78bfa !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .noteText,
+    .viewer-pane:not(.bg-light) .diagram-stage .noteText tspan {
+      fill: #ffffff !important;
+      font-weight: 500 !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .loopText,
+    .viewer-pane:not(.bg-light) .diagram-stage .loopText tspan {
+      fill: #fcd34d !important;
+      font-weight: 600 !important;
+    }
+
+    /* GitGraph High Contrast */
+    .viewer-pane:not(.bg-light) .diagram-stage .commit-label {
+      fill: #ffffff !important;
+      font-weight: 600 !important;
+      font-size: 11px !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .commit-label-bkg {
+      fill: #181828 !important;
+      stroke: #44445e !important;
+      rx: 4px !important;
+      opacity: 0.95 !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .branch-label {
+      fill: #ffffff !important;
+      font-weight: 700 !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .tag-label {
+      fill: #002219 !important;
+      font-weight: 700 !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .tag-label-bkg {
+      fill: #00C896 !important;
+    }
+
+    /* Database ER Diagram High Contrast */
+    .viewer-pane:not(.bg-light) .diagram-stage .er.entityBox {
+      fill: #18172b !important;
+      stroke: #00C896 !important;
+      stroke-width: 1.5px !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .er.entityLabel {
+      fill: #00E5AA !important;
+      font-weight: 700 !important;
+      font-size: 14px !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .er.attributeBoxOdd {
+      fill: #10101f !important;
+      stroke: #2e2d46 !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .er.attributeBoxEven {
+      fill: #16152a !important;
+      stroke: #2e2d46 !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .er.attributeBoxOdd text,
+    .viewer-pane:not(.bg-light) .diagram-stage .er.attributeBoxEven text {
+      fill: #f1f5f9 !important;
+      font-size: 12px !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .er.relationshipLabel {
+      fill: #ffffff !important;
+      font-weight: 600 !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .er.relationshipLabelBox {
+      fill: #181828 !important;
+      stroke: #44445e !important;
+    }
+
+    /* State Diagram High Contrast */
+    .viewer-pane:not(.bg-light) .diagram-stage .state-title {
+      fill: #ffffff !important;
+      font-weight: 700 !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .stateText {
+      fill: #f1f5f9 !important;
+      font-weight: 500 !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .transition text {
+      fill: #38bdf8 !important;
+      font-weight: 600 !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .statediagram-note text {
+      fill: #ffffff !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .statediagram-note rect {
+      fill: #181828 !important;
+      stroke: #00C896 !important;
+    }
+
+    /* Gantt High Contrast */
+    .viewer-pane:not(.bg-light) .diagram-stage .sectionTitle {
+      fill: #00E5AA !important;
+      font-weight: 700 !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .taskText {
+      fill: #ffffff !important;
+      font-weight: 600 !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .taskTextOutsideRight,
+    .viewer-pane:not(.bg-light) .diagram-stage .taskTextOutsideLeft {
+      fill: #e2e8f0 !important;
+      font-weight: 500 !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .tick text {
+      fill: #94a3b8 !important;
+    }
+
+    /* Pie Chart High Contrast */
+    .viewer-pane:not(.bg-light) .diagram-stage .pieTitleText {
+      fill: #ffffff !important;
+      font-weight: 700 !important;
+      font-size: 18px !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .legend text {
+      fill: #f1f5f9 !important;
+      font-size: 13px !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage .pieSliceText {
+      fill: #ffffff !important;
+      font-weight: 700 !important;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.9) !important;
+    }
+
+    /* Mindmap High Contrast */
+    .viewer-pane:not(.bg-light) .diagram-stage .mindmap-node text,
+    .viewer-pane:not(.bg-light) .diagram-stage .mindmap-node span {
+      fill: #ffffff !important;
+      color: #ffffff !important;
+      font-weight: 600 !important;
+    }
+    .viewer-pane:not(.bg-light) .diagram-stage g.mindmap-node.depth-0 text,
+    .viewer-pane:not(.bg-light) .diagram-stage g.mindmap-node.depth-0 span {
+      fill: #002219 !important;
+      color: #002219 !important;
+      font-weight: 800 !important;
+    }
+
+    /* Light Canvas Scoped Rules */
+    .viewer-pane.bg-light .diagram-stage text {
+      fill: #0f172a !important;
+    }
+    .viewer-pane.bg-light .diagram-stage .label,
+    .viewer-pane.bg-light .diagram-stage .node .label span {
+      color: #0f172a !important;
+      fill: #0f172a !important;
+    }
+    .viewer-pane.bg-light .diagram-stage .edgeLabel span,
+    .viewer-pane.bg-light .diagram-stage .edgeLabel p {
+      background: #ffffff !important;
+      color: #0f172a !important;
+      border: 1px solid #cbd5e1 !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+    }
+    .viewer-pane.bg-light .diagram-stage .edgePath .path {
+      stroke: #0284c7 !important;
+    }
+    .viewer-pane.bg-light .diagram-stage .messageText {
+      fill: #0284c7 !important;
+    }
+    .viewer-pane.bg-light .diagram-stage .commit-label {
+      fill: #0f172a !important;
+    }
+    .viewer-pane.bg-light .diagram-stage .commit-label-bkg {
+      fill: #f1f5f9 !important;
+      stroke: #cbd5e1 !important;
+    }
+
+    /* Floating View Controls & High-Zoom UI (Up to 3500%!) */
+    .canvas-controls-overlay {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(18, 17, 34, 0.94);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid #3b3a58;
+      border-radius: 8px;
+      padding: 4px 6px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+    .canvas-ctrl-btn {
+      background: #24233c;
+      border: 1px solid #3a3956;
+      color: #ffffff;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .canvas-ctrl-btn:hover {
+      background: #333252;
+      border-color: #00E5AA;
+      color: #00E5AA;
+    }
+
+    /* Zoom Dropdown & Preset Picker */
+    .zoom-dropdown-wrapper {
+      position: relative;
+    }
+    .zoom-level-badge {
+      background: #18172c;
+      border: 1px solid #3b3a58;
+      color: #00E5AA;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      min-width: 68px;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+    .zoom-level-badge:hover {
+      background: #262540;
+      border-color: #00E5AA;
+      color: #ffffff;
+    }
+    .zoom-presets-menu {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #141324;
+      border: 1px solid #3a3956;
+      border-radius: 8px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65);
+      padding: 6px;
+      display: none;
+      flex-direction: column;
+      min-width: 180px;
+      max-height: 340px;
+      overflow-y: auto;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    .zoom-presets-menu.open {
+      display: flex;
+    }
+    .zoom-menu-header {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: #88889d;
+      padding: 4px 8px;
+      letter-spacing: 0.06em;
+    }
+    .zoom-menu-item {
+      background: transparent;
+      border: none;
+      color: #e2e8f0;
+      font-family: var(--sans);
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 4px;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.12s, color 0.12s;
+    }
+    .zoom-menu-item:hover {
+      background: rgba(0, 200, 150, 0.15);
+      color: #00E5AA;
+      font-weight: 600;
+    }
+    .zoom-menu-divider {
+      height: 1px;
+      background: #2c2b42;
+      margin: 4px 0;
+    }
+
+    /* Status Pill */
+    .diagram-status-pill {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 10;
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      background: rgba(13, 12, 26, 0.8);
+      backdrop-filter: blur(6px);
+      border: 1px solid #333348;
+      color: #888899;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      pointer-events: none;
+    }
+    .status-dot-ok {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #00C896;
+      box-shadow: 0 0 8px #00C896;
+    }
+    .status-dot-err {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #fc6a6a;
+      box-shadow: 0 0 8px #fc6a6a;
+    }
+
+    /* Cheat Sheet Cards */
+    .template-chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 18px 0 28px;
+    }
+    .chip-btn {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-family: var(--sans);
+      font-size: 13px;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .chip-btn:hover, .chip-btn.active {
+      border-color: var(--purple);
+      color: var(--text);
+      background: rgba(0, 200, 150, 0.06);
+    }
+
+    /* Fullscreen Mode */
+    .mermaid-workspace.is-fullscreen {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      border-radius: 0;
+      margin: 0;
+      height: 100vh;
+      max-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .mermaid-workspace.is-fullscreen .mermaid-split-view {
+      flex: 1;
+      height: auto;
+      max-height: none;
+    }
+  </style>
+
+  <!-- Local Offline Mermaid library with CDN fallback -->
+  <script src="/en/tools/vendor/mermaid.min.js"></script>
+  <script>
+    if (typeof mermaid === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"><\/script>');
+    }
+  </script>
+</head>
+<body>
+
+  <!-- Sticky Offline Challenge Bar -->
+  <div id="offline-challenge-bar">
+    <div class="challenge-left">
+      <span class="challenge-icon">✈️</span>
+      <div class="challenge-text">
+        <div class="challenge-title">Works <em>100% offline</em> — test in Airplane Mode</div>
+        <div class="challenge-sub">Render &amp; export Mermaid diagrams locally. Your confidential system architectures never touch a server.</div>
+      </div>
+    </div>
+    <button id="offline-toggle-btn" onclick="toggleOfflineMode()">
+      <span id="btn-icon">✈️</span>
+      <span id="btn-label">Airplane Mode Challenge</span>
+    </button>
+    <div class="challenge-status">
+      <div class="status-pill online" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">NETWORK ON</span>
+      </div>
+      <span id="offline-timer" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="/en/">
+      <div class="nav-logo-icon">📋</div>
+      L2Cache
+    </a>
+    <ul class="nav-links">
+      <li><a href="/en/developer-clipboard">Developers</a></li>
+      <li><a href="/en/tools" class="active">Free Tools (65)</a></li>
+      <li><a href="/en/tools/claude-session-viewer">Claude Sessions</a></li>
+      <li><a href="/en/benchmark">Benchmark</a></li>
+      <li><a href="/en/blog">Blog</a></li>
+      <li><a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta">Download for Mac</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="article-wrap">
+      
+      <!-- Hero -->
+      <span class="section-label">100% IN-BROWSER VISUALIZER</span>
+      <h1>Mermaid Diagram <em>Viewer &amp; Live Editor</em></h1>
+      <p class="hero-sub">
+        Render, edit, pan-zoom, and export architectural flowcharts, sequence diagrams, ER schemas, and state machines with zero server round-trips. 100% private, instant offline vector SVG and 2x retina PNG generation.
+      </p>
+
+      <!-- Quick Template Chips -->
+      <div class="template-chips-row">
+        <span style="font-family: var(--mono); font-size: 12px; color: var(--text-dim); display: flex; align-items: center; margin-right: 4px;">PRESETS:</span>
+        <button class="chip-btn active" onclick="loadTemplate('architecture')">☁️ Microservices Architecture</button>
+        <button class="chip-btn" onclick="loadTemplate('journey')">🗺️ Claude Code Journey</button>
+        <button class="chip-btn" onclick="loadTemplate('sequence')">🔐 Biometric Auth Sequence</button>
+        <button class="chip-btn" onclick="loadTemplate('gitgraph')">🌿 Git Branching Flow</button>
+        <button class="chip-btn" onclick="loadTemplate('er')">🗄️ Database ER Schema</button>
+        <button class="chip-btn" onclick="loadTemplate('state')">🔄 State Machine</button>
+        <button class="chip-btn" onclick="loadTemplate('gantt')">📊 Sprint Gantt Chart</button>
+        <button class="chip-btn" onclick="loadTemplate('mindmap')">🧠 Feature Mindmap</button>
+        <button class="chip-btn" onclick="loadTemplate('pie')">🥧 Token Analytics Pie</button>
+      </div>
+
+      <!-- Main Workspace -->
+      <div class="mermaid-workspace" id="workspace-container">
+        
+        <!-- Header Toolbar -->
+        <div class="mermaid-toolbar">
+          <div class="toolbar-group">
+            <span class="toolbar-label">Template:</span>
+            <select id="template-select" class="toolbar-select" onchange="onTemplateSelectChange(this.value)">
+              <option value="architecture">Microservices Architecture (Flowchart)</option>
+              <option value="journey">Claude Code Context Lifeline (Journey)</option>
+              <option value="sequence">Biometric Auth &amp; Token (Sequence)</option>
+              <option value="gitgraph">Git Release Workflow (GitGraph)</option>
+              <option value="er">Database &amp; Session Schema (ER)</option>
+              <option value="state">App Lifecycle (State Diagram)</option>
+              <option value="gantt">Sprint Roadmap (Gantt)</option>
+              <option value="mindmap">Developer Suite (Mindmap)</option>
+              <option value="pie">Token Cost Metrics (Pie Chart)</option>
+            </select>
+
+            <span class="toolbar-label" style="margin-left: 8px;">Theme:</span>
+            <select id="theme-select" class="toolbar-select" onchange="onThemeChange(this.value)">
+              <option value="dark" selected>Dark Modern (L2Cache)</option>
+              <option value="default">Default Neutral</option>
+              <option value="forest">Forest Green</option>
+              <option value="neutral">Monochrome Minimal</option>
+              <option value="base">Base High-Contrast</option>
+            </select>
+
+            <span class="toolbar-label" style="margin-left: 8px;">Canvas:</span>
+            <select id="canvas-bg-select" class="toolbar-select" onchange="onCanvasBgChange(this.value)">
+              <option value="dark" selected>Dark Studio</option>
+              <option value="navy">Slate Navy</option>
+              <option value="light">Light Document</option>
+              <option value="transparent">Transparent Grid</option>
+            </select>
+          </div>
+
+          <div class="toolbar-group">
+            <button class="toolbar-btn" id="canvas-expand-btn" onclick="toggleFullCanvasMode()" title="Toggle full extended diagram canvas (collapse/expand editor)">
+              <span id="canvas-expand-icon">⤢</span> <span id="canvas-expand-label">Full Canvas</span>
+            </button>
+            <button class="toolbar-btn" onclick="copySvgMarkup()" title="Copy raw SVG markup to clipboard">
+              <span>📋</span> Copy SVG
+            </button>
+            <button class="toolbar-btn" onclick="downloadSvg()" title="Download vector .svg file">
+              <span>💾</span> SVG
+            </button>
+            <button class="toolbar-btn primary" onclick="downloadPng()" title="Download high-resolution 2x PNG">
+              <span>🖼️</span> Export PNG
+            </button>
+            <button class="toolbar-btn" onclick="shareDiagramLink()" title="Copy shareable link with encoded code">
+              <span>🔗</span> Share
+            </button>
+            <button class="toolbar-btn" onclick="toggleFullscreen()" title="Toggle full-screen presentation mode">
+              <span id="fullscreen-icon">⛶</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Split View with Extended Full Canvas Capability -->
+        <div class="mermaid-split-view" id="mermaid-split-view">
+          
+          <!-- Left: Editor Pane -->
+          <div class="editor-pane">
+            <div class="editor-header">
+              <span>MERMAID CODE</span>
+              <div style="display:flex; gap:8px;">
+                <button class="toolbar-btn" style="padding: 2px 8px; font-size: 11px;" onclick="beautifyCode()">Auto-Format</button>
+                <button class="toolbar-btn" style="padding: 2px 8px; font-size: 11px;" onclick="clearEditor()">Clear</button>
+              </div>
+            </div>
+
+            <textarea 
+              id="mermaid-code-input" 
+              class="editor-textarea" 
+              spellcheck="false" 
+              placeholder="Type or paste Mermaid syntax here..."
+              oninput="onCodeInput()"
+              onkeydown="onEditorKeyDown(event)">graph TD
+    Client["📱 Client App (iOS / Web)"] -->|HTTPS / TLS| Gateway["🛡️ API Gateway (Cloudflare / Envoy)"]
+    Gateway -->|JWT Auth| Auth["🔑 Auth Service (Go)"]
+    Gateway -->|GraphQL / REST| Core["⚡ Core API (Node.js)"]
+    Core -->|Read / Write| DB[("🗄️ PostgreSQL (Primary)")]
+    Core -->|Sub-millisecond Cache| Redis[("⚡ Redis Cache")]
+    Core -->|Async Events| Queue["📬 RabbitMQ / Kafka"]
+    Queue --> Worker["⚙️ Background Worker"]
+    Worker --> S3["🪣 AWS S3 / Cloudflare R2"]
+    Auth --> DB
+
+    classDef primary fill:#00382b,stroke:#00E5AA,stroke-width:2px,color:#00E5AA;
+    classDef secondary fill:#161628,stroke:#3b3b55,stroke-width:1.5px,color:#ffffff;
+    class Gateway,Core primary;
+    class Client,Auth,DB,Redis,Queue,Worker,S3 secondary;</textarea>
+
+            <!-- Syntax Error Banner -->
+            <div id="syntax-error-banner" class="syntax-error-banner">
+              <span>⚠️</span>
+              <div id="syntax-error-text" style="flex:1;">Syntax Error</div>
+            </div>
+
+            <div class="editor-footer">
+              <span id="char-counter">Lines: 15 · Chars: 684</span>
+              <span style="color:#00C896;">● Auto-Rendering</span>
+            </div>
+          </div>
+
+          <!-- Right: Interactive Viewer Stage -->
+          <div class="viewer-pane">
+            <div class="viewer-canvas-bg"></div>
+
+            <button id="show-editor-floating-btn" class="show-editor-btn" onclick="toggleFullCanvasMode()" title="Show Mermaid Code Editor">
+              <span>💻</span> Edit Code
+            </button>
+
+            <div class="diagram-status-pill">
+              <span class="status-dot-ok" id="status-dot"></span>
+              <span id="status-pill-text">Live Preview Active</span>
+            </div>
+
+            <div class="canvas-viewport" id="canvas-viewport" 
+                 onmousedown="onCanvasMouseDown(event)" 
+                 onwheel="onCanvasWheel(event)">
+              <div class="diagram-stage" id="diagram-stage">
+                <div id="mermaid-render-target"></div>
+              </div>
+            </div>
+
+            <!-- Canvas Floating Controls -->
+            <div class="canvas-controls-overlay">
+              <button class="canvas-ctrl-btn" onclick="zoomIn()" title="Zoom In (+)">+</button>
+              <button class="canvas-ctrl-btn" onclick="zoomOut()" title="Zoom Out (−)">−</button>
+
+              <!-- Zoom Dropdown (Up to 3000%!) -->
+              <div class="zoom-dropdown-wrapper">
+                <button class="zoom-level-badge" id="zoom-text" onclick="toggleZoomMenu(event)" title="Click to choose zoom preset (up to 3000%)">100% ▾</button>
+                <div id="zoom-presets-menu" class="zoom-presets-menu">
+                  <div class="zoom-menu-header">ZOOM PRESETS</div>
+                  <button class="zoom-menu-item" onclick="setZoom(30.0)"><span>3000%</span> <span style="font-size:10px; color:#888;">30x Micro</span></button>
+                  <button class="zoom-menu-item" onclick="setZoom(20.0)"><span>2000%</span> <span style="font-size:10px; color:#888;">20x Ultra</span></button>
+                  <button class="zoom-menu-item" onclick="setZoom(15.0)"><span>1500%</span> <span style="font-size:10px; color:#888;">15x Super</span></button>
+                  <button class="zoom-menu-item" onclick="setZoom(10.0)"><span>1000%</span> <span style="font-size:10px; color:#888;">10x Deep</span></button>
+                  <button class="zoom-menu-item" onclick="setZoom(5.0)"><span>500%</span> <span style="font-size:10px; color:#888;">5x</span></button>
+                  <button class="zoom-menu-item" onclick="setZoom(2.5)"><span>250%</span> <span style="font-size:10px; color:#888;">2.5x</span></button>
+                  <button class="zoom-menu-item" onclick="setZoom(2.0)"><span>200%</span> <span style="font-size:10px; color:#888;">2x</span></button>
+                  <button class="zoom-menu-item" onclick="setZoom(1.5)"><span>150%</span> <span style="font-size:10px; color:#888;">1.5x</span></button>
+                  <button class="zoom-menu-item" onclick="setZoom(1.0)"><span>100%</span> <span style="font-size:10px; color:#888;">1:1 Actual</span></button>
+                  <button class="zoom-menu-item" onclick="setZoom(0.75)"><span>75%</span></button>
+                  <button class="zoom-menu-item" onclick="setZoom(0.50)"><span>50%</span></button>
+                  <button class="zoom-menu-item" onclick="setZoom(0.25)"><span>25%</span></button>
+                  <button class="zoom-menu-item" onclick="setZoom(0.10)"><span>10%</span></button>
+                  <div class="zoom-menu-divider"></div>
+                  <button class="zoom-menu-item" onclick="fitToScreen()"><span>⊡ Fit to Screen</span></button>
+                  <button class="zoom-menu-item" onclick="resetZoom()"><span>↺ Reset Pan & Zoom</span></button>
+                </div>
+              </div>
+
+              <button class="canvas-ctrl-btn" onclick="fitToScreen()" title="Fit Diagram to Screen (0)">⊡</button>
+              <button class="canvas-ctrl-btn" onclick="resetZoom()" title="Reset to 100% (1)">↺</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Feature Highlights Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 40px 0;">
+        <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+          <div style="font-size: 20px; margin-bottom: 8px;">🔒</div>
+          <h3 style="font-size: 16px; margin-bottom: 6px;">100% Client-Side Privacy</h3>
+          <p style="font-size: 13.5px; color: var(--text-muted); margin: 0;">Everything is rendered in memory with WebAssembly and local JavaScript. Proprietary architectures and tokens never leave your Mac.</p>
+        </div>
+        <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+          <div style="font-size: 20px; margin-bottom: 8px;">🔍</div>
+          <h3 style="font-size: 16px; margin-bottom: 6px;">Infinite Pan &amp; Zoom</h3>
+          <p style="font-size: 13.5px; color: var(--text-muted); margin: 0;">Effortlessly navigate huge enterprise microservice topologies with fluid mouse dragging, pinch-to-zoom, and 1-click auto-fit.</p>
+        </div>
+        <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+          <div style="font-size: 20px; margin-bottom: 8px;">⚡</div>
+          <h3 style="font-size: 16px; margin-bottom: 6px;">Clean Vector &amp; HD PNG</h3>
+          <p style="font-size: 13.5px; color: var(--text-muted); margin: 0;">Export crystal-clear SVG code for Figma, Notion, and Markdown docs, or generate crisp 2x retina PNG images for team slides.</p>
+        </div>
+        <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+          <div style="font-size: 20px; margin-bottom: 8px;">✈️</div>
+          <h3 style="font-size: 16px; margin-bottom: 6px;">Airplane Mode Ready</h3>
+          <p style="font-size: 13.5px; color: var(--text-muted); margin: 0;">Offline PWA caching and pre-bundled vendor libraries ensure full functionality during flights, subway commutes, or spotty Wi-Fi.</p>
+        </div>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section" style="margin-top: 48px; border-top: 1px solid var(--border); padding-top: 36px;">
+        <h2>Frequently Asked Questions</h2>
+
+        <div class="faq-card" style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+          <h3 style="font-size: 17px; margin-top: 0; margin-bottom: 8px;">Is my diagram syntax or architecture sent to a server?</h3>
+          <p style="font-size: 14.5px; color: var(--text-muted); margin: 0;">No. The L2Cache Mermaid Viewer runs entirely in your local browser runtime. Zero HTTP requests, zero cloud tracking, and zero database logging. Test by enabling Airplane Mode above.</p>
+        </div>
+
+        <div class="faq-card" style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+          <h3 style="font-size: 17px; margin-top: 0; margin-bottom: 8px;">How do I copy the diagram into Figma or Markdown?</h3>
+          <p style="font-size: 14.5px; color: var(--text-muted); margin: 0;">Click the <strong>📋 Copy SVG</strong> button in the toolbar. You can paste vector SVGs directly into Figma, Sketch, or Adobe Illustrator as native editable shapes. For GitHub or Obsidian, copy the Mermaid snippet directly.</p>
+        </div>
+
+        <div class="faq-card" style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+          <h3 style="font-size: 17px; margin-top: 0; margin-bottom: 8px;">Can I share diagrams with my teammates without saving to a database?</h3>
+          <p style="font-size: 14.5px; color: var(--text-muted); margin: 0;">Yes! Click the <strong>🔗 Share</strong> button to generate a URL with your diagram code encoded directly in the URL hash fragment. Anyone opening the link will see the exact same diagram rendered locally in their browser.</p>
+        </div>
+
+        <div class="faq-card" style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+          <h3 style="font-size: 17px; margin-top: 0; margin-bottom: 8px;">What diagram formats are supported?</h3>
+          <p style="font-size: 14.5px; color: var(--text-muted); margin: 0;">Flowcharts (<code>graph TD / LR</code>), Sequence Diagrams (<code>sequenceDiagram</code>), Class Diagrams (<code>classDiagram</code>), State Machines (<code>stateDiagram-v2</code>), ER Diagrams (<code>erDiagram</code>), User Journeys (<code>journey</code>), Git Graphs (<code>gitGraph</code>), Gantt Charts (<code>gantt</code>), Mindmaps (<code>mindmap</code>), and Pie Charts (<code>pie</code>).</p>
+        </div>
+      </div>
+
+      <!-- Related Tools Grid -->
+      <div style="margin-top: 56px; border-top: 1px solid var(--border); padding-top: 36px;">
+        <h2 style="margin-bottom: 20px;">Explore More Free Developer Tools</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+          <a href="/en/tools/claude-session-viewer" class="tool-card-item card-super-tool" style="border: 1px solid #00C896; text-decoration: none; color: inherit; padding: 20px; border-radius: 12px; background: var(--bg2); display: block;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-size: 20px;">⚡</span>
+              <span style="font-family: var(--mono); font-size: 11px; background: #00C896; color: #003d2e; font-weight: 700; padding: 2px 8px; border-radius: 6px;">FEATURED</span>
+            </div>
+            <h3 style="font-size: 16px; margin: 0 0 6px;">Claude &amp; Codex Session Viewer</h3>
+            <p style="font-size: 13.5px; color: var(--text-muted); margin: 0;">Inspect, search, and analyze multi-turn Claude Code and Codex JSONL session transcripts with offline privacy.</p>
+          </a>
+
+          <a href="/en/tools/pasteguard" class="tool-card-item" style="border: 1px solid var(--border); text-decoration: none; color: inherit; padding: 20px; border-radius: 12px; background: var(--bg2); display: block;">
+            <div style="font-size: 20px; margin-bottom: 8px;">🛡️</div>
+            <h3 style="font-size: 16px; margin: 0 0 6px;">PasteGuard: AI Secret Sanitizer</h3>
+            <p style="font-size: 13.5px; color: var(--text-muted); margin: 0;">Strip API keys, passwords, and tokens before pasting prompts into Claude, ChatGPT, or LLMs.</p>
+          </a>
+
+          <a href="/en/tools/regexlens" class="tool-card-item" style="border: 1px solid var(--border); text-decoration: none; color: inherit; padding: 20px; border-radius: 12px; background: var(--bg2); display: block;">
+            <div style="font-size: 20px; margin-bottom: 8px;">🔍</div>
+            <h3 style="font-size: 16px; margin: 0 0 6px;">RegexLens: Regex Flowchart</h3>
+            <p style="font-size: 13.5px; color: var(--text-muted); margin: 0;">Deconstruct regular expressions into interactive railroad flowcharts with plain-English breakdowns.</p>
+          </a>
+        </div>
+      </div>
+
+      <!-- L2Cache Mac App CTA -->
+      <div style="background: rgba(0, 200, 150, 0.08); border: 1px solid rgba(0, 200, 150, 0.3); border-radius: 16px; padding: 36px; text-align: center; margin-top: 64px;">
+        <h3 style="font-size: 22px; font-weight: 700; margin-bottom: 12px;">Never Lose Another Code Snippet or AI Prompt</h3>
+        <p style="color: var(--text-muted); max-width: 580px; margin: 0 auto 24px;">L2Cache for macOS keeps an unlimited, private, instant-searchable history of your clipboard, terminal commands, and Claude Code sessions on your Mac.</p>
+        <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="nav-cta" style="padding: 12px 28px; font-size: 15px;" target="_blank" rel="noopener">
+          Download L2Cache on the Mac App Store ($4.99) →
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <a href="/en/">Home</a>
+    <a href="/en/tools">Free Dev Tools (65)</a>
+    <a href="/en/tools/claude-session-viewer">Claude Session Viewer</a>
+    <a href="/en/tools/pasteguard">PasteGuard</a>
+    <a href="/en/claude-code-session-history-mac">Claude Session Guide</a>
+    <a href="/en/privacy">Privacy Policy</a>
+    <br /><br />
+    © 2026 L2Cache · 100% On-Device Privacy
+  </footer>
+
+  <!-- Mermaid Viewer Engine Logic -->
+  <script>
+    // Templates Library
+    const TEMPLATES = {
+      architecture: `graph TD
+    Client["📱 Client App (iOS / Web)"] -->|HTTPS / TLS| Gateway["🛡️ API Gateway (Cloudflare / Envoy)"]
+    Gateway -->|JWT Auth| Auth["🔑 Auth Service (Go)"]
+    Gateway -->|GraphQL / REST| Core["⚡ Core API (Node.js)"]
+    Core -->|Read / Write| DB[("🗄️ PostgreSQL (Primary)")]
+    Core -->|Sub-millisecond Cache| Redis[("⚡ Redis Cache")]
+    Core -->|Async Events| Queue["📬 RabbitMQ / Kafka"]
+    Queue --> Worker["⚙️ Background Worker"]
+    Worker --> S3["🪣 AWS S3 / Cloudflare R2"]
+    Auth --> DB
+
+    classDef primary fill:#00382b,stroke:#00E5AA,stroke-width:2px,color:#00E5AA;
+    classDef secondary fill:#161628,stroke:#3b3b55,stroke-width:1.5px,color:#ffffff;
+    class Gateway,Core primary;
+    class Client,Auth,DB,Redis,Queue,Worker,S3 secondary;`,
+
+      journey: `journey
+    title The Claude Code Context Lifeline
+    section The Friday Outage
+      Production bug surfaces after AI refactor: 1: Developer
+      Git diff only shows raw lines: 2: Git Log
+      Search AI Session in L2Cache: 5: L2Cache Session Inspector
+      Find the exact prompt & architectural trade-off: 5: Production Fixed
+    section The Terminal Hang
+      45-min complex migration prompt running: 4: Terminal
+      Terminal process killed or laptop battery dies: 1: Panic
+      Resume transcript with 1-click in L2Cache: 5: Zero Work Lost`,
+
+      sequence: `sequenceDiagram
+    autonumber
+    actor Dev as 👨‍💻 Developer
+    participant App as 🖥️ Mac Client (L2Cache)
+    participant Auth as 🔐 Auth Provider
+    participant Vault as 🛡️ macOS Keychain
+
+    Dev->>App: Request secure API credential
+    App->>Vault: Query biometric Touch ID policy
+    Vault-->>Dev: Prompt biometric Touch ID dialog
+    Dev->>Vault: Biometric fingerprint match
+    Vault-->>App: Release encrypted master secret
+    App->>Auth: Exchange short-lived JWT token
+    Auth-->>App: Return access_token (exp: 15m)
+    App-->>Dev: Ready to execute command`,
+
+      gitgraph: `gitGraph
+    commit id: "v1.0.0" tag: "v1.0.0"
+    branch develop
+    checkout develop
+    commit id: "feat: add fts5 search"
+    commit id: "feat: parse transcript.jsonl"
+    branch feature/mermaid-viewer
+    checkout feature/mermaid-viewer
+    commit id: "feat: add pan-zoom canvas"
+    commit id: "feat: svg/png export"
+    checkout develop
+    merge feature/mermaid-viewer id: "merge PR #42"
+    checkout main
+    merge develop id: "release v1.1.0" tag: "v1.1.0"`,
+
+      er: `erDiagram
+    DEVELOPER ||--o{ CLIPBOARD_ITEM : copies
+    DEVELOPER ||--o{ AGENT_SESSION : executes
+    AGENT_SESSION ||--|{ SESSION_TURN : contains
+    SESSION_TURN ||--o{ TOOL_CALL : runs
+    AGENT_SESSION ||--o{ TOKEN_METRIC : tracks
+
+    DEVELOPER {
+        uuid id PK
+        string email
+        timestamp created_at
+    }
+    AGENT_SESSION {
+        string session_id PK
+        string agent_type "claude | codex | grok"
+        string project_path
+        int total_turns
+        timestamp start_time
+    }
+    SESSION_TURN {
+        int turn_number PK
+        string role "user | assistant"
+        text content
+        timestamp timestamp
+    }
+    TOOL_CALL {
+        string tool_name "Bash | Edit | Ripgrep"
+        text input_params
+        int exit_code
+    }
+    TOKEN_METRIC {
+        int prompt_tokens
+        int completion_tokens
+        float estimated_cost_usd
+    }`,
+
+      state: `stateDiagram-v2
+    [*] --> Idle: App Launched
+    Idle --> Capturing: Clipboard / Hotkey Event
+    Capturing --> Inspecting: Match Content Type
+    
+    state Inspecting {
+        [*] --> CheckJSON: Validate Syntax
+        CheckJSON --> ParseJSONL: Claude/Codex Transcript
+        CheckJSON --> NormalText: Standard Text
+    }
+
+    Inspecting --> EncryptedStore: On-Device SQLite
+    EncryptedStore --> Idle: Indexed in <1ms
+    EncryptedStore --> ErrorState: Storage Full
+    ErrorState --> Idle: Purge Cache`,
+
+      gantt: `gantt
+    title L2Cache Sprint 14: AI Agent Tools
+    dateFormat YYYY-MM-DD
+    section Core Engine
+      SQLite FTS5 Optimization   :done,    des1, 2026-09-15, 2026-09-22
+      Transcript Parser Overhaul :done,    des2, 2026-09-23, 2026-09-28
+    section Web Tools Suite
+      Claude Session Viewer      :done,    tool1, 2026-09-28, 2026-10-01
+      Mermaid Diagram Viewer     :active,  tool2, 2026-10-02, 2026-10-05
+      PasteGuard AI Sanitizer    :         tool3, 2026-10-06, 2026-10-10
+    section macOS App
+      Touch ID Biometrics Review :active,  app1,  2026-10-01, 2026-10-07
+      App Store Build Submission :         app2,  2026-10-08, 2026-10-12`,
+
+      mindmap: `mindmap
+  root((L2Cache Developer Suite))
+    Desktop macOS App
+      Unlimited Clipboard
+      Touch ID Vault
+      Agent Session Inspector
+      OCR Screenshot Search
+    Free In-Browser Tools
+      Mermaid Diagram Viewer
+      Claude Session Viewer
+      PasteGuard Secret Sanitizer
+      RegexLens Visualizer
+      JSON & JWT Decoders
+    Privacy First Architecture
+      Zero Cloud Uploads
+      Client-side WebAssembly
+      100 Percent Offline Support`,
+
+      pie: `pie title Claude Code Session Token Distribution
+    "Prompt Tokens (Base)" : 45
+    "Prompt Cache Read (Hit)" : 35
+    "Completion Tokens" : 15
+    "Tool Input Arguments" : 5`
+    };
+
+    // State Variables
+    let currentTheme = 'dark';
+    let renderTimer = null;
+    let renderCounter = 0;
+    let currentSvgMarkup = '';
+
+    // Pan & Zoom State
+    let scale = 1.0;
+    let translateX = 0;
+    let translateY = 0;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+
+    // DOM Elements
+    const codeInput = document.getElementById('mermaid-code-input');
+    const renderTarget = document.getElementById('mermaid-render-target');
+    const diagramStage = document.getElementById('diagram-stage');
+    const viewport = document.getElementById('canvas-viewport');
+    const errorBanner = document.getElementById('syntax-error-banner');
+    const errorText = document.getElementById('syntax-error-text');
+    const statusDot = document.getElementById('status-dot');
+    const statusText = document.getElementById('status-pill-text');
+    const charCounter = document.getElementById('char-counter');
+    const zoomText = document.getElementById('zoom-text');
+    const templateSelect = document.getElementById('template-select');
+    const themeSelect = document.getElementById('theme-select');
+
+    // Initialize Mermaid Configuration with High-Contrast Defaults
+    function initMermaid(themeName) {
+      if (typeof mermaid === 'undefined') return;
+      
+      const themeConfig = {
+        startOnLoad: false,
+        theme: themeName || 'dark',
+        securityLevel: 'loose',
+        fontFamily: 'DM Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      };
+
+      // Injected SVG CSS ensures exported SVGs and PNGs preserve high contrast
+      themeConfig.themeCSS = `
+        /* Edge / Link Labels Contrast (No more dark-on-dark!) */
+        .edgeLabel, .edgeLabel span, .edgeLabel p, foreignObject div, foreignObject span {
+          color: #ffffff !important;
+          fill: #ffffff !important;
+          font-weight: 600 !important;
+        }
+        .edgeLabel span, .edgeLabel p {
+          background-color: #1a1a2e !important;
+          border: 1px solid #3d3d5c !important;
+          border-radius: 4px !important;
+          padding: 3px 8px !important;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.5) !important;
+          display: inline-block !important;
+        }
+        .edgePath .path, path.flowchart-link {
+          stroke: #00E5AA !important;
+          stroke-width: 1.8px !important;
+        }
+        .marker {
+          fill: #00E5AA !important;
+          stroke: #00E5AA !important;
+        }
+
+        /* Flowchart Nodes */
+        .node text, .node .label {
+          color: #ffffff !important;
+          fill: #ffffff !important;
+          font-weight: 500 !important;
+        }
+        .node.primary text, .node.primary .label, .node.primary .label span {
+          color: #00261b !important;
+          fill: #00261b !important;
+          font-weight: 700 !important;
+        }
+
+        /* Sequence Diagrams */
+        .actor {
+          fill: #161626 !important;
+          stroke: #00C896 !important;
+          stroke-width: 1.5px !important;
+        }
+        .actor text, text.actor > tspan {
+          fill: #ffffff !important;
+          font-weight: 600 !important;
+        }
+        .messageText {
+          fill: #38bdf8 !important;
+          stroke: none !important;
+          font-weight: 600 !important;
+          font-size: 13px !important;
+        }
+        .messageLine0, .messageLine1 {
+          stroke: #38bdf8 !important;
+          stroke-width: 1.5px !important;
+        }
+        .note {
+          fill: #1c1a2e !important;
+          stroke: #a78bfa !important;
+        }
+        .noteText, .noteText tspan {
+          fill: #ffffff !important;
+          font-weight: 500 !important;
+        }
+        .loopText, .loopText tspan {
+          fill: #fcd34d !important;
+          font-weight: 600 !important;
+        }
+
+        /* Git Graph */
+        .commit-label {
+          fill: #ffffff !important;
+          font-weight: 600 !important;
+          font-size: 11px !important;
+        }
+        .commit-label-bkg {
+          fill: #181828 !important;
+          stroke: #44445e !important;
+          rx: 4px !important;
+          opacity: 0.95 !important;
+        }
+        .branch-label {
+          fill: #ffffff !important;
+          font-weight: 700 !important;
+        }
+
+        /* ER Diagram */
+        .er.entityBox {
+          fill: #161626 !important;
+          stroke: #00C896 !important;
+          stroke-width: 1.5px !important;
+        }
+        .er.entityLabel {
+          fill: #00E5AA !important;
+          font-weight: 700 !important;
+          font-size: 14px !important;
+        }
+        .er.attributeBoxOdd {
+          fill: #0f0f1a !important;
+          stroke: #2d2d44 !important;
+        }
+        .er.attributeBoxEven {
+          fill: #151524 !important;
+          stroke: #2d2d44 !important;
+        }
+        .er.attributeBoxOdd text, .er.attributeBoxEven text {
+          fill: #f1f5f9 !important;
+          font-size: 12px !important;
+        }
+        .er.relationshipLabel {
+          fill: #ffffff !important;
+          font-weight: 600 !important;
+        }
+        .er.relationshipLabelBox {
+          fill: #181828 !important;
+          stroke: #44445e !important;
+        }
+
+        /* State Diagram */
+        .state-title {
+          fill: #ffffff !important;
+          font-weight: 700 !important;
+        }
+        .stateText {
+          fill: #f1f5f9 !important;
+          font-weight: 500 !important;
+        }
+        .transition text {
+          fill: #38bdf8 !important;
+          font-weight: 600 !important;
+        }
+
+        /* Gantt */
+        .sectionTitle {
+          fill: #00E5AA !important;
+          font-weight: 700 !important;
+        }
+        .taskText {
+          fill: #ffffff !important;
+          font-weight: 600 !important;
+        }
+        .taskTextOutsideRight, .taskTextOutsideLeft {
+          fill: #e2e8f0 !important;
+          font-weight: 500 !important;
+        }
+        .tick text {
+          fill: #94a3b8 !important;
+        }
+
+        /* Pie Chart */
+        .pieTitleText {
+          fill: #ffffff !important;
+          font-weight: 700 !important;
+          font-size: 18px !important;
+        }
+        .legend text {
+          fill: #f1f5f9 !important;
+          font-size: 13px !important;
+        }
+        .pieSliceText {
+          fill: #ffffff !important;
+          font-weight: 700 !important;
+          text-shadow: 0 1px 4px rgba(0,0,0,0.9) !important;
+        }
+
+        /* Mindmap */
+        .mindmap-node text, .mindmap-node span {
+          fill: #ffffff !important;
+          color: #ffffff !important;
+          font-weight: 600 !important;
+        }
+        g.mindmap-node.depth-0 text, g.mindmap-node.depth-0 span {
+          fill: #002219 !important;
+          color: #002219 !important;
+          font-weight: 800 !important;
+        }
+      `;
+
+      if (themeName === 'dark' || themeName === 'base' || !themeName) {
+        themeConfig.themeVariables = {
+          darkMode: true,
+          background: '#0b0a14',
+          mainBkg: '#161626',
+          textColor: '#f8fafc',
+          primaryColor: '#00C896',
+          primaryTextColor: '#00261b',
+          primaryBorderColor: '#00E5AA',
+          lineColor: '#00E5AA',
+          secondaryColor: '#1c1b2e',
+          secondaryTextColor: '#f8fafc',
+          secondaryBorderColor: '#3b3b55',
+          tertiaryColor: '#121220',
+          tertiaryTextColor: '#f8fafc',
+          tertiaryBorderColor: '#3b3b55',
+          nodeBkg: '#161626',
+          nodeTextColor: '#ffffff',
+          nodeBorder: '#00C896',
+          clusterBkg: '#10101c',
+          clusterBorder: '#3b3b55',
+          titleColor: '#ffffff',
+          edgeLabelBackground: '#1e1e32',
+          actorBkg: '#161626',
+          actorTextColor: '#ffffff',
+          actorLineColor: '#00E5AA',
+          signalColor: '#38bdf8',
+          signalTextColor: '#38bdf8',
+          labelBoxBkgColor: '#1e1e32',
+          labelBoxBorderColor: '#3b3b55',
+          labelTextColor: '#ffffff',
+          loopTextColor: '#fcd34d',
+          noteBkgColor: '#1e1b32',
+          noteTextColor: '#ffffff',
+          noteBorderColor: '#8b5cf6',
+          activationBkgColor: '#161626',
+          activationBorderColor: '#00E5AA',
+          sequenceNumberColor: '#00261b',
+          git0: '#00C896',
+          git1: '#8b5cf6',
+          git2: '#38bdf8',
+          git3: '#f59e0b',
+          gitBranchLabel0: '#00261b',
+          gitBranchLabel1: '#ffffff',
+          gitBranchLabel2: '#ffffff',
+          gitBranchLabel3: '#ffffff',
+          commitLabelColor: '#ffffff',
+          commitLabelBackground: '#181828',
+          attributeTextColor: '#f8fafc',
+          stateBkg: '#161626',
+          stateLabelColor: '#ffffff',
+          altBackground: '#10101c',
+          pie1: '#00C896',
+          pie2: '#8b5cf6',
+          pie3: '#38bdf8',
+          pie4: '#f59e0b',
+          pie5: '#ec4899',
+          pie6: '#10b981',
+          pieTitleTextColor: '#ffffff',
+          pieSectionTextColor: '#ffffff',
+          pieLegendTextColor: '#f8fafc',
+          pieStrokeColor: '#0b0a14'
+        };
+      }
+
+      mermaid.initialize(themeConfig);
+    }
+
+    // Debounced Render Function
+    function scheduleRender() {
+      if (renderTimer) clearTimeout(renderTimer);
+      renderTimer = setTimeout(() => {
+        renderDiagram();
+      }, 250);
+    }
+
+    // Main Diagram Renderer
+    async function renderDiagram() {
+      if (typeof mermaid === 'undefined') {
+        statusText.textContent = 'Mermaid loading...';
+        return;
+      }
+
+      const code = codeInput.value.trim();
+      updateMetrics(code);
+
+      if (!code) {
+        renderTarget.innerHTML = '<div style="color: #666; font-family: var(--mono); font-size: 13px; text-align: center; padding: 40px;">Editor is empty. Choose a template or type Mermaid code.</div>';
+        currentSvgMarkup = '';
+        hideError();
+        return;
+      }
+
+      // Syntax Validation
+      try {
+        if (typeof mermaid.parse === 'function') {
+          await mermaid.parse(code);
+        }
+      } catch (err) {
+        showError(err.message || String(err));
+        return; // Don't wipe the canvas on syntax typos
+      }
+
+      hideError();
+
+      // Render SVG
+      try {
+        renderCounter++;
+        const renderId = 'mermaid-render-' + renderCounter;
+        const { svg } = await mermaid.render(renderId, code);
+        
+        currentSvgMarkup = svg;
+        renderTarget.innerHTML = svg;
+        
+        statusDot.className = 'status-dot-ok';
+        statusText.textContent = 'Diagram Rendered';
+
+        // Auto center on first render if no zoom yet
+        if (renderCounter === 1) {
+          setTimeout(fitToScreen, 50);
+        }
+      } catch (err) {
+        showError(err.message || 'Render failed');
+      }
+    }
+
+    function showError(msg) {
+      errorBanner.classList.add('active');
+      errorText.textContent = cleanErrorMessage(msg);
+      statusDot.className = 'status-dot-err';
+      statusText.textContent = 'Syntax Error';
+    }
+
+    function hideError() {
+      errorBanner.classList.remove('active');
+      statusDot.className = 'status-dot-ok';
+      statusText.textContent = 'Diagram Valid';
+    }
+
+    function cleanErrorMessage(msg) {
+      return msg.replace(/^Error:\s*/, '').replace(/Parse error on line \d+:/, match => match + ' ');
+    }
+
+    function updateMetrics(code) {
+      const lines = code ? code.split('\n').length : 0;
+      const chars = code.length;
+      charCounter.textContent = `Lines: ${lines} · Chars: ${chars}`;
+    }
+
+    // Code Input Event
+    function onCodeInput() {
+      scheduleRender();
+      saveToLocalStorage();
+    }
+
+    // Tab Key indentation support in textarea
+    function onEditorKeyDown(e) {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const start = codeInput.selectionStart;
+        const end = codeInput.selectionEnd;
+        const val = codeInput.value;
+        codeInput.value = val.substring(0, start) + '  ' + val.substring(end);
+        codeInput.selectionStart = codeInput.selectionEnd = start + 2;
+        onCodeInput();
+      }
+    }
+
+    // Template Switcher
+    function loadTemplate(name) {
+      if (!TEMPLATES[name]) return;
+      codeInput.value = TEMPLATES[name];
+      templateSelect.value = name;
+      
+      // Update chip active states
+      document.querySelectorAll('.chip-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('onclick')?.includes(name));
+      });
+
+      resetZoom();
+      scheduleRender();
+      saveToLocalStorage();
+    }
+
+    function onTemplateSelectChange(val) {
+      loadTemplate(val);
+    }
+
+    // Theme Switcher
+    function onThemeChange(themeName) {
+      currentTheme = themeName;
+      initMermaid(themeName);
+      scheduleRender();
+    }
+
+    // Auto-Format / Clean Indentation
+    function beautifyCode() {
+      const lines = codeInput.value.split('\n');
+      let indentLevel = 0;
+      const cleaned = lines.map(line => {
+        const trimmed = line.trim();
+        if (!trimmed) return '';
+        if (trimmed.endsWith('}') || trimmed === 'end') {
+          indentLevel = Math.max(0, indentLevel - 1);
+        }
+        const indented = '  '.repeat(indentLevel) + trimmed;
+        if (trimmed.endsWith('{') || trimmed.startsWith('subgraph') || trimmed.startsWith('class ') && trimmed.includes('{')) {
+          indentLevel++;
+        }
+        return indented;
+      }).join('\n');
+      
+      codeInput.value = cleaned;
+      scheduleRender();
+    }
+
+    function clearEditor() {
+      if (confirm('Clear editor contents?')) {
+        codeInput.value = '';
+        renderTarget.innerHTML = '';
+        currentSvgMarkup = '';
+        updateMetrics('');
+        hideError();
+      }
+    }
+
+    // Canvas Background & Pan-Zoom State
+    let currentCanvasBg = 'dark';
+    const MIN_ZOOM = 0.05; // 5%
+    const MAX_ZOOM = 35.0; // 3500% (35x magnification!)
+
+    // Pan & Zoom Engine
+    function updateTransform() {
+      diagramStage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+      const zoomPct = Math.round(scale * 100);
+      zoomText.textContent = `${zoomPct}% ▾`;
+    }
+
+    function setZoom(newScale) {
+      scale = Math.min(Math.max(newScale, MIN_ZOOM), MAX_ZOOM);
+      updateTransform();
+      closeZoomMenu();
+    }
+
+    function zoomIn() {
+      let step;
+      if (scale < 1.0) step = 0.25;
+      else if (scale < 3.0) step = 0.5;
+      else if (scale < 10.0) step = 2.0;
+      else step = 5.0;
+      scale = Math.min(scale + step, MAX_ZOOM);
+      updateTransform();
+    }
+
+    function zoomOut() {
+      let step;
+      if (scale <= 1.0) step = 0.25;
+      else if (scale <= 3.0) step = 0.5;
+      else if (scale <= 10.0) step = 2.0;
+      else step = 5.0;
+      scale = Math.max(scale - step, MIN_ZOOM);
+      updateTransform();
+    }
+
+    function resetZoom() {
+      scale = 1.0;
+      translateX = 0;
+      translateY = 0;
+      updateTransform();
+    }
+
+    function fitToScreen() {
+      const svg = renderTarget.querySelector('svg');
+      if (!svg) {
+        resetZoom();
+        return;
+      }
+
+      const svgRect = svg.getBoundingClientRect();
+      const viewRect = viewport.getBoundingClientRect();
+
+      // Normalize width and height
+      const svgW = svg.viewBox?.baseVal?.width || svgRect.width || 600;
+      const svgH = svg.viewBox?.baseVal?.height || svgRect.height || 400;
+
+      const scaleX = (viewRect.width - 60) / svgW;
+      const scaleY = (viewRect.height - 60) / svgH;
+      
+      scale = Math.min(Math.max(Math.min(scaleX, scaleY), 0.2), 3.0);
+      translateX = 0;
+      translateY = 0;
+      updateTransform();
+    }
+
+    // Figma / Google Maps Style Cursor-Anchored Wheel Zoom
+    function onCanvasWheel(e) {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.15 : (1 / 1.15);
+      const rect = viewport.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left - rect.width / 2;
+      const mouseY = e.clientY - rect.top - rect.height / 2;
+      
+      const prevScale = scale;
+      const newScale = Math.min(Math.max(scale * zoomFactor, MIN_ZOOM), MAX_ZOOM);
+      
+      translateX -= (mouseX - translateX) * (newScale / prevScale - 1);
+      translateY -= (mouseY - translateY) * (newScale / prevScale - 1);
+      scale = newScale;
+      updateTransform();
+    }
+
+    function onCanvasMouseDown(e) {
+      if (e.target.closest('.canvas-controls-overlay') || e.target.closest('.diagram-status-pill')) return;
+      isDragging = true;
+      dragStartX = e.clientX - translateX;
+      dragStartY = e.clientY - translateY;
+      viewport.classList.add('grabbing');
+
+      window.addEventListener('mousemove', onCanvasMouseMove);
+      window.addEventListener('mouseup', onCanvasMouseUp);
+    }
+
+    function onCanvasMouseMove(e) {
+      if (!isDragging) return;
+      translateX = e.clientX - dragStartX;
+      translateY = e.clientY - dragStartY;
+      updateTransform();
+    }
+
+    function onCanvasMouseUp() {
+      isDragging = false;
+      viewport.classList.remove('grabbing');
+      window.removeEventListener('mousemove', onCanvasMouseMove);
+      window.removeEventListener('mouseup', onCanvasMouseUp);
+    }
+
+    // Zoom Menu Controls
+    function toggleZoomMenu(e) {
+      e.stopPropagation();
+      const menu = document.getElementById('zoom-presets-menu');
+      if (menu) menu.classList.toggle('open');
+    }
+
+    function closeZoomMenu() {
+      const menu = document.getElementById('zoom-presets-menu');
+      if (menu) menu.classList.remove('open');
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.zoom-dropdown-wrapper')) {
+        closeZoomMenu();
+      }
+    });
+
+    // Keyboard Zoom Shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
+        return;
+      }
+      if (e.key === '+' || e.key === '=') {
+        e.preventDefault();
+        zoomIn();
+      } else if (e.key === '-' || e.key === '_') {
+        e.preventDefault();
+        zoomOut();
+      } else if (e.key === '0') {
+        e.preventDefault();
+        fitToScreen();
+      } else if (e.key === '1') {
+        e.preventDefault();
+        setZoom(1.0);
+      } else if (e.key === 'Escape') {
+        closeZoomMenu();
+      }
+    });
+
+    // Canvas Background Switcher
+    function onCanvasBgChange(bgVal) {
+      currentCanvasBg = bgVal;
+      const viewerPane = document.querySelector('.viewer-pane');
+      if (viewerPane) {
+        viewerPane.classList.remove('bg-dark', 'bg-navy', 'bg-light', 'bg-transparent');
+        viewerPane.classList.add('bg-' + bgVal);
+      }
+      const bgSelect = document.getElementById('canvas-bg-select');
+      if (bgSelect) bgSelect.value = bgVal;
+      try {
+        localStorage.setItem('l2cache_mermaid_canvas_bg', bgVal);
+      } catch (e) {}
+    }
+
+    // Export Options
+    function copySvgMarkup() {
+      if (!currentSvgMarkup) {
+        alert('No diagram rendered yet.');
+        return;
+      }
+      navigator.clipboard.writeText(currentSvgMarkup).then(() => {
+        flashToast('SVG markup copied to clipboard!');
+      }).catch(() => {
+        alert('Clipboard access denied.');
+      });
+    }
+
+    function triggerDownload(url, filename) {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    function fallbackSvgDownload(reason) {
+      if (reason) flashToast(reason);
+      downloadSvg();
+    }
+
+    function downloadSvg() {
+      const svgElement = renderTarget.querySelector('svg');
+      if (!svgElement) {
+        alert('No diagram to download.');
+        return;
+      }
+      const clone = svgElement.cloneNode(true);
+      if (!clone.getAttribute('xmlns')) {
+        clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      }
+      clone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+      const serializer = new XMLSerializer();
+      const svgMarkup = serializer.serializeToString(clone);
+      const blob = new Blob([svgMarkup], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      triggerDownload(url, `mermaid-diagram-${Date.now()}.svg`);
+      URL.revokeObjectURL(url);
+      flashToast('SVG vector file downloaded!');
+    }
+
+    function downloadPng() {
+      const svgElement = renderTarget.querySelector('svg');
+      if (!svgElement) {
+        alert('No diagram to export.');
+        return;
+      }
+
+      // Determine dimensions from viewBox or bounding box
+      let svgW = 800;
+      let svgH = 600;
+      if (svgElement.viewBox && svgElement.viewBox.baseVal && svgElement.viewBox.baseVal.width > 0) {
+        svgW = svgElement.viewBox.baseVal.width;
+        svgH = svgElement.viewBox.baseVal.height;
+      } else {
+        const bbox = svgElement.getBoundingClientRect();
+        svgW = bbox.width || 800;
+        svgH = bbox.height || 600;
+      }
+
+      // Clone SVG element so live preview is untouched
+      const clone = svgElement.cloneNode(true);
+
+      // Ensure explicit width, height and valid namespaces
+      clone.setAttribute('width', Math.round(svgW));
+      clone.setAttribute('height', Math.round(svgH));
+      clone.style.width = Math.round(svgW) + 'px';
+      clone.style.height = Math.round(svgH) + 'px';
+      clone.style.maxWidth = 'none';
+
+      if (!clone.getAttribute('xmlns')) {
+        clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      }
+      clone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+
+      // Convert any foreignObject elements to pure SVG text elements
+      // (Blink / WebKit security blocks canvas rasterization when an SVG contains foreignObject)
+      const foreignObjects = Array.from(clone.querySelectorAll('foreignObject'));
+      foreignObjects.forEach(fo => {
+        const text = fo.textContent.trim();
+        const foX = parseFloat(fo.getAttribute('x') || 0);
+        const foY = parseFloat(fo.getAttribute('y') || 0);
+        const foW = parseFloat(fo.getAttribute('width') || 0);
+        const foH = parseFloat(fo.getAttribute('height') || 0);
+
+        const parent = fo.parentNode;
+        if (parent) {
+          const isEdge = fo.closest('.edgeLabel') || fo.querySelector('.edgeLabel');
+          if (isEdge && text) {
+            const padX = 8;
+            const approxTextWidth = text.length * 7.5;
+            const badgeW = approxTextWidth + (padX * 2);
+            const badgeH = 22;
+            const badgeX = (foX + (foW / 2)) - (badgeW / 2);
+            const badgeY = (foY + (foH / 2)) - (badgeH / 2);
+
+            const rectEl = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rectEl.setAttribute('x', badgeX);
+            rectEl.setAttribute('y', badgeY);
+            rectEl.setAttribute('width', badgeW);
+            rectEl.setAttribute('height', badgeH);
+            rectEl.setAttribute('rx', '4');
+            rectEl.setAttribute('fill', currentCanvasBg === 'light' ? '#ffffff' : '#1c1b30');
+            rectEl.setAttribute('stroke', currentCanvasBg === 'light' ? '#cbd5e1' : '#3f3e62');
+            rectEl.setAttribute('stroke-width', '1');
+            parent.appendChild(rectEl);
+          }
+
+          const textEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          textEl.setAttribute('x', foX + (foW / 2));
+          textEl.setAttribute('y', foY + (foH / 2));
+          textEl.setAttribute('text-anchor', 'middle');
+          textEl.setAttribute('dominant-baseline', 'central');
+          textEl.setAttribute('fill', currentCanvasBg === 'light' ? '#0f172a' : '#ffffff');
+          textEl.setAttribute('font-family', 'DM Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif');
+          textEl.setAttribute('font-size', '12.5px');
+          textEl.setAttribute('font-weight', '600');
+          textEl.textContent = text;
+          parent.appendChild(textEl);
+
+          parent.removeChild(fo);
+        }
+      });
+
+      // Serialize clean XML (no duplicate xmlns attributes!)
+      const serializer = new XMLSerializer();
+      const svgXml = serializer.serializeToString(clone);
+
+      // Create Base64 Data URL (avoids Blob cross-origin issues in Chrome)
+      let dataUrl;
+      try {
+        dataUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgXml)));
+      } catch (err) {
+        dataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgXml);
+      }
+
+      const pixelRatio = 2.0; // 2x Retina Quality
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(svgW * pixelRatio);
+      canvas.height = Math.round(svgH * pixelRatio);
+      const ctx = canvas.getContext('2d');
+
+      // Draw background matching active canvas setting
+      if (currentCanvasBg === 'light') {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      } else if (currentCanvasBg === 'navy') {
+        ctx.fillStyle = '#111a2e';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      } else if (currentCanvasBg === 'transparent') {
+        // Transparent PNG: leave canvas clear with alpha
+      } else {
+        ctx.fillStyle = '#0b0a14';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      const img = new Image();
+      img.onload = () => {
+        try {
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob((pngBlob) => {
+            if (!pngBlob) {
+              const fallbackUrl = canvas.toDataURL('image/png');
+              triggerDownload(fallbackUrl, `mermaid-diagram-2x-${Date.now()}.png`);
+              flashToast('High-Resolution 2x PNG exported!');
+              return;
+            }
+            const pngUrl = URL.createObjectURL(pngBlob);
+            triggerDownload(pngUrl, `mermaid-diagram-2x-${Date.now()}.png`);
+            URL.revokeObjectURL(pngUrl);
+            flashToast('High-Resolution 2x PNG exported!');
+          }, 'image/png');
+        } catch (canvasErr) {
+          console.error('Canvas export error:', canvasErr);
+          fallbackSvgDownload('Canvas tainted. Vector SVG downloaded.');
+        }
+      };
+
+      img.onerror = (imgErr) => {
+        console.error('Image load error for rasterization:', imgErr);
+        fallbackSvgDownload('PNG rasterization blocked. Vector SVG downloaded.');
+      };
+
+      img.src = dataUrl;
+    }
+
+    function shareDiagramLink() {
+      const code = codeInput.value.trim();
+      if (!code) return;
+      try {
+        const encoded = btoa(encodeURIComponent(code));
+        const shareUrl = window.location.origin + window.location.pathname + '#code=' + encoded;
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          flashToast('Shareable link copied to clipboard!');
+        });
+      } catch (e) {
+        alert('Could not encode diagram into share link.');
+      }
+    }
+
+    let isFullCanvas = false;
+    function toggleFullCanvasMode() {
+      const splitView = document.getElementById('mermaid-split-view');
+      const expandIcon = document.getElementById('canvas-expand-icon');
+      const expandLabel = document.getElementById('canvas-expand-label');
+      isFullCanvas = !isFullCanvas;
+      
+      if (splitView) {
+        splitView.classList.toggle('full-canvas-mode', isFullCanvas);
+      }
+      if (expandIcon) {
+        expandIcon.textContent = isFullCanvas ? '◨' : '⤢';
+      }
+      if (expandLabel) {
+        expandLabel.textContent = isFullCanvas ? 'Split View' : 'Full Canvas';
+      }
+
+      // Automatically re-center and fit diagram to the expansive new canvas
+      setTimeout(fitToScreen, 260);
+    }
+
+    function toggleFullscreen() {
+      const ws = document.getElementById('workspace-container');
+      const icon = document.getElementById('fullscreen-icon');
+      const isFull = ws.classList.toggle('is-fullscreen');
+      icon.textContent = isFull ? '✕' : '⛶';
+      setTimeout(fitToScreen, 100);
+    }
+
+    function flashToast(msg) {
+      let toast = document.getElementById('toast-pill');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast-pill';
+        toast.style.cssText = `
+          position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+          background: #00C896; color: #00281e; font-family: var(--sans); font-weight: 700;
+          font-size: 14px; padding: 10px 22px; border-radius: 100px;
+          box-shadow: 0 8px 24px rgba(0,200,150,0.3); z-index: 100000;
+          pointer-events: none; opacity: 0; transition: opacity 0.2s ease;
+        `;
+        document.body.appendChild(toast);
+      }
+      toast.textContent = msg;
+      toast.style.opacity = '1';
+      setTimeout(() => {
+        toast.style.opacity = '0';
+      }, 2200);
+    }
+
+    // Local Storage Persistence & URL Hash Support
+    function saveToLocalStorage() {
+      try {
+        localStorage.setItem('l2cache_mermaid_code', codeInput.value);
+      } catch (e) {}
+    }
+
+    function restoreFromHashOrStorage() {
+      if (window.location.hash.startsWith('#code=')) {
+        try {
+          const encoded = window.location.hash.substring(6);
+          const decoded = decodeURIComponent(atob(encoded));
+          if (decoded) {
+            codeInput.value = decoded;
+            return;
+          }
+        } catch (e) {
+          console.warn('Invalid URL hash code');
+        }
+      }
+
+      try {
+        const saved = localStorage.getItem('l2cache_mermaid_code');
+        if (saved) {
+          codeInput.value = saved;
+        }
+      } catch (e) {}
+
+      try {
+        const savedBg = localStorage.getItem('l2cache_mermaid_canvas_bg');
+        if (savedBg) {
+          onCanvasBgChange(savedBg);
+        }
+      } catch (e) {}
+    }
+
+    // Window Init
+    window.addEventListener('DOMContentLoaded', () => {
+      restoreFromHashOrStorage();
+      initMermaid(currentTheme);
+      scheduleRender();
+    });
+  </script>
+
+  <!-- Tools Engine Privacy Interceptor -->
+  <script src="/en/tools/tools-engine.js"></script>
+</body>
+</html>
