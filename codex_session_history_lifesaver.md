@@ -2,7 +2,7 @@
 title: "How OpenAI Codex Session History Can Save Your Production (and Your Sanity): 3 Real-World Scenarios"
 description: "When OpenAI Codex CLI refactors your backend across 15 files and the terminal tab closes—where does the context go? How to inspect rollout JSONL logs, resume dropped tasks, and audit AI code."
 tags: [openaicodex, codex, devtools, programming, productivity]
-canonical_url: "https://l2cache.amvo.store/en/codex-session-history-lifesaver.html"
+canonical_url: "https://l2cache.amvo.store/en/codex-session-history-lifesaver"
 cover_image: "https://l2cache.amvo.store/screenshots/agent-history1.jpg"
 
 publish_to:

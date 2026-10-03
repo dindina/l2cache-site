@@ -2,7 +2,7 @@
 title: "How Grok Coding History Can Save Your Engineering Sanity: 3 Real-World Scenarios"
 description: "When xAI Grok designs your backend architecture or debugs an obscure production crash—where does that reasoning go? Why saving and searching your Grok coding transcripts is a developer superpower."
 tags: [grok, xai, devtools, programming, productivity]
-canonical_url: "https://l2cache.amvo.store/en/grok-coding-session-history.html"
+canonical_url: "https://l2cache.amvo.store/en/grok-coding-session-history"
 cover_image: "https://l2cache.amvo.store/screenshots/agent-history2.jpg"
 
 publish_to:

@@ -6,3 +6,4 @@ l2cache-vs-*.html
 .vercel
 .env*
 node_modules/
+scratch/

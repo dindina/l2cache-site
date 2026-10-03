@@ -2,7 +2,7 @@
 title: "Where Did My Copilot Context Go? How to View, Search, and Audit GitHub Copilot History: 3 Real-World Scenarios"
 description: "When GitHub Copilot Chat and Copilot Edits refactor multi-file features in VS Code, where does that conversation go? Why saving and searching your Copilot prompts and session history is a developer superpower."
 tags: [githubcopilot, copilot, vscode, devtools, programming]
-canonical_url: "https://l2cache.amvo.store/en/github-copilot-history-lifesaver.html"
+canonical_url: "https://l2cache.amvo.store/en/github-copilot-history-lifesaver"
 cover_image: "https://l2cache.amvo.store/screenshots/agent-history1.jpg"
 
 publish_to:
