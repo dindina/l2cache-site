@@ -120,7 +120,7 @@ def rewrite_canonical(html, lang, file):
     For English-only pages: canonical pointing to /en/ without hreflang tags."""
     canonical = localized_page(lang, file) if file in LOCALIZED_FILES else localized_page("en", file)
     alts = hreflang_tags(file)
-    block = f"  <link rel=\"canonical\" href=\"{canonical}\" />{alts}"
+    block = f"\n  <link rel=\"canonical\" href=\"{canonical}\" />{alts}"
     # Match the existing canonical tag regardless of trailing slash / quote style.
     html, _ = re.subn(
         r'\s*<link\s+rel="canonical"[^>]*/?>',
@@ -174,6 +174,10 @@ def fix_links(html_content, lang):
             f'href="/{dest_lang}/{clean_path}\\1"',
             html_content,
         )
+    # Normalize tools links to clean URLs without 308 redirect hops
+    html_content = re.sub(r'href="(?:\/en\/)?tools/index\.html(#[^"]*)?"', r'href="/en/tools\1"', html_content)
+    html_content = re.sub(r'href="(?:\/en\/)?tools/([^"]+?)\.html(#[^"]*)?"', r'href="/en/tools/\1\2"', html_content)
+    html_content = re.sub(r'href="tools/"', r'href="/en/tools"', html_content)
     return html_content
 
 def build():
