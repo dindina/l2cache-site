@@ -75,25 +75,54 @@ VERCEL_ANALYTICS_TAG = """<script>
 
       if (isExclude) {
         localStorage.setItem('va_exclude', '1');
+        document.cookie = 'va_admin=1; path=/; max-age=315360000; SameSite=Lax';
         showToast('✓ Owner visits now excluded from Vercel Analytics', '#00a87f');
       } else if (isInclude) {
         localStorage.removeItem('va_exclude');
+        document.cookie = 'va_admin=; path=/; max-age=0';
         showToast('✓ Analytics tracking re-enabled on this browser', '#2D2A5E');
       }
 
       window.toggleAnalytics = function() {
-        if (localStorage.getItem('va_exclude') === '1') {
+        if (localStorage.getItem('va_exclude') === '1' || document.cookie.indexOf('va_admin=1') !== -1) {
           localStorage.removeItem('va_exclude');
-          alert('Analytics tracking re-enabled on this browser.');
-          location.reload();
+          document.cookie = 'va_admin=; path=/; max-age=0';
+          showToast('✓ Analytics tracking re-enabled on this browser', '#2D2A5E');
         } else {
           localStorage.setItem('va_exclude', '1');
-          alert('Owner visits now excluded from Vercel Analytics.');
-          location.reload();
+          document.cookie = 'va_admin=1; path=/; max-age=315360000; SameSite=Lax';
+          showToast('✓ Owner visits now excluded from Vercel Analytics', '#00a87f');
         }
       };
 
-      if (localStorage.getItem('va_exclude') === '1' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      // Keyboard shortcut (⌥ + ⇧ + A) to toggle exclusion
+      window.addEventListener('keydown', function(e) {
+        if (e.altKey && e.shiftKey && (e.key === 'A' || e.keyCode === 65)) {
+          window.toggleAnalytics();
+        }
+      });
+
+      // Triple-click on footer copyright to toggle exclusion
+      document.addEventListener('DOMContentLoaded', function() {
+        var footerText = document.querySelector('footer p');
+        if (footerText) {
+          var count = 0, timer;
+          footerText.style.cursor = 'pointer';
+          footerText.addEventListener('click', function() {
+            count++;
+            clearTimeout(timer);
+            if (count >= 3) {
+              count = 0;
+              window.toggleAnalytics();
+            } else {
+              timer = setTimeout(function() { count = 0; }, 600);
+            }
+          });
+        }
+      });
+
+      var hasCookie = document.cookie.indexOf('va_admin=1') !== -1;
+      if (hasCookie || localStorage.getItem('va_exclude') === '1' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         window.va = function() {};
         return;
       }
