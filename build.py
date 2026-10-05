@@ -51,7 +51,61 @@ OUT_DIR = "out"
 L2CACHE_OUT_DIR = os.path.join(OUT_DIR, "l2cache")
 AMVO_OUT_DIR = os.path.join(OUT_DIR, "amvo-store")
 HINGEJOY_OUT_DIR = os.path.join(OUT_DIR, "hingejoy")
-VERCEL_ANALYTICS_TAG = '<script defer src="/_vercel/insights/script.js"></script>'
+VERCEL_ANALYTICS_TAG = """<script>
+  (function() {
+    try {
+      var p = new URLSearchParams(window.location.search);
+      function showToast(text, bg) {
+        function show() {
+          var b = document.createElement('div');
+          b.style.cssText = 'position:fixed;bottom:24px;right:24px;background:' + bg + ';color:#ffffff;padding:12px 20px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,0.25);z-index:999999;transition:opacity 0.4s ease;pointer-events:none;';
+          b.textContent = text;
+          document.body.appendChild(b);
+          setTimeout(function() {
+            b.style.opacity = '0';
+            setTimeout(function() { b.remove(); }, 400);
+          }, 3500);
+        }
+        if (document.body) show(); else document.addEventListener('DOMContentLoaded', show);
+      }
+
+      var isExclude = p.get('me') === '1' || p.get('admin') === '1' || p.get('exclude') === '1' ||
+                      p.get('utm_source') === 'internal' || p.get('utm_source') === 'me' || p.get('utm_source') === 'admin';
+      var isInclude = p.get('include') === '1' || p.get('track') === '1';
+
+      if (isExclude) {
+        localStorage.setItem('va_exclude', '1');
+        showToast('✓ Owner visits now excluded from Vercel Analytics', '#00a87f');
+      } else if (isInclude) {
+        localStorage.removeItem('va_exclude');
+        showToast('✓ Analytics tracking re-enabled on this browser', '#2D2A5E');
+      }
+
+      window.toggleAnalytics = function() {
+        if (localStorage.getItem('va_exclude') === '1') {
+          localStorage.removeItem('va_exclude');
+          alert('Analytics tracking re-enabled on this browser.');
+          location.reload();
+        } else {
+          localStorage.setItem('va_exclude', '1');
+          alert('Owner visits now excluded from Vercel Analytics.');
+          location.reload();
+        }
+      };
+
+      if (localStorage.getItem('va_exclude') === '1' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        window.va = function() {};
+        return;
+      }
+    } catch(e) {}
+
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    var s = document.createElement('script');
+    s.defer = true;
+    s.src = '/_vercel/insights/script.js';
+    document.head.appendChild(s);
+  })();
+</script>"""
 
 
 def inject_vercel_analytics(root_dir):
@@ -65,7 +119,7 @@ def inject_vercel_analytics(root_dir):
             with open(path, "r", encoding="utf-8") as f:
                 content = f.read()
 
-            if VERCEL_ANALYTICS_TAG in content:
+            if "va_exclude" in content or "/_vercel/insights/script.js" in content:
                 continue
             if "</head>" not in content:
                 print(f"Warning: analytics not injected; missing </head>: {path}")
