@@ -102,13 +102,14 @@ VERCEL_ANALYTICS_TAG = """<script>
         }
       });
 
-      // Triple-click on footer copyright to toggle exclusion
+      // Triple-click on footer or copyright to toggle exclusion
       document.addEventListener('DOMContentLoaded', function() {
-        var footerText = document.querySelector('footer p');
-        if (footerText) {
-          var count = 0, timer;
-          footerText.style.cursor = 'pointer';
-          footerText.addEventListener('click', function() {
+        var footers = document.querySelectorAll('footer, footer p, .footer-copy');
+        var count = 0, timer;
+        footers.forEach(function(el) {
+          el.style.cursor = 'pointer';
+          el.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A') return;
             count++;
             clearTimeout(timer);
             if (count >= 3) {
@@ -118,7 +119,7 @@ VERCEL_ANALYTICS_TAG = """<script>
               timer = setTimeout(function() { count = 0; }, 600);
             }
           });
-        }
+        });
       });
 
       var hasCookie = document.cookie.indexOf('va_admin=1') !== -1;
