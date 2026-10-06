@@ -36,6 +36,7 @@ L2Cache offers free web versions of its built-in developer tools at https://l2ca
 
 - [Best Mac Clipboard Managers (2026 Guide)](https://l2cache.amvo.store/en/best-mac-clipboard-managers): In-depth comparison of top macOS clipboard managers.
 - [L2Cache vs Atuin](https://l2cache.amvo.store/en/l2cache-vs-atuin): Comparison of native macOS GUI developer clipboard & snippet management vs CLI-only shell history daemons.
+- [L2Cache vs CleanClip](https://l2cache.amvo.store/en/l2cache-vs-cleanclip): Comparison of Smart Bubble at cursor, Touch ID secret encryption, and developer memory vs CleanClip's paste stack and context menu.
 - [L2Cache vs Maccy](https://l2cache.amvo.store/en/l2cache-vs-maccy): Comparison of UI, search capabilities, developer tooling, and memory efficiency.
 - [L2Cache vs Paste](https://l2cache.amvo.store/en/l2cache-vs-paste): Comparison between L2Cache's $4.99 one-time purchase model and Paste's annual subscription model.
 - [L2Cache vs Raycast](https://l2cache.amvo.store/en/l2cache-vs-raycast): Comparison of dedicated clipboard management vs general-purpose launcher extensions.

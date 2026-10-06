@@ -3,6 +3,8 @@ out/
 __pycache__/
 .serena/
 l2cache-vs-*.html
+!l2cache-vs-atuin.html
+!l2cache-vs-cleanclip.html
 .vercel
 .env*
 node_modules/
