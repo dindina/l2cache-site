@@ -51,7 +51,7 @@ OUT_DIR = "out"
 L2CACHE_OUT_DIR = os.path.join(OUT_DIR, "l2cache")
 AMVO_OUT_DIR = os.path.join(OUT_DIR, "amvo-store")
 HINGEJOY_OUT_DIR = os.path.join(OUT_DIR, "hingejoy")
-VERCEL_ANALYTICS_TAG = """<script>
+VERCEL_ANALYTICS_TAG = r"""<script>
   (function() {
     try {
       var p = new URLSearchParams(window.location.search);
@@ -121,6 +121,19 @@ VERCEL_ANALYTICS_TAG = """<script>
           });
         });
       });
+
+      // Auto-localize App Store button & CNY pricing for Chinese visitors (Baidu, China Mac users)
+      var isZh = (navigator.language || navigator.userLanguage || '').toLowerCase().startsWith('zh');
+      if (isZh) {
+        document.addEventListener('DOMContentLoaded', function() {
+          document.querySelectorAll('a[href*="apps.apple.com/us/"]').forEach(function(a) {
+            a.href = a.href.replace('apps.apple.com/us/', 'apps.apple.com/cn/');
+            if (a.innerHTML.indexOf('$4.99') !== -1) {
+              a.innerHTML = a.innerHTML.replace(/\$4\.99/g, '¥38');
+            }
+          });
+        });
+      }
 
       var hasCookie = document.cookie.indexOf('va_admin=1') !== -1;
       if (hasCookie || localStorage.getItem('va_exclude') === '1' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
