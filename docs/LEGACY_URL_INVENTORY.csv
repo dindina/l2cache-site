@@ -1,0 +1,196 @@
+generated_file,current_path,proposed_path,action,cluster,priority,notes
+de/index.html,/de,/de,PRESERVE,localized-homepage,P1,Keep only if this locale is fully maintained for the 2.0 launch.
+en/ai-agent-jsonl-and-session-resume-guide.html,/en/ai-agent-jsonl-and-session-resume-guide,/en/ai-agent-jsonl-and-session-resume-guide,PRESERVE_REPOSITION,coding-agent,P1,Preserve; align claims to the provider capability matrix.
+en/benchmark.html,/en/benchmark,/en/benchmark,PRESERVE_AUDIT,research-comparison,P1,"Retain; verify methodology, dates, claims, screenshots, and disclosure before relaunch."
+en/best-mac-clipboard-managers.html,/en/best-mac-clipboard-managers,/en/best-mac-clipboard-managers,PRESERVE_AUDIT,research-comparison,P1,"Retain; verify methodology, dates, claims, screenshots, and disclosure before relaunch."
+en/best-mac-developer-apps.html,/en/best-mac-developer-apps,/en/best-mac-developer-apps,PRESERVE_AUDIT,research-comparison,P1,"Retain; verify methodology, dates, claims, screenshots, and disclosure before relaunch."
+en/blog-agent-history-analytics.html,/en/blog-agent-history-analytics,/en/blog-agent-history-analytics,PRESERVE_REPOSITION,coding-agent,P1,Preserve; align claims to the provider capability matrix.
+en/blog-apple-intelligence-clipboard.html,/en/blog-apple-intelligence-clipboard,/en/blog-apple-intelligence-clipboard,PRESERVE_REVIEW,editorial,P2,"Preserve pending content-quality, impressions, backlinks, freshness, and product-relevance review."
+en/blog-clipboard-automation-developer-workflows.html,/en/blog-clipboard-automation-developer-workflows,/en/blog-clipboard-automation-developer-workflows,PRESERVE_REVIEW,editorial,P2,"Preserve pending content-quality, impressions, backlinks, freshness, and product-relevance review."
+en/blog-developer-workflow-apple-intelligence.html,/en/blog-developer-workflow-apple-intelligence,/en/blog-developer-workflow-apple-intelligence,PRESERVE_REVIEW,editorial,P2,"Preserve pending content-quality, impressions, backlinks, freshness, and product-relevance review."
+en/blog-jwt-security.html,/en/blog-jwt-security,/en/blog-jwt-security,PRESERVE_REVIEW,editorial,P2,"Preserve pending content-quality, impressions, backlinks, freshness, and product-relevance review."
+en/blog-regex-clipboard.html,/en/blog-regex-clipboard,/en/blog-regex-clipboard,PRESERVE_REVIEW,editorial,P2,"Preserve pending content-quality, impressions, backlinks, freshness, and product-relevance review."
+en/blog-screenshot-ocr-search.html,/en/blog-screenshot-ocr-search,/en/blog-screenshot-ocr-search,PRESERVE_REVIEW,editorial,P2,"Preserve pending content-quality, impressions, backlinks, freshness, and product-relevance review."
+en/blog-sql-test-data.html,/en/blog-sql-test-data,/en/blog-sql-test-data,PRESERVE_REVIEW,editorial,P2,"Preserve pending content-quality, impressions, backlinks, freshness, and product-relevance review."
+en/blog-sqlite-fts5-hangs.html,/en/blog-sqlite-fts5-hangs,/en/blog-sqlite-fts5-hangs,PRESERVE_REVIEW,editorial,P2,"Preserve pending content-quality, impressions, backlinks, freshness, and product-relevance review."
+en/blog-swift-sqlite-concurrency.html,/en/blog-swift-sqlite-concurrency,/en/blog-swift-sqlite-concurrency,PRESERVE_REVIEW,editorial,P2,"Preserve pending content-quality, impressions, backlinks, freshness, and product-relevance review."
+en/blog-zero-cloud-mac-desktop-ai.html,/en/blog-zero-cloud-mac-desktop-ai,/en/blog-zero-cloud-mac-desktop-ai,PRESERVE_REVIEW,editorial,P2,Preserve path but urgently review claims against optional cloud AI and agent retrieval behaviour.
+en/blog.html,/en/blog,/en/blog,PRESERVE_REDESIGN,editorial-hub,P1,Preserve as the editorial hub and update its taxonomy/internal links.
+en/changelog.html,/en/changelog,/en/changelog,PRESERVE_REWRITE,changelog,P0,Rewrite for the redesigned product while preserving the current path.
+en/claude-code-history.html,/en/claude-code-history,/en/claude-code-history,PRESERVE_REPOSITION,coding-agent,P1,Preserve; align claims to the provider capability matrix.
+en/claude-code-session-history-lifesaver.html,/en/claude-code-session-history-lifesaver,/en/claude-code-session-history-lifesaver,PRESERVE_REPOSITION,coding-agent,P1,Preserve; align claims to the provider capability matrix.
+en/claude-code-session-history-mac.html,/en/claude-code-session-history-mac,/en/claude-code-session-history-mac,PRESERVE_REPOSITION,coding-agent,P1,Preserve; align claims to the provider capability matrix.
+en/clipboard-history-mac.html,/en/clipboard-history-mac,/en/clipboard-history-mac,PRESERVE_REPOSITION,product,P1,Preserve the path; update positioning from clipboard-only to developer memory where relevant.
+en/clipboard-privacy-report.html,/en/clipboard-privacy-report,/en/clipboard-privacy-report,PRESERVE_AUDIT,research-comparison,P1,"Retain; verify methodology, dates, claims, screenshots, and disclosure before relaunch."
+en/codex-history.html,/en/codex-history,/en/codex-history,PRESERVE_REPOSITION,coding-agent,P1,Preserve; align claims to the provider capability matrix.
+en/codex-session-history-lifesaver.html,/en/codex-session-history-lifesaver,/en/codex-session-history-lifesaver,PRESERVE_REPOSITION,coding-agent,P1,Preserve; align claims to the provider capability matrix.
+en/codex-session-history-mac.html,/en/codex-session-history-mac,/en/codex-session-history-mac,PRESERVE_REPOSITION,coding-agent,P1,Preserve; align claims to the provider capability matrix.
+en/comparison.html,/en/comparison,/en/comparison,PRESERVE_AUDIT,research-comparison,P1,"Retain; verify methodology, dates, claims, screenshots, and disclosure before relaunch."
+en/custom-actions.html,/en/custom-actions,/en/custom-actions,PRESERVE_REPOSITION,product,P1,Preserve the path; update positioning from clipboard-only to developer memory where relevant.
+en/day-in-the-life-mac-developer.html,/en/day-in-the-life-mac-developer,/en/day-in-the-life-mac-developer,PRESERVE_REVIEW,editorial,P2,"Preserve pending content-quality, impressions, backlinks, freshness, and product-relevance review."
+en/developer-clipboard.html,/en/developer-clipboard,/en/developer-clipboard,PRESERVE_REPOSITION,product,P1,Preserve the path; update positioning from clipboard-only to developer memory where relevant.
+en/github-copilot-history-lifesaver.html,/en/github-copilot-history-lifesaver,/en/github-copilot-history-lifesaver,PRESERVE_REPOSITION,coding-agent,P1,Preserve; align claims to the provider capability matrix.
+en/grok-coding-session-history.html,/en/grok-coding-session-history,/en/grok-coding-session-history,PRESERVE_REPOSITION,coding-agent,P1,Preserve; align claims to the provider capability matrix.
+en/index.html,/en,/,REDIRECT,homepage,P0,Provisional strategy: make the apex root the English canonical and redirect /en one-to-one.
+en/intelligence.html,/en/intelligence,/en/intelligence,PRESERVE_REPOSITION,product,P1,Preserve the path; update positioning from clipboard-only to developer memory where relevant.
+en/json-formatter-mac.html,/en/json-formatter-mac,/en/json-formatter-mac,PRESERVE_REVIEW,utility-landing,P2,Retain pending intent/cannibalisation review against the corresponding browser tool.
+en/jwt-decoder-mac.html,/en/jwt-decoder-mac,/en/jwt-decoder-mac,PRESERVE_REVIEW,utility-landing,P2,Retain pending intent/cannibalisation review against the corresponding browser tool.
+en/l2cache-vs-alfred.html,/en/l2cache-vs-alfred,/en/l2cache-vs-alfred,PRESERVE_AUDIT,comparison,P1,"Preserve; refresh testing evidence, disadvantages, dates, screenshots, and disclosure."
+en/l2cache-vs-atuin.html,/en/l2cache-vs-atuin,/en/l2cache-vs-atuin,PRESERVE_AUDIT,comparison,P1,"Preserve; refresh testing evidence, disadvantages, dates, screenshots, and disclosure."
+en/l2cache-vs-cleanclip.html,/en/l2cache-vs-cleanclip,/en/l2cache-vs-cleanclip,PRESERVE_AUDIT,comparison,P1,"Preserve; refresh testing evidence, disadvantages, dates, screenshots, and disclosure."
+en/l2cache-vs-clipy.html,/en/l2cache-vs-clipy,/en/l2cache-vs-clipy,PRESERVE_AUDIT,comparison,P1,"Preserve; refresh testing evidence, disadvantages, dates, screenshots, and disclosure."
+en/l2cache-vs-copyclip.html,/en/l2cache-vs-copyclip,/en/l2cache-vs-copyclip,PRESERVE_AUDIT,comparison,P1,"Preserve; refresh testing evidence, disadvantages, dates, screenshots, and disclosure."
+en/l2cache-vs-maccy.html,/en/l2cache-vs-maccy,/en/l2cache-vs-maccy,PRESERVE_AUDIT,comparison,P1,"Preserve; refresh testing evidence, disadvantages, dates, screenshots, and disclosure."
+en/l2cache-vs-paste.html,/en/l2cache-vs-paste,/en/l2cache-vs-paste,PRESERVE_AUDIT,comparison,P1,"Preserve; refresh testing evidence, disadvantages, dates, screenshots, and disclosure."
+en/l2cache-vs-pastepal.html,/en/l2cache-vs-pastepal,/en/l2cache-vs-pastepal,PRESERVE_AUDIT,comparison,P1,"Preserve; refresh testing evidence, disadvantages, dates, screenshots, and disclosure."
+en/l2cache-vs-raycast.html,/en/l2cache-vs-raycast,/en/l2cache-vs-raycast,PRESERVE_AUDIT,comparison,P1,"Preserve; refresh testing evidence, disadvantages, dates, screenshots, and disclosure."
+en/mac-command-history.html,/en/mac-command-history,/en/mac-command-history,PRESERVE_REPOSITION,product,P1,Preserve the path; update positioning from clipboard-only to developer memory where relevant.
+en/privacy.html,/en/privacy,/en/privacy,PRESERVE_REWRITE,privacy,P0,P0 rewrite required: current absolute local-only/no-analytics claims conflict with redesigned network paths.
+en/regex-clipboard-mac.html,/en/regex-clipboard-mac,/en/regex-clipboard-mac,PRESERVE_REPOSITION,product,P1,Preserve the path; update positioning from clipboard-only to developer memory where relevant.
+en/rest-api-developer-tools.html,/en/rest-api-developer-tools,/en/rest-api-developer-tools,PRESERVE_REVIEW,editorial,P2,"Preserve pending content-quality, impressions, backlinks, freshness, and product-relevance review."
+en/screenshot-ocr-mac.html,/en/screenshot-ocr-mac,/en/screenshot-ocr-mac,PRESERVE_REPOSITION,product,P1,Preserve the path; update positioning from clipboard-only to developer memory where relevant.
+en/sitemap.html,/en/sitemap,/en/sitemap,PRESERVE_REVIEW,html-sitemap,P2,Retain if it remains useful to visitors and internal linking.
+en/sql-test-data-generator.html,/en/sql-test-data-generator,/en/sql-test-data-generator,PRESERVE_REVIEW,utility-landing,P2,Retain pending intent/cannibalisation review against the corresponding browser tool.
+en/support.html,/en/support,/en/support,PRESERVE_REWRITE,support,P0,Rewrite for the redesigned product while preserving the current path.
+en/tools/aspect-ratio-calculator.html,/en/tools/aspect-ratio-calculator,/en/tools/aspect-ratio-calculator,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/aws-arn-parser.html,/en/tools/aws-arn-parser,/en/tools/aws-arn-parser,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/base64-image.html,/en/tools/base64-image,/en/tools/base64-image,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/certificate-decoder.html,/en/tools/certificate-decoder,/en/tools/certificate-decoder,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/claude-session-viewer.html,/en/tools/claude-session-viewer,/en/tools/claude-session-viewer,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/color-converter.html,/en/tools/color-converter,/en/tools/color-converter,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/convert-to-markdown.html,/en/tools/convert-to-markdown,/en/tools/convert-to-markdown,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/cron-visualizer.html,/en/tools/cron-visualizer,/en/tools/cron-visualizer,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/csv-data-profiler.html,/en/tools/csv-data-profiler,/en/tools/csv-data-profiler,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/csv-to-markdown.html,/en/tools/csv-to-markdown,/en/tools/csv-to-markdown,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/curl-converter.html,/en/tools/curl-converter,/en/tools/curl-converter,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/curl-to-fetch.html,/en/tools/curl-to-fetch,/en/tools/curl-to-fetch,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/devops-manifest-parser.html,/en/tools/devops-manifest-parser,/en/tools/devops-manifest-parser,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/docker-command-generator.html,/en/tools/docker-command-generator,/en/tools/docker-command-generator,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/docx-to-markdown.html,/en/tools/docx-to-markdown,/en/tools/docx-to-markdown,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/dotenv-converter.html,/en/tools/dotenv-converter,/en/tools/dotenv-converter,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/excel-formula-translator.html,/en/tools/excel-formula-translator,/en/tools/excel-formula-translator,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/gdocs-to-markdown.html,/en/tools/gdocs-to-markdown,/en/tools/gdocs-to-markdown,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/git-command-generator.html,/en/tools/git-command-generator,/en/tools/git-command-generator,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/graphql-formatter.html,/en/tools/graphql-formatter,/en/tools/graphql-formatter,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/hcl-to-json.html,/en/tools/hcl-to-json,/en/tools/hcl-to-json,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/html-to-markdown.html,/en/tools/html-to-markdown,/en/tools/html-to-markdown,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/image-to-pdf.html,/en/tools/image-to-pdf,/en/tools/image-to-pdf,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/index.html,/en/tools,/en/tools,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/json-diff.html,/en/tools/json-diff,/en/tools/json-diff,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/json-formatter.html,/en/tools/json-formatter,/en/tools/json-formatter,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/json-patch-generator.html,/en/tools/json-patch-generator,/en/tools/json-patch-generator,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/json-to-markdown.html,/en/tools/json-to-markdown,/en/tools/json-to-markdown,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/json-to-typescript.html,/en/tools/json-to-typescript,/en/tools/json-to-typescript,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/json-to-yaml.html,/en/tools/json-to-yaml,/en/tools/json-to-yaml,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/json-unescaper.html,/en/tools/json-unescaper,/en/tools/json-unescaper,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/jwk-to-pem.html,/en/tools/jwk-to-pem,/en/tools/jwk-to-pem,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/jwt-decoder.html,/en/tools/jwt-decoder,/en/tools/jwt-decoder,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/license-key-generator.html,/en/tools/license-key-generator,/en/tools/license-key-generator,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/markdown-to-rich-text.html,/en/tools/markdown-to-rich-text,/en/tools/markdown-to-rich-text,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/mermaid-viewer.html,/en/tools/mermaid-viewer,/en/tools/mermaid-viewer,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/mock-data-generator.html,/en/tools/mock-data-generator,/en/tools/mock-data-generator,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/mongodb-query-formatter.html,/en/tools/mongodb-query-formatter,/en/tools/mongodb-query-formatter,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/notion-to-markdown.html,/en/tools/notion-to-markdown,/en/tools/notion-to-markdown,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/openapi-to-curl.html,/en/tools/openapi-to-curl,/en/tools/openapi-to-curl,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/paste-to-markdown.html,/en/tools/paste-to-markdown,/en/tools/paste-to-markdown,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/pasteguard.html,/en/tools/pasteguard,/en/tools/pasteguard,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/pdf-merger.html,/en/tools/pdf-merger,/en/tools/pdf-merger,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/pdf-page-remover.html,/en/tools/pdf-page-remover,/en/tools/pdf-page-remover,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/pdf-password-protect.html,/en/tools/pdf-password-protect,/en/tools/pdf-password-protect,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/pdf-to-image.html,/en/tools/pdf-to-image,/en/tools/pdf-to-image,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/pdf-to-markdown.html,/en/tools/pdf-to-markdown,/en/tools/pdf-to-markdown,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/qr-code-generator.html,/en/tools/qr-code-generator,/en/tools/qr-code-generator,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/regex-tester.html,/en/tools/regex-tester,/en/tools/regex-tester,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/regexlens.html,/en/tools/regexlens,/en/tools/regexlens,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/rtf-to-markdown.html,/en/tools/rtf-to-markdown,/en/tools/rtf-to-markdown,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/schemaforge.html,/en/tools/schemaforge,/en/tools/schemaforge,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/shadow-generator.html,/en/tools/shadow-generator,/en/tools/shadow-generator,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/slug-generator.html,/en/tools/slug-generator,/en/tools/slug-generator,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/sql-formatter.html,/en/tools/sql-formatter,/en/tools/sql-formatter,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/sql-query-converter.html,/en/tools/sql-query-converter,/en/tools/sql-query-converter,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/sql-to-json.html,/en/tools/sql-to-json,/en/tools/sql-to-json,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/svg-optimizer.html,/en/tools/svg-optimizer,/en/tools/svg-optimizer,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/text-diff.html,/en/tools/text-diff,/en/tools/text-diff,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/title-capitalizer.html,/en/tools/title-capitalizer,/en/tools/title-capitalizer,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/universal-data-converter.html,/en/tools/universal-data-converter,/en/tools/universal-data-converter,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/utm-stripper.html,/en/tools/utm-stripper,/en/tools/utm-stripper,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/wcag-contrast-checker.html,/en/tools/wcag-contrast-checker,/en/tools/wcag-contrast-checker,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/webhook-signature-verifier.html,/en/tools/webhook-signature-verifier,/en/tools/webhook-signature-verifier,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/webpage-to-markdown.html,/en/tools/webpage-to-markdown,/en/tools/webpage-to-markdown,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/word-counter.html,/en/tools/word-counter,/en/tools/word-counter,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+en/tools/xml-to-markdown.html,/en/tools/xml-to-markdown,/en/tools/xml-to-markdown,PRESERVE_REVIEW,developer-utility,P2,"Retain until page-level traffic, backlink, usefulness, and maintenance review is complete."
+es/index.html,/es,/es,PRESERVE,localized-homepage,P1,Keep only if this locale is fully maintained for the 2.0 launch.
+fr/index.html,/fr,/fr,PRESERVE,localized-homepage,P1,Keep only if this locale is fully maintained for the 2.0 launch.
+it/index.html,/it,/it,PRESERVE,localized-homepage,P1,Keep only if this locale is fully maintained for the 2.0 launch.
+ja/index.html,/ja,/ja,PRESERVE,localized-homepage,P1,Keep only if this locale is fully maintained for the 2.0 launch.
+ko/index.html,/ko,/ko,PRESERVE,localized-homepage,P1,Keep only if this locale is fully maintained for the 2.0 launch.
+pt-BR/index.html,/pt-BR,/pt-BR,PRESERVE,localized-homepage,P1,Keep only if this locale is fully maintained for the 2.0 launch.
+tools/aspect-ratio-calculator.html,/tools/aspect-ratio-calculator,/en/tools/aspect-ratio-calculator,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/aws-arn-parser.html,/tools/aws-arn-parser,/en/tools/aws-arn-parser,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/base64-image.html,/tools/base64-image,/en/tools/base64-image,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/certificate-decoder.html,/tools/certificate-decoder,/en/tools/certificate-decoder,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/claude-session-viewer.html,/tools/claude-session-viewer,/en/tools/claude-session-viewer,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/color-converter.html,/tools/color-converter,/en/tools/color-converter,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/convert-to-markdown.html,/tools/convert-to-markdown,/en/tools/convert-to-markdown,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/cron-visualizer.html,/tools/cron-visualizer,/en/tools/cron-visualizer,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/csv-data-profiler.html,/tools/csv-data-profiler,/en/tools/csv-data-profiler,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/csv-to-markdown.html,/tools/csv-to-markdown,/en/tools/csv-to-markdown,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/curl-converter.html,/tools/curl-converter,/en/tools/curl-converter,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/curl-to-fetch.html,/tools/curl-to-fetch,/en/tools/curl-to-fetch,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/devops-manifest-parser.html,/tools/devops-manifest-parser,/en/tools/devops-manifest-parser,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/docker-command-generator.html,/tools/docker-command-generator,/en/tools/docker-command-generator,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/docx-to-markdown.html,/tools/docx-to-markdown,/en/tools/docx-to-markdown,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/dotenv-converter.html,/tools/dotenv-converter,/en/tools/dotenv-converter,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/excel-formula-translator.html,/tools/excel-formula-translator,/en/tools/excel-formula-translator,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/gdocs-to-markdown.html,/tools/gdocs-to-markdown,/en/tools/gdocs-to-markdown,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/git-command-generator.html,/tools/git-command-generator,/en/tools/git-command-generator,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/graphql-formatter.html,/tools/graphql-formatter,/en/tools/graphql-formatter,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/hcl-to-json.html,/tools/hcl-to-json,/en/tools/hcl-to-json,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/html-to-markdown.html,/tools/html-to-markdown,/en/tools/html-to-markdown,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/image-to-pdf.html,/tools/image-to-pdf,/en/tools/image-to-pdf,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/index.html,/tools,/en/tools,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/json-diff.html,/tools/json-diff,/en/tools/json-diff,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/json-formatter.html,/tools/json-formatter,/en/tools/json-formatter,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/json-patch-generator.html,/tools/json-patch-generator,/en/tools/json-patch-generator,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/json-to-markdown.html,/tools/json-to-markdown,/en/tools/json-to-markdown,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/json-to-typescript.html,/tools/json-to-typescript,/en/tools/json-to-typescript,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/json-to-yaml.html,/tools/json-to-yaml,/en/tools/json-to-yaml,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/json-unescaper.html,/tools/json-unescaper,/en/tools/json-unescaper,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/jwk-to-pem.html,/tools/jwk-to-pem,/en/tools/jwk-to-pem,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/jwt-decoder.html,/tools/jwt-decoder,/en/tools/jwt-decoder,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/license-key-generator.html,/tools/license-key-generator,/en/tools/license-key-generator,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/markdown-to-rich-text.html,/tools/markdown-to-rich-text,/en/tools/markdown-to-rich-text,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/mermaid-viewer.html,/tools/mermaid-viewer,/en/tools/mermaid-viewer,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/mock-data-generator.html,/tools/mock-data-generator,/en/tools/mock-data-generator,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/mongodb-query-formatter.html,/tools/mongodb-query-formatter,/en/tools/mongodb-query-formatter,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/notion-to-markdown.html,/tools/notion-to-markdown,/en/tools/notion-to-markdown,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/openapi-to-curl.html,/tools/openapi-to-curl,/en/tools/openapi-to-curl,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/paste-to-markdown.html,/tools/paste-to-markdown,/en/tools/paste-to-markdown,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/pasteguard.html,/tools/pasteguard,/en/tools/pasteguard,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/pdf-merger.html,/tools/pdf-merger,/en/tools/pdf-merger,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/pdf-page-remover.html,/tools/pdf-page-remover,/en/tools/pdf-page-remover,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/pdf-password-protect.html,/tools/pdf-password-protect,/en/tools/pdf-password-protect,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/pdf-to-image.html,/tools/pdf-to-image,/en/tools/pdf-to-image,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/pdf-to-markdown.html,/tools/pdf-to-markdown,/en/tools/pdf-to-markdown,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/qr-code-generator.html,/tools/qr-code-generator,/en/tools/qr-code-generator,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/regex-tester.html,/tools/regex-tester,/en/tools/regex-tester,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/regexlens.html,/tools/regexlens,/en/tools/regexlens,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/rtf-to-markdown.html,/tools/rtf-to-markdown,/en/tools/rtf-to-markdown,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/schemaforge.html,/tools/schemaforge,/en/tools/schemaforge,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/shadow-generator.html,/tools/shadow-generator,/en/tools/shadow-generator,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/slug-generator.html,/tools/slug-generator,/en/tools/slug-generator,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/sql-formatter.html,/tools/sql-formatter,/en/tools/sql-formatter,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/sql-query-converter.html,/tools/sql-query-converter,/en/tools/sql-query-converter,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/sql-to-json.html,/tools/sql-to-json,/en/tools/sql-to-json,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/svg-optimizer.html,/tools/svg-optimizer,/en/tools/svg-optimizer,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/text-diff.html,/tools/text-diff,/en/tools/text-diff,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/title-capitalizer.html,/tools/title-capitalizer,/en/tools/title-capitalizer,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/universal-data-converter.html,/tools/universal-data-converter,/en/tools/universal-data-converter,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/utm-stripper.html,/tools/utm-stripper,/en/tools/utm-stripper,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/wcag-contrast-checker.html,/tools/wcag-contrast-checker,/en/tools/wcag-contrast-checker,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/webhook-signature-verifier.html,/tools/webhook-signature-verifier,/en/tools/webhook-signature-verifier,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/webpage-to-markdown.html,/tools/webpage-to-markdown,/en/tools/webpage-to-markdown,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/word-counter.html,/tools/word-counter,/en/tools/word-counter,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+tools/xml-to-markdown.html,/tools/xml-to-markdown,/en/tools/xml-to-markdown,REDIRECT,duplicate-tool-route,P1,Preserve one-to-one redirect to the English canonical tool URL.
+vi/index.html,/vi,/vi,PRESERVE,localized-homepage,P1,Keep only if this locale is fully maintained for the 2.0 launch.
+zh-Hans/index.html,/zh-Hans,/zh-Hans,PRESERVE,localized-homepage,P1,Keep only if this locale is fully maintained for the 2.0 launch.

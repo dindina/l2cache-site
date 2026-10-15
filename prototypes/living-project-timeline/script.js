@@ -1,0 +1,20 @@
+const memories={
+  agent:{kind:'CODEX SESSION',time:'09:12',title:'Mapped the migration path',body:'The session connected the schema change to three migration tests and left a concrete verification command.',code:'xcodebuild test -only-testing:DatabaseMigrationTests',links:['Northstar','feature/recovery-index','L2-184']},
+  terminal:{kind:'TERMINAL · EXIT 65',time:'09:46',title:'The first verification failed',body:'The failure stayed attached to the branch, working directory, and agent session that produced it.',code:'DatabaseMigrationTests · testLegacyMarkerDecode failed',links:['12 tests','1 failure','~/Northstar']},
+  ticket:{kind:'TICKET L2-184',time:'10:03',title:'Found the compatibility edge',body:'An older store used a recovery marker that the new indexed decoder did not recognise.',code:'accept legacy marker → normalize → persist indexed form',links:['Compatibility','Migration','Needs test']},
+  commit:{kind:'GIT COMMIT',time:'10:41',title:'Preserved the old read path',body:'The fix kept existing user data readable while making every new write use the indexed representation.',code:'f34a12c migration: decode legacy recovery marker',links:['3 files','+41 −8','feature/recovery-index']},
+  success:{kind:'RECOVERY POINT',time:'10:49',title:'Focused suite passed',body:'L2Cache kept the result, its evidence, and the exact place to continue when Northstar returns to focus.',code:'DatabaseMigrationTests · 12 passed · 0 failed',links:['Verified','Ready for review','Resume']}
+};
+const events=[...document.querySelectorAll('.event')];
+const setMemory=(key,index)=>{const m=memories[key];document.querySelector('#memory-kind').textContent=m.kind;document.querySelector('#memory-time').textContent=m.time;document.querySelector('#memory-title').textContent=m.title;document.querySelector('#memory-body').textContent=m.body;document.querySelector('#memory-code').innerHTML=`<span>context</span> ${m.code}`;document.querySelector('.memory-links').innerHTML=m.links.map(x=>`<span>${x}</span>`).join('');events.forEach((e,i)=>{e.classList.toggle('active',i===index);e.setAttribute('aria-pressed',i===index?'true':'false')});document.querySelector('#thread-progress').style.height=`${18+index*20}%`};
+events.forEach((event,index)=>event.addEventListener('click',()=>setMemory(event.dataset.event,index)));
+
+const searches={
+  migration:[['Terminal','Focused migration suite failed','DatabaseMigrationTests reported the legacy marker mismatch.','09:46'],['Ticket','L2-184 · compatibility edge','Older stores encoded the recovery marker differently.','10:03'],['Codex','Restore continuity after index migration','The session linked the failure to the old decoder.','09:12']],
+  decision:[['Decision','Keep recovery decoding backward-compatible','Preserve existing stores; use the indexed form for new writes.','Today'],['Git','f34a12c · decode legacy marker','Three files changed on feature/recovery-index.','10:41'],['Ticket','L2-184 · acceptance note','Existing histories must remain readable after upgrade.','10:03']],
+  resume:[['Next action','Open review with compatibility note','Focused tests pass and the branch is ahead by three commits.','Ready'],['Recovery point','Migration verified locally','12 tests passed with no failures.','10:49'],['Codex','Resume session 8f21','Continue with the review summary and upgrade note.','12m ago']]
+};
+const questions={migration:'Where did the migration fail?',decision:'Why did we keep the legacy decoder?',resume:'What should I do next?'};
+const renderResults=key=>{document.querySelector('#query-text').textContent=questions[key];document.querySelector('#query-results').innerHTML=searches[key].map(([kind,title,body,time])=>`<article class="result"><small>${kind.toUpperCase()}</small><div><b>${title}</b><p>${body}</p></div><time>${time}</time></article>`).join('')};
+document.querySelectorAll('.query-chips button').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('.query-chips button').forEach(b=>b.classList.toggle('active',b===button));renderResults(button.dataset.query)}));
+renderResults('migration');

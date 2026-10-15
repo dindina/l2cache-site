@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>L2Cache — Living Project Timeline Prototype</title>
+  <meta name="description" content="An isolated visual prototype for the next generation L2Cache website.">
+  <link rel="stylesheet" href="styles.css?v=purple-1">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="prototype-ribbon" role="note">Phase 2 concept · synthetic data · not production copy</div>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="L2Cache home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>L2Cache</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="#story">How it works</a>
+      <a href="#agents">Coding agents</a>
+      <a href="#privacy">Privacy</a>
+    </nav>
+    <a class="nav-cta" href="https://apps.apple.com/app/id6774423992">Get the Mac app <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="status-dot"></span> Developer memory for Mac</p>
+        <h1>Pick up where<br>you left off.</h1>
+        <p class="lede">L2Cache connects your projects, coding-agent sessions, terminal history, Git activity, screenshots, and clipboard content—so the thread of your work is ready when you return.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="https://apps.apple.com/app/id6774423992">Download on the Mac App Store</a>
+          <a class="button text" href="#story">Watch the project come back to life <span aria-hidden="true">↓</span></a>
+        </div>
+        <p class="fine-print">Free download · 15-day trial · one-time Pro unlock</p>
+      </div>
+
+      <div class="hero-stage" aria-label="L2Cache Today screen showing a project ready to resume">
+        <div class="orbit orbit-one" aria-hidden="true"></div>
+        <div class="orbit orbit-two" aria-hidden="true"></div>
+        <article class="app-window app-window-hero">
+          <div class="window-bar">
+            <div class="traffic" aria-hidden="true"><i></i><i></i><i></i></div>
+            <span class="window-title">L2Cache</span>
+            <span class="window-meta">Thu, 15 Oct</span>
+          </div>
+          <div class="app-shell">
+            <aside class="app-sidebar" aria-label="Application sections">
+              <strong>Developer Home</strong>
+              <span class="selected">◉ Today</span><span>⌁ Timeline</span><span>⌗ Tickets</span><span>◇ Projects</span>
+              <strong>Memory</strong>
+              <span>▱ Clipboard</span><span>⌘ Coding Agents</span><span>&gt;_ Terminal</span><span>○ Milestones</span>
+            </aside>
+            <div class="app-content">
+              <div class="app-heading"><div><small>GOOD MORNING</small><h2>Your work is waiting.</h2></div><kbd>⌘ K</kbd></div>
+              <article class="focus-card">
+                <div class="project-id"><span class="project-swatch"></span><div><small>ACTIVE PROJECT</small><strong>Northstar</strong></div><time>12 min ago</time></div>
+                <h3>Restore session continuity after the index migration</h3>
+                <p>Open loop: the new migration passes locally. Verify the recovery path before merging.</p>
+                <div class="resume-row"><span><b>Codex</b> · session 8f21</span><button type="button">Resume session <span aria-hidden="true">→</span></button></div>
+              </article>
+              <div class="attention-row"><span>Needs attention</span><b>1 failed test</b><b>2 open tickets</b><b>Branch ahead by 3</b></div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="story" id="story">
+      <div class="section-intro">
+        <p class="eyebrow">One project. Every useful trace.</p>
+        <h2>Your day reconstructs itself.</h2>
+        <p>L2Cache turns scattered activity into a project story. Follow Northstar from the first agent session to the moment the fix became safe to ship.</p>
+      </div>
+
+      <div class="story-grid">
+        <div class="timeline" aria-label="Northstar project timeline">
+          <div class="thread" aria-hidden="true"><span id="thread-progress"></span></div>
+          <button class="event active" type="button" data-event="agent" aria-pressed="true">
+            <span class="event-time">09:12</span><span class="event-node">⌘</span>
+            <span class="event-copy"><small>CODEX SESSION</small><strong>Mapped the migration path</strong><em>Recovered the schema boundary and three affected tests.</em></span>
+          </button>
+          <button class="event" type="button" data-event="terminal" aria-pressed="false">
+            <span class="event-time">09:46</span><span class="event-node">&gt;_</span>
+            <span class="event-copy"><small>TERMINAL</small><strong>The first verification failed</strong><em>DatabaseMigrationTests · 1 failure · exit 65</em></span>
+          </button>
+          <button class="event" type="button" data-event="ticket" aria-pressed="false">
+            <span class="event-time">10:03</span><span class="event-node">⌗</span>
+            <span class="event-copy"><small>TICKET L2-184</small><strong>Found the compatibility edge</strong><em>Older stores encoded the recovery marker differently.</em></span>
+          </button>
+          <button class="event" type="button" data-event="commit" aria-pressed="false">
+            <span class="event-time">10:41</span><span class="event-node">↗</span>
+            <span class="event-copy"><small>GIT COMMIT</small><strong>Preserved the old read path</strong><em>f34a12c · migration: decode legacy recovery marker</em></span>
+          </button>
+          <button class="event" type="button" data-event="success" aria-pressed="false">
+            <span class="event-time">10:49</span><span class="event-node">✓</span>
+            <span class="event-copy"><small>RECOVERY POINT</small><strong>Focused suite passed</strong><em>12 tests · 0 failures · ready for review</em></span>
+          </button>
+        </div>
+
+        <div class="sticky-stage">
+          <article class="memory-card" id="memory-card" aria-live="polite">
+            <div class="memory-top"><span id="memory-kind">CODEX SESSION</span><span id="memory-time">09:12</span></div>
+            <h3 id="memory-title">Mapped the migration path</h3>
+            <p id="memory-body">The session connected the schema change to three migration tests and left a concrete verification command.</p>
+            <div class="code-block" id="memory-code"><span>next</span> xcodebuild test -only-testing:DatabaseMigrationTests</div>
+            <div class="memory-links"><span>Northstar</span><span>feature/recovery-index</span><span>L2-184</span></div>
+          </article>
+          <p class="stage-caption">Select an event to inspect the context L2Cache kept with it.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-story">
+      <div class="project-heading">
+        <div><p class="eyebrow">Project story</p><h2>Not a feed.<br>A memory with structure.</h2></div>
+        <p>Decisions, branches, tests, sessions, and recovery points stay attached to the project that gave them meaning.</p>
+      </div>
+      <div class="story-board">
+        <div class="board-rail"><b>N</b><span>Northstar</span><small>14-day story</small></div>
+        <article class="board-feature"><small>DECISION · OCT 15</small><h3>Keep recovery decoding backward-compatible.</h3><p>New stores use the indexed marker. Existing stores continue through the legacy decoder until the next safe migration window.</p><div class="evidence"><span>2 sessions</span><span>1 ticket</span><span>3 commits</span><span>12 tests</span></div></article>
+        <div class="board-stack">
+          <article><small>RECOVERY POINT</small><strong>Migration verified locally</strong><span>Today, 10:49</span></article>
+          <article><small>MILESTONE</small><strong>Index migration complete</strong><span>4 of 4 checks</span></article>
+          <article><small>NEXT ACTION</small><strong>Open review with compatibility note</strong><span>Ready now</span></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="agents" id="agents">
+      <div class="section-intro compact">
+        <p class="eyebrow">Session history from</p>
+        <h2>Your coding agents finally have a history.</h2>
+        <p>Bring supported local session activity into one searchable view. Available details and live-continuity features vary by agent.</p>
+      </div>
+      <div class="provider-marquee" aria-label="Supported history providers">
+        <span><b>C</b> Claude Code</span><span><b>⌘</b> Codex</span><span><b>◒</b> GitHub Copilot</span><span><b>G</b> Grok Build</span><span><b>A</b> Google Antigravity</span>
+      </div>
+      <div class="agent-detail">
+        <div class="agent-list"><small>RECENT SESSIONS</small><button class="selected"><b>Northstar</b><span>Codex · 12 min ago</span></button><button><b>Maple</b><span>Claude Code · Yesterday</span></button><button><b>Relay</b><span>Copilot · Tuesday</span></button></div>
+        <div class="agent-transcript"><div><span class="tag">Codex</span><span>feature/recovery-index</span><time>34 min</time></div><h3>Restore session continuity after the index migration</h3><blockquote>“Run the focused migration suite, then add the compatibility note to L2-184.”</blockquote><div class="transcript-footer"><span>14 messages</span><span>3 commands</span><span>1 decision</span><button type="button">Resume in terminal ↗</button></div></div>
+      </div>
+    </section>
+
+    <section class="search-demo" id="search">
+      <div class="section-intro compact"><p class="eyebrow">Command-K</p><h2>Ask your work where it left off.</h2><p>Try a synthetic query. The prototype keeps this interaction local and does not record what you select.</p></div>
+      <div class="query-chips" role="group" aria-label="Example searches"><button class="active" data-query="migration">Where did the migration fail?</button><button data-query="decision">Why did we keep the legacy decoder?</button><button data-query="resume">What should I do next?</button></div>
+      <div class="command-window">
+        <div class="command-input"><kbd>⌘ K</kbd><span id="query-text">Where did the migration fail?</span><kbd>ESC</kbd></div>
+        <div class="results" id="query-results" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="privacy" id="privacy">
+      <div class="privacy-copy"><p class="eyebrow">Local-first, precisely explained</p><h2>Your history lives on your Mac.</h2><p>Core history is stored locally. L2Cache can use on-device Apple Intelligence where available, local Ollama, or rule-based processing. Features that contact a website, coding agent, translation service, or optional cloud provider have a separate network boundary.</p><a href="#">Read the privacy architecture <span aria-hidden="true">→</span></a></div>
+      <div class="boundary-map" aria-label="Diagram of local and optional network boundaries">
+        <div class="mac-boundary"><span class="boundary-label">YOUR MAC</span><div class="local-core"><b>L2</b><strong>Local history</strong><small>SQLite · Search · Sensitive-content checks</small></div><div class="local-options"><span>Apple Intelligence<small>where available</small></span><span>Ollama<small>local service</small></span><span>Rules<small>no AI provider</small></span></div></div>
+        <div class="external-boundary"><span class="boundary-label">OPTIONAL / ACTION-SPECIFIC</span><span>Cloud AI provider</span><span>Coding-agent retrieval</span><span>URL & translation services</span></div>
+      </div>
+    </section>
+
+    <section class="capabilities">
+      <div class="capability-heading"><p class="eyebrow">A place for every part of the work</p><h2>Your development day,<br>held together.</h2></div>
+      <ol class="capability-list">
+        <li><span>01</span><b>Today</b><p>Return to the last state, open loop, and next useful action.</p></li><li><span>02</span><b>Timeline</b><p>Read activity across sessions, Git, builds, terminal, and clips.</p></li><li><span>03</span><b>Projects</b><p>Keep decisions, recovery points, stories, and weekly recaps together.</p></li><li><span>04</span><b>Coding Agents</b><p>Search supported session history and resume with provider context.</p></li><li><span>05</span><b>Terminal</b><p>Connect failed commands to the successful work that followed.</p></li><li><span>06</span><b>Clipboard + OCR</b><p>Recover the useful fragments that normally disappear between tools.</p></li>
+      </ol>
+    </section>
+
+    <section class="closing">
+      <div class="closing-thread" aria-hidden="true"><span></span></div>
+      <p class="eyebrow">Northstar · open loop resolved</p>
+      <h2>The context is here.<br>Continue the work.</h2>
+      <p>Download L2Cache free from the Mac App Store. Try every Pro feature for 15 days, then unlock Pro with a one-time purchase.</p>
+      <a class="button primary" href="https://apps.apple.com/app/id6774423992">Download on the Mac App Store</a>
+      <small>Requires macOS 13 or later · prototype wording, reconfirm before launch</small>
+    </section>
+  </main>
+
+  <footer><a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>L2Cache</span></a><p>Developer memory for Mac.</p><nav aria-label="Footer navigation"><a href="#">Privacy</a><a href="#">Support</a><a href="#">Changelog</a><a href="#">About</a></nav></footer>
+</body>
+</html>
