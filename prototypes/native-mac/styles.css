@@ -16,6 +16,7 @@
   --dark-frame: #0d0d10;
 
   --c-agent: #9b6bff;
+  --stage-teal: #22b3a3;
   --c-term: #2fa36b;
   --c-git: #e5832d;
   --c-shot: #3b82f6;
@@ -40,22 +41,8 @@
   --max: 1160px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0c0c0f;
-    --bg-alt: #131317;
-    --surface: #18181d;
-    --text: #f5f5f7;
-    --text-2: #a8a8b0;
-    --text-3: #7c7c84;
-    --border: rgba(255, 255, 255, 0.1);
-    --accent: #b28cff;
-    --accent-hover: #c4a6ff;
-    --accent-soft: rgba(178, 140, 255, 0.14);
-    --on-accent: #14101d;
-    --shot-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 30px 80px -20px rgba(120, 70, 220, 0.35);
-  }
-}
+/* Always light: the dark app windows read best on a light page, so there is no dark theme. */
+:root { color-scheme: light; }
 
 *,
 *::before,
@@ -180,6 +167,27 @@ h2 kbd { font-size: 0.62em; vertical-align: 0.12em; }
 
 .shot-stack { display: grid; gap: var(--s-5); }
 .shot-narrow { max-width: 620px; justify-self: center; }
+/* Colour stages: each screenshot sits on a soft gradient in its section's colour. */
+.stage {
+  --stage: var(--c-agent);
+  position: relative;
+  padding: var(--s-7);
+  border-radius: 28px;
+  background:
+    radial-gradient(120% 90% at 15% 0%, color-mix(in srgb, var(--stage) 30%, transparent), transparent 60%),
+    radial-gradient(90% 80% at 100% 100%, color-mix(in srgb, var(--stage) 22%, transparent), transparent 65%),
+    linear-gradient(160deg, color-mix(in srgb, var(--stage) 14%, var(--bg)), color-mix(in srgb, var(--stage) 6%, var(--bg)));
+  border: 1px solid color-mix(in srgb, var(--stage) 18%, transparent);
+}
+.hero-shot.stage { --stage: var(--c-agent); padding: var(--s-8) var(--s-8) 0; overflow: hidden; }
+.hero-shot.stage img { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+#today .stage { --stage: var(--c-agent); }
+#agents .stage { --stage: var(--stage-teal); }
+#projects .stage { --stage: var(--c-git); }
+#search .stage { --stage: var(--c-shot); }
+#clipboard .stage { --stage: var(--c-clip); }
+.shot-narrow.stage { max-width: 680px; }
+
 .shot-pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-5); align-items: start; }
 
 /* Privacy */
@@ -291,4 +299,6 @@ h2 kbd { font-size: 0.62em; vertical-align: 0.12em; }
   .boundary-mac .boundary-items { grid-template-columns: 1fr; }
   .pricing-card { padding: var(--s-7) var(--s-5); }
   .btn-appstore { width: 100%; justify-content: center; }
+  .stage { padding: var(--s-4); border-radius: 20px; }
+  .hero-shot.stage { padding: var(--s-5) var(--s-4) 0; }
 }
