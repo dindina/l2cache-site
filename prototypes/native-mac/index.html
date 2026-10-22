@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Prototype: remove noindex when promoted to https://l2cache.app/ -->
   <meta name="robots" content="noindex,nofollow">
-  <title>L2Cache — Developer Memory for Mac | Pick Up Where You Left Off</title>
-  <meta name="description" content="L2Cache is a Mac app that remembers your development work — coding-agent sessions, terminal history, Git activity, screenshots and clipboard — so you can pick up where you left off.">
+  <title>L2Cache — Developer Memory for Mac | Resume Your Work</title>
+  <meta name="description" content="L2Cache remembers your dev work on Mac: coding-agent sessions, terminal history, Git activity, screenshots and clipboard. Pick up where you left off.">
   <link rel="canonical" href="https://l2cache.app/">
   <meta name="theme-color" content="#f7f6f3">
   <meta name="color-scheme" content="light">
@@ -16,17 +16,17 @@
   <meta property="og:url" content="https://l2cache.app/">
   <meta property="og:title" content="L2Cache — Pick up where you left off">
   <meta property="og:description" content="Developer memory for Mac. Your agent sessions, terminal, Git activity, screenshots and clipboard, connected and searchable on your Mac.">
-  <meta property="og:image" content="https://l2cache.app/og/home.jpg">
+  <meta property="og:image" content="https://l2cache.app/img/og-home.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="The L2Cache Developer Home window showing Today, projects and items that need attention">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="L2Cache — Pick up where you left off">
   <meta name="twitter:description" content="Developer memory for Mac. Agent sessions, terminal, Git, screenshots and clipboard, connected on your Mac.">
-  <meta name="twitter:image" content="https://l2cache.app/og/home.jpg">
+  <meta name="twitter:image" content="https://l2cache.app/img/og-home.jpg">
 
-  <link rel="icon" href="/icon.png" type="image/png">
-  <link rel="apple-touch-icon" href="/icon.png">
+  <link rel="icon" href="img/icon-64.png" type="image/png">
+  <link rel="apple-touch-icon" href="img/icon-180.png">
   <link rel="preload" as="image" href="img/developer-home-2000.webp" imagesrcset="img/developer-home-1200.webp 1200w, img/developer-home-2000.webp 2000w" imagesizes="(max-width: 1240px) 100vw, 1160px">
   <link rel="stylesheet" href="styles.css">
   <script>document.documentElement.classList.add("js");</script>
@@ -41,14 +41,19 @@
         "@id": "https://l2cache.app/#organization",
         "name": "Amvotech",
         "url": "https://l2cache.app/",
-        "logo": "https://l2cache.app/icon.png"
+        "logo": "https://l2cache.app/icon.png",
+        "sameAs": [
+          "https://apps.apple.com/us/app/l2cache/id6774423992"
+        ]
       },
       {
         "@type": "WebSite",
         "@id": "https://l2cache.app/#website",
         "name": "L2Cache",
         "url": "https://l2cache.app/",
-        "publisher": { "@id": "https://l2cache.app/#organization" },
+        "publisher": {
+          "@id": "https://l2cache.app/#organization"
+        },
         "inLanguage": "en"
       },
       {
@@ -60,23 +65,40 @@
         "operatingSystem": "macOS 13 or later",
         "url": "https://l2cache.app/",
         "downloadUrl": "https://apps.apple.com/us/app/l2cache/id6774423992?mt=12",
-        "image": "https://l2cache.app/og/home.jpg",
-        "publisher": { "@id": "https://l2cache.app/#organization" },
+        "image": "https://l2cache.app/img/og-home.jpg",
+        "publisher": {
+          "@id": "https://l2cache.app/#organization"
+        },
         "offers": {
           "@type": "Offer",
           "price": "0",
           "priceCurrency": "USD",
           "description": "Free download with a 15-day Pro trial and a one-time Pro unlock."
-        }
+        },
+        "screenshot": "https://l2cache.app/img/developer-home-2000.webp",
+        "featureList": [
+          "Pick up where you left off: resume coding-agent sessions",
+          "Coding-agent session history for Claude Code, Codex, GitHub Copilot, Grok Build and Google Antigravity",
+          "Project story and milestones from Git activity",
+          "Worklog with approximate hours per ticket",
+          "Terminal history with exit codes",
+          "Clipboard history and screenshot text search",
+          "MCP server and hooks for coding agents",
+          "On-device processing"
+        ]
       },
       {
         "@type": "WebPage",
         "@id": "https://l2cache.app/#webpage",
         "url": "https://l2cache.app/",
         "name": "L2Cache — Developer Memory for Mac",
-        "isPartOf": { "@id": "https://l2cache.app/#website" },
-        "about": { "@id": "https://l2cache.app/#app" },
-        "primaryImageOfPage": "https://l2cache.app/og/home.jpg",
+        "isPartOf": {
+          "@id": "https://l2cache.app/#website"
+        },
+        "about": {
+          "@id": "https://l2cache.app/#app"
+        },
+        "primaryImageOfPage": "https://l2cache.app/img/og-home.jpg",
         "inLanguage": "en"
       },
       {
@@ -86,32 +108,58 @@
           {
             "@type": "Question",
             "name": "What is L2Cache?",
-            "acceptedAnswer": { "@type": "Answer", "text": "L2Cache is developer memory for Mac. It connects your projects, coding-agent sessions, terminal history, Git activity, screenshots and clipboard content, so when you come back to your Mac you can see where you left off and resume the work." }
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "L2Cache is developer memory for Mac. It connects your projects, coding-agent sessions, terminal history, Git activity, screenshots and clipboard content, so when you come back to your Mac you can see where you left off and resume the work."
+            }
           },
           {
             "@type": "Question",
             "name": "Is L2Cache a clipboard manager?",
-            "acceptedAnswer": { "@type": "Answer", "text": "It includes one. L2Cache started as a clipboard manager and still has searchable clipboard history with smart actions, opened with the ⌥Space quick panel. Version 2.0 adds the Developer Home, which brings clipboard, terminal, Git and coding-agent history together by project." }
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "It includes one. L2Cache started as a clipboard manager and still has searchable clipboard history with smart actions, opened with the ⌥Space quick panel. Version 2.0 adds the Developer Home, which brings clipboard, terminal, Git and coding-agent history together by project."
+            }
           },
           {
             "@type": "Question",
             "name": "Which coding agents does L2Cache read history from?",
-            "acceptedAnswer": { "@type": "Answer", "text": "L2Cache reads local session history from Claude Code, Codex, GitHub Copilot, Grok Build and Google Antigravity. Available details and live-continuity features vary by agent." }
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "L2Cache reads local session history from Claude Code, Codex, GitHub Copilot, Grok Build and Google Antigravity. Available details and live-continuity features vary by agent."
+            }
           },
           {
             "@type": "Question",
             "name": "Can I resume a Claude Code or Codex session from L2Cache?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Yes. L2Cache generates the resume command for supported sessions and can open it in your terminal. The agent's command-line tool and the original session must still be installed and available on your Mac." }
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. L2Cache generates the resume command for supported sessions and can open it in your terminal. The agent's command-line tool and the original session must still be installed and available on your Mac."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can my coding agents use L2Cache directly?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Connect the L2Cache MCP server and agents such as Claude Code, Codex, Cursor and Antigravity can search your clipboard history, screenshots and saved folders themselves. Optional hooks for Claude Code, Codex, GitHub Copilot and Grok Build share your recent clipboard items and the previous session's context with each new session. Both run on your Mac, and sensitive items are never shared."
+            }
           },
           {
             "@type": "Question",
             "name": "Where is my history stored?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Your history is stored locally in L2Cache's database on your Mac. On-device Apple Intelligence (where available), a local Ollama model, or rule-based processing can be used without a cloud service. Optional services you choose to enable, such as cloud AI providers, sit outside that boundary." }
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Your history is stored locally in L2Cache's database on your Mac. Smart features use on-device Apple Intelligence where your Mac supports it, a local Ollama model, or rule-based processing."
+            }
           },
           {
             "@type": "Question",
             "name": "How much does L2Cache cost?",
-            "acceptedAnswer": { "@type": "Answer", "text": "L2Cache is a free download from the Mac App Store with a 15-day Pro trial. Pro is a one-time unlock with no subscription." }
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "L2Cache is a free download from the Mac App Store with a 15-day Pro trial. Pro is a one-time unlock with no subscription."
+            }
           }
         ]
       }
@@ -125,7 +173,7 @@
   <header class="site-header">
     <nav class="nav wrap" aria-label="Main">
       <a class="brand" href="/" aria-label="L2Cache home">
-        <img src="/icon.png" alt="" width="28" height="28">
+        <img src="img/icon-144.webp" alt="" width="28" height="28">
         <span>L2Cache</span>
       </a>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
@@ -135,6 +183,7 @@
       <ul class="nav-links" id="nav-links">
         <li><a href="#today">Today</a></li>
         <li><a href="#agents">Agents</a></li>
+        <li><a href="#agent-tools">MCP &amp; Hooks</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#search">Search</a></li>
         <li><a href="#clipboard">Clipboard</a></li>
@@ -149,7 +198,7 @@
     <!-- Hero -->
     <section class="hero" aria-labelledby="hero-title">
       <div class="wrap hero-copy">
-        <p class="eyebrow">Developer memory for Mac</p>
+        <p class="eyebrow hero-eyebrow">Developer memory for Mac</p>
         <h1 id="hero-title">Pick up where you left off.</h1>
         <p class="lede">L2Cache connects your coding-agent sessions, terminal history, Git activity, screenshots and clipboard, so the thread of your work is waiting when you come back.</p>
         <div class="cta-row">
@@ -169,7 +218,11 @@
           sizes="(max-width: 1240px) 100vw, 1160px"
           width="2000" height="1528"
           alt="The L2Cache Developer Home window on Today: stats for yesterday, a Pick up where you left off card showing the last request to Claude Code and its update on the Atlas auth fix, and cards for the other active projects Relay, Lumen and Atlas."
-          fetchpriority="high">
+          fetchpriority="high"
+          data-gallery="true"
+          data-title="Developer Home"
+          data-caption="Today's work, pinned projects, unpushed commits and recent agent sessions all in one native window.">
+        <span class="zoom-hint"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg> Click to enlarge</span>
       </figure>
 
       <div class="wrap sources" aria-label="What L2Cache remembers">
@@ -185,52 +238,105 @@
     </section>
 
     <!-- Today -->
-    <section class="feature" id="today" aria-labelledby="today-title">
-      <div class="wrap feature-grid">
-        <div class="feature-copy reveal">
+    <section class="feature today-showcase" id="today" aria-labelledby="today-title">
+      <div class="wrap">
+        <div class="today-head reveal">
           <p class="eyebrow">Today</p>
           <h2 id="today-title">Your morning starts with context, not archaeology.</h2>
-          <p>Open L2Cache and Today shows the last thing you were doing in every project: what you asked your agent, what it finished, and the one step that comes next.</p>
-          <ul class="points">
-            <li><strong>You were working on.</strong> The goal of your last agent session, in your own words.</li>
-            <li><strong>Last update.</strong> What the agent reported before you stopped.</li>
-            <li><strong>Resume.</strong> Reopen the session in the agent you were using, in one click.</li>
-            <li><strong>Needs attention.</strong> Failed runs, unpushed commits and branches pushed but never merged.</li>
-          </ul>
+          <p class="lead">Open L2Cache and Today shows the last thing you were doing in every project: what you asked your agent, what it finished, and the one step that comes next.</p>
         </div>
-        <figure class="shot shot-dark stage reveal">
-          <img src="img/pick-up.webp" width="1600" height="798" loading="lazy" decoding="async"
-            alt="The Pick up where you left off card: for Atlas, what you asked Claude Code, its last update that one concurrency test still fails, and the unpushed commit; for Nimbus, the shell completions it shipped.">
+        <figure class="shot shot-dark stage today-stage reveal">
+          <img src="img/pick-up.webp" width="2294" height="1144" loading="lazy" decoding="async"
+            alt="The Pick up where you left off card: for Atlas, what you asked Claude Code, its last update that one concurrency test still fails, and the unpushed commit; for Nimbus, the shell completions it shipped."
+            data-gallery="true"
+            data-title="Today — Pick Up Where You Left Off"
+            data-caption="Goal of your last agent session, last update, failing tests and unpushed commits ready to resume."
+            data-full="img/pick-up.webp">
+          <span class="zoom-hint"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg> Click to enlarge</span>
         </figure>
+        <ul class="today-points reveal">
+          <li><strong>You were working on.</strong><span>The goal of your last agent session, in your own words.</span></li>
+          <li><strong>Last update.</strong><span>What the agent reported before you stopped.</span></li>
+          <li><strong>Resume.</strong><span>Reopen the session in the agent you were using, in one click.</span></li>
+          <li><strong>Needs attention.</strong><span>Failed runs, unpushed commits and branches pushed but never merged.</span></li>
+        </ul>
       </div>
     </section>
 
     <!-- Coding agents -->
-    <section class="feature feature-alt" id="agents" aria-labelledby="agents-title">
-      <div class="wrap feature-grid flip">
-        <div class="feature-copy reveal">
+    <section class="feature feature-alt agents-showcase" id="agents" aria-labelledby="agents-title">
+      <div class="wrap">
+        <div class="agents-head reveal">
           <p class="eyebrow">Coding agents</p>
           <h2 id="agents-title">Your coding agents finally have a history.</h2>
-          <p>Every agent keeps its sessions in a different place and format. L2Cache reads them from your Mac and lays them out by project and branch, so a conversation from last Tuesday is a search away.</p>
-          <p class="providers-label">Session history from</p>
-          <ul class="providers">
-            <li>Claude Code</li>
-            <li>Codex</li>
-            <li>GitHub Copilot</li>
-            <li>Grok Build</li>
-            <li>Google Antigravity</li>
-          </ul>
-          <ul class="points">
-            <li><strong>Resume.</strong> Copy or run the resume command for a supported session. The agent's CLI and the original session need to be available.</li>
-            <li><strong>Handoff.</strong> Live capture and session handoff for Claude Code, Codex, GitHub Copilot and Grok Build.</li>
-            <li><strong>Plans and skills.</strong> Browse plans from Claude Code and Antigravity, and installed skills and their use from Claude Code and Codex.</li>
-          </ul>
-          <p class="disclosure">Available details and live-continuity features vary by agent.</p>
+          <p class="lead">Every agent keeps its sessions in a different place and format. L2Cache reads your Claude Code session history and Codex session history, plus Copilot, Grok Build and Antigravity, from your Mac and lays it out by project and branch. A conversation from last Tuesday is a search away, and you can resume Claude Code or Codex right where it stopped.</p>
+          <div class="agents-providers-wrap">
+            <span class="providers-label">Session history from</span>
+            <ul class="providers">
+              <li>Claude Code</li>
+              <li>Codex</li>
+              <li>GitHub Copilot</li>
+              <li>Grok Build</li>
+              <li>Google Antigravity</li>
+            </ul>
+          </div>
         </div>
-        <figure class="shot shot-dark stage reveal">
-          <img src="img/coding-agents.webp" width="1400" height="1273" loading="lazy" decoding="async"
-            alt="Coding Agents in L2Cache: Atlas sessions from Claude Code and Codex on the left, and on the right the open session with what you asked, the agent's last update, the commit it made and the full conversation.">
+
+        <figure class="shot shot-dark stage agents-stage reveal">
+          <img src="img/coding-agents.webp" width="1800" height="1637" loading="lazy" decoding="async"
+            alt="Coding Agents in L2Cache: Atlas sessions from Claude Code and Codex on the left, and on the right the open session with what you asked, the agent's last update, the commit it made and the full conversation."
+            data-gallery="true"
+            data-title="Coding Agents History"
+            data-caption="Atlas sessions from Claude Code and Codex with prompts, commits, test updates and full transcripts."
+            data-full="img/coding-agents.webp">
+          <span class="zoom-hint"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg> Click to enlarge</span>
         </figure>
+
+        <ul class="agents-points reveal">
+          <li><strong>Resume.</strong><span>Copy or run the resume command for a supported session. The agent's CLI and the original session need to be available.</span></li>
+          <li><strong>Handoff.</strong><span>Live capture and session handoff for Claude Code, Codex, GitHub Copilot and Grok Build.</span></li>
+          <li><strong>Plans and skills.</strong><span>Browse plans from Claude Code and Antigravity, and installed skills and their use from Claude Code and Codex.</span></li>
+        </ul>
+        <p class="disclosure text-center reveal">Available details and live-continuity features vary by agent.</p>
+      </div>
+    </section>
+
+    <!-- Agent tools: MCP server and hooks -->
+    <section class="feature agent-bridge" id="agent-tools" aria-labelledby="agent-tools-title">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <p class="eyebrow">For your coding agents</p>
+          <h2 id="agent-tools-title">Your agents can ask L2Cache, and L2Cache briefs them.</h2>
+          <p>Two optional connections, one in each direction: agents look up what you copied or captured, and every session starts with the context it needs.</p>
+        </div>
+        <div class="bridge-grid">
+          <article class="bridge-card reveal" aria-labelledby="mcp-title">
+            <p class="bridge-kicker"><span class="bridge-badge">MCP server</span> Agents ask L2Cache</p>
+            <h3 id="mcp-title">“Use the query I copied this morning” just works.</h3>
+            <p>Connect the L2Cache MCP server and your agent looks things up itself, instead of you pasting them in.</p>
+            <ul class="tool-chips" aria-label="L2Cache MCP tools">
+              <li><code>search_clips</code></li>
+              <li><code>get_recent_clips</code></li>
+              <li><code>get_clip</code></li>
+              <li><code>search_screenshots</code></li>
+              <li><code>search_memory_folders</code></li>
+              <li><code>get_recovery_point</code></li>
+            </ul>
+            <p class="bridge-foot">Works with Claude Code, Claude desktop, Codex, Cursor and Antigravity. Queries run on your Mac, and sensitive items such as passwords and keys are never returned.</p>
+          </article>
+          <article class="bridge-card reveal" aria-labelledby="hooks-title">
+            <p class="bridge-kicker"><span class="bridge-badge">Hooks</span> L2Cache briefs your agents</p>
+            <h3 id="hooks-title">Every session starts briefed.</h3>
+            <ul class="points">
+              <li><strong>Recent clipboard.</strong> What you copied in the last 30 minutes rides along with your prompt.</li>
+              <li><strong>Session handoff.</strong> A new session picks up where the last one stopped.</li>
+              <li><strong>Edits and failed commands.</strong> Recorded every turn, so Your Day and Worklog stay accurate.</li>
+              <li><strong>Fixes remembered.</strong> When a copied error is fixed and verified, the fix is saved for next time.</li>
+              <li><strong>Work summaries.</strong> A one-line summary of each finished change feeds Your Day.</li>
+            </ul>
+            <p class="bridge-foot">For Claude Code, Codex, GitHub Copilot and Grok Build. You turn each agent on in Settings; nothing is installed until you do.</p>
+          </article>
+        </div>
       </div>
     </section>
 
@@ -249,13 +355,20 @@
           </ul>
         </div>
         <div class="shot-stack stage reveal">
+          <span class="zoom-hint"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg> Click to enlarge</span>
           <figure class="shot shot-dark">
             <img src="img/project-insights.webp" width="1400" height="1161" loading="lazy" decoding="async"
-              alt="The Atlas project page: a recommendation to ask Claude to fix a test failing after the latest commit, project pulse, four commits only on this Mac, the last known good build and milestones.">
+              alt="The Atlas project page: a recommendation to ask Claude to fix a test failing after the latest commit, project pulse, four commits only on this Mac, the last known good build and milestones."
+              data-gallery="true"
+              data-title="Project Insights"
+              data-caption="Live commit graph, project pulse, local unpushed commits, known good builds and milestones.">
           </figure>
           <figure class="shot shot-dark">
             <img src="img/worklog-timesheet.webp" width="1400" height="823" loading="lazy" decoding="async"
-              alt="Worklog timesheet for the week: approximate hours per ticket and per project for each day, with ticket status.">
+              alt="Worklog timesheet for the week: approximate hours per ticket and per project for each day, with ticket status."
+              data-gallery="true"
+              data-title="Worklog Timesheet"
+              data-caption="Weekly summary of hours worked per ticket and per project, ready to copy to your timesheet tool.">
           </figure>
         </div>
       </div>
@@ -276,7 +389,11 @@
         </div>
         <figure class="shot shot-dark shot-narrow stage reveal">
           <img src="img/search-cmdk.webp" width="1358" height="1046" loading="lazy" decoding="async"
-            alt="Command-K search for token refresh, with results from clips, a screenshot, Atlas agent sessions and a terminal command.">
+            alt="Command-K search for token refresh, with results from clips, a screenshot, Atlas agent sessions and a terminal command."
+            data-gallery="true"
+            data-title="⌘K Unified Search"
+            data-caption="Instant search across agent sessions, terminal commands, clipboard snippets, commits and screenshots.">
+          <span class="zoom-hint"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg> Click to enlarge</span>
         </figure>
       </div>
     </section>
@@ -295,13 +412,20 @@
           </ul>
         </div>
         <div class="shot-pair stage reveal">
+          <span class="zoom-hint"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg> Click to enlarge</span>
           <figure class="shot shot-dark">
             <img src="img/clipboard.webp" width="900" height="1598" loading="lazy" decoding="async"
-              alt="Clipboard history filtered by project: a pinned code snippet and issue title, then recent clips including a test-failure screenshot, a terminal command, a UUID, an error message, a config snippet and a pull request link.">
+              alt="Clipboard history filtered by project: a pinned code snippet and issue title, then recent clips including a test-failure screenshot, a terminal command, a UUID, an error message, a config snippet and a pull request link."
+              data-gallery="true"
+              data-title="Smart Clipboard History"
+              data-caption="Recognizes code, JSON, SQL, URLs, and errors with smart actions, organized by project.">
           </figure>
           <figure class="shot shot-dark">
             <img src="img/terminal.webp" width="900" height="1614" loading="lazy" decoding="async"
-              alt="Terminal history grouped by day with project colours: xcodebuild, git, curl, cargo and npm commands, with exit codes for the failed ones and titles for some.">
+              alt="Terminal history grouped by day with project colours: xcodebuild, git, curl, cargo and npm commands, with exit codes for the failed ones and titles for some."
+              data-gallery="true"
+              data-title="Terminal History"
+              data-caption="Terminal commands grouped by day with exit codes, project tags, and agent execution tracking.">
           </figure>
         </div>
       </div>
@@ -312,8 +436,8 @@
       <div class="wrap">
         <div class="section-head reveal">
           <p class="eyebrow">Privacy</p>
-          <h2 id="privacy-title">Local-first, with honest boundaries.</h2>
-          <p>Your history lives in L2Cache's database on your Mac. Here is exactly where the line sits.</p>
+          <h2 id="privacy-title">Local-first, by design.</h2>
+          <p>Your history lives in L2Cache's database, on your Mac, and its smart features run there too.</p>
         </div>
 
         <div class="boundary reveal" role="group" aria-label="Where L2Cache processes your data">
@@ -329,12 +453,6 @@
               <li><strong>Rule-based</strong><span>Works with no AI provider at all</span></li>
             </ul>
           </div>
-          <div class="boundary-out">
-            <p class="boundary-title">Only if you turn them on</p>
-            <ul class="boundary-items">
-              <li><strong>Optional services</strong><span>Such as cloud AI providers you choose to connect</span></li>
-            </ul>
-          </div>
         </div>
 
         <ul class="privacy-points reveal">
@@ -348,7 +466,7 @@
     <!-- Pricing -->
     <section class="pricing" id="pricing" aria-labelledby="pricing-title">
       <div class="wrap pricing-card reveal">
-        <img src="/icon.png" alt="" width="72" height="72" loading="lazy">
+        <img src="img/icon-144.webp" alt="" width="72" height="72" loading="lazy">
         <h2 id="pricing-title">Try everything for 15 days.</h2>
         <ul class="price-facts">
           <li>Free download</li>
@@ -366,7 +484,7 @@
     <!-- FAQ -->
     <section class="faq" id="faq" aria-labelledby="faq-title">
       <div class="wrap faq-wrap">
-        <h2 id="faq-title">Questions</h2>
+        <h2 id="faq-title">Frequently asked questions</h2>
         <div class="faq-list">
           <details>
             <summary>What is L2Cache?</summary>
@@ -385,8 +503,12 @@
             <p>Yes. L2Cache generates the resume command for supported sessions and can open it in your terminal. The agent's command-line tool and the original session must still be installed and available on your Mac.</p>
           </details>
           <details>
+            <summary>Can my coding agents use L2Cache directly?</summary>
+            <p>Yes. Connect the L2Cache MCP server and agents such as Claude Code, Codex, Cursor and Antigravity can search your clipboard history, screenshots and saved folders themselves. Optional hooks for Claude Code, Codex, GitHub Copilot and Grok Build share your recent clipboard items and the previous session's context with each new session. Both run on your Mac, and sensitive items are never shared.</p>
+          </details>
+          <details>
             <summary>Where is my history stored?</summary>
-            <p>Your history is stored locally in L2Cache's database on your Mac. On-device Apple Intelligence (where available), a local Ollama model, or rule-based processing can be used without a cloud service. Optional services you choose to enable, such as cloud AI providers, sit outside that boundary.</p>
+            <p>Your history is stored locally in L2Cache's database on your Mac. Smart features use on-device Apple Intelligence where your Mac supports it, a local Ollama model, or rule-based processing.</p>
           </details>
           <details>
             <summary>How much does L2Cache cost?</summary>
@@ -401,7 +523,7 @@
     <div class="wrap footer-grid">
       <div class="footer-brand">
         <a class="brand" href="/" aria-label="L2Cache home">
-          <img src="/icon.png" alt="" width="24" height="24" loading="lazy">
+          <img src="img/icon-144.webp" alt="" width="24" height="24" loading="lazy">
           <span>L2Cache</span>
         </a>
         <p>Developer memory for Mac.</p>
@@ -449,5 +571,43 @@
       <p>© 2026 Amvotech. Mac and macOS are trademarks of Apple Inc.</p>
     </div>
   </footer>
+
+  <!-- Screenshot Carousel Modal -->
+  <dialog id="screenshot-modal" class="modal-carousel" aria-label="Screenshot Gallery">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-dialog">
+      <header class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-counter" id="modal-counter">1 / 8</span>
+          <h3 class="modal-title" id="modal-title">Developer Home</h3>
+        </div>
+        <button type="button" class="modal-close" data-close-modal aria-label="Close dialog (Esc)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <kbd>Esc</kbd>
+        </button>
+      </header>
+
+      <div class="modal-stage">
+        <button type="button" class="modal-nav modal-nav-prev" id="modal-prev" aria-label="Previous screenshot (Left arrow)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+
+        <div class="modal-viewport">
+          <figure class="modal-figure">
+            <img id="modal-image" src="img/developer-home-2000.webp" alt="Screenshot preview">
+          </figure>
+        </div>
+
+        <button type="button" class="modal-nav modal-nav-next" id="modal-next" aria-label="Next screenshot (Right arrow)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>
+
+      <footer class="modal-footer">
+        <p class="modal-caption" id="modal-caption">Caption</p>
+        <div class="modal-dots" id="modal-dots" role="tablist" aria-label="Choose screenshot"></div>
+      </footer>
+    </div>
+  </dialog>
 </body>
 </html>
