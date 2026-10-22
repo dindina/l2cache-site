@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Prototype: remove noindex when promoted to https://l2cache.app/ -->
+  <meta name="robots" content="noindex,nofollow">
+  <title>L2Cache — Developer Memory for Mac | Pick Up Where You Left Off</title>
+  <meta name="description" content="L2Cache is a Mac app that remembers your development work — coding-agent sessions, terminal history, Git activity, screenshots and clipboard — so you can pick up where you left off.">
+  <link rel="canonical" href="https://l2cache.app/">
+  <meta name="theme-color" content="#f7f6f3" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0c0c0f" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="L2Cache">
+  <meta property="og:url" content="https://l2cache.app/">
+  <meta property="og:title" content="L2Cache — Pick up where you left off">
+  <meta property="og:description" content="Developer memory for Mac. Your agent sessions, terminal, Git activity, screenshots and clipboard, connected and searchable on your Mac.">
+  <meta property="og:image" content="https://l2cache.app/og/home.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The L2Cache Developer Home window showing Today, projects and items that need attention">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="L2Cache — Pick up where you left off">
+  <meta name="twitter:description" content="Developer memory for Mac. Agent sessions, terminal, Git, screenshots and clipboard, connected on your Mac.">
+  <meta name="twitter:image" content="https://l2cache.app/og/home.jpg">
+
+  <link rel="icon" href="/icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/icon.png">
+  <link rel="preload" as="image" href="img/developer-home-2000.webp" imagesrcset="img/developer-home-1200.webp 1200w, img/developer-home-2000.webp 2000w" imagesizes="(max-width: 1240px) 100vw, 1160px">
+  <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.add("js");</script>
+  <script src="script.js" defer></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://l2cache.app/#organization",
+        "name": "Amvotech",
+        "url": "https://l2cache.app/",
+        "logo": "https://l2cache.app/icon.png"
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://l2cache.app/#website",
+        "name": "L2Cache",
+        "url": "https://l2cache.app/",
+        "publisher": { "@id": "https://l2cache.app/#organization" },
+        "inLanguage": "en"
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://l2cache.app/#app",
+        "name": "L2Cache",
+        "description": "Developer memory for Mac. L2Cache connects coding-agent sessions, terminal history, Git activity, screenshots and clipboard content so you can pick up where you left off.",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "macOS 13 or later",
+        "url": "https://l2cache.app/",
+        "downloadUrl": "https://apps.apple.com/us/app/l2cache/id6774423992?mt=12",
+        "image": "https://l2cache.app/og/home.jpg",
+        "publisher": { "@id": "https://l2cache.app/#organization" },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "description": "Free download with a 15-day Pro trial and a one-time Pro unlock."
+        }
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://l2cache.app/#webpage",
+        "url": "https://l2cache.app/",
+        "name": "L2Cache — Developer Memory for Mac",
+        "isPartOf": { "@id": "https://l2cache.app/#website" },
+        "about": { "@id": "https://l2cache.app/#app" },
+        "primaryImageOfPage": "https://l2cache.app/og/home.jpg",
+        "inLanguage": "en"
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://l2cache.app/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is L2Cache?",
+            "acceptedAnswer": { "@type": "Answer", "text": "L2Cache is developer memory for Mac. It connects your projects, coding-agent sessions, terminal history, Git activity, screenshots and clipboard content, so when you come back to your Mac you can see where you left off and resume the work." }
+          },
+          {
+            "@type": "Question",
+            "name": "Is L2Cache a clipboard manager?",
+            "acceptedAnswer": { "@type": "Answer", "text": "It includes one. L2Cache started as a clipboard manager and still has searchable clipboard history with smart actions, opened with the ⌥Space quick panel. Version 2.0 adds the Developer Home, which brings clipboard, terminal, Git and coding-agent history together by project." }
+          },
+          {
+            "@type": "Question",
+            "name": "Which coding agents does L2Cache read history from?",
+            "acceptedAnswer": { "@type": "Answer", "text": "L2Cache reads local session history from Claude Code, Codex, GitHub Copilot, Grok Build and Google Antigravity. Available details and live-continuity features vary by agent." }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I resume a Claude Code or Codex session from L2Cache?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. L2Cache generates the resume command for supported sessions and can open it in your terminal. The agent's command-line tool and the original session must still be installed and available on your Mac." }
+          },
+          {
+            "@type": "Question",
+            "name": "Where is my history stored?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Your history is stored locally in L2Cache's database on your Mac. On-device Apple Intelligence (where available), a local Ollama model, or rule-based processing can be used without a cloud service. Optional services you choose to enable, such as cloud AI providers, sit outside that boundary." }
+          },
+          {
+            "@type": "Question",
+            "name": "How much does L2Cache cost?",
+            "acceptedAnswer": { "@type": "Answer", "text": "L2Cache is a free download from the Mac App Store with a 15-day Pro trial. Pro is a one-time unlock with no subscription." }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <nav class="nav wrap" aria-label="Main">
+      <a class="brand" href="/" aria-label="L2Cache home">
+        <img src="/icon.png" alt="" width="28" height="28">
+        <span>L2Cache</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
+        <span class="sr-only">Menu</span>
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#today">Today</a></li>
+        <li><a href="#agents">Agents</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#search">Search</a></li>
+        <li><a href="#clipboard">Clipboard</a></li>
+        <li><a href="#privacy">Privacy</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+      </ul>
+      <a class="btn btn-small" href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12">Download</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="wrap hero-copy">
+        <p class="eyebrow">Developer memory for Mac</p>
+        <h1 id="hero-title">Pick up where you left off.</h1>
+        <p class="lede">L2Cache connects your coding-agent sessions, terminal history, Git activity, screenshots and clipboard, so the thread of your work is waiting when you come back.</p>
+        <div class="cta-row">
+          <a class="btn btn-appstore" href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.02-1.5-2.62-1.7-3.19-1.72-1.36-.14-2.65.8-3.34.8-.69 0-1.75-.78-2.88-.76-1.48.02-2.85.86-3.61 2.19-1.54 2.67-.39 6.62 1.11 8.79.73 1.06 1.6 2.25 2.75 2.2 1.1-.04 1.52-.71 2.85-.71 1.33 0 1.71.71 2.88.69 1.19-.02 1.94-1.08 2.67-2.14.84-1.23 1.19-2.42 1.21-2.48-.03-.01-2.31-.89-2.33-3.55zM14.18 6.13c.61-.74 1.02-1.76.91-2.78-.88.04-1.94.59-2.57 1.32-.56.65-1.06 1.7-.93 2.7.98.08 1.98-.5 2.59-1.24z"/></svg>
+            Download on the Mac App Store
+          </a>
+          <a class="btn btn-ghost" href="#today">See how it works</a>
+        </div>
+        <p class="fineprint">Free download · 15-day Pro trial · macOS 13 or later</p>
+      </div>
+
+      <figure class="wrap hero-shot">
+        <img
+          src="img/developer-home-2000.webp"
+          srcset="img/developer-home-1200.webp 1200w, img/developer-home-2000.webp 2000w"
+          sizes="(max-width: 1240px) 100vw, 1160px"
+          width="2000" height="1528"
+          alt="The L2Cache Developer Home window on Today: stats for yesterday, a Pick up where you left off card showing the last request to Claude Code and its update on the Atlas auth fix, and cards for the other active projects Relay, Lumen and Atlas."
+          fetchpriority="high">
+      </figure>
+
+      <div class="wrap sources" aria-label="What L2Cache remembers">
+        <p class="sources-label">Built from what's already on your Mac</p>
+        <ul class="sources-list">
+          <li><span class="dot" style="--c: var(--c-agent)"></span>Coding-agent sessions</li>
+          <li><span class="dot" style="--c: var(--c-term)"></span>Terminal history</li>
+          <li><span class="dot" style="--c: var(--c-git)"></span>Git activity</li>
+          <li><span class="dot" style="--c: var(--c-shot)"></span>Screenshots &amp; folders</li>
+          <li><span class="dot" style="--c: var(--c-clip)"></span>Clipboard</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Today -->
+    <section class="feature" id="today" aria-labelledby="today-title">
+      <div class="wrap feature-grid">
+        <div class="feature-copy reveal">
+          <p class="eyebrow">Today</p>
+          <h2 id="today-title">Your morning starts with context, not archaeology.</h2>
+          <p>Open L2Cache and Today shows the last thing you were doing in every project: what you asked your agent, what it finished, and the one step that comes next.</p>
+          <ul class="points">
+            <li><strong>You were working on.</strong> The goal of your last agent session, in your own words.</li>
+            <li><strong>Last update.</strong> What the agent reported before you stopped.</li>
+            <li><strong>Resume.</strong> Reopen the session in the agent you were using, in one click.</li>
+            <li><strong>Needs attention.</strong> Failed runs, unpushed commits and branches pushed but never merged.</li>
+          </ul>
+        </div>
+        <figure class="shot shot-dark reveal">
+          <img src="img/pick-up.webp" width="1600" height="798" loading="lazy" decoding="async"
+            alt="The Pick up where you left off card: for Atlas, what you asked Claude Code, its last update that one concurrency test still fails, and the unpushed commit; for Nimbus, the shell completions it shipped.">
+        </figure>
+      </div>
+    </section>
+
+    <!-- Coding agents -->
+    <section class="feature feature-alt" id="agents" aria-labelledby="agents-title">
+      <div class="wrap feature-grid flip">
+        <div class="feature-copy reveal">
+          <p class="eyebrow">Coding agents</p>
+          <h2 id="agents-title">Your coding agents finally have a history.</h2>
+          <p>Every agent keeps its sessions in a different place and format. L2Cache reads them from your Mac and lays them out by project and branch, so a conversation from last Tuesday is a search away.</p>
+          <p class="providers-label">Session history from</p>
+          <ul class="providers">
+            <li>Claude Code</li>
+            <li>Codex</li>
+            <li>GitHub Copilot</li>
+            <li>Grok Build</li>
+            <li>Google Antigravity</li>
+          </ul>
+          <ul class="points">
+            <li><strong>Resume.</strong> Copy or run the resume command for a supported session. The agent's CLI and the original session need to be available.</li>
+            <li><strong>Handoff.</strong> Live capture and session handoff for Claude Code, Codex, GitHub Copilot and Grok Build.</li>
+            <li><strong>Plans and skills.</strong> Browse plans from Claude Code and Antigravity, and installed skills and their use from Claude Code and Codex.</li>
+          </ul>
+          <p class="disclosure">Available details and live-continuity features vary by agent.</p>
+        </div>
+        <figure class="shot shot-dark reveal">
+          <img src="img/coding-agents.webp" width="1400" height="1273" loading="lazy" decoding="async"
+            alt="Coding Agents in L2Cache: Atlas sessions from Claude Code and Codex on the left, and on the right the open session with what you asked, the agent's last update, the commit it made and the full conversation.">
+        </figure>
+      </div>
+    </section>
+
+    <!-- Projects & Worklog -->
+    <section class="feature" id="projects" aria-labelledby="projects-title">
+      <div class="wrap feature-grid">
+        <div class="feature-copy reveal">
+          <p class="eyebrow">Projects &amp; Worklog</p>
+          <h2 id="projects-title">Every project keeps its story.</h2>
+          <p>Commits, branches, agent sessions, test runs and releases line up on one timeline per project, so you can see how the work got here, not just where it is.</p>
+          <ul class="points">
+            <li><strong>Project Story.</strong> A commit graph and timeline read straight from <code>.git</code>. L2Cache never runs Git for you.</li>
+            <li><strong>Milestones.</strong> Each piece of evidence is labelled Git verified, Test verified, You noted, or L2Cache inferred.</li>
+            <li><strong>Worklog.</strong> Tickets you worked on and approximate hours per day, which you can correct and copy into your timesheet tool.</li>
+            <li><strong>Weekly Brief &amp; standup.</strong> An editable standup built from your recorded activity.</li>
+          </ul>
+        </div>
+        <div class="shot-stack reveal">
+          <figure class="shot shot-dark">
+            <img src="img/project-insights.webp" width="1400" height="1161" loading="lazy" decoding="async"
+              alt="The Atlas project page: a recommendation to ask Claude to fix a test failing after the latest commit, project pulse, four commits only on this Mac, the last known good build and milestones.">
+          </figure>
+          <figure class="shot shot-dark">
+            <img src="img/worklog-timesheet.webp" width="1400" height="823" loading="lazy" decoding="async"
+              alt="Worklog timesheet for the week: approximate hours per ticket and per project for each day, with ticket status.">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search, terminal, clipboard -->
+    <section class="feature feature-alt" id="search" aria-labelledby="search-title">
+      <div class="wrap feature-grid flip">
+        <div class="feature-copy reveal">
+          <p class="eyebrow">Search</p>
+          <h2 id="search-title">Find the thread with <kbd>⌘</kbd><kbd>K</kbd>.</h2>
+          <p>One search across your projects, agent sessions, terminal history, Git activity, screenshots and clipboard. The command you ran, the error you copied and the screenshot you took are in the same place.</p>
+          <ul class="points">
+            <li><strong>Every source at once.</strong> Clips, agent sessions, terminal commands, commits and docs in one list.</li>
+            <li><strong>Screenshot search.</strong> Find a screenshot by the text inside it.</li>
+            <li><strong>Quick panel.</strong> <kbd>⌥</kbd><kbd>Space</kbd> brings up your history from any app.</li>
+          </ul>
+        </div>
+        <figure class="shot shot-dark shot-narrow reveal">
+          <img src="img/search-cmdk.webp" width="1358" height="1046" loading="lazy" decoding="async"
+            alt="Command-K search for token refresh, with results from clips, a screenshot, Atlas agent sessions and a terminal command.">
+        </figure>
+      </div>
+    </section>
+
+    <!-- Clipboard & Terminal -->
+    <section class="feature" id="clipboard" aria-labelledby="clipboard-title">
+      <div class="wrap feature-grid">
+        <div class="feature-copy reveal">
+          <p class="eyebrow">Clipboard &amp; Terminal</p>
+          <h2 id="clipboard-title">Everything you copied and ran, by project.</h2>
+          <p>Your clipboard and shell history stop being one long list. Each clip and command lands in the project it came from, so the snippet from this morning is next to the work it was for.</p>
+          <ul class="points">
+            <li><strong>Smart clipboard.</strong> Clips are recognised as code, JSON, SQL, URLs, colours and more, with actions for each type. Pin the ones you reuse.</li>
+            <li><strong>Terminal history.</strong> Every command with its exit code, grouped by day and filterable by project or tool.</li>
+            <li><strong>Your shell and your agents.</strong> See the commands you ran, the ones your coding agents ran, or both.</li>
+          </ul>
+        </div>
+        <div class="shot-pair reveal">
+          <figure class="shot shot-dark">
+            <img src="img/clipboard.webp" width="900" height="1598" loading="lazy" decoding="async"
+              alt="Clipboard history filtered by project: a pinned code snippet and issue title, then recent clips including a test-failure screenshot, a terminal command, a UUID, an error message, a config snippet and a pull request link.">
+          </figure>
+          <figure class="shot shot-dark">
+            <img src="img/terminal.webp" width="900" height="1614" loading="lazy" decoding="async"
+              alt="Terminal history grouped by day with project colours: xcodebuild, git, curl, cargo and npm commands, with exit codes for the failed ones and titles for some.">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- Privacy -->
+    <section class="privacy" id="privacy" aria-labelledby="privacy-title">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <p class="eyebrow">Privacy</p>
+          <h2 id="privacy-title">Local-first, with honest boundaries.</h2>
+          <p>Your history lives in L2Cache's database on your Mac. Here is exactly where the line sits.</p>
+        </div>
+
+        <div class="boundary reveal" role="group" aria-label="Where L2Cache processes your data">
+          <div class="boundary-mac">
+            <p class="boundary-title">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 20h8M12 16v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              On your Mac
+            </p>
+            <ul class="boundary-items">
+              <li><strong>History database</strong><span>Sessions, commands, Git activity, clips and screenshots</span></li>
+              <li><strong>Apple Intelligence</strong><span>On-device, where your Mac supports it</span></li>
+              <li><strong>Ollama</strong><span>A local model you run yourself</span></li>
+              <li><strong>Rule-based</strong><span>Works with no AI provider at all</span></li>
+            </ul>
+          </div>
+          <div class="boundary-out">
+            <p class="boundary-title">Only if you turn them on</p>
+            <ul class="boundary-items">
+              <li><strong>Optional services</strong><span>Such as cloud AI providers you choose to connect</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <ul class="privacy-points reveal">
+          <li><strong>You choose what's captured.</strong> Exclude apps and pick the folders L2Cache indexes.</li>
+          <li><strong>Presentation mode.</strong> Masks project names, paths, prompts and commands when you share your screen.</li>
+          <li><strong>Read, don't run.</strong> L2Cache reads your <code>.git</code> files and agent logs. It doesn't run Git or your agents to do it.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing" id="pricing" aria-labelledby="pricing-title">
+      <div class="wrap pricing-card reveal">
+        <img src="/icon.png" alt="" width="72" height="72" loading="lazy">
+        <h2 id="pricing-title">Try everything for 15 days.</h2>
+        <ul class="price-facts">
+          <li>Free download</li>
+          <li>15-day Pro trial</li>
+          <li>One-time Pro unlock, no subscription</li>
+        </ul>
+        <a class="btn btn-appstore" href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.02-1.5-2.62-1.7-3.19-1.72-1.36-.14-2.65.8-3.34.8-.69 0-1.75-.78-2.88-.76-1.48.02-2.85.86-3.61 2.19-1.54 2.67-.39 6.62 1.11 8.79.73 1.06 1.6 2.25 2.75 2.2 1.1-.04 1.52-.71 2.85-.71 1.33 0 1.71.71 2.88.69 1.19-.02 1.94-1.08 2.67-2.14.84-1.23 1.19-2.42 1.21-2.48-.03-.01-2.31-.89-2.33-3.55zM14.18 6.13c.61-.74 1.02-1.76.91-2.78-.88.04-1.94.59-2.57 1.32-.56.65-1.06 1.7-.93 2.7.98.08 1.98-.5 2.59-1.24z"/></svg>
+          Download on the Mac App Store
+        </a>
+        <p class="fineprint">Requires macOS 13 or later.</p>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq" id="faq" aria-labelledby="faq-title">
+      <div class="wrap faq-wrap">
+        <h2 id="faq-title">Questions</h2>
+        <div class="faq-list">
+          <details>
+            <summary>What is L2Cache?</summary>
+            <p>L2Cache is developer memory for Mac. It connects your projects, coding-agent sessions, terminal history, Git activity, screenshots and clipboard content, so when you come back to your Mac you can see where you left off and resume the work.</p>
+          </details>
+          <details>
+            <summary>Is L2Cache a clipboard manager?</summary>
+            <p>It includes one. L2Cache started as a clipboard manager and still has searchable clipboard history with smart actions, opened with the <kbd>⌥</kbd><kbd>Space</kbd> quick panel. Version 2.0 adds the Developer Home, which brings clipboard, terminal, Git and coding-agent history together by project.</p>
+          </details>
+          <details>
+            <summary>Which coding agents does L2Cache read history from?</summary>
+            <p>L2Cache reads local session history from Claude Code, Codex, GitHub Copilot, Grok Build and Google Antigravity. Available details and live-continuity features vary by agent.</p>
+          </details>
+          <details>
+            <summary>Can I resume a Claude Code or Codex session from L2Cache?</summary>
+            <p>Yes. L2Cache generates the resume command for supported sessions and can open it in your terminal. The agent's command-line tool and the original session must still be installed and available on your Mac.</p>
+          </details>
+          <details>
+            <summary>Where is my history stored?</summary>
+            <p>Your history is stored locally in L2Cache's database on your Mac. On-device Apple Intelligence (where available), a local Ollama model, or rule-based processing can be used without a cloud service. Optional services you choose to enable, such as cloud AI providers, sit outside that boundary.</p>
+          </details>
+          <details>
+            <summary>How much does L2Cache cost?</summary>
+            <p>L2Cache is a free download from the Mac App Store with a 15-day Pro trial. Pro is a one-time unlock with no subscription.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="L2Cache home">
+          <img src="/icon.png" alt="" width="24" height="24" loading="lazy">
+          <span>L2Cache</span>
+        </a>
+        <p>Developer memory for Mac.</p>
+      </div>
+      <nav aria-label="Product">
+        <h3>Product</h3>
+        <ul>
+          <li><a href="/en/clipboard-history-mac">Clipboard history</a></li>
+          <li><a href="/en/mac-command-history">Terminal history</a></li>
+          <li><a href="/en/screenshot-ocr-mac">Screenshot search</a></li>
+          <li><a href="/en/custom-actions">Custom actions</a></li>
+          <li><a href="/en/changelog">Changelog</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Coding agents">
+        <h3>Coding agents</h3>
+        <ul>
+          <li><a href="/en/claude-code-session-history-mac">Claude Code history</a></li>
+          <li><a href="/en/codex-session-history-mac">Codex history</a></li>
+          <li><a href="/en/github-copilot-history-lifesaver">GitHub Copilot history</a></li>
+          <li><a href="/en/grok-coding-session-history">Grok Build history</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Compare">
+        <h3>Compare</h3>
+        <ul>
+          <li><a href="/en/best-mac-clipboard-managers">Best Mac clipboard managers</a></li>
+          <li><a href="/en/l2cache-vs-maccy">L2Cache vs Maccy</a></li>
+          <li><a href="/en/l2cache-vs-paste">L2Cache vs Paste</a></li>
+          <li><a href="/en/l2cache-vs-raycast">L2Cache vs Raycast</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Resources">
+        <h3>Resources</h3>
+        <ul>
+          <li><a href="/en/blog">Blog</a></li>
+          <li><a href="/en/benchmark">Clipboard benchmark</a></li>
+          <li><a href="/en/tools">Developer tools</a></li>
+          <li><a href="/en/support">Support</a></li>
+          <li><a href="/en/privacy">Privacy policy</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="wrap footer-legal">
+      <p>© 2026 Amvotech. Mac and macOS are trademarks of Apple Inc.</p>
+    </div>
+  </footer>
+</body>
+</html>
