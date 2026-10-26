@@ -1,6 +1,6 @@
 # Sprint W4 — New-Domain Integration (Preview Only)
 
-**Status:** Code complete (2026-10-26) — preview deploy check pending
+**Status:** Done (2026-10-26) — verified on preview `l2cache-site-n1g8bm6ej`; production unchanged
 **Goal:** A Vercel preview where the 2.0 homepage is at `/`, every page uses `l2cache.app`, and the old host redirects one hop to the same path.
 **Depends on:** W1 (canonical host), W2 (pipeline). Runs before W3: the preview is English-only until translations land.
 **Scope:** `build.py`, `vercel.json`, `sitemap.xml`, `robots.txt`, `llms.txt`, internal links. Production stays on the current deploy.
