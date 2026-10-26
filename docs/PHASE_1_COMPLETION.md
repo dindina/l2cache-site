@@ -1,6 +1,6 @@
 # Phase 1 Completion Record
 
-**Status:** Prototype-ready; production launch gates remain  
+**Status:** Visual direction selected; foundation and production launch gates remain  
 **Date:** 15 October 2026
 
 ## Outcome
@@ -83,5 +83,7 @@ Prototypes must live in a separate, clearly labelled directory and must not:
 - contain real private developer data;
 - deploy or redirect production traffic.
 
-The next implementation milestone is an isolated Living Project Timeline prototype, followed by the restrained Developer Daybook variation.
+## Phase 2 Direction Decision
+
+On 15 October 2026, the user selected **Living Project Timeline** as the homepage direction. The Developer Daybook concept is retained as a reference for restrained editorial spacing and light lavender sections. The next work should prove Vercel multi-property and legacy URL parity, then prepare presentation-safe captures from the redesigned app for the selected homepage.
 

@@ -12,10 +12,13 @@ import os
 import sys
 import jwt
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "tools"))
+from export_bing_baseline import api_key  # BING_API_KEY from the environment or .env
+
 # Configuration
 GSC_KEY_PATH = "/Users/dinesh/tech/astute-veld-398216-29207275aa29.json"
 GSC_SITE_PROPERTY = "sc-domain:l2cache.amvo.store"
-BING_API_KEY = "7d11b0d9c9aa45f49582910889750fc4"
+BING_API_KEY = api_key()
 BING_SITE_URL = "https://l2cache.amvo.store/"
 
 def get_gsc_token():

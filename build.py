@@ -48,6 +48,7 @@ with open("locales.json", "r", encoding="utf-8") as f:
 
 HTML_FILES = ["day-in-the-life-mac-developer.html", "rest-api-developer-tools.html", "claude-code-session-history-lifesaver.html", "codex-session-history-lifesaver.html", "grok-coding-session-history.html", "github-copilot-history-lifesaver.html", "ai-agent-jsonl-and-session-resume-guide.html", "blog-screenshot-ocr-search.html", "blog-agent-history-analytics.html", "index.html", "support.html", "privacy.html", "intelligence.html", "changelog.html", "clipboard-history-mac.html", "mac-command-history.html", "claude-code-history.html", "codex-history.html", "claude-code-session-history-mac.html", "codex-session-history-mac.html", "best-mac-developer-apps.html", "l2cache-vs-atuin.html", "l2cache-vs-cleanclip.html", "comparison.html", "benchmark.html", "best-mac-clipboard-managers.html", "clipboard-privacy-report.html", "developer-clipboard.html", "custom-actions.html", "jwt-decoder-mac.html", "json-formatter-mac.html", "regex-clipboard-mac.html", "screenshot-ocr-mac.html", "sql-test-data-generator.html", "sitemap.html", "blog.html", "blog-clipboard-automation-developer-workflows.html", "blog-regex-clipboard.html", "blog-sql-test-data.html", "blog-jwt-security.html", "blog-sqlite-fts5-hangs.html", "blog-swift-sqlite-concurrency.html", "blog-apple-intelligence-clipboard.html", "blog-developer-workflow-apple-intelligence.html", "blog-zero-cloud-mac-desktop-ai.html"]
 OUT_DIR = "out"
+SITE_URL = os.getenv("SITE_URL", "https://l2cache.amvo.store")
 L2CACHE_OUT_DIR = os.path.join(OUT_DIR, "l2cache")
 AMVO_OUT_DIR = os.path.join(OUT_DIR, "amvo-store")
 HINGEJOY_OUT_DIR = os.path.join(OUT_DIR, "hingejoy")
@@ -186,8 +187,8 @@ def localized_page(lang, file):
     """Absolute canonical URL for a page in a given locale."""
     clean = build_page_clean_path(file)
     if file == "index.html":
-        return f"https://l2cache.amvo.store/{lang}"
-    return f"https://l2cache.amvo.store/en/{clean}" if file not in LOCALIZED_FILES else f"https://l2cache.amvo.store/{lang}/{clean}"
+        return f"{SITE_URL}/{lang}"
+    return f"{SITE_URL}/en/{clean}" if file not in LOCALIZED_FILES else f"{SITE_URL}/{lang}/{clean}"
 
 
 def hreflang_tags(file):
@@ -215,6 +216,13 @@ def rewrite_canonical(html, lang, file):
     """Replace the hardcoded canonical with the proper canonical.
     For localized pages: self-referencing canonical for current locale + hreflang tags.
     For English-only pages: canonical pointing to /en/ without hreflang tags."""
+    # Strip any pre-existing alternate hreflang tags to prevent duplicate emission
+    html = re.sub(
+        r'\s*<link\s+rel="alternate"\s+hreflang="[^"]*"\s+href="[^"]*"\s*/?>',
+        '',
+        html,
+        flags=re.IGNORECASE,
+    )
     canonical = localized_page(lang, file) if file in LOCALIZED_FILES else localized_page("en", file)
     alts = hreflang_tags(file)
     block = f"\n  <link rel=\"canonical\" href=\"{canonical}\" />{alts}"
@@ -396,7 +404,7 @@ def build():
 
     # Generate sitemap.xml
     sitemap_path = os.path.join(L2CACHE_OUT_DIR, "sitemap.xml")
-    base_url = "https://l2cache.amvo.store"
+    base_url = SITE_URL
     with open(sitemap_path, "w", encoding="utf-8") as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
         f.write('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n')

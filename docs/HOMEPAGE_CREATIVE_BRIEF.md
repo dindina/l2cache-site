@@ -1,8 +1,11 @@
 # L2Cache Next-Generation Homepage Creative Brief
 
-**Status:** Approved working direction for Phase 2 prototypes  
+**Status:** Selected by the user for homepage implementation  
 **Date:** 15 October 2026  
-**Concept:** The Living Project Timeline
+**Concept:** The Living Project Timeline  
+**Selection date:** 15 October 2026
+
+**Prototype selection update (16 October 2026):** The user prefers the original Living Project Timeline prototype at `prototypes/living-project-timeline/` over the later Jack-layout hybrid. Continue from the original prototype as the lead experience. The Jack page may remain a secondary visual reference, but its hybrid composition is not the implementation direction and supplies no product claims, pricing, or feature assertions.
 
 ## The One-Sentence Idea
 
@@ -164,10 +167,10 @@ All data must be synthetic or verified as presentation-safe. Avoid real username
 
 ## Prototype Deliverables
 
-Phase 2 should create two isolated, non-production concepts:
+Phase 2 created two isolated, non-production concepts:
 
 1. **Living Project Timeline** — the primary direction described above.
 2. **Developer Daybook** — a quieter editorial variant using the same content and claim boundaries.
 
-Each concept must cover desktop, mobile, and reduced-motion states. Selection is based on product clarity, distinctiveness, credibility, accessibility, and likely performance—not visual spectacle alone.
+The user selected Living Project Timeline. Developer Daybook remains a reference for restrained editorial spacing and light lavender sections, but is not the lead concept. Before homepage implementation, replace synthetic product UI with presentation-safe captures from the redesigned app.
 

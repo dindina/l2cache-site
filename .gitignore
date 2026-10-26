@@ -9,3 +9,10 @@ l2cache-vs-*.html
 .env*
 node_modules/
 scratch/
+
+# Claude SEO skill pack (local tooling, ~1.2 GB incl. venv + Chromium)
+.claude/skills/seo*/
+.claude/agents/seo-*.md
+
+# Search Console / Bing exports (private analytics; repo is public)
+docs/baseline/

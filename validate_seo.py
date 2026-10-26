@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 import xml.etree.ElementTree as ET
@@ -20,7 +21,7 @@ _build_spec = importlib.util.spec_from_file_location("l2cache_build", ROOT / "bu
 _build = importlib.util.module_from_spec(_build_spec)
 _build_spec.loader.exec_module(_build)  # type: ignore[arg-type]
 LOCALIZED_FILES = frozenset(_build.LOCALIZED_FILES)
-SITE_URL = "https://l2cache.amvo.store"
+SITE_URL = os.getenv("SITE_URL", getattr(_build, "SITE_URL", "https://l2cache.amvo.store"))
 PUBLIC_PAGES = [
     "index.html", "support.html", "privacy.html", "intelligence.html",
     "changelog.html", "clipboard-history-mac.html", "mac-command-history.html",
@@ -81,6 +82,22 @@ def validate_page(path: Path, expected_canonical: str) -> None:
 
     if "hreflang=" in source and path.name not in LOCALIZED_FILES:
         ERRORS.append(f"{relative}: hreflang must remain disabled while content is untranslated")
+
+    # Detect duplicate hreflangs and verify count on generated localized pages
+    hreflangs = re.findall(
+        r'<link\s+rel=[\'"]alternate[\'"]\s+hreflang=[\'"]([^\'"]+)[\'"]',
+        source,
+        flags=re.IGNORECASE,
+    )
+    if len(hreflangs) != len(set(hreflangs)):
+        ERRORS.append(f"{relative}: duplicate hreflang declarations found: {hreflangs}")
+
+    if path.name in LOCALIZED_FILES and str(relative).startswith("out/"):
+        expected_hreflangs = len(_build.LANGUAGES) + 1  # All languages + x-default
+        if len(hreflangs) != expected_hreflangs:
+            ERRORS.append(
+                f"{relative}: expected {expected_hreflangs} hreflang declarations, found {len(hreflangs)}"
+            )
 
     for block in re.findall(
         r"""<script[^>]+type=[\"']application/ld\+json[\"'][^>]*>(.*?)</script>""",

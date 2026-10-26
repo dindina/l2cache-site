@@ -1,6 +1,6 @@
 # L2Cache Next-Generation Website Plan
 
-**Status:** Approved for discovery  
+**Status:** Living Project Timeline prototype selected; Phase 3 foundation work is next
 **Created:** 15 October 2026  
 **Website repository:** `/Users/dinesh/tech/l2cache-site`  
 **Production domain:** `l2cache.app` on Vercel
@@ -269,11 +269,12 @@ Analytics must not capture clipboard data, terminal content, agent-session conte
 
 ### Phase 2 — Visual prototype
 
-- Produce the Living Project Timeline homepage prototype.
-- Produce one restrained Developer Daybook variation.
+- Produce the Living Project Timeline homepage prototype at `prototypes/living-project-timeline/`. **Confirmed as the preferred direction on 16 October 2026.**
+- Produce one restrained Developer Daybook variation for comparison. **Completed; not selected as the lead direction.**
+- The later Jack-layout hybrid remains a non-leading study; do not use it as the homepage implementation source.
 - Validate desktop, tablet, mobile, reduced motion, and representative content length.
 
-**Exit:** one approved visual direction and interaction specification.
+**Exit:** Living Project Timeline selected as the visual direction; interaction specification is in `HOMEPAGE_CREATIVE_BRIEF.md`. The preferred prototype is the source of truth for the next implementation pass. Replace synthetic product UI with presentation-safe captures during implementation.
 
 ### Phase 3 — Foundation
 
