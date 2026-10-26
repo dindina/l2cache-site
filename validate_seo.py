@@ -162,6 +162,27 @@ def validate_home() -> None:
             ERRORS.append(f"{page.relative_to(ROOT)}: still noindex")
 
 
+# Claims about the whole app that PUBLISHABLE_CLAIMS_MATRIX blocks (link previews and Translate make
+# network requests). Feature-level statements such as "decodes JWTs locally" stay allowed.
+BLOCKED_CLAIMS = [
+    r"zero network (?:requests|connectivity)",
+    r"L2Cache is 100% offline",
+    r"(?:full|complete) transcripts?",
+    r"we have no servers, no analytics",
+    r"what we collect\W+nothing",
+]
+
+
+def validate_claims() -> None:
+    pattern = re.compile("|".join(BLOCKED_CLAIMS), re.IGNORECASE)
+    for path in (ROOT / "out/l2cache").rglob("*"):
+        if path.suffix not in {".html", ".txt"} or "tools" in path.relative_to(ROOT / "out/l2cache").parts[:2]:
+            continue
+        text = re.sub(r"<[^>]+>", " ", path.read_text(encoding="utf-8", errors="ignore"))
+        for m in pattern.finditer(re.sub(r"\s+", " ", text)):
+            ERRORS.append(f"{path.relative_to(ROOT)}: blocked claim \"{m.group(0)}\"")
+
+
 def validate_domain() -> None:
     """Nothing in the L2Cache output may point at the old domain (it would cost a redirect hop)."""
     for path in (ROOT / "out/l2cache").rglob("*"):
@@ -175,6 +196,7 @@ def main() -> None:
         validate_page(ROOT / "out/l2cache/en" / filename, public_url(filename))
     validate_home()
     validate_domain()
+    validate_claims()
     validate_sitemap()
     if ERRORS:
         print("SEO validation failed:", file=sys.stderr)

@@ -17,7 +17,7 @@ L2Cache is designed specifically for software engineers, power users, and privac
 - [Custom Actions & Workflows](https://l2cache.amvo.store/en/custom-actions): Automated clipboard transformations using regex, bash scripts, and custom formatting pipelines.
 - [Developer Clipboard Features](https://l2cache.amvo.store/en/developer-clipboard): Specialized developer workflows, code snippet management, and fast keyboard navigation.
 - [Performance Benchmarks](https://l2cache.amvo.store/en/benchmark): Independent memory and CPU benchmarks showing under 15MB RAM footprint and 0.0% idle CPU usage.
-- [Privacy & Security Report](https://l2cache.amvo.store/en/clipboard-privacy-report): Detailed privacy architecture showing zero network requests, zero telemetry, and automatic exclusion of password managers (1Password, Bitwarden, Apple Keychain).
+- [Privacy & Security Report](https://l2cache.amvo.store/en/clipboard-privacy-report): Detailed privacy architecture showing on-device processing, zero telemetry, and automatic exclusion of password managers (1Password, Bitwarden, Apple Keychain).
 - [Changelog](https://l2cache.amvo.store/en/changelog): Release history, version notes, and continuous improvements.
 - [Support](https://l2cache.amvo.store/en/support): Documentation, FAQ, shortcuts guide, and customer support.
 
@@ -63,7 +63,7 @@ L2Cache offers free web versions of its built-in developer tools at https://l2ca
 
 - **Platform**: macOS 14.0 Sonoma, macOS 15.0+ Sequoia (Universal Binary: Apple Silicon M1/M2/M3/M4 & Intel x86_64)
 - **Engine**: 100% Native Swift, SwiftUI, AppKit, SQLite 3 (FTS5 + WAL mode)
-- **Privacy Model**: 100% local on-device database, zero network connectivity, zero analytics/telemetry
+- **Privacy Model**: 100% local on-device database, no cloud sync, zero analytics/telemetry
 - **RAM Usage**: ~12MB to 15MB typical idle footprint
 - **Pricing**: $4.99 USD one-time purchase via Apple Mac App Store (includes Family Sharing & lifetime updates)
 - **App Store Link**: https://apps.apple.com/us/app/l2cache-clipboard-manager/id6740089851
