@@ -16,6 +16,8 @@
 
 ## Sprints
 
+**Order (changed 2026-10-26):** W1 → W2 → W4 → **W3** → W5 → W6. Translations come last, just before cutover, because the English page is still changing; every English edit after W3 would cost 10 re-translations.
+
 | Sprint | Title | Outcome |
 |---|---|---|
 | [W1](Sprint-W1-Baseline-and-Decisions.md) ✅ | Baseline & decisions | Search Console baseline exported, canonical host and launch locales settled, worktree clean |

@@ -58,7 +58,7 @@
       dot.type = "button";
       dot.className = "modal-dot" + (i === 0 ? " is-active" : "");
       dot.setAttribute("role", "tab");
-      dot.setAttribute("aria-label", "Screenshot " + (i + 1) + ": " + (img.dataset.title || ""));
+      dot.setAttribute("aria-label", (modalDots.dataset.label || "Screenshot") + " " + (i + 1) + ": " + (img.dataset.title || ""));
       dot.addEventListener("click", function () {
         showIndex(i);
       });

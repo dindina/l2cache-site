@@ -45,7 +45,7 @@ INLINE = {"a", "abbr", "b", "br", "code", "em", "i", "kbd", "small", "span", "st
 SEGMENT_TAGS = {"title", "h1", "h2", "h3", "h4", "p", "li", "summary", "a", "button", "span", "strong", "em",
                 "figcaption", "label", "th", "td", "dt", "dd", "small"}
 NO_TEXT = {"script", "style", "svg", "code", "kbd"}  # text inside these is never translated on its own
-ATTRS = {"alt", "aria-label", "title", "data-title", "data-caption", "placeholder"}
+ATTRS = {"alt", "aria-label", "title", "data-title", "data-caption", "data-label", "placeholder"}
 META_KEYS = {"description", "og:title", "og:description", "og:image:alt", "twitter:title", "twitter:description"}
 JSONLD_KEYS = {"name", "description", "text", "featureList"}
 JSONLD_SKIP_TYPES = {"Organization", "WebSite", "SoftwareApplication"}  # their "name" is the brand

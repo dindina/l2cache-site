@@ -2,7 +2,7 @@
 
 **Status:** Planned (2026-10-26)
 **Goal:** The 2.0 homepage fully translated into every launch locale, written around the terms people actually search for.
-**Depends on:** W2 (keyed homepage, validation gates).
+**Depends on:** W2 (pipeline) and W4 (English copy frozen on the integrated preview). Runs last before W5 cutover.
 **Scope:** `locales/l2cache/<lang>/home.json`, localized images in `prototypes/native-mac/img/`.
 
 ---
@@ -26,6 +26,7 @@
 - WebP, same file-size budget as `ce18fab`.
 
 ### T-W305 — Render check and native review
+- First a pseudo-locale pass (text stretched ~35%, CJK sample) to catch overflow before real translations.
 - Render every locale and check for overflow, bad line breaks (the ja/zh/ko issues fixed in the App Store frames) and font fallback.
 - You (or a native speaker) review at least ja, de, zh-Hans before launch.
 

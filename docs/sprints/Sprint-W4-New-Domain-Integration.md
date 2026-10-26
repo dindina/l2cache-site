@@ -2,12 +2,16 @@
 
 **Status:** Planned (2026-10-26)
 **Goal:** A Vercel preview where the 2.0 homepage is at `/`, every page uses `l2cache.app`, and the old host redirects one hop to the same path.
-**Depends on:** W1 (canonical host), W3 (localized homepage).
+**Depends on:** W1 (canonical host), W2 (pipeline). Runs before W3: the preview is English-only until translations land.
 **Scope:** `build.py`, `vercel.json`, `sitemap.xml`, `robots.txt`, `llms.txt`, internal links. Production stays on the current deploy.
 
 ---
 
 ## Tasks
+
+### T-W400 — English-only build mode
+- `site_i18n.py build --only-complete`: build the locales that pass `check`, and emit hreflang / language links for those only. The strict default stays for production.
+- Until W3, the preview keeps the old `/{lang}` homepages, or redirects them to `/` temporarily (302), so no localized URL 404s.
 
 ### T-W401 — 2.0 homepage as the English root
 - Serve the 2.0 homepage at `/` and the localized versions at `/{lang}` for the L2Cache hosts only.
