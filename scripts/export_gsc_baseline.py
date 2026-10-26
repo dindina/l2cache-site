@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Export a Search Console baseline for the domain move (Sprint W1, T-W102; reused weekly in W6).
 
-  python3 tools/export_gsc_baseline.py                       # sc-domain:l2cache.amvo.store, last 16 months
-  python3 tools/export_gsc_baseline.py --site sc-domain:l2cache.app --days 28
+  python3 scripts/export_gsc_baseline.py                       # sc-domain:l2cache.amvo.store, last 16 months
+  python3 scripts/export_gsc_baseline.py --site sc-domain:l2cache.app --days 28
 
 Writes docs/baseline/gsc-<site>-<date>-pages.csv (complete per-page totals) and
 docs/baseline/gsc-<site>-<date>-queries.csv (page x query x country; Google omits rare queries).

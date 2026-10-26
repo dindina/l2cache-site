@@ -9,3 +9,7 @@ l2cache-amvo-store-audit
 l2cache.amvo.store-audit
 .DS_Store
 *.md
+
+# Secrets and local-only tooling never go to Vercel
+.env*
+docs/baseline

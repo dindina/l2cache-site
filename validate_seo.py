@@ -21,9 +21,12 @@ _build_spec = importlib.util.spec_from_file_location("l2cache_build", ROOT / "bu
 _build = importlib.util.module_from_spec(_build_spec)
 _build_spec.loader.exec_module(_build)  # type: ignore[arg-type]
 LOCALIZED_FILES = frozenset(_build.LOCALIZED_FILES)
-SITE_URL = os.getenv("SITE_URL", getattr(_build, "SITE_URL", "https://l2cache.amvo.store"))
+SITE_URL = os.getenv("SITE_URL", getattr(_build, "SITE_URL", "https://l2cache.app"))
+sys.path.insert(0, str(ROOT / "scripts"))
+import site_i18n  # noqa: E402  (the 2.0 homepage and its locales)
+
 PUBLIC_PAGES = [
-    "index.html", "support.html", "privacy.html", "intelligence.html",
+    "support.html", "privacy.html", "intelligence.html",
     "changelog.html", "clipboard-history-mac.html", "mac-command-history.html",
     "claude-code-history.html", "codex-history.html",
     "comparison.html", "benchmark.html", "best-mac-clipboard-managers.html",
@@ -52,7 +55,7 @@ ERRORS: list[str] = []
 
 def public_url(filename: str) -> str:
     if filename == "index.html":
-        return f"{SITE_URL}/en"
+        return f"{SITE_URL}/"
     return f"{SITE_URL}/en/{filename.removesuffix('.html')}"
 
 
@@ -60,27 +63,31 @@ def count(source: str, pattern: str) -> int:
     return len(re.findall(pattern, source, flags=re.IGNORECASE))
 
 
-def validate_page(path: Path, expected_canonical: str) -> None:
+def validate_page(path: Path, expected_canonical: str | None, expected_hreflangs: int = 0) -> None:
+    """expected_canonical=None for source files, whose canonical the build rewrites."""
     source = path.read_text(encoding="utf-8")
     relative = path.relative_to(ROOT)
 
+    canonical_re = re.escape(expected_canonical or "")
     required_once = {
         "title": r"<title>.*?</title>",
         "description": r"<meta\s+name=[\"']description[\"']",
-        "canonical": rf"""<link\s+rel=[\"']canonical[\"']\s+href=[\"']{re.escape(expected_canonical)}[\"']""",
+        "canonical": rf"""<link\s+rel=[\"']canonical[\"']\s+href=[\"']{canonical_re}[\"']""",
         "h1": r"<h1(?:\s|>)",
         "og:title": r"<meta\s+property=[\"']og:title[\"']",
         "og:description": r"<meta\s+property=[\"']og:description[\"']",
-        "og:url": rf"""<meta\s+property=[\"']og:url[\"']\s+content=[\"']{re.escape(expected_canonical)}[\"']""",
+        "og:url": rf"""<meta\s+property=[\"']og:url[\"']\s+content=[\"']{canonical_re}[\"']""",
         "og:image": r"<meta\s+property=[\"']og:image[\"']",
         "twitter:card": r"<meta\s+name=[\"']twitter:card[\"']",
     }
+    if expected_canonical is None:
+        del required_once["canonical"], required_once["og:url"]
     for label, pattern in required_once.items():
         matches = count(source, pattern)
         if matches != 1:
             ERRORS.append(f"{relative}: expected one {label}, found {matches}")
 
-    if "hreflang=" in source and path.name not in LOCALIZED_FILES:
+    if "hreflang=" in source and not expected_hreflangs and path.name not in LOCALIZED_FILES:
         ERRORS.append(f"{relative}: hreflang must remain disabled while content is untranslated")
 
     # Detect duplicate hreflangs and verify count on generated localized pages
@@ -92,8 +99,7 @@ def validate_page(path: Path, expected_canonical: str) -> None:
     if len(hreflangs) != len(set(hreflangs)):
         ERRORS.append(f"{relative}: duplicate hreflang declarations found: {hreflangs}")
 
-    if path.name in LOCALIZED_FILES and str(relative).startswith("out/"):
-        expected_hreflangs = len(_build.LANGUAGES) + 1  # All languages + x-default
+    if expected_hreflangs:
         if len(hreflangs) != expected_hreflangs:
             ERRORS.append(
                 f"{relative}: expected {expected_hreflangs} hreflang declarations, found {len(hreflangs)}"
@@ -117,7 +123,7 @@ def validate_sitemap() -> None:
     urls = [node.text for node in tree.findall("s:url/s:loc", namespace)]
     # Sitemap coverage follows the build's published page list, including
     # English-only landing pages and other pages not in the metadata smoke set.
-    sitemap_pages = [filename for filename in _build.HTML_FILES if (ROOT / filename).is_file()]
+    sitemap_pages = ["index.html"] + [filename for filename in _build.LEGACY_FILES if (ROOT / filename).is_file()]
     sitemap_pages += [
         path.name for path in ROOT.glob("l2cache-vs-*.html")
         if path.name not in sitemap_pages
@@ -141,10 +147,34 @@ def validate_sitemap() -> None:
         ERRORS.append("out/l2cache/sitemap.xml: contains non-canonical .html URLs")
 
 
+def validate_home() -> None:
+    """2.0 homepage: one page per published locale, indexable, reciprocal hreflang."""
+    published = site_i18n.complete_locales()
+    if os.getenv("I18N_STRICT") == "1" and len(published) != len(site_i18n.LOCALES):
+        ERRORS.append(f"homepage: I18N_STRICT=1 but only {published} are complete")
+    for lang in published:
+        page = ROOT / "out/l2cache" / ("index.html" if lang == "en" else f"{lang}/index.html")
+        if not page.is_file():
+            ERRORS.append(f"{page.relative_to(ROOT)}: missing")
+            continue
+        validate_page(page, site_i18n.page_url(lang), expected_hreflangs=len(published) + 1)
+        if "noindex" in page.read_text(encoding="utf-8"):
+            ERRORS.append(f"{page.relative_to(ROOT)}: still noindex")
+
+
+def validate_domain() -> None:
+    """Nothing in the L2Cache output may point at the old domain (it would cost a redirect hop)."""
+    for path in (ROOT / "out/l2cache").rglob("*"):
+        if path.suffix in {".html", ".txt", ".xml", ".json", ".js"} and "l2cache.amvo.store" in path.read_text(encoding="utf-8", errors="ignore"):
+            ERRORS.append(f"{path.relative_to(ROOT)}: still references l2cache.amvo.store")
+
+
 def main() -> None:
     for filename in PUBLIC_PAGES:
-        validate_page(ROOT / filename, public_url(filename))
+        validate_page(ROOT / filename, None)
         validate_page(ROOT / "out/l2cache/en" / filename, public_url(filename))
+    validate_home()
+    validate_domain()
     validate_sitemap()
     if ERRORS:
         print("SEO validation failed:", file=sys.stderr)

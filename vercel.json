@@ -32,6 +32,160 @@
   "redirects": [
     {
       "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "l2cache.amvo.store"
+        }
+      ],
+      "destination": "https://l2cache.app/",
+      "permanent": true
+    },
+    {
+      "source": "/en",
+      "has": [
+        {
+          "type": "host",
+          "value": "l2cache.amvo.store"
+        }
+      ],
+      "destination": "https://l2cache.app/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/:tool*",
+      "has": [
+        {
+          "type": "host",
+          "value": "l2cache.amvo.store"
+        }
+      ],
+      "destination": "https://l2cache.app/en/tools/:tool*",
+      "permanent": true
+    },
+    {
+      "source": "/:lang(zh-Hans|fr|de|it|ja|ko|pt-BR|es|vi)/tools/:tool*",
+      "has": [
+        {
+          "type": "host",
+          "value": "l2cache.amvo.store"
+        }
+      ],
+      "destination": "https://l2cache.app/en/tools/:tool*",
+      "permanent": true
+    },
+    {
+      "source": "/zh-hans",
+      "has": [
+        {
+          "type": "host",
+          "value": "l2cache.amvo.store"
+        }
+      ],
+      "destination": "https://l2cache.app/zh-Hans",
+      "permanent": true
+    },
+    {
+      "source": "/zh-hans/index(\\.html)?",
+      "has": [
+        {
+          "type": "host",
+          "value": "l2cache.amvo.store"
+        }
+      ],
+      "destination": "https://l2cache.app/zh-Hans",
+      "permanent": true
+    },
+    {
+      "source": "/pt-br",
+      "has": [
+        {
+          "type": "host",
+          "value": "l2cache.amvo.store"
+        }
+      ],
+      "destination": "https://l2cache.app/pt-BR",
+      "permanent": true
+    },
+    {
+      "source": "/pt-br/index(\\.html)?",
+      "has": [
+        {
+          "type": "host",
+          "value": "l2cache.amvo.store"
+        }
+      ],
+      "destination": "https://l2cache.app/pt-BR",
+      "permanent": true
+    },
+    {
+      "source": "/:lang(ta|ru)",
+      "has": [
+        {
+          "type": "host",
+          "value": "l2cache.amvo.store"
+        }
+      ],
+      "destination": "https://l2cache.app/",
+      "permanent": true
+    },
+    {
+      "source": "/:lang(ta|ru)/index(\\.html)?",
+      "has": [
+        {
+          "type": "host",
+          "value": "l2cache.amvo.store"
+        }
+      ],
+      "destination": "https://l2cache.app/",
+      "permanent": true
+    },
+    {
+      "source": "/:lang(zh-hans|pt-br|ta|ru)/:page([^/.]+)(\\.html)?",
+      "has": [
+        {
+          "type": "host",
+          "value": "l2cache.amvo.store"
+        }
+      ],
+      "destination": "https://l2cache.app/en/:page",
+      "permanent": true
+    },
+    {
+      "source": "/download",
+      "has": [
+        {
+          "type": "host",
+          "value": "l2cache.amvo.store"
+        }
+      ],
+      "destination": "https://l2cache.app/",
+      "permanent": false
+    },
+    {
+      "source": "/:lang(zh-Hans|fr|de|it|ja|ko|pt-BR|es|vi)/:page((?!$)[^/]+)",
+      "has": [
+        {
+          "type": "host",
+          "value": "l2cache.amvo.store"
+        }
+      ],
+      "destination": "https://l2cache.app/en/:page",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "l2cache.amvo.store"
+        }
+      ],
+      "destination": "https://l2cache.app/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/en",
       "missing": [
         {
           "type": "host",
@@ -50,7 +204,7 @@
           "value": "www.hingejoy.amvo.store"
         }
       ],
-      "destination": "/en",
+      "destination": "/",
       "permanent": true
     },
     {
@@ -75,6 +229,213 @@
       ],
       "destination": "/en/tools/:tool*",
       "permanent": true
+    },
+    {
+      "source": "/zh-hans",
+      "missing": [
+        {
+          "type": "host",
+          "value": "amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "hingejoy.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.hingejoy.amvo.store"
+        }
+      ],
+      "destination": "/zh-Hans",
+      "permanent": true
+    },
+    {
+      "source": "/zh-hans/index(\\.html)?",
+      "missing": [
+        {
+          "type": "host",
+          "value": "amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "hingejoy.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.hingejoy.amvo.store"
+        }
+      ],
+      "destination": "/zh-Hans",
+      "permanent": true
+    },
+    {
+      "source": "/pt-br",
+      "missing": [
+        {
+          "type": "host",
+          "value": "amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "hingejoy.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.hingejoy.amvo.store"
+        }
+      ],
+      "destination": "/pt-BR",
+      "permanent": true
+    },
+    {
+      "source": "/pt-br/index(\\.html)?",
+      "missing": [
+        {
+          "type": "host",
+          "value": "amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "hingejoy.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.hingejoy.amvo.store"
+        }
+      ],
+      "destination": "/pt-BR",
+      "permanent": true
+    },
+    {
+      "source": "/:lang(ta|ru)",
+      "missing": [
+        {
+          "type": "host",
+          "value": "amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "hingejoy.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.hingejoy.amvo.store"
+        }
+      ],
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/:lang(ta|ru)/index(\\.html)?",
+      "missing": [
+        {
+          "type": "host",
+          "value": "amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "hingejoy.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.hingejoy.amvo.store"
+        }
+      ],
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/:lang(zh-hans|pt-br|ta|ru)/:page([^/.]+)(\\.html)?",
+      "missing": [
+        {
+          "type": "host",
+          "value": "amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "hingejoy.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.hingejoy.amvo.store"
+        }
+      ],
+      "destination": "/en/:page",
+      "permanent": true
+    },
+    {
+      "source": "/download",
+      "missing": [
+        {
+          "type": "host",
+          "value": "amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "hingejoy.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.hingejoy.amvo.store"
+        }
+      ],
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/:lang(zh-Hans|fr|de|it|ja|ko|pt-BR|es|vi)",
+      "missing": [
+        {
+          "type": "host",
+          "value": "amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "hingejoy.amvo.store"
+        },
+        {
+          "type": "host",
+          "value": "www.hingejoy.amvo.store"
+        }
+      ],
+      "destination": "/",
+      "permanent": false
     },
     {
       "source": "/:lang(zh-Hans|fr|de|it|ja|ko|pt-BR|es|vi)/:page((?!$)[^/]+)",
@@ -123,7 +484,7 @@
       "permanent": true
     },
     {
-      "source": "/:page((?!en|zh-Hans|fr|de|it|ja|ko|pt-BR|es|vi|_vercel|tools|icon\\.png|theme\\.css|screenshots|sitemap\\.xml|robots\\.txt|benchmark_dataset_2026\\.csv|llms\\.txt|llms-full\\.txt|f429f476aace450d98d63642289564df\\.txt|BingSiteAuth\\.xml)[^/]+)",
+      "source": "/:page((?!(?:en|zh-Hans|fr|de|it|ja|ko|pt-BR|es|vi|_vercel|tools|img|styles\\.css|script\\.js|download|ru|ta|icon\\.png|theme\\.css|screenshots|sitemap\\.xml|robots\\.txt|benchmark_dataset_2026\\.csv|llms\\.txt|llms-full\\.txt|f429f476aace450d98d63642289564df\\.txt|BingSiteAuth\\.xml)$)[^/]+)",
       "missing": [
         {
           "type": "host",

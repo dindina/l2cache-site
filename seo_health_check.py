@@ -12,7 +12,7 @@ import os
 import sys
 import jwt
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "tools"))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "scripts"))
 from export_bing_baseline import api_key  # BING_API_KEY from the environment or .env
 
 # Configuration

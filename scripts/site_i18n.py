@@ -6,9 +6,10 @@ The English HTML stays the source of truth; the English text of each segment is 
 content is only text and inline tags (so `<kbd>⌘</kbd><kbd>K</kbd>` stays inside its sentence),
 otherwise a single text run. Translatable attributes and JSON-LD strings are keyed the same way.
 
-  python3 tools/site_i18n.py extract     # rewrite locales/l2cache/en/home.json from the source page
-  python3 tools/site_i18n.py check       # every launch locale complete, tags preserved, nothing left in English
-  python3 tools/site_i18n.py build       # out/home/ (English at /, others at /<lang>)
+  python3 scripts/site_i18n.py extract     # rewrite locales/l2cache/en/home.json from the source page
+  python3 scripts/site_i18n.py check       # every launch locale complete, tags preserved, nothing left in English
+  python3 scripts/site_i18n.py build       # out/home/ (English at /, others at /<lang>)
+  python3 scripts/site_i18n.py build --only-complete   # skip incomplete locales (preview, until W3)
 """
 import html
 import json
@@ -205,11 +206,12 @@ def translate_jsonld(obj, cat, lang, parent_type=None):
             translate_jsonld(v, cat, lang, parent_type)
 
 
-def language_nav(lang, label):
+def language_nav(lang, label, published):
     """Plain crawlable links to the same page in every locale (T-W204). Added after translation,
     so only its label goes through the catalog; the names are each language's own."""
     items = []
-    for code, (name, _, _) in LOCALES.items():
+    for code in published:
+        name = LOCALES[code][0]
         href = "/" if code == "en" else f"/{code}"
         current = ' aria-current="page"' if code == lang else ""
         items.append(f'<li><a href="{href}" hreflang="{code}" lang="{code}"{current}>{name}</a></li>')
@@ -217,11 +219,11 @@ def language_nav(lang, label):
             + "\n        ".join(items) + "\n      </ul>\n    </nav>\n")
 
 
-def head_block(lang):
-    tags = [f'<link rel="alternate" hreflang="{c}" href="{page_url(c)}">' for c in LOCALES]
+def head_block(lang, published):
+    tags = [f'<link rel="alternate" hreflang="{c}" href="{page_url(c)}">' for c in published]
     tags.append(f'<link rel="alternate" hreflang="x-default" href="{page_url("en")}">')
     tags.append(f'<meta property="og:locale" content="{LOCALES[lang][1]}">')
-    tags += [f'<meta property="og:locale:alternate" content="{LOCALES[c][1]}">' for c in LOCALES if c != lang]
+    tags += [f'<meta property="og:locale:alternate" content="{LOCALES[c][1]}">' for c in published if c != lang]
     return "".join(f"  {t}\n" for t in tags)
 
 
@@ -233,10 +235,12 @@ FOOTER_MARKER = '    <div class="wrap footer-legal">'
 LANGUAGE_LABEL = "Language"
 
 
-def with_language_nav(page, lang, cat):
+def with_language_nav(page, lang, cat, published):
     if FOOTER_MARKER not in page:
         raise SystemExit("footer-legal marker not found in the source page")
-    nav = language_nav(lang, cat.get(LANGUAGE_LABEL, LANGUAGE_LABEL))
+    if len(published) < 2:
+        return page
+    nav = language_nav(lang, cat.get(LANGUAGE_LABEL, LANGUAGE_LABEL), published)
     return page.replace(FOOTER_MARKER, nav + FOOTER_MARKER, 1)
 
 
@@ -296,7 +300,7 @@ def check(langs=None):
     return errors
 
 
-def render(source, lang, cat):
+def render(source, lang, cat, published=tuple(LOCALES)):
     page = source
     p = parse(page)
     edits = []
@@ -321,14 +325,14 @@ def render(source, lang, cat):
         out += [page[pos:a], text]
         pos = b
     out.append(page[pos:])
-    page = with_language_nav("".join(out), lang, cat)
+    page = with_language_nav("".join(out), lang, cat, published)
 
     # Per-locale head and links.
     url = page_url(lang)
     page = re.sub(r'<html lang="[^"]*"', f'<html lang="{lang}"', page, count=1)
     page = re.sub(r'(<link rel="canonical" href=")[^"]*(")', rf"\g<1>{url}\2", page, count=1)
     page = re.sub(r'(<meta property="og:url" content=")[^"]*(")', rf"\g<1>{url}\2", page, count=1)
-    page = page.replace('  <meta name="theme-color"', head_block(lang) + '  <meta name="theme-color"', 1)
+    page = page.replace('  <meta name="theme-color"', head_block(lang, published) + '  <meta name="theme-color"', 1)
     page = page.replace("apps.apple.com/us/", f"apps.apple.com/{LOCALES[lang][2]}/")
     if lang != "en":
         page = re.sub(r'(class="brand" href=")/(")', rf"\1/{lang}\2", page)
@@ -340,23 +344,45 @@ def render(source, lang, cat):
     return page
 
 
-def build():
-    errors = check()
-    if errors:
-        print("\n".join(errors[:40]))
-        raise SystemExit(f"\n{len(errors)} localization error(s); nothing built.")
+NOINDEX_RE = re.compile(r'  <!-- Prototype:[^\n]*-->\n  <meta name="robots" content="noindex,nofollow">\n')
+
+
+def complete_locales():
+    """English plus every locale that passes check()."""
+    return ["en"] + [c for c in LOCALES if c != "en" and not check([c])]
+
+
+def build(out_dir=OUT_DIR, only_complete=False, clean=True):
+    """Write the homepage for each published locale into out_dir; returns the published codes."""
+    if only_complete:
+        published = complete_locales()
+    else:
+        errors = check()
+        if errors:
+            print("\n".join(errors[:40]))
+            raise SystemExit(f"\n{len(errors)} localization error(s); nothing built.")
+        published = list(LOCALES)
     source = open(SOURCE, encoding="utf-8").read()
-    shutil.rmtree(OUT_DIR, ignore_errors=True)
-    shutil.copytree(SOURCE_DIR, OUT_DIR, ignore=shutil.ignore_patterns("index.html", "*.png"))
-    for name in ("icon-64.png", "icon-180.png"):
-        shutil.copy(os.path.join(SOURCE_DIR, "img", name), os.path.join(OUT_DIR, "img", name))
-    for lang in LOCALES:
+    if not NOINDEX_RE.search(source):
+        raise SystemExit("prototype noindex block not found; update NOINDEX_RE")
+    source = NOINDEX_RE.sub("", source, count=1)
+    if clean:
+        shutil.rmtree(out_dir, ignore_errors=True)
+    os.makedirs(os.path.join(out_dir, "img"), exist_ok=True)
+    for name in ("styles.css", "script.js"):
+        shutil.copy(os.path.join(SOURCE_DIR, name), out_dir)
+    for name in os.listdir(os.path.join(SOURCE_DIR, "img")):
+        if name.endswith(".webp") or name in ("icon-64.png", "icon-180.png", "og-home.jpg"):
+            shutil.copy(os.path.join(SOURCE_DIR, "img", name), os.path.join(out_dir, "img", name))
+    for lang in published:
         cat = {} if lang == "en" else load(lang)
-        target = os.path.join(OUT_DIR, "index.html") if lang == "en" else os.path.join(OUT_DIR, lang, "index.html")
+        target = os.path.join(out_dir, "index.html") if lang == "en" else os.path.join(out_dir, lang, "index.html")
         os.makedirs(os.path.dirname(target), exist_ok=True)
         with open(target, "w", encoding="utf-8") as f:
-            f.write(render(source, lang, cat))
-    print(f"Built {len(LOCALES)} locales into {os.path.relpath(OUT_DIR, ROOT)}/")
+            f.write(render(source, lang, cat, published))
+    skipped = [c for c in LOCALES if c not in published]
+    print(f"Homepage: {', '.join(published)}" + (f" (skipped incomplete: {', '.join(skipped)})" if skipped else ""))
+    return published
 
 
 def main():
@@ -373,7 +399,7 @@ def main():
         print("\n".join(errors) if errors else "All locales complete.")
         sys.exit(1 if errors else 0)
     elif cmd == "build":
-        build()
+        build(only_complete="--only-complete" in sys.argv)
     else:
         raise SystemExit(__doc__)
 

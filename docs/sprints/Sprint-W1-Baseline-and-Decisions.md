@@ -15,10 +15,10 @@
 - ✅ `sc-domain:l2cache.app` verified (TXT at `@`) with the service account as Full user; `l2cache.app` also verified in Bing. Keep the TXT record permanently.
 
 ### T-W102 — Ranking baseline
-- ✅ `tools/export_gsc_baseline.py` → `docs/baseline/gsc-l2cache.amvo.store-2026-10-26-{pages,queries}.csv` (2025-06-24 → 2026-10-23).
+- ✅ `scripts/export_gsc_baseline.py` → `docs/baseline/gsc-l2cache.amvo.store-2026-10-26-{pages,queries}.csv` (2025-06-24 → 2026-10-23).
 - Result: 1,856 impressions, 3 clicks, 33 pages. `/en/clipboard-history-mac` (923, pos 56) and `/en/mac-command-history` (680, pos 49) hold 86%. Localized homepages: 0 impressions. Top countries: US, India, Philippines, Vietnam, Turkey.
 - ✅ Inventory now has `baseline_impressions`, `baseline_position` and `protect` (≥ 20 impressions, plus the homepage): clipboard-history-mac, mac-command-history, certificate-decoder, codex-session-history-mac, rtf-to-markdown, best-mac-clipboard-managers, `/`, `/en`. Added `/es/privacy` (seen by Google, not in the inventory).
-- ✅ Bing: `l2cache.amvo.store` re-verified (existing `BingSiteAuth.xml`); `tools/export_bing_baseline.py` → `docs/baseline/bing-l2cache.amvo.store-2026-10-26-{pages,queries,traffic}.csv` (2026-10-01 → 2026-10-24 only; older data unavailable). `/en/mac-command-history` is **position 4.6 on Bing** (279 of 314 impressions, all 4 clicks) — the most valuable URL on the site. Inventory has `bing_impressions` / `bing_position`.
+- ✅ Bing: `l2cache.amvo.store` re-verified (existing `BingSiteAuth.xml`); `scripts/export_bing_baseline.py` → `docs/baseline/bing-l2cache.amvo.store-2026-10-26-{pages,queries,traffic}.csv` (2026-10-01 → 2026-10-24 only; older data unavailable). `/en/mac-command-history` is **position 4.6 on Bing** (279 of 314 impressions, all 4 clicks) — the most valuable URL on the site. Inventory has `bing_impressions` / `bing_position`.
 - ✅ Backlinks: Google knows one external link — the owned Medium article *How to find and resume OpenAI Codex CLI sessions* (`docs/baseline/links-google-l2cache.amvo.store-2026-10-26.csv`); Bing `GetLinkCounts` reports none. Ranking equity is on-page/content, not links. Update the Medium link to `l2cache.app` at cutover (T-W504).
 
 ### T-W103 — Canonical host decision

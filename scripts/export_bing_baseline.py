@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Export a Bing Webmaster baseline for the domain move (Sprint W1, T-W102; reused weekly in W6).
 
-  BING_API_KEY=... python3 tools/export_bing_baseline.py                  # https://l2cache.amvo.store/
-  python3 tools/export_bing_baseline.py --site https://l2cache.app/       # key read from .env
+  BING_API_KEY=... python3 scripts/export_bing_baseline.py                  # https://l2cache.amvo.store/
+  python3 scripts/export_bing_baseline.py --site https://l2cache.app/       # key read from .env
 
 Bing returns about 6 months of weekly rows. Writes docs/baseline/bing-<site>-<date>-{pages,queries,traffic}.csv.
 """

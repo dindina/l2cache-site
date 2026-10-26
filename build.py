@@ -1,4 +1,5 @@
 import os
+import sys
 import re
 import json
 import shutil
@@ -48,7 +49,11 @@ with open("locales.json", "r", encoding="utf-8") as f:
 
 HTML_FILES = ["day-in-the-life-mac-developer.html", "rest-api-developer-tools.html", "claude-code-session-history-lifesaver.html", "codex-session-history-lifesaver.html", "grok-coding-session-history.html", "github-copilot-history-lifesaver.html", "ai-agent-jsonl-and-session-resume-guide.html", "blog-screenshot-ocr-search.html", "blog-agent-history-analytics.html", "index.html", "support.html", "privacy.html", "intelligence.html", "changelog.html", "clipboard-history-mac.html", "mac-command-history.html", "claude-code-history.html", "codex-history.html", "claude-code-session-history-mac.html", "codex-session-history-mac.html", "best-mac-developer-apps.html", "l2cache-vs-atuin.html", "l2cache-vs-cleanclip.html", "comparison.html", "benchmark.html", "best-mac-clipboard-managers.html", "clipboard-privacy-report.html", "developer-clipboard.html", "custom-actions.html", "jwt-decoder-mac.html", "json-formatter-mac.html", "regex-clipboard-mac.html", "screenshot-ocr-mac.html", "sql-test-data-generator.html", "sitemap.html", "blog.html", "blog-clipboard-automation-developer-workflows.html", "blog-regex-clipboard.html", "blog-sql-test-data.html", "blog-jwt-security.html", "blog-sqlite-fts5-hangs.html", "blog-swift-sqlite-concurrency.html", "blog-apple-intelligence-clipboard.html", "blog-developer-workflow-apple-intelligence.html", "blog-zero-cloud-mac-desktop-ai.html"]
 OUT_DIR = "out"
-SITE_URL = os.getenv("SITE_URL", "https://l2cache.amvo.store")
+SITE_URL = os.getenv("SITE_URL", "https://l2cache.app")
+OLD_SITE_URL = "https://l2cache.amvo.store"
+# The 2.0 homepage (prototypes/native-mac, built by scripts/site_i18n.py) replaces the old
+# index.html at "/"; every other English page keeps its /en/<slug> path and content.
+LEGACY_FILES = [f for f in HTML_FILES if f != "index.html"]
 L2CACHE_OUT_DIR = os.path.join(OUT_DIR, "l2cache")
 AMVO_OUT_DIR = os.path.join(OUT_DIR, "amvo-store")
 HINGEJOY_OUT_DIR = os.path.join(OUT_DIR, "hingejoy")
@@ -175,7 +180,7 @@ def inject_vercel_analytics(root_dir):
             with open(path, "w", encoding="utf-8") as f:
                 f.write(content)
 
-LOCALIZED_FILES = ["index.html"]
+LOCALIZED_FILES = []  # legacy pages are English-only; the homepage locales come from site_i18n
 
 def build_page_clean_path(file):
     # index.html is the site root -> '/en' (no trailing slash; Vercel stores it
@@ -272,21 +277,58 @@ def fix_links(html_content, lang):
     """Prefix local links with /lang/ for localized files, and /en/ for English-only files."""
     for file in HTML_FILES:
         # Avoid double replacing or replacing external links
-        clean_path = "" if file == "index.html" else file.removesuffix(".html")
+        if file == "index.html":
+            html_content = re.sub(r'href="index\.html(#[^"]*)?"', r'href="/\1"', html_content)
+            continue
+        clean_path = file.removesuffix(".html")
         dest_lang = lang if file in LOCALIZED_FILES else "en"
         html_content = re.sub(
             f'href="{file}(#[^"]*)?"',
             f'href="/{dest_lang}/{clean_path}\\1"',
             html_content,
         )
+    # The English homepage moved from /en to /.
+    html_content = re.sub(r'href="/en/?(#[^"]*)?"', r'href="/\1"', html_content)
     # Normalize tools links to clean URLs without 308 redirect hops
     html_content = re.sub(r'href="(?:\/en\/)?tools/index\.html(#[^"]*)?"', r'href="/en/tools\1"', html_content)
     html_content = re.sub(r'href="(?:\/en\/)?tools/([^"]+?)\.html(#[^"]*)?"', r'href="/en/tools/\1\2"', html_content)
     html_content = re.sub(r'href="tools/"', r'href="/en/tools"', html_content)
     return html_content
 
+# Generator scripts live next to the tool pages; they are not part of the site.
+BUILD_ONLY = shutil.ignore_patterns("*.py", "__pycache__")
+
+
+# Sections of the old homepage that the 2.0 page names differently.
+LEGACY_HOME_ANCHORS = {"#features": "#today", "#who": ""}
+
+
+def point_at_new_domain(root_dir):
+    """Old-domain URLs anywhere in the L2Cache output become SITE_URL (one hop, no redirect)."""
+    for current_dir, _, files in os.walk(root_dir):
+        for filename in files:
+            if not filename.endswith((".html", ".txt", ".xml", ".json", ".js", ".csv")):
+                continue
+            path = os.path.join(current_dir, filename)
+            with open(path, "r", encoding="utf-8") as f:
+                content = f.read()
+            updated = content.replace(f"{OLD_SITE_URL}/en/tools", f"{SITE_URL}/en/tools")
+            updated = re.sub(re.escape(OLD_SITE_URL) + r'/en/?(?=["\'#<\s)]|$)', f"{SITE_URL}/", updated)
+            updated = updated.replace(OLD_SITE_URL, SITE_URL)
+            updated = updated.replace(OLD_SITE_URL.split("//")[1], SITE_URL.split("//")[1])  # plain-text mentions
+            if filename.endswith(".html"):  # tool pages are copied, not link-fixed
+                updated = re.sub(r'href="/en/?(#[^"]*)?"', r'href="/\1"', updated)
+                for old_anchor, new_anchor in LEGACY_HOME_ANCHORS.items():
+                    updated = updated.replace(f'href="/{old_anchor}"', f'href="/{new_anchor}"')
+            if updated != content:
+                with open(path, "w", encoding="utf-8") as f:
+                    f.write(updated)
+
+
 def build():
     import subprocess
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "scripts"))
+    import site_i18n
     import glob
     print("Generating competitor comparisons...")
     subprocess.run(["python3", "generate_comparisons.py"])
@@ -295,6 +337,8 @@ def build():
     for comp_file in glob.glob("l2cache-vs-*.html"):
         if comp_file not in HTML_FILES:
             HTML_FILES.append(comp_file)
+        if comp_file not in LEGACY_FILES:
+            LEGACY_FILES.append(comp_file)
 
     if os.path.exists(OUT_DIR):
         shutil.rmtree(OUT_DIR)
@@ -305,13 +349,13 @@ def build():
     for asset in ["icon.png", "screenshots", "theme.css", "tools", "benchmark_dataset_2026.csv", "llms.txt", "llms-full.txt", "f429f476aace450d98d63642289564df.txt", "BingSiteAuth.xml"]:
         if os.path.exists(asset):
             if os.path.isdir(asset):
-                shutil.copytree(asset, os.path.join(L2CACHE_OUT_DIR, asset))
+                shutil.copytree(asset, os.path.join(L2CACHE_OUT_DIR, asset), ignore=BUILD_ONLY)
             else:
                 shutil.copy(asset, os.path.join(L2CACHE_OUT_DIR, asset))
 
     # Also copy tools into en/tools
     if os.path.exists("tools"):
-        shutil.copytree("tools", os.path.join(L2CACHE_OUT_DIR, "en", "tools"))
+        shutil.copytree("tools", os.path.join(L2CACHE_OUT_DIR, "en", "tools"), ignore=BUILD_ONLY)
                 
     # Copy amvo-store
     if os.path.exists("amvo-store"):
@@ -321,7 +365,11 @@ def build():
     if os.path.exists("hingejoy"):
         shutil.copytree("hingejoy", HINGEJOY_OUT_DIR)
 
-    for lang in LANGUAGES.keys():
+    # 2.0 homepage at "/" and /<lang>. Until the translations land (Sprint W3) only complete
+    # locales are published; I18N_STRICT=1 (production cutover) requires all of them.
+    home_locales = site_i18n.build(L2CACHE_OUT_DIR, only_complete=os.getenv("I18N_STRICT") != "1", clean=False)
+
+    for lang in ["en"]:
         lang_dir = os.path.join(L2CACHE_OUT_DIR, lang)
         os.makedirs(lang_dir, exist_ok=True)
         print(f"Building for {lang}...")
@@ -332,7 +380,7 @@ def build():
                 shutil.copy(llm_file, os.path.join(lang_dir, llm_file))
         
         # Only build translated pages for non-en locales (index.html)
-        target_files = HTML_FILES if lang == "en" else LOCALIZED_FILES
+        target_files = LEGACY_FILES
 
         for file in target_files:
             if not os.path.exists(file):
@@ -409,7 +457,16 @@ def build():
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
         f.write('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n')
         f.write('          xmlns:xhtml="http://www.w3.org/1999/xhtml">\n')
-        for file in HTML_FILES:
+        f.write('  <url>\n')
+        f.write(f'    <loc>{site_i18n.page_url("en")}</loc>\n')
+        f.write('    <changefreq>daily</changefreq>\n')
+        f.write('    <priority>1.0</priority>\n')
+        if len(home_locales) > 1:
+            for code in home_locales:
+                f.write(f'    <xhtml:link rel="alternate" hreflang="{code}" href="{site_i18n.page_url(code)}" />\n')
+            f.write(f'    <xhtml:link rel="alternate" hreflang="x-default" href="{site_i18n.page_url("en")}" />\n')
+        f.write('  </url>\n')
+        for file in LEGACY_FILES:
             if not os.path.exists(file):
                 continue
             clean = build_page_clean_path(file)
@@ -464,8 +521,7 @@ def build():
     # Cover localized pages and copied static tools with one shared analytics
     # tag. The endpoint is served by Vercel after Web Analytics is enabled.
     inject_vercel_analytics(L2CACHE_OUT_DIR)
-
-    # We let Vercel handle the root redirect to /en/ so it doesn't conflict with amvo.store routing
+    point_at_new_domain(L2CACHE_OUT_DIR)
 
 if __name__ == "__main__":
     build()

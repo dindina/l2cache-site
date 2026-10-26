@@ -3,14 +3,14 @@
 **Status:** Done (2026-10-26) — translations are W3; deploy wiring is W4
 **Goal:** Build the 2.0 homepage per locale from keyed strings, with the whole `<head>` localized and a build that fails on leftover English.
 **Depends on:** W1 (launch locales, canonical host).
-**Scope:** `tools/site_i18n.py` (new), `locales/l2cache/<lang>/home.json` (new), `locales/l2cache/keep.json` (new), `prototypes/native-mac/styles.css`. Legacy pages and the old `locales.json` find-and-replace stay as they are until W4.
+**Scope:** `scripts/site_i18n.py` (new), `locales/l2cache/<lang>/home.json` (new), `locales/l2cache/keep.json` (new), `prototypes/native-mac/styles.css`. Legacy pages and the old `locales.json` find-and-replace stay as they are until W4.
 
 **Design change (2026-10-26):** instead of rewriting the prototype into a `{{key}}` template, the English HTML stays the source and **the English text of each segment is its key** (like the app's `.xcstrings`). A segment is the inner HTML of the outermost text element containing only text and inline tags, so `<kbd>`, `<code>` and `<strong>` stay inside their sentence. Editing English copy makes that segment "missing" in every locale until it is translated again.
 
 ```
-python3 tools/site_i18n.py extract   # locales/l2cache/en/home.json (186 strings)
-python3 tools/site_i18n.py check     # all locales complete, tags preserved, nothing left in English
-python3 tools/site_i18n.py build     # out/home/: / and /<lang>; refuses to build if check fails
+python3 scripts/site_i18n.py extract   # locales/l2cache/en/home.json (186 strings)
+python3 scripts/site_i18n.py check     # all locales complete, tags preserved, nothing left in English
+python3 scripts/site_i18n.py build     # out/home/: / and /<lang>; refuses to build if check fails
 ```
 
 ---
