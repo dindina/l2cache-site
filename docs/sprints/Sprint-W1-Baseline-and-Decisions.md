@@ -1,6 +1,6 @@
 # Sprint W1 — Baseline & Decisions
 
-**Status:** Planned (2026-10-26)
+**Status:** Done (2026-10-26) — live link fixes deferred to W4
 **Goal:** Capture what currently ranks, settle the decisions that shape every URL, and clear the blockers named in Phase 1/3.
 **Depends on:** —
 **Scope:** Search Console / Bing access, Vercel domain settings, `docs/LEGACY_URL_INVENTORY.csv`, worktree hygiene. No production routing changes.

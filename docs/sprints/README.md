@@ -18,7 +18,7 @@
 
 | Sprint | Title | Outcome |
 |---|---|---|
-| [W1](Sprint-W1-Baseline-and-Decisions.md) | Baseline & decisions | Search Console baseline exported, canonical host and launch locales settled, worktree clean |
+| [W1](Sprint-W1-Baseline-and-Decisions.md) ✅ | Baseline & decisions | Search Console baseline exported, canonical host and launch locales settled, worktree clean |
 | [W2](Sprint-W2-Localization-Pipeline.md) | Localization pipeline | Keyed-string build for the 2.0 homepage with a leftover-English gate |
 | [W3](Sprint-W3-Translations.md) | Translations & localized assets | 2.0 homepage in 11 languages, native keywords, localized images |
 | [W4](Sprint-W4-New-Domain-Integration.md) | New-domain integration (preview) | 2.0 at `/`, every URL on `l2cache.app`, redirect map in `vercel.json` |
