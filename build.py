@@ -57,6 +57,7 @@ LEGACY_FILES = [f for f in HTML_FILES if f != "index.html"]
 L2CACHE_OUT_DIR = os.path.join(OUT_DIR, "l2cache")
 AMVO_OUT_DIR = os.path.join(OUT_DIR, "amvo-store")
 HINGEJOY_OUT_DIR = os.path.join(OUT_DIR, "hingejoy")
+TEAMS_OUT_DIR = os.path.join(OUT_DIR, "teams")
 VERCEL_ANALYTICS_TAG = r"""<script>
   (function() {
     try {
@@ -365,6 +366,10 @@ def build():
     if os.path.exists("hingejoy"):
         shutil.copytree("hingejoy", HINGEJOY_OUT_DIR)
 
+    # Session Intelligence for Teams waitlist (working name), served at teams.amvo.store.
+    if os.path.exists("teams"):
+        shutil.copytree("teams", TEAMS_OUT_DIR)
+
     # 2.0 homepage at "/" and /<lang>. Until the translations land (Sprint W3) only complete
     # locales are published; I18N_STRICT=1 (production cutover) requires all of them.
     home_locales = site_i18n.build(L2CACHE_OUT_DIR, only_complete=os.getenv("I18N_STRICT") != "1", clean=False)
@@ -521,6 +526,8 @@ def build():
     # Cover localized pages and copied static tools with one shared analytics
     # tag. The endpoint is served by Vercel after Web Analytics is enabled.
     inject_vercel_analytics(L2CACHE_OUT_DIR)
+    if os.path.isdir(TEAMS_OUT_DIR):
+        inject_vercel_analytics(TEAMS_OUT_DIR)
     point_at_new_domain(L2CACHE_OUT_DIR)
 
 if __name__ == "__main__":

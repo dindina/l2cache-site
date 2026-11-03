@@ -195,6 +195,8 @@ def main() -> None:
         validate_page(ROOT / filename, None)
         validate_page(ROOT / "out/l2cache/en" / filename, public_url(filename))
     validate_home()
+    if (ROOT / "teams/index.html").is_file():
+        validate_page(ROOT / "out/teams/index.html", "https://teams.amvo.store/")
     validate_domain()
     validate_claims()
     validate_sitemap()

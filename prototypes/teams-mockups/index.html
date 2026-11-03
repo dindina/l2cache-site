@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>L2Cache for Teams Mockups</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="wrap">
+
+  <header class="page-head">
+    <p class="eyebrow">L2Cache for Teams · feature mockups</p>
+    <h1>Session intelligence for teams that code with agents.</h1>
+    <p class="lede">Pick up any session at the right cost, stop expensive cold restarts before they happen, and give the team one honest view of agent usage — without uploading a single conversation.</p>
+    <span class="note">Example data · one fictional team of 5 developers, week of 27 Oct – 2 Nov</span>
+    <ul class="toc">
+      <li><a href="#pickup">A · Pickup cards</a></li>
+      <li><a href="#history">B · Session history</a></li>
+      <li><a href="#guard">1 · Cold Resume Guard</a></li>
+      <li><a href="#handoff">2 · Fresh start with handoff</a></li>
+      <li><a href="#budget">3 · Context budget</a></li>
+      <li><a href="#memory">4 · Team memory</a></li>
+      <li><a href="#report">C · Usage &amp; cold-restart report</a></li>
+      <li><a href="#digest">5 · Weekly digest</a></li>
+      <li><a href="#outcomes">6 · Spend tied to outcomes</a></li>
+      <li><a href="#shipped">7 · What shipped</a></li>
+      <li><a href="#sharing">8 · You see what your team sees</a></li>
+    </ul>
+    <div class="agents">
+      Works with
+      <span class="agent-pill"><span class="ag-dot">✳</span>Claude Code</span>
+      <span class="agent-pill"><span class="ag-dot codex">◎</span>Codex</span>
+      <span class="agent-pill soon">More agents planned</span>
+    </div>
+  </header>
+
+  <!-- ================= For each developer — local web app ================= -->
+  <p class="group-title">For each developer · local web app (localhost) · conversations never leave the machine</p>
+
+  <!-- A. Pickup cards -->
+  <section class="feature" id="pickup">
+    <div class="feature-copy">
+      <span class="tag">A · Pickup cards</span>
+      <h2>Know what continuing will cost before you type.</h2>
+      <p>Every recent session gets a card: how big it is, whether its cache is still warm, the cheapest way back in, and a recap of where you left off.</p>
+      <p class="basis">Same card as Developer Home in the Mac app.</p>
+    </div>
+
+    <div class="win">
+      <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-url"><b>localhost:4317</b> / home</span></div>
+      <div class="win-body" style="display:grid;gap:16px">
+
+        <!-- Warm -->
+        <article class="pickup">
+          <div class="pk-head">
+            <div class="l2">L2<span class="ag">✳</span></div>
+            <div class="pk-title"><strong>Payment retries with backoff</strong><span>Claude Code · billing-api</span></div>
+            <div class="pk-meta"><span class="green">◔ 132k</span><span class="amber">⚡ 49m</span></div>
+          </div>
+          <p class="pk-headline">Cheap to continue for 49 min.</p>
+          <p class="pk-sub">After that, the next message reloads all of it.</p>
+          <div class="pk-boxes">
+            <div class="pk-box"><span class="ico green"><svg viewBox="0 0 16 22" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3a2 2 0 0 1 4 0v9.5a4 4 0 1 1-4 0z"/><circle cx="8" cy="16" r="1.6" fill="currentColor"/><path d="M8 8v6.5"/><path d="M12.5 5h2M12.5 8h2M12.5 11h2"/></svg></span><div><div class="cap">Current session</div><div class="pk-num green">132k</div><div class="muted">Cached · 49 min left</div></div></div>
+          </div>
+          <div class="pk-actions"><span class="link-m">⧉ Copy /compact command</span><span class="dim">·</span><span class="link-m">✦ Start fresh with handoff</span></div>
+          <div class="pk-recap">
+            <div class="pk-recap-head"><span class="cap">Session recap</span><span>8 minutes ago</span></div>
+            <dl class="pk-rows">
+              <dt>Last user request</dt><dd>Yes, add the jitter test too.</dd>
+              <dt>Last agent action</dt><dd>Added exponential backoff with jitter; 14 retry tests pass.</dd>
+              <dt>Commit</dt><dd><span class="mono dim">a41c9e2</span> <span class="badge-np">not pushed</span> feat(retries): exponential backoff with jitter</dd>
+            </dl>
+          </div>
+          <div class="pk-foot">
+            <span class="muted">Recap ›</span>
+            <span class="chip mono">⑂ feat/payment-retries</span>
+            <span class="spacer"></span>
+            <span class="btn-m"><span class="ag-dot">✳</span>Copy resume command</span>
+          </div>
+        </article>
+
+        <!-- Cold -->
+        <article class="pickup">
+          <div class="pk-head">
+            <div class="l2">L2<span class="ag">✳</span></div>
+            <div class="pk-title"><strong>Migrate auth to session tokens</strong><span>Claude Code · auth-service</span></div>
+            <div class="pk-meta"><span class="green">◔ 74k</span><span class="blue">❄ Cold cache</span></div>
+          </div>
+          <p class="pk-headline">A fresh session could save you from carrying unnecessary context.</p>
+          <p class="pk-sub">Your previous context cache has expired. Continue with a focused handoff instead of reloading the entire conversation.</p>
+          <div class="pk-boxes two">
+            <div class="pk-box"><span class="ico amber"><svg viewBox="0 0 16 22" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3a2 2 0 0 1 4 0v9.5a4 4 0 1 1-4 0z"/><circle cx="8" cy="16" r="1.6" fill="currentColor"/><path d="M8 8v6.5"/><path d="M12.5 5h2M12.5 8h2M12.5 11h2"/></svg></span><div><div class="cap">Current session</div><div class="pk-num hot">74k</div><div class="muted">Cache expired</div></div></div>
+            <span class="pk-arrow">→</span>
+            <div class="pk-box"><span class="ico green">⚡</span><div><div class="cap">Fresh + handoff</div><div class="pk-num green">48k</div><div class="muted">Estimated starting context</div></div></div>
+          </div>
+          <div style="margin-top:16px"><span class="btn-m primary block">✦ Start Fresh with L2Cache Handoff</span></div>
+          <div class="pk-recap">
+            <div class="pk-recap-head"><span class="cap">Session recap</span><span>9 hours ago</span></div>
+            <dl class="pk-rows">
+              <dt>Last user request</dt><dd>Wire the new session table into login.</dd>
+              <dt>Last agent action</dt><dd>Login now issues session tokens; refresh-token rotation is next.</dd>
+              <dt>Commit</dt><dd><span class="mono dim">7be20d1</span> <span class="green" style="font-size:12px;font-weight:600">pushed</span> feat(auth): issue session tokens on login</dd>
+            </dl>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- B. Session history -->
+  <section class="feature" id="history">
+    <div class="feature-copy">
+      <span class="tag">B · Session history</span>
+      <h2>Every agent session, searchable, in your browser.</h2>
+      <p>Claude Code and Codex sessions grouped by project and day, with the full conversation, tool calls, files changed and the commits they produced. Runs locally on macOS, Windows and Linux.</p>
+      <p class="basis">Mac app: Home › agent session browser and detail.</p>
+    </div>
+
+    <div class="win">
+      <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-url"><b>localhost:4317</b> / sessions</span></div>
+      <div class="win-body tight">
+        <div class="hist">
+          <aside class="hist-side">
+            <div class="cap">Projects</div>
+            <ul>
+              <li class="on"><span>billing-api</span><span class="dim">12</span></li>
+              <li><span>auth-service</span><span class="dim">7</span></li>
+              <li><span>web-app</span><span class="dim">9</span></li>
+              <li><span>infra</span><span class="dim">3</span></li>
+            </ul>
+            <div class="cap">Agents</div>
+            <ul>
+              <li><span><span class="ag-dot">✳</span> Claude Code</span><span class="dim">24</span></li>
+              <li><span><span class="ag-dot codex">◎</span> Codex</span><span class="dim">7</span></li>
+            </ul>
+          </aside>
+
+          <div class="hist-list">
+            <div class="search">⌕ Search sessions, files, errors…</div>
+            <div class="hist-day cap">Today</div>
+            <div class="hist-row on"><strong>Payment retries with backoff</strong><div class="meta"><span class="ag-dot">✳</span>132k · 2h 10m <span class="chip sm warm">warm</span></div></div>
+            <div class="hist-row"><strong>Webhook ECONNRESET in relay</strong><div class="meta"><span class="ag-dot codex">◎</span>41k · 35m <span class="chip sm">done</span></div></div>
+            <div class="hist-day cap older">Yesterday</div>
+            <div class="hist-row older"><strong>Invoice PDF rounding bug</strong><div class="meta"><span class="ag-dot">✳</span>88k · 1h 05m <span class="chip sm cold">cold</span></div></div>
+            <div class="hist-row older"><strong>Stripe webhook signature check</strong><div class="meta"><span class="ag-dot">✳</span>63k · 50m <span class="chip sm cold">cold</span></div></div>
+          </div>
+
+          <div class="conv">
+            <div class="conv-head">
+              <strong>Payment retries with backoff</strong>
+              <span class="chip mono">⑂ feat/payment-retries</span>
+              <span class="chip">3 files</span>
+              <span class="chip">2 commits</span>
+            </div>
+            <div class="msg user">Retries are hammering the provider during outages. Add exponential backoff with jitter, max 5 attempts.</div>
+            <div class="msg agent">
+              I'll wrap the provider call in a retry helper with capped exponential backoff and full jitter.
+              <div style="margin-top:8px">
+                <div class="tool"><span class="purple">✎</span><b>Edit</b> src/payments/retry.ts <span class="green">+42</span> <span class="red">−8</span></div>
+                <div class="tool"><span class="purple">✎</span><b>Edit</b> src/payments/client.ts <span class="green">+6</span> <span class="red">−3</span></div>
+                <div class="tool"><span class="purple">›</span><b>Bash</b> npm test -- retry <span class="green">14 passed</span></div>
+              </div>
+            </div>
+            <div class="msg user">Yes, add the jitter test too.</div>
+            <div class="msg agent">Added a seeded jitter test so the delays are deterministic. All 14 retry tests pass.</div>
+            <div class="commit-line"><span class="purple">⑂</span><span class="mono dim">a41c9e2</span><span>feat(retries): exponential backoff with jitter</span><span class="badge-np">not pushed</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= For each developer — terminal ================= -->
+  <p class="group-title">For each developer · in the terminal, through agent hooks</p>
+
+  <!-- 1. Guard -->
+  <section class="feature" id="guard">
+    <div class="feature-copy">
+      <span class="tag">1 · Cold Resume Guard</span>
+      <h2>Stops the expensive message, once.</h2>
+      <p>Resuming a session whose cache expired means the next message re-writes the whole context — about 20× the cost of a warm turn. L2Cache says so on resume, pauses that first message once, and points to the cheaper path.</p>
+      <p class="basis">Mac app: Cold Resume Guard (Sprint 48).</p>
+    </div>
+    <div class="win">
+      <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">~/auth-service — claude</span></div>
+<div class="term"><span class="p">~/auth-service $</span> <span class="you">claude --resume</span>
+<span class="dim">Resumed "Migrate auth to session tokens" · last active 9 h ago</span>
+<span class="dim">SessionStart:resume says:</span>
+<span class="sys"><b>Cold cache at 09:12</b> — this session's cache expired 9 h ago.
+Your next message reloads 74k tokens (≈ 20× a warm turn).
+Cheaper: type /clear — L2Cache starts a fresh session with this session's handoff.
+Or just send your message to continue as is.</span>
+<span class="you">&gt; add refresh-token rotation</span>
+<span class="dim">UserPromptSubmit operation blocked by hook:</span>
+<span class="blk">L2Cache stopped this message so it doesn't reload 74k tokens.
+• /clear — fresh session with the handoff (recommended)
+• Press ↑ and Enter to send it anyway (you won't be stopped again in this session)</span>
+<span class="dim">Original prompt: add refresh-token rotation</span></div>
+    </div>
+  </section>
+
+  <!-- 2. Handoff -->
+  <section class="feature" id="handoff">
+    <div class="feature-copy">
+      <span class="tag">2 · Fresh start with handoff</span>
+      <h2>/clear, and the agent already knows where you were.</h2>
+      <p>The new session starts empty and receives a short handoff: what's done, what's pending, the last exchange, and steps that may already be finished — so nothing is redone.</p>
+      <p class="basis">Mac app: handoff injection through hooks.</p>
+    </div>
+    <div class="pair">
+      <div class="win">
+        <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">~/auth-service — claude</span></div>
+<div class="term"><span class="you">&gt; /clear</span>
+<span class="sys ok">L2Cache · Started fresh with the handoff from "Migrate auth to session tokens" instead of reloading 74k tokens.</span>
+<span class="you">&gt; add refresh-token rotation</span>
+<span class="agent">●</span> Picking up from the handoff: login already issues
+  session tokens (7be20d1). Next is rotation — reading
+  src/auth/refresh.ts and the session table migration…
+<span class="dim">  ◔ context 48k · cache warm</span></div>
+      </div>
+      <div class="handoff">
+        <h4><span class="purple">✦</span> What the agent received <span class="dim" style="font-weight:400">· ≈ 1.9k tokens</span></h4>
+        <div class="cap">Done</div>
+        <ul>
+          <li><span class="green">✓</span> Session table + migration (<span class="mono">0042_sessions</span>)</li>
+          <li><span class="green">✓</span> Login issues session tokens — <span class="mono dim">7be20d1</span></li>
+        </ul>
+        <div class="cap">Pending</div>
+        <ul>
+          <li>Refresh-token rotation</li>
+          <li>Revoke all sessions on password change</li>
+        </ul>
+        <div class="cap">Possibly done — check first</div>
+        <ul>
+          <li class="amber">Index on <span class="mono">sessions.user_id</span> (a later migration may add it)</li>
+        </ul>
+        <div class="cap">Last exchange</div>
+        <p class="muted" style="margin:4px 0 0">You: “Wire the new session table into login.”<br>Agent: “Login now issues session tokens; rotation is next.”</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Context budget -->
+  <section class="feature" id="budget">
+    <div class="feature-copy">
+      <span class="tag">3 · Context budget</span>
+      <h2>A nudge when a session gets heavy.</h2>
+      <p>Every request re-reads the whole context. L2Cache tells you in the terminal when a session crosses a heavy threshold — shown only to you, costing the model nothing — and once more before you walk away from a very heavy one.</p>
+      <p class="basis">Mac app: Context Budget terminal nudges.</p>
+    </div>
+    <div class="win">
+      <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">~/billing-api — claude</span></div>
+<div class="term"><span class="you">&gt; now port the retry helper to the refunds client</span>
+<span class="agent">●</span> Done — refunds client uses the same retry helper. 9 tests pass.
+<span class="sys">L2Cache: context 180k (18% of 1M). Each request re-reads all of it — /compact &lt;focus&gt; or start fresh from L2Cache.</span>
+<span class="dim">… 40 minutes later …</span>
+<span class="you">&gt; run the full suite and summarise failures</span>
+<span class="agent">●</span> 212 passed, 2 failed (both in invoices/rounding).
+<span class="sys">L2Cache: context 430k (43% of 1M). Each request re-reads all of it — /compact &lt;focus&gt; or start fresh from L2Cache.
+Stepping away? /compact first — after the cache expires, the next message reloads the whole context.</span></div>
+    </div>
+  </section>
+
+  <!-- 4. Team memory -->
+  <section class="feature" id="memory">
+    <div class="feature-copy">
+      <span class="tag">4 · Team memory · new for Teams</span>
+      <h2>“Someone on the team already fixed this.”</h2>
+      <p>Before debugging, the agent asks L2Cache whether this error was solved before — and gets the cause, the fix, the files and the test that proved it, even when a teammate solved it with a different agent.</p>
+      <p class="basis">New for Teams: captured by the collector's hooks, shared only after the developer approves each fix.</p>
+    </div>
+    <div class="win">
+      <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">~/billing-api — codex</span></div>
+<div class="term"><span class="you">&gt; relay tests fail with ECONNRESET again, fix it</span>
+<span class="toolcall"><b>l2cache · get_error_resolutions</b>("ECONNRESET webhook relay")
+<span class="green">Fixed before</span> · Priya · 6 days ago · billing-api · Claude Code
+Cause:    keep-alive agent reused sockets the relay had closed
+Fix:      keepAlive: false for the relay client
+Files:    src/relay/client.ts
+Verified: npm test -- relay → 22 passed</span>
+<span class="agent">●</span> Same root cause: the refunds relay client was added after
+  Priya's fix and still uses the shared keep-alive agent.
+  Applying the same change to src/relay/refunds.ts…
+<span class="dim">  › npm test -- relay   24 passed</span></div>
+    </div>
+  </section>
+
+  <!-- 5. Team skills -->
+  <section class="feature" id="skills">
+    <div class="feature-copy">
+      <span class="tag">5 · Team skills · new for Teams</span>
+      <h2>Share your agent's superpowers across the repo.</h2>
+      <p>When an engineer builds a specialized skill or custom MCP tool—like a database migration validator, API mock generator, or security checker—one click makes it available to every teammate's agent.</p>
+      <p class="basis">New for Teams: distributed via the local collector and shared team registry.</p>
+    </div>
+    <div class="win">
+      <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">~/billing-api — claude</span></div>
+<div class="term"><span class="dim">Session initialized · repo: billing-api</span>
+<span class="sys ok">2 team skills synced from Acme Engineering:
+  • <b>db-migration-audit</b> (@priya) — validates zero-downtime postgres migrations
+  • <b>seed-stripe-fixtures</b> (@sam) — generates idempotent webhook test payloads</span>
+<span class="you">&gt; verify the new payment retries migration before we commit</span>
+<span class="toolcall"><b>team_skill · db-migration-audit</b>("db/migrations/0043_payment_retries.sql")
+<span class="green">✓ Passed team zero-downtime checks</span>
+• Table lock: &lt; 5 ms (CONCURRENTLY used for new index on customer_id)
+• Backward compatibility: all new columns have default values
+• Rollback safety: down migration 0043_down.sql verified cleanly</span>
+<span class="agent">●</span> Migration passes Priya's zero-downtime audit rules.
+  Safe to commit and open PR.
+<span class="dim">  › git status: clean working tree, ready to commit</span></div>
+    </div>
+  </section>
+
+  <!-- ================= For the team ================= -->
+  <p class="group-title">For the team · l2cache.app/team · metadata and approved recaps only</p>
+
+  <!-- C. Report -->
+  <section class="feature" id="report">
+    <div class="feature-copy">
+      <span class="tag">C · Usage &amp; cold-restart report</span>
+      <h2>Where the team's tokens go — and how much was wasted.</h2>
+      <p>For the CTO or lead: sessions, tokens by type, cold restarts and what they reloaded, how many the guard prevented, and the sessions that cost the most. Filter by week, developer, repo or agent; export CSV.</p>
+      <p class="basis">Built from the same transcript usage data as the Mac app's context budget and wasteful-session audit.</p>
+    </div>
+    <div class="win">
+      <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-url"><b>l2cache.app</b> / team / report</span></div>
+      <div class="win-body">
+        <div class="dash-head">
+          <h3>Agent usage report</h3>
+          <span class="chip">27 Oct – 2 Nov ▾</span>
+          <span class="chip">All developers ▾</span>
+          <span class="chip">All repos ▾</span>
+          <span class="chip">All agents ▾</span>
+          <span class="btn-m">⤓ CSV</span>
+        </div>
+
+        <div class="tiles">
+          <div class="tile"><div class="cap">Sessions</div><div class="v">184</div><div class="s">▲ 12 vs last week</div></div>
+          <div class="tile"><div class="cap">Tokens</div><div class="v">412M</div><div class="s">▼ 8% vs last week</div></div>
+          <div class="tile"><div class="cap">Est. cost</div><div class="v">$1,240</div><div class="s">API seats · Max seats in quota view</div></div>
+          <div class="tile hl"><div class="cap">Cold restarts</div><div class="v">37</div><div class="s">resumed after cache expired</div></div>
+          <div class="tile hl"><div class="cap">Cold reloads</div><div class="v">9.8M</div><div class="s">tokens re-written · 2.4%</div></div>
+          <div class="tile good"><div class="cap">Guard saves</div><div class="v green">21<span class="dim" style="font-size:15px"> / 37</span></div><div class="s">went fresh + handoff · ~6.1M avoided</div></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <strong>Tokens per day, by type</strong>
+            <div class="legend">
+              <span><i style="background:var(--c-read)"></i>Cache read</span>
+              <span><i style="background:var(--c-write)"></i>Cache write</span>
+              <span><i style="background:repeating-linear-gradient(135deg,var(--c-cold) 0 3px,#c4643c 3px 6px)"></i>Cold reload</span>
+              <span><i style="background:var(--c-out)"></i>Output</span>
+              <span><i style="background:var(--c-in)"></i>Input</span>
+            </div>
+          </div>
+          <div class="chart" role="img" aria-label="Tokens per day: Mon 72M, Tue 81M, Wed 66M, Thu 78M, Fri 59M, Sat 22M, Sun 34M. Cache reads dominate; cold reloads are 1–4% each day.">
+            <div class="bar" style="height:88.9%"><i class="rd" style="height:84%"></i><i class="wr" style="height:9%"></i><i class="cd" style="height:3%"></i><i class="ou" style="height:3%"></i><i class="in" style="height:1%"></i></div>
+            <div class="bar" style="height:100%"><i class="rd" style="height:85%"></i><i class="wr" style="height:9%"></i><i class="cd" style="height:2%"></i><i class="ou" style="height:3%"></i><i class="in" style="height:1%"></i></div>
+            <div class="bar" style="height:81.5%"><i class="rd" style="height:85%"></i><i class="wr" style="height:9%"></i><i class="cd" style="height:2%"></i><i class="ou" style="height:3%"></i><i class="in" style="height:1%"></i></div>
+            <div class="bar" style="height:96.3%"><i class="rd" style="height:83%"></i><i class="wr" style="height:9%"></i><i class="cd" style="height:4%"></i><i class="ou" style="height:3%"></i><i class="in" style="height:1%"></i></div>
+            <div class="bar" style="height:72.8%"><i class="rd" style="height:86%"></i><i class="wr" style="height:9%"></i><i class="cd" style="height:1%"></i><i class="ou" style="height:3%"></i><i class="in" style="height:1%"></i></div>
+            <div class="bar" style="height:27.2%"><i class="rd" style="height:86%"></i><i class="wr" style="height:9%"></i><i class="cd" style="height:1%"></i><i class="ou" style="height:3%"></i><i class="in" style="height:1%"></i></div>
+            <div class="bar" style="height:42%"><i class="rd" style="height:84%"></i><i class="wr" style="height:9%"></i><i class="cd" style="height:3%"></i><i class="ou" style="height:3%"></i><i class="in" style="height:1%"></i></div>
+          </div>
+          <div class="chart-x"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><strong>By developer</strong><span class="dim" style="font-size:12px">Admins only · switch to team totals in Settings</span></div>
+          <div class="scroll">
+            <table class="t">
+              <thead><tr><th>Developer</th><th class="num">Sessions</th><th class="num">Tokens</th><th class="num">Cold restarts</th><th class="num">Wasted reload</th><th class="num">Avg peak context</th><th class="num">Rate-limit hits</th><th class="num">Took guard advice</th></tr></thead>
+              <tbody>
+                <tr><td><span class="who"><span class="av">S</span>Sam</span></td><td class="num">52</td><td class="num">131M</td><td class="num">14</td><td class="num amber">4.1M</td><td class="num">284k</td><td class="num">1</td><td class="num">9 / 14<span class="meter"><i style="width:64%"></i></span></td></tr>
+                <tr><td><span class="who"><span class="av b">P</span>Priya</span></td><td class="num">47</td><td class="num">104M</td><td class="num">6</td><td class="num">1.2M</td><td class="num">176k</td><td class="num">0</td><td class="num">5 / 6<span class="meter"><i style="width:83%"></i></span></td></tr>
+                <tr><td><span class="who"><span class="av g">A</span>Alex</span></td><td class="num">38</td><td class="num">88M</td><td class="num">9</td><td class="num amber">2.6M</td><td class="num">241k</td><td class="num">1</td><td class="num">4 / 9<span class="meter"><i style="width:44%"></i></span></td></tr>
+                <tr><td><span class="who"><span class="av a">J</span>Jordan</span></td><td class="num">29</td><td class="num">61M</td><td class="num">5</td><td class="num">1.3M</td><td class="num">158k</td><td class="num">0</td><td class="num">2 / 5<span class="meter"><i style="width:40%"></i></span></td></tr>
+                <tr><td><span class="who"><span class="av o">M</span>Mei</span></td><td class="num">18</td><td class="num">28M</td><td class="num">3</td><td class="num">0.6M</td><td class="num">120k</td><td class="num">0</td><td class="num">1 / 3<span class="meter"><i style="width:33%"></i></span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><strong>Most wasteful sessions</strong><span class="dim" style="font-size:12px">Ranked by tokens re-written on cold restarts · titles from approved recaps</span></div>
+          <div class="scroll">
+            <table class="t">
+              <thead><tr><th>Project</th><th>Session</th><th>Developer</th><th class="num">Turns</th><th class="num">Peak context</th><th class="num">Resumed cold</th><th class="num">Wasted cold rewrite</th><th>Rate limit</th></tr></thead>
+              <tbody>
+                <tr><td>billing-api</td><td>Payment retries with backoff</td><td>Sam</td><td class="num">412</td><td class="num">612k</td><td class="num">5×</td><td class="num amber">2.1M</td><td class="amber">⚠ Hit</td></tr>
+                <tr><td>web-app</td><td>Checkout redesign</td><td>Alex</td><td class="num">338</td><td class="num">498k</td><td class="num">4×</td><td class="num amber">1.4M</td><td class="amber">⚠ Hit</td></tr>
+                <tr><td>auth-service</td><td>Migrate auth to session tokens</td><td>Priya</td><td class="num">290</td><td class="num">402k</td><td class="num">3×</td><td class="num">0.9M</td><td class="dim">No</td></tr>
+                <tr><td>infra</td><td>Terraform module split</td><td>Jordan</td><td class="num">201</td><td class="num">355k</td><td class="num">3×</td><td class="num">0.8M</td><td class="dim">No</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Digest -->
+  <section class="feature" id="digest">
+    <div class="feature-copy">
+      <span class="tag">5 · Weekly digest</span>
+      <h2>The report, in the channel, every Monday.</h2>
+      <p>The headline numbers from the report, what shipped, and where people got stuck — in Slack or email, with a link to the full report.</p>
+    </div>
+    <div class="win">
+      <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title"># eng-leads</span></div>
+      <div class="chat">
+        <div class="chat-chan"># eng-leads · Monday 3 Nov, 9:00</div>
+        <div class="chat-msg">
+          <div class="l2">L2</div>
+          <div>
+            <div class="chat-name">L2Cache for Teams<span class="app">APP</span> <span class="dim" style="font-weight:400;font-size:12px">9:00</span></div>
+            <div class="digest">
+              <h5>Agent week · 27 Oct – 2 Nov</h5>
+              <div class="digest-grid">
+                <div><b>412M</b><span>tokens · ▼ 8% · 184 sessions</span></div>
+                <div><b class="amber">37</b><span>cold restarts · 9.8M reloaded</span></div>
+                <div><b class="green">21</b><span>saved by the guard · ~6.1M avoided</span></div>
+              </div>
+              <p><b>Shipped:</b> 14 commits across 3 repos — Payment retries (Sam), Checkout redesign (Alex, Mei), Session tokens in review (Priya).</p>
+              <p><b>Stuck:</b> ECONNRESET in the webhook relay came up 3 times. Priya's fix is in team memory; the agent reused it on Thursday.</p>
+              <p><b>Watch:</b> 2 rate-limit hits, both in sessions over 450k context.</p>
+              <p style="margin-top:10px"><span class="btn-m">Open report</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Outcomes -->
+  <section class="feature" id="outcomes">
+    <div class="feature-copy">
+      <span class="tag">6 · Spend tied to outcomes</span>
+      <h2>What the tokens produced.</h2>
+      <p>Usage grouped by piece of work, linked to the commits it led to. Work that used a lot of tokens with no commit yet is easy to spot.</p>
+      <p class="basis">Mac app: work summaries and git events, rolled up per team.</p>
+    </div>
+    <div class="win">
+      <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-url"><b>l2cache.app</b> / team / work</span></div>
+      <div class="win-body">
+        <div class="dash-head"><h3>Work this week</h3><span class="chip">27 Oct – 2 Nov ▾</span><span class="chip">All repos ▾</span></div>
+        <div class="panel" style="margin-top:0">
+          <div class="scroll">
+            <table class="t">
+              <thead><tr><th>Work</th><th>Repo</th><th>Who</th><th class="num">Sessions</th><th class="num">Tokens</th><th class="num">Est. cost</th><th>Commits</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Checkout redesign</td><td>web-app</td><td><span class="who"><span class="av g">A</span><span class="av o">M</span></span></td><td class="num">12</td><td class="num">66M</td><td class="num">$198</td><td class="mono dim">6 · c19f0a4…</td><td><span class="chip sm ok">Merged</span></td></tr>
+                <tr><td>Payment retries with backoff</td><td>billing-api</td><td><span class="who"><span class="av">S</span></span></td><td class="num">9</td><td class="num">58M</td><td class="num">$174</td><td class="mono dim">4 · a41c9e2…</td><td><span class="chip sm ok">Merged</span></td></tr>
+                <tr><td>Migrate auth to session tokens</td><td>auth-service</td><td><span class="who"><span class="av b">P</span></span></td><td class="num">7</td><td class="num">41M</td><td class="num">$123</td><td class="mono dim">3 · 7be20d1…</td><td><span class="chip sm">In review</span></td></tr>
+                <tr><td>GraphQL gateway spike</td><td>web-app</td><td><span class="who"><span class="av g">A</span></span></td><td class="num">5</td><td class="num">22M</td><td class="num">$66</td><td class="dim">—</td><td><span class="chip sm warn">No commit yet</span></td></tr>
+                <tr><td>Webhook ECONNRESET fix</td><td>billing-api</td><td><span class="who"><span class="av a">J</span></span></td><td class="num">3</td><td class="num">9M</td><td class="num">$27</td><td class="mono dim">1 · e5d7b30…</td><td><span class="chip sm ok">Merged</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. What shipped -->
+  <section class="feature" id="shipped">
+    <div class="feature-copy">
+      <span class="tag">7 · What shipped</span>
+      <h2>Standup, written from the work itself.</h2>
+      <p>Each developer's day grouped by feature, written by the agent that did the work and checked against the files that actually changed. Unverified claims and uncommitted work are labelled, never hidden.</p>
+      <p class="basis">Mac app: Your Day work summaries.</p>
+    </div>
+    <div class="win">
+      <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-url"><b>l2cache.app</b> / team / shipped</span></div>
+      <div class="win-body">
+        <div class="dash-head"><h3>Thursday 30 Oct</h3><span class="chip">All developers ▾</span></div>
+        <div class="panel" style="margin-top:0">
+          <div class="ship-dev">
+            <span class="who"><span class="av">S</span><b>Sam</b> <span class="dim">· billing-api</span></span>
+            <div class="ship-item"><span class="ag-dot">✳</span><div><div class="t1">Payment retries with backoff</div><div class="t2">Exponential backoff with jitter on provider calls; seeded jitter test.</div></div><div class="ship-badges"><span class="chip sm ok">✓ Verified · 3 files</span><span class="chip sm">2 commits</span></div></div>
+            <div class="ship-item"><span class="ag-dot">✳</span><div><div class="t1">Retry metrics on the ops dashboard</div><div class="t2">Counters for attempts and give-ups per provider.</div></div><div class="ship-badges"><span class="chip sm warn">Uncommitted · 2 files</span></div></div>
+          </div>
+          <div class="ship-dev">
+            <span class="who"><span class="av b">P</span><b>Priya</b> <span class="dim">· auth-service</span></span>
+            <div class="ship-item"><span class="ag-dot">✳</span><div><div class="t1">Session tokens on login</div><div class="t2">New sessions table; login issues session tokens; refresh rotation pending.</div></div><div class="ship-badges"><span class="chip sm ok">✓ Verified · 5 files</span><span class="chip sm">1 commit</span></div></div>
+          </div>
+          <div class="ship-dev">
+            <span class="who"><span class="av a">J</span><b>Jordan</b> <span class="dim">· billing-api</span></span>
+            <div class="ship-item"><span class="ag-dot codex">◎</span><div><div class="t1">Webhook relay ECONNRESET</div><div class="t2">Reused the team-memory fix for the refunds relay client.</div></div><div class="ship-badges"><span class="chip sm ok">✓ Verified · 1 file</span><span class="chip sm">1 commit</span></div></div>
+            <div class="ship-item"><span class="ag-dot codex">◎</span><div><div class="t1">Relay timeout tuning</div><div class="t2">Agent reports timeouts lowered to 8 s.</div></div><div class="ship-badges"><span class="chip sm">Unverified · no matching file change</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Trust ================= -->
+  <p class="group-title">Trust · every developer controls what leaves their machine</p>
+
+  <section class="feature" id="sharing">
+    <div class="feature-copy">
+      <span class="tag">8 · You see what your team sees</span>
+      <h2>Private by design, and you can check.</h2>
+      <p>Conversations are read and summarised on your machine. The team view gets numbers and the recaps you approve — nothing else. Every developer can see exactly what was sent, and pause sharing at any time.</p>
+    </div>
+    <div class="win">
+      <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-url"><b>localhost:4317</b> / sharing</span></div>
+      <div class="win-body">
+        <div class="share-top">
+          <h3>Sharing with Acme Engineering</h3>
+          <span class="dim" style="font-size:13px">Last sent 2 min ago · 14 events</span>
+          <span class="toggle"><i></i>Sharing on</span>
+        </div>
+        <div class="share-cols">
+          <div class="share-col">
+            <h4 class="green">Shared with your team</h4>
+            <ul>
+              <li><span class="green">✓</span><span>Token counts and estimated cost<small>per session, by type</small></span></li>
+              <li><span class="green">✓</span><span>Cache events<small>warm / cold, cold restarts, guard choices</small></span></li>
+              <li><span class="green">✓</span><span>Repo, branch and commit SHAs<small>to link sessions to work</small></span></li>
+              <li><span class="green">✓</span><span>Recaps you approve<small>one line per piece of work</small></span></li>
+              <li><span class="green">✓</span><span>Fixes you approve<small>error, cause and fix, for team memory</small></span></li>
+            </ul>
+            <div class="recap-prev">
+              <div class="cap">Waiting for your approval</div>
+              <div style="margin-top:6px">“Payment retries — exponential backoff with jitter, 14 tests pass.”</div>
+              <div class="row"><span class="btn-m primary">Share</span><span class="btn-m">Edit</span><span class="btn-m">Keep private</span></div>
+            </div>
+          </div>
+          <div class="share-col">
+            <h4>Stays on your machine</h4>
+            <ul>
+              <li><span class="dim">✕</span><span>Your prompts and the agent's replies</span></li>
+              <li><span class="dim">✕</span><span>Code, diffs and file contents</span></li>
+              <li><span class="dim">✕</span><span>Tool output and terminal logs</span></li>
+              <li><span class="dim">✕</span><span>Anything you pasted, including secrets</span></li>
+              <li><span class="dim">✕</span><span>Session titles, unless you approve the recap</span></li>
+            </ul>
+            <p style="margin:12px 0 0"><span class="link-m">View the raw data sent ›</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    Mockups for the L2Cache for Teams waitlist page. All people, projects and numbers are examples. Spec: <code>docs/PRD-Teams-Waitlist.md</code>.
+  </footer>
+</main>
+</body>
+</html>

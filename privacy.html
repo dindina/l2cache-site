@@ -6,7 +6,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Privacy Policy — L2Cache</title>
-  <meta name="description" content="Privacy Policy for L2Cache. We believe your clipboard data belongs to you.">
+  <meta name="description" content="Privacy policy for L2Cache: your history stays on your Mac, with no account and no analytics in the app. Lists the features that connect to the internet.">
   <link rel="icon" type="image/png" href="icon.png"/>
   <link rel="apple-touch-icon" href="icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -55,7 +55,7 @@
   <meta property="og:site_name" content="L2Cache">
   <meta property="og:url" content="https://l2cache.amvo.store/en/privacy">
   <meta property="og:title" content="Privacy Policy — L2Cache">
-  <meta property="og:description" content="Privacy Policy for L2Cache. We believe your clipboard data belongs to you.">
+  <meta property="og:description" content="Privacy policy for L2Cache: your history stays on your Mac, with no account and no analytics in the app. Lists the features that connect to the internet.">
   <meta property="og:image" content="https://l2cache.amvo.store/icon.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
@@ -63,7 +63,7 @@
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:url" content="https://l2cache.amvo.store/en/privacy">
   <meta name="twitter:title" content="Privacy Policy — L2Cache">
-  <meta name="twitter:description" content="Privacy Policy for L2Cache. We believe your clipboard data belongs to you.">
+  <meta name="twitter:description" content="Privacy policy for L2Cache: your history stays on your Mac, with no account and no analytics in the app. Lists the features that connect to the internet.">
   <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
   <meta name="twitter:image:alt" content="L2Cache app icon">
 </head>
@@ -88,38 +88,44 @@
 <div class="container">
   <div class="label">Legal</div>
   <h1>Privacy Policy</h1>
-  <p class="updated">Last updated: June 2026</p>
+  <p class="updated">Last updated: October 2026</p>
 
   <div class="tldr">
-    <p><strong>L2Cache collects zero data about you.</strong> Everything stays on your Mac. We have no servers, no analytics, no accounts, and no way to see what you copy. Your clipboard is yours.</p>
+    <p><strong>L2Cache keeps your history on your Mac.</strong> The app has no account, sends nothing to servers of ours, and contains no analytics or tracking. A few features connect to the internet, and they are listed below.</p>
   </div>
 
-  <h2>What we collect</h2>
-  <p>Nothing. L2Cache stores all data locally on your Mac in a SQLite database at <code style="font-family:var(--mono);font-size:13px;background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px">~/Library/Application Support/L2cache/</code>. No data is transmitted to any server operated by us.</p>
+  <h2>What the app stores, and where</h2>
+  <p>Your history — clipboard items, screenshots and the text in them, terminal commands, Git activity and coding-agent sessions — is stored in a database on your Mac, in <code style="font-family:var(--mono);font-size:13px;background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px">~/Library/Application Support/L2cache/</code>. We don't operate any server that receives it, and we can't see it.</p>
 
-  <h2>Your clipboard data</h2>
-  <p>All clipboard history is stored exclusively on your device. L2Cache never uploads, transmits, or shares your clipboard content with anyone, including us.</p>
-  <p>Sensitive items are detected locally and stored as hidden, locked entries. Detected categories include: API keys (OpenAI, GitHub, Stripe, AWS, Slack, and others), credit card numbers, PEM private keys and certificates, US Social Security Numbers, WiFi credentials, and secret or password assignments in config and environment files. Their content is never displayed in plain text — unlocking requires Touch ID or your login password. They are never transmitted anywhere.</p>
+  <h2>Sensitive items</h2>
+  <p>Sensitive items are detected on your Mac and stored as hidden, locked entries. Detected categories include API keys (OpenAI, GitHub, Stripe, AWS, Slack and others), credit card numbers, PEM private keys and certificates, US Social Security numbers, Wi-Fi credentials, and secret or password assignments in config and environment files. Their content is never shown in plain text — unlocking requires Touch ID or your login password — and it is never sent to any of the services below.</p>
 
   <h2>AI processing</h2>
-  <p>L2Cache uses on-device AI for content categorisation. All AI processing runs locally using Apple Intelligence or rule-based categorisation — no clipboard content is ever sent to any external server or AI provider.</p>
+  <p>Titles, tags and transforms are produced on your Mac, by Apple Intelligence (on-device, where your Mac supports it), a local Ollama model that you run yourself, or built-in rules. L2Cache does not send your history to cloud AI services.</p>
 
-  <h2>Analytics and tracking</h2>
-  <p>L2Cache contains no analytics, no crash reporting services, no third-party SDKs, and no tracking of any kind. We have no idea how many people use the app or how they use it.</p>
+  <h2>Features that connect to the internet</h2>
+  <ul>
+    <li><strong>Link previews.</strong> When you copy a link, L2Cache fetches that page's title, description and icon from the website itself, as your browser would. For TikTok links it uses TikTok's public oEmbed service. The website sees a normal request from your Mac.</li>
+    <li><strong>Translate.</strong> When you choose Translate on a clip, the selected text (up to 5,000 characters) is sent to Google Translate.</li>
+    <li><strong>Skills catalogue.</strong> When you browse skill suggestions, L2Cache loads the public catalogue from skills.sh.</li>
+    <li><strong>Coding agents.</strong> If you connect the L2Cache MCP server, your coding agent can search your clipboard history, screenshots and saved folders. If you turn on hooks, recent clipboard items and the previous session's context are added to each new agent session. The MCP server and hooks run on your Mac, but your agent sends what it reads to its own AI provider, under that provider's terms. Sensitive items are never shared. Both are off until you turn them on.</li>
+    <li><strong>Links you open</strong>, such as the App Store or our support page, open in your browser as usual.</li>
+  </ul>
+
+  <h2>Analytics</h2>
+  <p>The app contains no analytics, crash reporting, advertising or tracking SDKs. Our website, l2cache.app, uses Vercel Web Analytics to count page visits without cookies. It has no access to anything in the app.</p>
 
   <h2>Data sharing</h2>
-  <p>We share no data with any third parties because we collect no data. Simple.</p>
+  <p>We don't sell or share data, and we never receive your history. When you use one of the features above, the request goes directly from your Mac to that service.</p>
 
   <h2>Children's privacy</h2>
   <p>L2Cache does not knowingly collect any information from children under 13. The app is rated 4+ on the Mac App Store.</p>
 
   <h2>Changes to this policy</h2>
-  <p>If we ever change this policy, we will update the date at the top and note the changes in the app's release notes. Given our zero-collection approach, significant changes are unlikely.</p>
+  <p>If this policy changes, we will update the date at the top and note the change in the app's release notes.</p>
 
   <h2>Contact</h2>
-  <p>Questions about privacy? Contact us at <a href="mailto:support@amvo.store">support@amvo.store</a> or via the <a href="support.html">support page</a>.</p>
-
-  <p>This privacy policy applies to L2Cache and any future apps published by the same developer, unless otherwise stated.</p>
+  <p>Questions about privacy? Email <a href="mailto:support@amvo.store">support@amvo.store</a> or use the <a href="support.html">support page</a>.</p>
 </div>
 
 <footer>
