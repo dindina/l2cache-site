@@ -112,9 +112,20 @@ page = f'''<!doctype html>
     </div>
     <details class="method">
       <summary>How we got ≈20×</summary>
-      <p>On Anthropic's published prices, writing context into a 1-hour prompt cache costs 2× the model's base input price per token, and reading it back from a warm cache costs 0.1×. A cold resume re-writes the whole context instead of reading it: 2 ÷ 0.1 = 20× for that context. With a 5-minute cache the write costs 1.25×, so 12.5×.</p>
-      <p>This compares the cost of the reloaded context only. The new message and the reply cost the same either way, so the whole turn costs less than 20× more; for a large context the reload dominates.</p>
-      <p>Measured on one heavy user's Claude Code sessions over 30 days: cold reloads were 0.9% of tokens but about 10% of the estimated cost. Your team's share will differ; the report measures it.</p>
+      <div class="method-body">
+        <p>Under Anthropic's standard prompt-cache pricing, writing context into a 1-hour cache costs 2× the model's base input price per token. Reading that context from a warm cache costs 0.1×.</p>
+        <p>When the cache has expired, resuming a session can require writing the existing context again instead of reading it from cache:</p>
+        <p><strong>2 ÷ 0.1 = 20× the cost for that context.</strong></p>
+        <p>With a 5-minute cache, the write costs 1.25×, giving a <strong>12.5×</strong> comparison.</p>
+        <p>This is the cost of reloading the existing context, not the entire turn. The new message and generated reply still cost the same either way. For a large session, however, reloading the context can dominate the cost.</p>
+        <h4>What we observed</h4>
+        <p>Across one heavy Claude Code user's sessions over 30 days, cold reloads accounted for:</p>
+        <ul>
+          <li><strong>0.9% of total tokens</strong></li>
+          <li><strong>Approximately 10% of estimated API cost</strong></li>
+        </ul>
+        <p>Your team's results will vary by model, cache duration, session size and usage patterns. L2cache measures your team's actual usage rather than assuming everyone experiences the same impact.</p>
+      </div>
     </details>
   </section>
 
