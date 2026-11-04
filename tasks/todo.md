@@ -101,3 +101,49 @@
 - [x] Moved Pickup Cards mockup from hero into "What you'll get" (`#features`) with explicit developer copy; hero simplified to headline, CTAs, and agent strip
 - [x] Added "Team skills: share custom agent tools across the repo" mockup card (Planned) and `team-skills` option to waitlist form & API
 - [ ] User runs ./deploy.sh
+
+# 2.0 homepage — add features from app Sprints 36–48 (planned 2026-11-04)
+
+Source: `prototypes/native-mac/index.html` → built to `out/l2cache/` (English only; translations stay last, W3).
+Page copy last updated 2026-10-26 (`fd066ca`); app Sprints 36–48 shipped after that.
+
+## What's new since the page was written
+| App work | Status | Where it lands on the page |
+|---|---|---|
+| S36–37 Universal ⌘K search: Top Hit, scope pills, `@project` tokens, recents, agent hits open at the matched message | Shipped (`111438d`) | Search section bullets |
+| S38–40, 45–46 Context budget: pickup card shows session size and whether the cache is warm or cold, one-click "start fresh" / compact, cache-expiry alert, "Where your tokens go", 5-hour/weekly limit pacing, Context Audit in onboarding | 38, 40, 45 complete; 39 signed off; 46 live checks open | **New section** "Know what a session costs before you resume" between Agents and MCP & Hooks |
+| S41 terminal nudge when a session gets heavy (zero model tokens) | Live terminal check pending | Hooks list |
+| S47 safer compaction: re-inject facts `/compact` dropped | Live `/compact` checks pending | Hooks list |
+| S48 cold resume guard: warns and stops the first costly prompt once on a cold session; `/clear` starts fresh with the handoff | Complete | Hooks list + new section |
+| S42–44 agent history over MCP: past fixes, decisions, work summaries, single events; lean pointer handoff | 42 complete; 43–44 live check pending | MCP tool list (6 → 11 tools) + FAQ |
+
+## Plan
+- [x] T1 Search section: replace bullets with Top Hit + scope pills, `@project` scoping, open at the matched message
+- [x] T2 New "context & cost" section (copy + 3–4 bullets, one screenshot of the pickup card's context strip); add nav link
+- [x] T2b Proactive session warnings, their own block in the new section (shipped and checked):
+  - Cache expiring soon: macOS notification, menu-bar badge and quick-panel top row before a heavy Claude session's cache expires (S45, `CacheExpiryMonitor`)
+  - Keep warm: optional, capped prompt to keep a heavy session's cache warm (S45)
+  - Cold resume guard: terminal warning, and the first costly prompt is stopped once on a cold session; `/clear` starts fresh with the handoff (S48)
+  - Not yet: 5-hour/weekly limit pace alerts (S46) and the heavy-session terminal nudge (S41) wait for live checks; Session Health signals (`PRD-Proactive-Notifications.md`) are Proposed, not built, so the page must not claim them
+- [x] T3 Hooks list: add cold resume guard only (S41 nudge and S47 compaction wait for live checks)
+- [x] T4 MCP list: add `search_agent_history`, `get_session_summary`, `get_error_resolutions`, `get_decisions`, `get_agent_event`
+- [x] T5 Verify the "MCP needs macOS 15 or later" claim still holds after the osascript server (`09aff8c`); fix page + FAQ if not
+- [x] T6 FAQ: add "Does L2Cache help with Claude Code token use / cold resumes?"; update the MCP answer
+- [x] T7 Mockups: replaced static screenshots across the entire page (Hero, Today, Agents, Context, Projects, Search, Clipboard) with responsive HTML app mockups; unified example story across all sections to Atlas (Auth token retry / ATL-142); removed dead screenshot modal and deleted 8 unused screenshot files
+- [x] T8 JSON-LD `featureList` + meta description: add context/cost line
+- [x] T9 Copy rules: no "20× cheaper"/"saves N×" claims; cost wording matches the app's honest copy (`6362a94`, `f830227`); blocked-claims gate passes
+- [x] T10 Rebuild (`python3 build.py`), `scripts/check_routes.js`, `site_i18n.py check`, review at localhost:8780, then hand over for approval (no deploy)
+
+## Decisions needed
+- D1 ✅ (2026-11-04) Only checked work goes on the page now. S41, 43, 44, 46, 47 are added once their live checks pass. The new section leaves out 5-hour/weekly pacing (S46) and the lean pointer handoff (S44).
+- D2 Pro price: is $4.99 the 2.0 unlock? (carried over)
+- D3 Privacy policy: approve the live version (carried over)
+
+## Review — 2.0 page features & HTML mockups (2026-11-04)
+- New "Context & cost" section (#context, in the nav): pickup card facts on one side, warnings (cache expiring soon, keep warm, cold resume guard) on the other. All copy checked against Settings text and defaults in the app.
+- ⌘K: top hit, kind filter, `@project`, opens at the matched message. MCP: 11 tools, plus earlier fixes, decisions and summaries. Hooks: cold resume guard. FAQ + JSON-LD: new token-use question, featureList line.
+- T5: dropped "macOS 15 or later" for MCP. It came from the old helper binary target (removed in `09aff8c`); the osascript server has no OS gate in the app.
+- HTML mockups: All sections (Hero Developer Home, Today, Coding Agents, Context & Cost, Projects & Worklog, ⌘K Search, Clipboard & Terminal) now use responsive HTML/CSS mockups rather than static screenshots, rendering sharp typography on all devices.
+- Unified Atlas developer story: Across Hero, Today, Coding Agents, Context & Cost, Projects, Search, and Terminal/Clipboard, all data now consistently tracks the Atlas project (`fix/ATL-142-auth-retry`, "Auth token retry", commit `7b2a7f4`, `AuthRetryTests`, `TokenManager.swift`, with companion projects Nimbus, Relay, Lumen).
+- Cleaned dead gallery code & assets: Removed the `<dialog id="screenshot-modal">` element, removed ~190 lines of carousel JavaScript and ~290 lines of modal/zoom-hint CSS; deleted 8 obsolete screenshot images saving ~750 KB.
+- Checks: JSON-LD parses, `site_i18n extract` (390 strings), build OK, `check_routes.js` 383/0 failures, `validate_seo.py` passed (blocked claims included), no horizontal scroll at 390px.
