@@ -124,10 +124,25 @@
       var i = slides.indexOf(document.getElementById(card.dataset.dlg));
       active = -1;
       dlg.showModal();
+      fit();
       requestAnimationFrame(function () { go(i, false); });
     });
   });
-  window.addEventListener('resize', function () { if (dlg.open) go(active, false); });
+  // Shrink each slide's mockup just enough that the whole image is visible without scrolling the slide.
+  // Phones stack the text above the mockup, so there the slide scrolls instead of shrinking it unreadably.
+  var phone = window.matchMedia('(max-width: 600px)');
+  function fit() {
+    slides.forEach(function (s) {
+      var fig = s.querySelector('figure.stage');
+      if (!fig) return;
+      fig.style.zoom = '';
+      if (phone.matches) return;
+      var top = fig.getBoundingClientRect().top - s.getBoundingClientRect().top + s.scrollTop;
+      var room = s.clientHeight - top - 24, h = fig.offsetHeight;
+      if (h > room) fig.style.zoom = Math.max(0.55, room / h).toFixed(3);
+    });
+  }
+  window.addEventListener('resize', function () { if (dlg.open) { fit(); go(active, false); } });
 })();
 (function () {
   var fig = document.querySelector('.hero-shot.sb');

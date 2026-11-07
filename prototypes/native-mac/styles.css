@@ -844,6 +844,19 @@ dialog.feat-dlg::backdrop { background: rgba(10,10,14,.6); backdrop-filter: blur
 .feat-slide .dlg-body { padding: var(--s-7); }
 .feat-slide .feature, .feat-slide .feature-alt { padding: 0; background: none; }
 .feat-slide .wrap { padding: 0; max-width: none; }
+/* Compact slide header: title left, intro right, so the mockup below fits the slide (script.js shrinks it if needed). */
+.feat-slide .dlg-body { padding: var(--s-6) var(--s-7); }
+.feat-slide :is(.today-head, .agents-head, .section-head) { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: var(--s-6);
+  align-items: start; text-align: left; max-width: none; margin: 0 0 var(--s-5); }
+.feat-slide :is(.today-head, .agents-head, .section-head) > .eyebrow { grid-column: 1; margin-bottom: var(--s-2); }
+.feat-slide :is(.today-head, .agents-head, .section-head) > h2 { grid-column: 1; }
+.feat-slide :is(.today-head, .agents-head, .section-head) > p:not(.eyebrow) { grid-column: 2; grid-row: 1 / span 3; margin: 0; font-size: 16px; line-height: 1.55; }
+.feat-slide .agents-head > .agents-providers-wrap { grid-column: 1; grid-row: 3; margin-top: var(--s-4); align-items: flex-start; }
+.feat-slide .agents-providers-wrap .providers { justify-content: flex-start; margin-bottom: 0; }
+.feat-slide h2 { font-size: clamp(26px, 2.6vw, 34px); }
+.feat-slide .feature-copy h2 { margin-bottom: var(--s-3); }
+.feat-slide .feature-grid { align-items: start; }
+.feat-slide figure.stage { margin-top: 0; }
 .feat-nav { position: absolute; top: 50%; z-index: 2; width: 48px; height: 48px; margin-top: -24px; border-radius: 50%; border: 0; cursor: pointer;
   background: #fff; color: #17151f; font-size: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.3); transition: opacity .2s, transform .2s; }
 .feat-nav:hover:not(:disabled) { transform: scale(1.06); }
@@ -857,6 +870,8 @@ dialog.feat-dlg::backdrop { background: rgba(10,10,14,.6); backdrop-filter: blur
   .feat-track { gap: var(--s-2); }
   .feat-slide { border-radius: 20px; }
   .feat-slide .dlg-body { padding: var(--s-5) var(--s-4); }
+  .feat-slide :is(.today-head, .agents-head, .section-head) { grid-template-columns: 1fr; }
+  .feat-slide :is(.today-head, .agents-head, .section-head) > * { grid-column: 1 !important; grid-row: auto !important; }
   .feat-nav { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .bento-card, .bento-card .more, dialog.feat-dlg[open], .feat-slide { transition: none; animation: none; } }
