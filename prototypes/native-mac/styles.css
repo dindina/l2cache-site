@@ -393,6 +393,7 @@ h2 kbd { font-size: 0.62em; vertical-align: 0.12em; }
 .mock .win { box-shadow: var(--shot-shadow); }
 .today-mock { max-width: 760px; margin: 0 auto; }
 .mock.stage { margin: 0; min-width: 0; width: 100%; }
+.hero-shot.mock.stage { margin: var(--s-8) auto 0; }
 .context-mock { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-5); align-items: start; }
 #context .stage { --stage: var(--accent); margin-bottom: var(--s-7); }
 .mock-note { margin: var(--s-4) 0 0; text-align: center; color: var(--text-3); font-size: 13px; }
@@ -708,7 +709,7 @@ h2 kbd { font-size: 0.62em; vertical-align: 0.12em; }
   .nav-links.is-open { display: flex; }
   .nav-links a { display: block; padding: var(--s-3) 0; font-size: 17px; }
   .hero { padding-top: var(--s-8); }
-  .hero-shot { margin-top: var(--s-7); }
+  .hero-shot, .hero-shot.mock.stage { margin-top: var(--s-7); }
   .hero-shot img { border-radius: 10px; }
   .feature, .privacy { padding: var(--s-8) 0; }
   .today-points { grid-template-columns: 1fr; }
