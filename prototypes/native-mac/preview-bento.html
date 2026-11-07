@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>L2Cache — Bento layout preview</title>
+<meta content="L2Cache remembers your dev work on Mac: coding-agent sessions, terminal history, Git activity, screenshots and clipboard. Pick up where you left off." name="description"/>
+<link href="https://l2cache.app/" rel="canonical"/>
+<link href="https://l2cache.app/" hreflang="en" rel="alternate"/>
+<link href="https://l2cache.app/" hreflang="x-default" rel="alternate"/>
+<meta content="en_US" property="og:locale"/>
+<meta content="#f7f6f3" name="theme-color"/>
+<meta content="light" name="color-scheme"/>
+<meta content="website" property="og:type"/>
+<meta content="L2Cache" property="og:site_name"/>
+<meta content="https://l2cache.app/" property="og:url"/>
+<meta content="L2Cache — Pick up where you left off" property="og:title"/>
+<meta content="Developer memory for Mac. Your agent sessions, terminal, Git activity, screenshots and clipboard, connected and searchable on your Mac." property="og:description"/>
+<meta content="https://l2cache.app/img/og-home.jpg" property="og:image"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="The L2Cache Developer Home window showing Today, projects and items that need attention" property="og:image:alt"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="L2Cache — Pick up where you left off" name="twitter:title"/>
+<meta content="Developer memory for Mac. Agent sessions, terminal, Git, screenshots and clipboard, connected on your Mac." name="twitter:description"/>
+<meta content="https://l2cache.app/img/og-home.jpg" name="twitter:image"/>
+<link href="img/icon-64.png" rel="icon" type="image/png"/>
+<link href="img/icon-180.png" rel="apple-touch-icon"/>
+<link href="styles.css" rel="stylesheet"/>
+<script>document.documentElement.classList.add("js");</script>
+<script defer="" src="script.js"></script>
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://l2cache.app/#organization",
+        "name": "Amvotech",
+        "url": "https://l2cache.app/",
+        "logo": "https://l2cache.app/icon.png",
+        "sameAs": [
+          "https://apps.apple.com/us/app/l2cache/id6774423992"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://l2cache.app/#website",
+        "name": "L2Cache",
+        "url": "https://l2cache.app/",
+        "publisher": {
+          "@id": "https://l2cache.app/#organization"
+        },
+        "inLanguage": "en"
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://l2cache.app/#app",
+        "name": "L2Cache",
+        "description": "Developer memory for Mac. L2Cache connects coding-agent sessions, terminal history, Git activity, screenshots and clipboard content so you can pick up where you left off.",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "macOS 13 or later",
+        "url": "https://l2cache.app/",
+        "downloadUrl": "https://apps.apple.com/us/app/l2cache/id6774423992?mt=12",
+        "image": "https://l2cache.app/img/og-home.jpg",
+        "publisher": {
+          "@id": "https://l2cache.app/#organization"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "description": "Free download with a 15-day Pro trial and a one-time Pro unlock."
+        },
+        "screenshot": "https://l2cache.app/img/developer-home-2000.webp",
+        "featureList": [
+          "Pick up where you left off: resume coding-agent sessions",
+          "Coding-agent session history for Claude Code, Codex, GitHub Copilot, Grok Build and Google Antigravity",
+          "Project story and milestones from Git activity",
+          "Worklog with approximate hours per ticket",
+          "Terminal history with exit codes",
+          "Clipboard history and screenshot text search",
+          "MCP server and hooks for coding agents",
+          "Session context size, cache warnings and cold resume guard",
+          "On-device processing"
+        ]
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://l2cache.app/#webpage",
+        "url": "https://l2cache.app/",
+        "name": "L2Cache — Developer Memory for Mac",
+        "isPartOf": {
+          "@id": "https://l2cache.app/#website"
+        },
+        "about": {
+          "@id": "https://l2cache.app/#app"
+        },
+        "primaryImageOfPage": "https://l2cache.app/img/og-home.jpg",
+        "inLanguage": "en"
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://l2cache.app/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is L2Cache?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "L2Cache is developer memory for Mac. It connects your projects, coding-agent sessions, terminal history, Git activity, screenshots and clipboard content, so when you come back to your Mac you can see where you left off and resume the work."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is L2Cache a clipboard manager?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "It includes one. L2Cache started as a clipboard manager and still has searchable clipboard history with smart actions, opened with the ⌥Space quick panel. Version 2.0 adds the Developer Home, which brings clipboard, terminal, Git and coding-agent history together by project."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which coding agents does L2Cache read history from?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "L2Cache reads local session history from Claude Code, Codex, GitHub Copilot, Grok Build and Google Antigravity. Available details and live-continuity features vary by agent."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I resume a Claude Code or Codex session from L2Cache?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. L2Cache generates the resume command for supported sessions and can open it in your terminal. The agent's command-line tool and the original session must still be installed and available on your Mac."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can my coding agents use L2Cache directly?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Connect the L2Cache MCP server and agents such as Claude Code, Codex, Cursor and Antigravity can search your clipboard history, screenshots and saved folders themselves. Optional hooks for Claude Code, Codex, GitHub Copilot and Grok Build share your recent clipboard items and the previous session's context with each new session. Agents can also look up earlier sessions' fixes, decisions and work summaries. Both run on your Mac, and sensitive items are never shared."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Where is my history stored?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Your history is stored locally in L2Cache's database on your Mac. Smart features use on-device Apple Intelligence where your Mac supports it, a local Ollama model, or rule-based processing."
+            }
+          },
+          {
+          "@type": "Question",
+          "name": "Does L2Cache help with coding-agent token use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, for Claude Code and Codex. L2Cache shows each session's context size and whether its prompt cache is still warm, warns before a heavy session's cache expires, and can stop the first message to a Claude Code session whose cache has gone cold, so you can start fresh with a handoff instead of reloading the whole context."
+          }
+        },
+        {
+            "@type": "Question",
+            "name": "How much does L2Cache cost?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "L2Cache is a free download from the Mac App Store with a 15-day Pro trial. Pro is a one-time unlock with no subscription."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+<script>
+  (function() {
+    try {
+      var p = new URLSearchParams(window.location.search);
+      function showToast(text, bg) {
+        function show() {
+          var b = document.createElement('div');
+          b.style.cssText = 'position:fixed;bottom:24px;right:24px;background:' + bg + ';color:#ffffff;padding:12px 20px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,0.25);z-index:999999;transition:opacity 0.4s ease;pointer-events:none;';
+          b.textContent = text;
+          document.body.appendChild(b);
+          setTimeout(function() {
+            b.style.opacity = '0';
+            setTimeout(function() { b.remove(); }, 400);
+          }, 3500);
+        }
+        if (document.body) show(); else document.addEventListener('DOMContentLoaded', show);
+      }
+
+      var isExclude = p.get('me') === '1' || p.get('admin') === '1' || p.get('exclude') === '1' ||
+                      p.get('utm_source') === 'internal' || p.get('utm_source') === 'me' || p.get('utm_source') === 'admin';
+      var isInclude = p.get('include') === '1' || p.get('track') === '1';
+
+      if (isExclude) {
+        localStorage.setItem('va_exclude', '1');
+        document.cookie = 'va_admin=1; path=/; max-age=315360000; SameSite=Lax';
+        showToast('✓ Owner visits now excluded from Vercel Analytics', '#00a87f');
+      } else if (isInclude) {
+        localStorage.removeItem('va_exclude');
+        document.cookie = 'va_admin=; path=/; max-age=0';
+        showToast('✓ Analytics tracking re-enabled on this browser', '#2D2A5E');
+      }
+
+      window.toggleAnalytics = function() {
+        if (localStorage.getItem('va_exclude') === '1' || document.cookie.indexOf('va_admin=1') !== -1) {
+          localStorage.removeItem('va_exclude');
+          document.cookie = 'va_admin=; path=/; max-age=0';
+          showToast('✓ Analytics tracking re-enabled on this browser', '#2D2A5E');
+        } else {
+          localStorage.setItem('va_exclude', '1');
+          document.cookie = 'va_admin=1; path=/; max-age=315360000; SameSite=Lax';
+          showToast('✓ Owner visits now excluded from Vercel Analytics', '#00a87f');
+        }
+      };
+
+      // Keyboard shortcut (⌥ + ⇧ + A) to toggle exclusion
+      window.addEventListener('keydown', function(e) {
+        if (e.altKey && e.shiftKey && (e.key === 'A' || e.keyCode === 65)) {
+          window.toggleAnalytics();
+        }
+      });
+
+      // Triple-click on footer or copyright to toggle exclusion
+      document.addEventListener('DOMContentLoaded', function() {
+        var footers = document.querySelectorAll('footer, footer p, .footer-copy');
+        var count = 0, timer;
+        footers.forEach(function(el) {
+          el.style.cursor = 'pointer';
+          el.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A') return;
+            count++;
+            clearTimeout(timer);
+            if (count >= 3) {
+              count = 0;
+              window.toggleAnalytics();
+            } else {
+              timer = setTimeout(function() { count = 0; }, 600);
+            }
+          });
+        });
+      });
+
+      // Auto-localize App Store button & CNY pricing for Chinese visitors (Baidu, China Mac users)
+      var isZh = (navigator.language || navigator.userLanguage || '').toLowerCase().startsWith('zh');
+      if (isZh) {
+        document.addEventListener('DOMContentLoaded', function() {
+          document.querySelectorAll('a[href*="apps.apple.com/us/"]').forEach(function(a) {
+            a.href = a.href.replace('apps.apple.com/us/', 'apps.apple.com/cn/');
+            if (a.innerHTML.indexOf('$4.99') !== -1) {
+              a.innerHTML = a.innerHTML.replace(/\$4\.99/g, '¥38');
+            }
+          });
+        });
+      }
+
+      var hasCookie = document.cookie.indexOf('va_admin=1') !== -1;
+      if (hasCookie || localStorage.getItem('va_exclude') === '1' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        window.va = function() {};
+        return;
+      }
+    } catch(e) {}
+
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    var s = document.createElement('script');
+    s.defer = true;
+    s.src = '/_vercel/insights/script.js';
+    document.head.appendChild(s);
+  })();
+</script>
+
+<style>
+.bento-sec { padding: var(--s-9) 0; }
+.bento-sec .section-head { margin-bottom: var(--s-7); }
+.bento { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 300px; gap: var(--s-4); }
+.bento-card { --stage: var(--sc); position: relative; display: flex; flex-direction: column; overflow: hidden; text-align: left; font: inherit; color: inherit;
+  padding: var(--s-5) var(--s-5) 0; border-radius: var(--radius-lg, 24px); cursor: pointer; transition: transform .25s ease, box-shadow .25s ease; }
+.bento-card:hover { transform: translateY(-3px); box-shadow: var(--shot-shadow); }
+.bento-card:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.bento-card .eyebrow { color: var(--sc); margin: 0 0 var(--s-1); font-size: 14px; }
+.bento-card h3 { font-family: var(--font-display); font-size: 21px; line-height: 1.15; letter-spacing: -0.015em; margin: 0 0 var(--s-2); }
+.bento-card .line { color: var(--text-2); font-size: 15px; line-height: 1.45; margin: 0 0 var(--s-4); }
+.bento-card .more { position: absolute; top: var(--s-5); right: var(--s-5); width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text-2); font-size: 16px; transition: transform .25s; }
+.bento-card:hover .more { transform: rotate(90deg); color: var(--text); }
+.bento-shot { flex: 1; min-height: 0; overflow: hidden; pointer-events: none;
+  -webkit-mask-image: linear-gradient(#000 70%, transparent); mask-image: linear-gradient(#000 70%, transparent); }
+.bento-shot > * { width: 960px; zoom: var(--z, .5); margin: 0; padding: 0; background: none; border: 0; }
+.bento-shot .mock-note { display: none; }
+.b-today { grid-column: span 2; grid-row: span 2; }
+.b-agents { grid-column: span 2; }
+.b-projects { grid-column: span 2; }
+.b-today h3 { font-size: 28px; }
+dialog.bento-dlg { width: min(1100px, calc(100vw - 32px)); max-height: calc(100vh - 48px); padding: 0; border: 1px solid var(--border); border-radius: 24px; background: var(--bg); color: var(--text); box-shadow: 0 30px 80px rgba(0,0,0,.35); }
+dialog.bento-dlg::backdrop { background: rgba(10,10,14,.55); backdrop-filter: blur(4px); }
+.bento-dlg .dlg-body { padding: var(--s-7); }
+.bento-dlg .dlg-close { position: sticky; top: var(--s-4); float: right; margin: var(--s-4) var(--s-4) 0 0; z-index: 2; width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 18px; cursor: pointer; }
+.bento-dlg .feature, .bento-dlg .feature-alt { padding: 0; background: none; }
+.bento-dlg .wrap { padding: 0; max-width: none; }
+.bento-dlg[open] { animation: dlg-in .25s ease; }
+@keyframes dlg-in { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+@media (max-width: 900px) {
+  .bento { grid-template-columns: 1fr 1fr; grid-auto-rows: 260px; }
+  .b-today { grid-row: span 1; }
+}
+@media (max-width: 600px) {
+  .bento { grid-template-columns: 1fr; }
+  .b-today, .b-agents, .b-projects { grid-column: auto; }
+  .bento-dlg .dlg-body { padding: var(--s-5) var(--s-4); }
+}
+@media (prefers-reduced-motion: reduce) { .bento-card, .bento-card .more, .bento-dlg[open] { transition: none; animation: none; } }
+</style>
+<meta content="noindex" name="robots"/></head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+<nav aria-label="Main" class="nav wrap">
+<a aria-label="L2Cache home" class="brand" href="/">
+<img alt="" height="28" src="img/icon-144.webp" width="28"/>
+<span>L2Cache</span>
+</a>
+<button aria-controls="nav-links" aria-expanded="false" class="nav-toggle" type="button">
+<span class="sr-only">Menu</span>
+<svg aria-hidden="true" height="22" viewbox="0 0 24 24" width="22"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"></path></svg>
+</button>
+<ul class="nav-links" id="nav-links">
+<li><a href="#today">Today</a></li>
+<li><a href="#agents">Agents</a></li>
+<li><a href="#context">Context</a></li>
+<li><a href="#agent-tools">MCP &amp; Hooks</a></li>
+<li><a href="#projects">Projects</a></li>
+<li><a href="#search">Search</a></li>
+<li><a href="#clipboard">Clipboard</a></li>
+<li><a href="#privacy">Privacy</a></li>
+<li><a href="#pricing">Pricing</a></li>
+</ul>
+<a class="btn btn-small" href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12">Download</a>
+</nav>
+</header>
+<main id="main">
+<!-- Hero -->
+<section aria-labelledby="hero-title" class="hero">
+<div class="wrap hero-copy">
+<p class="eyebrow hero-eyebrow">Developer memory for Mac</p>
+<h1 id="hero-title">Pick up where you left off.</h1>
+<p class="lede">L2Cache connects your coding-agent sessions, terminal history, Git activity, screenshots and clipboard, so the thread of your work is waiting when you come back.</p>
+<div class="cta-row">
+<a class="btn btn-appstore" href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12">
+<svg aria-hidden="true" height="20" viewbox="0 0 24 24" width="20"><path d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.02-1.5-2.62-1.7-3.19-1.72-1.36-.14-2.65.8-3.34.8-.69 0-1.75-.78-2.88-.76-1.48.02-2.85.86-3.61 2.19-1.54 2.67-.39 6.62 1.11 8.79.73 1.06 1.6 2.25 2.75 2.2 1.1-.04 1.52-.71 2.85-.71 1.33 0 1.71.71 2.88.69 1.19-.02 1.94-1.08 2.67-2.14.84-1.23 1.19-2.42 1.21-2.48-.03-.01-2.31-.89-2.33-3.55zM14.18 6.13c.61-.74 1.02-1.76.91-2.78-.88.04-1.94.59-2.57 1.32-.56.65-1.06 1.7-.93 2.7.98.08 1.98-.5 2.59-1.24z" fill="currentColor"></path></svg>
+            Download on the Mac App Store
+          </a>
+<a class="btn btn-ghost" href="#today">See how it works</a>
+</div>
+<p class="fineprint">Free download · 15-day Pro trial · macOS 13 or later</p>
+</div>
+<figure class="wrap hero-shot stage mock">
+<div class="win">
+<div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">L2Cache — Developer Home</span></div>
+<div class="dh">
+<aside class="dh-side">
+<div class="dh-brand"><span class="l2">L2</span>L2Cache</div>
+<div class="search"><span>⌕ Search everything</span><span>⌘K</span></div>
+<span class="cap">Developer Home</span>
+<ul class="dh-nav">
+<li class="on">⌂ Today</li>
+<li>◷ Worklog</li>
+<li>▭ Projects</li>
+</ul>
+<span class="cap">Memory</span>
+<ul class="dh-nav">
+<li>⧉ Clipboard</li>
+<li>▤ Coding Agents</li>
+<li>›_ Terminal</li>
+<li>▣ Folders</li>
+</ul>
+<span class="cap">Projects</span>
+<ul class="dh-nav">
+<li><span class="pdot"></span>Atlas<span class="dim">2h ago</span></li>
+<li><span class="pdot nimbus"></span>Nimbus<span class="dim">5h ago</span></li>
+<li><span class="pdot relay"></span>Relay<span class="dim">1d ago</span></li>
+<li><span class="pdot lumen"></span>Lumen<span class="dim">1d ago</span></li>
+</ul>
+</aside>
+<div class="dh-main">
+<div class="dh-top">
+<span class="cap"><span class="green">●</span> Developer Home</span>
+<span class="btn-m">✦ Weekly Brief</span>
+<span class="btn-m">☰ Copy standup</span>
+</div>
+<div class="dh-stats">
+<div class="dh-stat"><b class="purple">5</b><span>commits</span></div>
+<div class="dh-stat"><b class="green">4</b><span>agent sessions</span></div>
+<div class="dh-stat"><b>5</b><span>milestones this week</span></div>
+<div class="dh-stat"><b>0</b><span>need attention</span></div>
+</div>
+<section class="dh-pick">
+<header><strong>Pick up where you left off</strong><span class="dim">Thu, Oct 22</span></header>
+<article class="dh-item">
+<span class="l2">AT<span class="ag">✳</span></span>
+<div>
+<strong>Auth token retry</strong>
+<span class="cap">You asked</span>
+<q>Background refresh still logs people out on a 401. Handle it, then get AuthRetryTests green.</q>
+<span class="cap">Last update</span>
+<div class="dh-update"><span class="ag-dot">✳</span><span>Background refresh handles 401s; one concurrency test still fails.</span></div>
+<div class="dh-commit"><span class="cap" style="margin:0">Commit</span><span class="mono dim">7b2a7f4</span><span class="badge-np">not pushed</span><span>Handle 401 during background refresh</span></div>
+<div class="dh-foot"><span class="muted">Full history ›</span><span class="chip mono">⑂ fix/ATL-142-auth-retry</span><span class="spacer"></span><span class="btn-m"><span class="ag-dot">✳</span>Copy resume command</span></div>
+</div>
+</article>
+<article class="dh-item">
+<span class="l2 ni">NI<span class="ag">✳</span></span>
+<div>
+<strong>Shell completions</strong>
+<span class="cap">You asked</span>
+<q>Generate shell completions for zsh and fish from the clap definitions.</q>
+<span class="cap">Last update</span>
+<div class="dh-update"><span class="ag-dot">✳</span><span>nimbus ships zsh and fish completions.</span></div>
+</div>
+</article>
+</section>
+<div class="dh-projects">
+<div class="dh-proj"><header><span class="l2 re">RE</span><div><strong>Relay</strong><br/><span class="dim">yesterday</span></div></header><p>Upgrade stripe-node to 17.2 and fix whatever breaks.</p></div>
+<div class="dh-proj"><header><span class="l2 lu">LU</span><div><strong>Lumen</strong><br/><span class="dim">2 days ago</span></div></header><p>Get the homepage launch-ready: hero copy, OG images and a sitemap.</p></div>
+<div class="dh-proj"><header><span class="l2">AT</span><div><strong>Atlas</strong><br/><span class="dim">4 days ago</span></div></header><p>Merge the streaks branch, bump to 1.3.2 and draft App Store release notes.</p></div>
+</div>
+</div>
+</div>
+</div>
+</figure>
+<div aria-label="What L2Cache remembers" class="wrap sources">
+<p class="sources-label">Built from what's already on your Mac</p>
+<ul class="sources-list">
+<li><span class="dot" style="--c: var(--c-agent)"></span>Coding-agent sessions</li>
+<li><span class="dot" style="--c: var(--c-term)"></span>Terminal history</li>
+<li><span class="dot" style="--c: var(--c-git)"></span>Git activity</li>
+<li><span class="dot" style="--c: var(--c-shot)"></span>Screenshots &amp; folders</li>
+<li><span class="dot" style="--c: var(--c-clip)"></span>Clipboard</li>
+</ul>
+</div>
+</section>
+<!-- Today -->
+<section aria-labelledby="features-title" class="bento-sec feature-alt" id="features"><div class="wrap"><div class="section-head"><p class="eyebrow">What's inside</p><h2 id="features-title">Seven ways back into your work.</h2><p>Seven parts of L2Cache. Open any card for the full story.</p></div><div class="bento"><button aria-haspopup="dialog" class="bento-card stage b-today" data-dlg="dlg-today" data-feature="today" style="--sc: var(--c-agent)" type="button"><span aria-hidden="true" class="more">+</span><p class="eyebrow">Today</p><h3>Your morning starts with context, not archaeology.</h3><p class="line">The last thing you were doing in every project, and the next step.</p><span aria-hidden="true" class="bento-shot"><figure class="stage today-stage mock">
+<div class="win today-mock">
+<div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">L2Cache — Today</span></div>
+<div class="win-body">
+<article class="pickup">
+<div class="pk-head">
+<div class="l2">AT<span class="ag">✳</span></div>
+<div class="pk-title"><strong>Auth token retry</strong><span>Claude Code · Atlas</span></div>
+<div class="pk-meta"><span class="green">◔ 132k</span><span class="amber">⚡ 49m</span></div>
+</div>
+<p class="pk-headline">Cheap to continue for 49 min.</p>
+<p class="pk-sub">After that, the next message reloads all of it.</p>
+<div class="pk-boxes">
+<div class="pk-box"><span class="ico green"><svg fill="none" stroke="currentColor" stroke-width="1.6" viewbox="0 0 16 22"><path d="M6 3a2 2 0 0 1 4 0v9.5a4 4 0 1 1-4 0z"></path><circle cx="8" cy="16" fill="currentColor" r="1.6"></circle><path d="M8 8v6.5"></path><path d="M12.5 5h2M12.5 8h2M12.5 11h2"></path></svg></span><div><div class="cap">Current session</div><div class="pk-num green">132k</div><div class="muted">Cached · 49 min left</div></div></div>
+</div>
+<div class="pk-actions"><span class="link-m">⧉ Copy /compact command</span><span class="dim">·</span><span class="link-m">✦ Start fresh with handoff</span></div>
+<div class="pk-recap">
+<div class="pk-recap-head"><span class="cap">Session recap</span><span>8 minutes ago</span></div>
+<dl class="pk-rows">
+<dt>Last user request</dt><dd>Background refresh still logs people out on a 401. Handle it, then get AuthRetryTests green.</dd>
+<dt>Last agent action</dt><dd>Background refresh handles 401s; one concurrency test still fails.</dd>
+<dt>Commit</dt><dd><span class="mono dim">7b2a7f4</span> <span class="badge-np">not pushed</span> Handle 401 during background refresh</dd>
+</dl>
+</div>
+<div class="pk-foot">
+<span class="muted">Full history ›</span>
+<span class="chip mono">⑂ fix/ATL-142-auth-retry</span>
+<span class="spacer"></span>
+<span class="btn-m"><span class="ag-dot">✳</span>Copy resume command</span>
+</div>
+</article>
+</div>
+</div>
+<figcaption class="mock-note">Example data</figcaption>
+</figure></span></button><button aria-haspopup="dialog" class="bento-card stage b-agents" data-dlg="dlg-agents" data-feature="agents" style="--sc: var(--stage-teal)" type="button"><span aria-hidden="true" class="more">+</span><p class="eyebrow">Coding agents</p><h3>Your coding agents finally have a history.</h3><p class="line">Claude Code, Codex, Copilot, Grok and Antigravity history by project.</p><span aria-hidden="true" class="bento-shot"><figure class="stage agents-stage mock">
+<div class="win">
+<div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">L2Cache — Coding Agents</span></div>
+<div class="win-body tight">
+<div class="hist">
+<aside class="hist-side">
+<div class="cap">Projects</div>
+<ul>
+<li class="on"><span>Atlas</span><span class="dim">14</span></li>
+<li><span>Nimbus</span><span class="dim">6</span></li>
+<li><span>Relay</span><span class="dim">8</span></li>
+<li><span>Lumen</span><span class="dim">3</span></li>
+</ul>
+<div class="cap">Agents</div>
+<ul>
+<li><span><span class="ag-dot">✳</span> Claude Code</span><span class="dim">24</span></li>
+<li><span><span class="ag-dot codex">◎</span> Codex</span><span class="dim">7</span></li>
+</ul>
+</aside>
+<div class="hist-list">
+<div class="search">⌕ Search sessions, files, errors…</div>
+<div class="hist-day cap">Today</div>
+<div class="hist-row on"><strong>Auth token retry</strong><div class="meta"><span class="ag-dot">✳</span>132k · 2h 10m <span class="chip sm warm">warm</span></div></div>
+<div class="hist-row"><strong>Shell completions</strong><div class="meta"><span class="ag-dot codex">◎</span>41k · 35m <span class="chip sm">done</span></div></div>
+<div class="hist-day cap older">Yesterday</div>
+<div class="hist-row older"><strong>Stripe-node 17.2 upgrade</strong><div class="meta"><span class="ag-dot">✳</span>88k · 1h 05m <span class="chip sm cold">cold</span></div></div>
+<div class="hist-row older"><strong>Homepage launch ready</strong><div class="meta"><span class="ag-dot">✳</span>63k · 50m <span class="chip sm cold">cold</span></div></div>
+</div>
+<div class="conv">
+<div class="conv-head">
+<strong>Auth token retry</strong>
+<span class="chip mono">⑂ fix/ATL-142-auth-retry</span>
+<span class="chip">3 files</span>
+<span class="chip">2 commits</span>
+</div>
+<div class="msg user">Background refresh still logs people out on a 401. Handle it, then get AuthRetryTests green.</div>
+<div class="msg agent">
+                    I'll update the refresh handler to retry once on 401 before revoking the session.
+                    <div style="margin-top:8px">
+<div class="tool"><span class="purple">✎</span><b>Edit</b> Sources/Atlas/Auth/TokenManager.swift <span class="green">+38</span> <span class="red">−6</span></div>
+<div class="tool"><span class="purple">✎</span><b>Edit</b> Tests/AtlasTests/AuthRetryTests.swift <span class="green">+44</span> <span class="red">−2</span></div>
+<div class="tool"><span class="purple">›</span><b>Bash</b> swift test --filter AuthRetryTests <span class="st fail" style="margin-left:4px">1 failed</span></div>
+</div>
+</div>
+<div class="msg user">Add the concurrency test too so we don't race in-flight refreshes.</div>
+<div class="msg agent">Background refresh handles 401s; one concurrency test still fails.</div>
+<div class="commit-line"><span class="purple">⑂</span><span class="mono dim">7b2a7f4</span><span>Handle 401 during background refresh</span><span class="badge-np">not pushed</span></div>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="mock-note">Example data</figcaption>
+</figure></span></button><button aria-haspopup="dialog" class="bento-card stage b-context" data-dlg="dlg-context" data-feature="context" style="--sc: var(--accent)" type="button"><span aria-hidden="true" class="more">+</span><p class="eyebrow">Context &amp; cost</p><h3>Know before a session gets expensive.</h3><p class="line">Context size and cache state on every session, with warnings first.</p><span aria-hidden="true" class="bento-shot"><figure class="stage mock">
+<div class="context-mock">
+<div class="win">
+<div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">L2Cache — Today</span></div>
+<div class="win-body">
+<article class="pickup">
+<div class="pk-head">
+<div class="l2">AT<span class="ag">✳</span></div>
+<div class="pk-title"><strong>Auth token retry</strong><span>Claude Code · Atlas</span></div>
+<div class="pk-meta"><span class="green">◔ 132k</span><span class="blue">❄ Cold cache</span></div>
+</div>
+<p class="pk-headline">A fresh session could save you from carrying unnecessary context.</p>
+<p class="pk-sub">Your previous context cache has expired. Continue with a focused handoff instead of reloading the entire conversation.</p>
+<div class="pk-boxes two">
+<div class="pk-box"><span class="ico amber"><svg fill="none" stroke="currentColor" stroke-width="1.6" viewbox="0 0 16 22"><path d="M6 3a2 2 0 0 1 4 0v9.5a4 4 0 1 1-4 0z"></path><circle cx="8" cy="16" fill="currentColor" r="1.6"></circle><path d="M8 8v6.5"></path><path d="M12.5 5h2M12.5 8h2M12.5 11h2"></path></svg></span><div><div class="cap">Current session</div><div class="pk-num hot">132k</div><div class="muted">Cache expired</div></div></div>
+<span class="pk-arrow">→</span>
+<div class="pk-box"><span class="ico green">⚡</span><div><div class="cap">Fresh + handoff</div><div class="pk-num green">42k</div><div class="muted">Estimated starting context</div></div></div>
+</div>
+<div style="margin-top:16px"><span class="btn-m primary block">✦ Start Fresh with L2Cache Handoff</span></div>
+</article>
+</div>
+</div>
+<div class="win">
+<div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">~/Projects/Atlas — claude</span></div>
+<div class="term"><span class="p">~/Projects/Atlas $</span> <span class="you">claude --resume</span>
+<span class="dim">Resumed "Auth token retry" · last active 9 h ago</span>
+<span class="sys"><b>Cold cache at 09:12</b> — this session's cache expired 9 h ago.
+Your next message reloads 132k tokens (≈ 20× a warm turn).
+Cheaper: type /clear — L2Cache starts a fresh session with this session's handoff.</span>
+<span class="you">&gt; fix the concurrency race in AuthRetryTests</span>
+<span class="blk">L2Cache stopped this message so it doesn't reload 132k tokens.
+• /clear — fresh session with the handoff (recommended)
+• Press ↑ and Enter to send it anyway</span>
+<span class="you">&gt; /clear</span>
+<span class="sys ok">Started fresh with the handoff from "Auth token retry".</span>
+<span class="dim">◔ context 42k · cache warm</span></div>
+</div>
+</div>
+<figcaption class="mock-note">Example data</figcaption>
+</figure></span></button><button aria-haspopup="dialog" class="bento-card stage b-agent-tools" data-dlg="dlg-agent-tools" data-feature="agent-tools" style="--sc: var(--c-term)" type="button"><span aria-hidden="true" class="more">+</span><p class="eyebrow">MCP &amp; Hooks</p><h3>Your agents can ask L2Cache, and L2Cache briefs them.</h3><p class="line">Agents look things up in L2Cache, and every session starts briefed.</p><span aria-hidden="true" class="bento-shot"><div class="bridge-grid">
+<article class="bridge-card">
+<p class="bridge-kicker"><span class="bridge-badge">MCP server</span> Agents ask L2Cache</p>
+<h3>“Use the query I copied this morning” just works.</h3>
+<p>Connect the L2Cache MCP server and your agent looks things up itself, instead of you pasting them in: what you copied, and earlier sessions' fixes, decisions and summaries, so a fresh session starts without losing the thread.</p>
+<ul aria-label="L2Cache MCP tools" class="tool-chips">
+<li><code>search_clips</code></li>
+<li><code>get_recent_clips</code></li>
+<li><code>get_clip</code></li>
+<li><code>search_screenshots</code></li>
+<li><code>search_memory_folders</code></li>
+<li><code>get_recovery_point</code></li>
+<li><code>search_agent_history</code></li>
+<li><code>get_session_summary</code></li>
+<li><code>get_error_resolutions</code></li>
+<li><code>get_decisions</code></li>
+<li><code>get_agent_event</code></li>
+</ul>
+<p class="bridge-foot">Works with Claude Code, Claude desktop, Codex, Cursor and Antigravity. Queries run on your Mac, and sensitive items such as passwords and keys are never returned.</p>
+</article>
+<article class="bridge-card">
+<p class="bridge-kicker"><span class="bridge-badge">Hooks</span> L2Cache briefs your agents</p>
+<h3>Every session starts briefed.</h3>
+<ul class="points">
+<li><strong>Recent clipboard.</strong> What you copied in the last 30 minutes rides along with your prompt.</li>
+<li><strong>Session handoff.</strong> A new session picks up where the last one stopped.</li>
+<li><strong>Edits and failed commands.</strong> Recorded every turn, so Your Day and Worklog stay accurate.</li>
+<li><strong>Fixes remembered.</strong> When a copied error is fixed and verified, the fix is saved for next time.</li>
+<li><strong>Work summaries.</strong> A one-line summary of each finished change feeds Your Day.</li>
+<li><strong>Cold resume guard.</strong> Claude Code warns you before your first message to a session whose cache has expired.</li>
+</ul>
+<p class="bridge-foot">For Claude Code, Codex, GitHub Copilot and Grok Build. You turn each agent on in Settings; nothing is installed until you do.</p>
+</article>
+</div></span></button><button aria-haspopup="dialog" class="bento-card stage b-projects" data-dlg="dlg-projects" data-feature="projects" style="--sc: var(--c-git)" type="button"><span aria-hidden="true" class="more">+</span><p class="eyebrow">Projects</p><h3>Every project keeps its story.</h3><p class="line">Commits, sessions, tests and releases on one timeline per project.</p><span aria-hidden="true" class="bento-shot"><figure class="stage mock">
+<div class="mock-stack">
+<div class="win">
+<div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">L2Cache — Projects › Atlas</span></div>
+<div class="win-body">
+<div class="proj-head">
+<div class="proj-av">AT</div>
+<div><strong>Atlas</strong><span class="mono dim">~/Projects/Atlas</span></div>
+<span class="spacer"></span>
+<span class="btn-m primary"><span class="ag-dot">✳</span>Copy resume command</span>
+</div>
+<div class="insight">
+<span class="purple">✓</span>
+<div><span class="cap">Recommended</span><strong>Test failing after 7b2a7f4</strong><span class="dim ell" style="display:block;font-size:12px">7b2a7f4 Handle 401 during background refresh</span></div>
+<span class="btn-m primary"><span class="ag-dot">✳</span>Ask Claude to fix</span>
+</div>
+<div class="proj-cards">
+<div class="pc">
+<span class="cap amber">● Work at risk</span>
+<strong>3 commits only on this Mac</strong>
+<div class="crow"><span class="mono">7b2a7f4</span><span class="ell">Handle 401 during background refresh</span></div>
+<div class="crow"><span class="mono">d4844ad</span><span class="ell">Add AuthRetryTests for expired tokens</span></div>
+<div class="crow"><span class="mono">0167140</span><span class="ell">Retry token refresh once (ATL-142)</span></div>
+</div>
+<div class="pc">
+<span class="cap green">● Last known good</span>
+<strong>Tests passed at b6afd48 · 4 days ago</strong>
+<div class="crow"><span class="green">✓</span><span>48 passed</span></div>
+<div class="crow"><span class="mono">b6afd48</span><span class="ell">Bump version to 1.3.2</span></div>
+<div class="crow"><span class="dim">+ 4 commits since</span></div>
+</div>
+</div>
+<div class="miles">
+<div class="miles-row"><span class="cap amber">Blocked</span><span class="ell">ATL-142 auth retry — tests failing</span><span class="dim">3 h ago</span></div>
+<div class="miles-row"><span class="cap chip-g">Released</span><span class="ell">Tagged v1.3.2</span><span class="dim">4 d ago</span></div>
+<div class="miles-row"><span class="cap purple">Merged</span><span class="ell">ATL-131 streaks — merged</span><span class="dim">4 d ago</span></div>
+</div>
+</div>
+</div>
+<div class="win">
+<div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">L2Cache — Worklog › Timesheet</span></div>
+<div class="win-body">
+<div class="wl-stats">
+<div class="wl-stat"><span class="cap">This week</span><b class="purple">2.75 h</b></div>
+<div class="wl-stat"><span class="cap">Tickets</span><b>3</b></div>
+<div class="wl-stat"><span class="cap">On tickets</span><b>82%</b></div>
+</div>
+<div class="wl-grid">
+<span class="h">Work</span><span class="h">Mon</span><span class="h">Tue</span><span class="h">Wed</span><span class="h on">Thu</span><span class="h">Fri</span><span class="h">Total</span>
+<span class="wl-work"><span class="pdot"></span><b>ATL-142</b><span class="badge blocked">Blocked</span></span><span class="wl-cell">–</span><span class="wl-cell h1">0.25</span><span class="wl-cell h2">0.75</span><span class="wl-cell h1">0.5</span><span class="wl-cell">–</span><span class="wl-cell tot">1.5</span>
+<span class="wl-work"><span class="pdot lumen"></span><b>LUM-31</b><span class="badge prog">In progress</span></span><span class="wl-cell">–</span><span class="wl-cell">–</span><span class="wl-cell h2">0.5</span><span class="wl-cell">–</span><span class="wl-cell">–</span><span class="wl-cell tot">0.5</span>
+<span class="wl-work"><span class="pdot"></span><b>ATL-131</b><span class="badge merged">Merged</span></span><span class="wl-cell h1">0.25</span><span class="wl-cell">–</span><span class="wl-cell">–</span><span class="wl-cell">–</span><span class="wl-cell">–</span><span class="wl-cell tot">0.25</span>
+<span class="wl-work"><span class="pdot relay"></span><span class="muted ell">Other work · Relay</span></span><span class="wl-cell">–</span><span class="wl-cell">–</span><span class="wl-cell h2">0.5</span><span class="wl-cell">–</span><span class="wl-cell">–</span><span class="wl-cell tot">0.5</span>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="mock-note">Example data</figcaption>
+</figure></span></button><button aria-haspopup="dialog" class="bento-card stage b-search" data-dlg="dlg-search" data-feature="search" style="--sc: var(--c-shot)" type="button"><span aria-hidden="true" class="more">+</span><p class="eyebrow">Search</p><h3>Find the thread with <kbd>⌘</kbd><kbd>K</kbd>.</h3><p class="line">One ⌘K search across everything you did.</p><span aria-hidden="true" class="bento-shot"><figure class="stage shot-narrow mock">
+<div class="win">
+<div class="cmdk-input"><span class="dim">⌕</span><span>token refresh</span><span class="caret"></span></div>
+<div class="cmdk-filters"><span class="chip on">All</span><span class="chip">Clips</span><span class="chip">Agents</span><span class="chip">Terminal</span><span class="chip">Commits</span><span class="chip">Screenshots</span></div>
+<div class="res-group cap">Best match</div>
+<div class="res on"><span class="ico-k">▤</span><div><strong>Make the <mark>token refresh</mark> retry once before logging the user out.</strong><span class="sub">Agent session · Retry token refresh once before logout · yesterday</span></div><span class="ptag"><span class="pdot"></span>Atlas</span></div>
+<div class="res-group cap">Clips</div>
+<div class="res"><span class="ico-k">⧉</span><div><strong>Refresh token revoked error</strong><span class="sub">Xcode · yesterday</span></div></div>
+<div class="res"><span class="ico-k">⧉</span><div><strong>Coalesce in-flight <mark>token refresh</mark></strong><span class="sub">Safari · 3 hours ago</span></div></div>
+<div class="res-group cap">Screenshots</div>
+<div class="res"><span class="ico-k">▣</span><div><strong>AuthRetryTests — testConcurrentRefresh failed</strong><span class="sub">Text found in screenshot · 3 hours ago</span></div><span class="ptag"><span class="pdot"></span>Atlas</span></div>
+<div class="res-group cap">Terminal</div>
+<div class="res"><span class="ico-k">›_</span><div><strong class="mono" style="font-size:12.5px">curl -s -X POST https://api.atlas.app/oauth/token -d grant_type=refresh_token</strong><span class="sub">~/Projects/Atlas · 4 hours ago</span></div><span class="ptag"><span class="pdot"></span>Atlas</span></div>
+</div>
+<figcaption class="mock-note">Example data</figcaption>
+</figure></span></button><button aria-haspopup="dialog" class="bento-card stage b-clipboard" data-dlg="dlg-clipboard" data-feature="clipboard" style="--sc: var(--c-clip)" type="button"><span aria-hidden="true" class="more">+</span><p class="eyebrow">Clipboard</p><h3>Everything you copied and ran, by project.</h3><p class="line">Every clip and command, filed under the project it came from.</p><span aria-hidden="true" class="bento-shot"><figure class="stage mock">
+<div class="mock-stack">
+<div class="win">
+<div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">L2Cache — Clipboard</span></div>
+<div class="hsearch">⌕ Search clipboard…</div>
+<div class="hfilters"><span class="chip on">All projects</span><span class="chip"><span class="pdot"></span>Atlas</span><span class="chip"><span class="pdot relay"></span>Relay</span><span class="chip"><span class="pdot lumen"></span>Lumen</span><span class="chip"><span class="pdot nimbus"></span>Nimbus</span></div>
+<div class="hgroup cap">Pinned</div>
+<div class="clip pin"><span class="clip-ico code">&lt;/&gt;</span><div><strong><span>Coalesce in-flight token refresh</span><span class="kind code">Code</span></strong><span class="sub">func refresh() async throws -&gt; Token {</span></div><span class="pdot"></span><span class="when">2h ago</span></div>
+<div class="hgroup cap">Recent</div>
+<div class="clip"><span class="clip-ico cmd">›_</span><div><strong><span>Install zsh completions</span><span class="kind cmd">Command</span></strong><span class="sub">nimbus completions zsh &gt; ~/.zfunc/_nimbus</span></div><span class="pdot nimbus"></span><span class="when">4h ago</span></div>
+<div class="clip"><span class="clip-ico uuid">UUID</span><div><strong><span>Test user id</span></strong><span class="sub">9b1d2f4e-6a0c-4f7b-9d2e-31c5a8e7f0b6</span></div><span class="pdot"></span><span class="when">6h ago</span></div>
+<div class="clip"><span class="clip-ico text">!</span><div><strong><span>Refresh token revoked error</span></strong><span class="sub">AuthError.refreshTokenRevoked: the refresh token was revoked</span></div><span class="pdot"></span><span class="when">23h ago</span></div>
+<div class="clip"><span class="clip-ico url">↗</span><div><strong><span class="purple">github.com</span></strong><span class="sub">https://github.com/alexrivera/lumen/pull/31</span></div><span class="pdot lumen"></span><span class="when">Yesterday</span></div>
+</div>
+<div class="win">
+<div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">L2Cache — Terminal</span></div>
+<div class="hsearch">⌕ Search commands…</div>
+<div class="hfilters"><span class="chip on">My Shell</span><span class="chip">Agents</span><span class="chip">All</span></div>
+<div class="hgroup cap">Today</div>
+<div class="trow"><span class="pdot"></span><div><code>xcodebuild test -scheme Atlas -only-testing:AtlasTests/AuthRetryTests</code><span class="sub">Run AuthRetryTests</span></div><span class="st fail">× 65</span><span class="t">1:21 PM</span></div>
+<div class="trow"><span class="pdot"></span><div><code>git diff --stat main...fix/ATL-142-auth-retry</code></div><span class="st ok">✓</span><span class="t">12:45 PM</span></div>
+<div class="trow"><span class="pdot nimbus"></span><div><code>cargo clippy -- -D warnings</code></div><span class="st ok">✓</span><span class="t">10:45 AM</span></div>
+<div class="hgroup cap">Yesterday</div>
+<div class="trow"><span class="pdot relay"></span><div><code>npx tsc --noEmit</code><span class="sub">Type-check after the Stripe upgrade</span></div><span class="st fail">× 2</span><span class="t">10:51 AM</span></div>
+<div class="trow"><span class="pdot lumen"></span><div><code>npm run dev -- --port 4321</code></div><span class="st ok">✓</span><span class="t">8:51 AM</span></div>
+</div>
+</div>
+<figcaption class="mock-note">Example data</figcaption>
+</figure></span></button></div></div><dialog aria-label="Today" class="bento-dlg" id="dlg-today"><button aria-label="Close" class="dlg-close">✕</button><div class="dlg-body"><section aria-labelledby="today-title" class="feature today-showcase" id="today">
+<div class="wrap">
+<div class="today-head">
+<p class="eyebrow">Today</p>
+<h2 id="today-title">Your morning starts with context, not archaeology.</h2>
+<p class="lead">Open L2Cache and Today shows the last thing you were doing in every project: what you asked your agent, what it finished, and the one step that comes next.</p>
+</div>
+<figure class="stage today-stage mock">
+<div class="win today-mock">
+<div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">L2Cache — Today</span></div>
+<div class="win-body">
+<article class="pickup">
+<div class="pk-head">
+<div class="l2">AT<span class="ag">✳</span></div>
+<div class="pk-title"><strong>Auth token retry</strong><span>Claude Code · Atlas</span></div>
+<div class="pk-meta"><span class="green">◔ 132k</span><span class="amber">⚡ 49m</span></div>
+</div>
+<p class="pk-headline">Cheap to continue for 49 min.</p>
+<p class="pk-sub">After that, the next message reloads all of it.</p>
+<div class="pk-boxes">
+<div class="pk-box"><span class="ico green"><svg fill="none" stroke="currentColor" stroke-width="1.6" viewbox="0 0 16 22"><path d="M6 3a2 2 0 0 1 4 0v9.5a4 4 0 1 1-4 0z"></path><circle cx="8" cy="16" fill="currentColor" r="1.6"></circle><path d="M8 8v6.5"></path><path d="M12.5 5h2M12.5 8h2M12.5 11h2"></path></svg></span><div><div class="cap">Current session</div><div class="pk-num green">132k</div><div class="muted">Cached · 49 min left</div></div></div>
+</div>
+<div class="pk-actions"><span class="link-m">⧉ Copy /compact command</span><span class="dim">·</span><span class="link-m">✦ Start fresh with handoff</span></div>
+<div class="pk-recap">
+<div class="pk-recap-head"><span class="cap">Session recap</span><span>8 minutes ago</span></div>
+<dl class="pk-rows">
+<dt>Last user request</dt><dd>Background refresh still logs people out on a 401. Handle it, then get AuthRetryTests green.</dd>
+<dt>Last agent action</dt><dd>Background refresh handles 401s; one concurrency test still fails.</dd>
+<dt>Commit</dt><dd><span class="mono dim">7b2a7f4</span> <span class="badge-np">not pushed</span> Handle 401 during background refresh</dd>
+</dl>
+</div>
+<div class="pk-foot">
+<span class="muted">Full history ›</span>
+<span class="chip mono">⑂ fix/ATL-142-auth-retry</span>
+<span class="spacer"></span>
+<span class="btn-m"><span class="ag-dot">✳</span>Copy resume command</span>
+</div>
+</article>
+</div>
+</div>
+<figcaption class="mock-note">Example data</figcaption>
+</figure>
+<ul class="today-points">
+<li><strong>You were working on.</strong><span>The goal of your last agent session, in your own words.</span></li>
+<li><strong>Last update.</strong><span>What the agent reported before you stopped.</span></li>
+<li><strong>Resume.</strong><span>Reopen the session in the agent you were using, in one click.</span></li>
+<li><strong>Needs attention.</strong><span>Failed runs, unpushed commits and branches pushed but never merged.</span></li>
+</ul>
+</div>
+</section></div></dialog><dialog aria-label="Coding agents" class="bento-dlg" id="dlg-agents"><button aria-label="Close" class="dlg-close">✕</button><div class="dlg-body"><section aria-labelledby="agents-title" class="feature feature-alt agents-showcase" id="agents">
+<div class="wrap">
+<div class="agents-head">
+<p class="eyebrow">Coding agents</p>
+<h2 id="agents-title">Your coding agents finally have a history.</h2>
+<p class="lead">Every agent keeps its sessions in a different place and format. L2Cache reads your Claude Code session history and Codex session history, plus Copilot, Grok Build and Antigravity, from your Mac and lays it out by project and branch. A conversation from last Tuesday is a search away, and you can resume Claude Code or Codex right where it stopped.</p>
+<div class="agents-providers-wrap">
+<span class="providers-label">Session history from</span>
+<ul class="providers">
+<li>Claude Code</li>
+<li>Codex</li>
+<li>GitHub Copilot</li>
+<li>Grok Build</li>
+<li>Google Antigravity</li>
+</ul>
+</div>
+</div>
+<figure class="stage agents-stage mock">
+<div class="win">
+<div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">L2Cache — Coding Agents</span></div>
+<div class="win-body tight">
+<div class="hist">
+<aside class="hist-side">
+<div class="cap">Projects</div>
+<ul>
+<li class="on"><span>Atlas</span><span class="dim">14</span></li>
+<li><span>Nimbus</span><span class="dim">6</span></li>
+<li><span>Relay</span><span class="dim">8</span></li>
+<li><span>Lumen</span><span class="dim">3</span></li>
+</ul>
+<div class="cap">Agents</div>
+<ul>
+<li><span><span class="ag-dot">✳</span> Claude Code</span><span class="dim">24</span></li>
+<li><span><span class="ag-dot codex">◎</span> Codex</span><span class="dim">7</span></li>
+</ul>
+</aside>
+<div class="hist-list">
+<div class="search">⌕ Search sessions, files, errors…</div>
+<div class="hist-day cap">Today</div>
+<div class="hist-row on"><strong>Auth token retry</strong><div class="meta"><span class="ag-dot">✳</span>132k · 2h 10m <span class="chip sm warm">warm</span></div></div>
+<div class="hist-row"><strong>Shell completions</strong><div class="meta"><span class="ag-dot codex">◎</span>41k · 35m <span class="chip sm">done</span></div></div>
+<div class="hist-day cap older">Yesterday</div>
+<div class="hist-row older"><strong>Stripe-node 17.2 upgrade</strong><div class="meta"><span class="ag-dot">✳</span>88k · 1h 05m <span class="chip sm cold">cold</span></div></div>
+<div class="hist-row older"><strong>Homepage launch ready</strong><div class="meta"><span class="ag-dot">✳</span>63k · 50m <span class="chip sm cold">cold</span></div></div>
+</div>
+<div class="conv">
+<div class="conv-head">
+<strong>Auth token retry</strong>
+<span class="chip mono">⑂ fix/ATL-142-auth-retry</span>
+<span class="chip">3 files</span>
+<span class="chip">2 commits</span>
+</div>
+<div class="msg user">Background refresh still logs people out on a 401. Handle it, then get AuthRetryTests green.</div>
+<div class="msg agent">
+                    I'll update the refresh handler to retry once on 401 before revoking the session.
+                    <div style="margin-top:8px">
+<div class="tool"><span class="purple">✎</span><b>Edit</b> Sources/Atlas/Auth/TokenManager.swift <span class="green">+38</span> <span class="red">−6</span></div>
+<div class="tool"><span class="purple">✎</span><b>Edit</b> Tests/AtlasTests/AuthRetryTests.swift <span class="green">+44</span> <span class="red">−2</span></div>
+<div class="tool"><span class="purple">›</span><b>Bash</b> swift test --filter AuthRetryTests <span class="st fail" style="margin-left:4px">1 failed</span></div>
+</div>
+</div>
+<div class="msg user">Add the concurrency test too so we don't race in-flight refreshes.</div>
+<div class="msg agent">Background refresh handles 401s; one concurrency test still fails.</div>
+<div class="commit-line"><span class="purple">⑂</span><span class="mono dim">7b2a7f4</span><span>Handle 401 during background refresh</span><span class="badge-np">not pushed</span></div>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="mock-note">Example data</figcaption>
+</figure>
+<ul class="agents-points">
+<li><strong>Resume.</strong><span>Copy or run the resume command for a supported session. The agent's CLI and the original session need to be available.</span></li>
+<li><strong>Handoff.</strong><span>Live capture and session handoff for Claude Code, Codex, GitHub Copilot and Grok Build.</span></li>
+<li><strong>Plans and skills.</strong><span>Browse plans from Claude Code and Antigravity, and installed skills and their use from Claude Code and Codex.</span></li>
+</ul>
+<p class="disclosure text-center">Available details and live-continuity features vary by agent.</p>
+</div>
+</section></div></dialog><dialog aria-label="Context &amp; cost" class="bento-dlg" id="dlg-context"><button aria-label="Close" class="dlg-close">✕</button><div class="dlg-body"><section aria-labelledby="context-title" class="feature agent-bridge" id="context">
+<div class="wrap">
+<div class="section-head">
+<p class="eyebrow">Context &amp; cost</p>
+<h2 id="context-title">Know before a session gets expensive.</h2>
+<p>Long agent sessions cost more with every turn, and resuming one after its prompt cache has expired reloads the whole context instead of reading it from cache. L2Cache shows where each session stands and warns you first.</p>
+</div>
+<figure class="stage mock">
+<div class="context-mock">
+<div class="win">
+<div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">L2Cache — Today</span></div>
+<div class="win-body">
+<article class="pickup">
+<div class="pk-head">
+<div class="l2">AT<span class="ag">✳</span></div>
+<div class="pk-title"><strong>Auth token retry</strong><span>Claude Code · Atlas</span></div>
+<div class="pk-meta"><span class="green">◔ 132k</span><span class="blue">❄ Cold cache</span></div>
+</div>
+<p class="pk-headline">A fresh session could save you from carrying unnecessary context.</p>
+<p class="pk-sub">Your previous context cache has expired. Continue with a focused handoff instead of reloading the entire conversation.</p>
+<div class="pk-boxes two">
+<div class="pk-box"><span class="ico amber"><svg fill="none" stroke="currentColor" stroke-width="1.6" viewbox="0 0 16 22"><path d="M6 3a2 2 0 0 1 4 0v9.5a4 4 0 1 1-4 0z"></path><circle cx="8" cy="16" fill="currentColor" r="1.6"></circle><path d="M8 8v6.5"></path><path d="M12.5 5h2M12.5 8h2M12.5 11h2"></path></svg></span><div><div class="cap">Current session</div><div class="pk-num hot">132k</div><div class="muted">Cache expired</div></div></div>
+<span class="pk-arrow">→</span>
+<div class="pk-box"><span class="ico green">⚡</span><div><div class="cap">Fresh + handoff</div><div class="pk-num green">42k</div><div class="muted">Estimated starting context</div></div></div>
+</div>
+<div style="margin-top:16px"><span class="btn-m primary block">✦ Start Fresh with L2Cache Handoff</span></div>
+</article>
+</div>
+</div>
+<div class="win">
+<div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">~/Projects/Atlas — claude</span></div>
+<div class="term"><span class="p">~/Projects/Atlas $</span> <span class="you">claude --resume</span>
+<span class="dim">Resumed "Auth token retry" · last active 9 h ago</span>
+<span class="sys"><b>Cold cache at 09:12</b> — this session's cache expired 9 h ago.
+Your next message reloads 132k tokens (≈ 20× a warm turn).
+Cheaper: type /clear — L2Cache starts a fresh session with this session's handoff.</span>
+<span class="you">&gt; fix the concurrency race in AuthRetryTests</span>
+<span class="blk">L2Cache stopped this message so it doesn't reload 132k tokens.
+• /clear — fresh session with the handoff (recommended)
+• Press ↑ and Enter to send it anyway</span>
+<span class="you">&gt; /clear</span>
+<span class="sys ok">Started fresh with the handoff from "Auth token retry".</span>
+<span class="dim">◔ context 42k · cache warm</span></div>
+</div>
+</div>
+<figcaption class="mock-note">Example data</figcaption>
+</figure>
+<div class="bridge-grid">
+<article aria-labelledby="context-see-title" class="bridge-card">
+<p class="bridge-kicker"><span class="bridge-badge">Pickup card</span> See where a session stands</p>
+<h3 id="context-see-title">Size and cache state on every session.</h3>
+<ul class="points">
+<li><strong>Context at a glance.</strong> Each Claude Code and Codex session shows its context size, marked Light, Heavy or Very heavy, and whether its prompt cache is still warm.</li>
+<li><strong>Start fresh or compact.</strong> One click copies a handoff for a fresh session, or a <code>/compact</code> command with a focus line you can edit.</li>
+<li><strong>Where your tokens go.</strong> A breakdown of your agents' token use, with cache advice based on your own cache misses.</li>
+<li><strong>Your context audit.</strong> Setup shows your cold resumes from the last 30 days, counted in tokens.</li>
+</ul>
+<p class="bridge-foot">Read from your agents' session files on your Mac. Nothing is sent anywhere.</p>
+</article>
+<article aria-labelledby="context-warn-title" class="bridge-card">
+<p class="bridge-kicker"><span class="bridge-badge">Warnings</span> L2Cache tells you first</p>
+<h3 id="context-warn-title">A heads-up before the cache goes cold.</h3>
+<ul class="points">
+<li><strong>Cache expiring soon.</strong> A menu-bar badge and a row at the top of the quick panel when a Very heavy session's cache is about to expire, plus a macOS notification if you turn it on.</li>
+<li><strong>Keep warm.</strong> For a Heavy session on a 1-hour cache, L2Cache offers a short heartbeat you can send to keep it warm.</li>
+<li><strong>Cold resume guard.</strong> Resume a session whose cache has expired and the terminal warns you before your first message, then holds that costly message once. Type <code>/clear</code> to start fresh with a handoff, or press <kbd>↑</kbd> and <kbd>Return</kbd> to send it anyway.</li>
+</ul>
+<p class="bridge-foot">For Claude Code. Terminal warnings need L2Cache hooks turned on. Everything here is on by default except macOS notifications, and each can be turned off in Settings.</p>
+</article>
+</div>
+</div>
+</section></div></dialog><dialog aria-label="MCP &amp; Hooks" class="bento-dlg" id="dlg-agent-tools"><button aria-label="Close" class="dlg-close">✕</button><div class="dlg-body"><section aria-labelledby="agent-tools-title" class="feature agent-bridge" id="agent-tools">
+<div class="wrap">
+<div class="section-head">
+<p class="eyebrow">For your coding agents</p>
+<h2 id="agent-tools-title">Your agents can ask L2Cache, and L2Cache briefs them.</h2>
+<p>Two optional connections, one in each direction: agents look up what you copied or captured, and every session starts with the context it needs.</p>
+</div>
+<div class="bridge-grid">
+<article aria-labelledby="mcp-title" class="bridge-card">
+<p class="bridge-kicker"><span class="bridge-badge">MCP server</span> Agents ask L2Cache</p>
+<h3 id="mcp-title">“Use the query I copied this morning” just works.</h3>
+<p>Connect the L2Cache MCP server and your agent looks things up itself, instead of you pasting them in: what you copied, and earlier sessions' fixes, decisions and summaries, so a fresh session starts without losing the thread.</p>
+<ul aria-label="L2Cache MCP tools" class="tool-chips">
+<li><code>search_clips</code></li>
+<li><code>get_recent_clips</code></li>
+<li><code>get_clip</code></li>
+<li><code>search_screenshots</code></li>
+<li><code>search_memory_folders</code></li>
+<li><code>get_recovery_point</code></li>
+<li><code>search_agent_history</code></li>
+<li><code>get_session_summary</code></li>
+<li><code>get_error_resolutions</code></li>
+<li><code>get_decisions</code></li>
+<li><code>get_agent_event</code></li>
+</ul>
+<p class="bridge-foot">Works with Claude Code, Claude desktop, Codex, Cursor and Antigravity. Queries run on your Mac, and sensitive items such as passwords and keys are never returned.</p>
+</article>
+<article aria-labelledby="hooks-title" class="bridge-card">
+<p class="bridge-kicker"><span class="bridge-badge">Hooks</span> L2Cache briefs your agents</p>
+<h3 id="hooks-title">Every session starts briefed.</h3>
+<ul class="points">
+<li><strong>Recent clipboard.</strong> What you copied in the last 30 minutes rides along with your prompt.</li>
+<li><strong>Session handoff.</strong> A new session picks up where the last one stopped.</li>
+<li><strong>Edits and failed commands.</strong> Recorded every turn, so Your Day and Worklog stay accurate.</li>
+<li><strong>Fixes remembered.</strong> When a copied error is fixed and verified, the fix is saved for next time.</li>
+<li><strong>Work summaries.</strong> A one-line summary of each finished change feeds Your Day.</li>
+<li><strong>Cold resume guard.</strong> Claude Code warns you before your first message to a session whose cache has expired.</li>
+</ul>
+<p class="bridge-foot">For Claude Code, Codex, GitHub Copilot and Grok Build. You turn each agent on in Settings; nothing is installed until you do.</p>
+</article>
+</div>
+</div>
+</section></div></dialog><dialog aria-label="Projects" class="bento-dlg" id="dlg-projects"><button aria-label="Close" class="dlg-close">✕</button><div class="dlg-body"><section aria-labelledby="projects-title" class="feature" id="projects">
+<div class="wrap feature-grid">
+<div class="feature-copy">
+<p class="eyebrow">Projects &amp; Worklog</p>
+<h2 id="projects-title">Every project keeps its story.</h2>
+<p>Commits, branches, agent sessions, test runs and releases line up on one timeline per project, so you can see how the work got here, not just where it is.</p>
+<ul class="points">
+<li><strong>Project Story.</strong> A commit graph and timeline read straight from <code>.git</code>. L2Cache never runs Git for you.</li>
+<li><strong>Milestones.</strong> Each piece of evidence is labelled Git verified, Test verified, You noted, or L2Cache inferred.</li>
+<li><strong>Worklog.</strong> Tickets you worked on and approximate hours per day, which you can correct and copy into your timesheet tool.</li>
+<li><strong>Weekly Brief &amp; standup.</strong> An editable standup built from your recorded activity.</li>
+</ul>
+</div>
+<figure class="stage mock">
+<div class="mock-stack">
+<div class="win">
+<div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">L2Cache — Projects › Atlas</span></div>
+<div class="win-body">
+<div class="proj-head">
+<div class="proj-av">AT</div>
+<div><strong>Atlas</strong><span class="mono dim">~/Projects/Atlas</span></div>
+<span class="spacer"></span>
+<span class="btn-m primary"><span class="ag-dot">✳</span>Copy resume command</span>
+</div>
+<div class="insight">
+<span class="purple">✓</span>
+<div><span class="cap">Recommended</span><strong>Test failing after 7b2a7f4</strong><span class="dim ell" style="display:block;font-size:12px">7b2a7f4 Handle 401 during background refresh</span></div>
+<span class="btn-m primary"><span class="ag-dot">✳</span>Ask Claude to fix</span>
+</div>
+<div class="proj-cards">
+<div class="pc">
+<span class="cap amber">● Work at risk</span>
+<strong>3 commits only on this Mac</strong>
+<div class="crow"><span class="mono">7b2a7f4</span><span class="ell">Handle 401 during background refresh</span></div>
+<div class="crow"><span class="mono">d4844ad</span><span class="ell">Add AuthRetryTests for expired tokens</span></div>
+<div class="crow"><span class="mono">0167140</span><span class="ell">Retry token refresh once (ATL-142)</span></div>
+</div>
+<div class="pc">
+<span class="cap green">● Last known good</span>
+<strong>Tests passed at b6afd48 · 4 days ago</strong>
+<div class="crow"><span class="green">✓</span><span>48 passed</span></div>
+<div class="crow"><span class="mono">b6afd48</span><span class="ell">Bump version to 1.3.2</span></div>
+<div class="crow"><span class="dim">+ 4 commits since</span></div>
+</div>
+</div>
+<div class="miles">
+<div class="miles-row"><span class="cap amber">Blocked</span><span class="ell">ATL-142 auth retry — tests failing</span><span class="dim">3 h ago</span></div>
+<div class="miles-row"><span class="cap chip-g">Released</span><span class="ell">Tagged v1.3.2</span><span class="dim">4 d ago</span></div>
+<div class="miles-row"><span class="cap purple">Merged</span><span class="ell">ATL-131 streaks — merged</span><span class="dim">4 d ago</span></div>
+</div>
+</div>
+</div>
+<div class="win">
+<div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">L2Cache — Worklog › Timesheet</span></div>
+<div class="win-body">
+<div class="wl-stats">
+<div class="wl-stat"><span class="cap">This week</span><b class="purple">2.75 h</b></div>
+<div class="wl-stat"><span class="cap">Tickets</span><b>3</b></div>
+<div class="wl-stat"><span class="cap">On tickets</span><b>82%</b></div>
+</div>
+<div class="wl-grid">
+<span class="h">Work</span><span class="h">Mon</span><span class="h">Tue</span><span class="h">Wed</span><span class="h on">Thu</span><span class="h">Fri</span><span class="h">Total</span>
+<span class="wl-work"><span class="pdot"></span><b>ATL-142</b><span class="badge blocked">Blocked</span></span><span class="wl-cell">–</span><span class="wl-cell h1">0.25</span><span class="wl-cell h2">0.75</span><span class="wl-cell h1">0.5</span><span class="wl-cell">–</span><span class="wl-cell tot">1.5</span>
+<span class="wl-work"><span class="pdot lumen"></span><b>LUM-31</b><span class="badge prog">In progress</span></span><span class="wl-cell">–</span><span class="wl-cell">–</span><span class="wl-cell h2">0.5</span><span class="wl-cell">–</span><span class="wl-cell">–</span><span class="wl-cell tot">0.5</span>
+<span class="wl-work"><span class="pdot"></span><b>ATL-131</b><span class="badge merged">Merged</span></span><span class="wl-cell h1">0.25</span><span class="wl-cell">–</span><span class="wl-cell">–</span><span class="wl-cell">–</span><span class="wl-cell">–</span><span class="wl-cell tot">0.25</span>
+<span class="wl-work"><span class="pdot relay"></span><span class="muted ell">Other work · Relay</span></span><span class="wl-cell">–</span><span class="wl-cell">–</span><span class="wl-cell h2">0.5</span><span class="wl-cell">–</span><span class="wl-cell">–</span><span class="wl-cell tot">0.5</span>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="mock-note">Example data</figcaption>
+</figure>
+</div>
+</section></div></dialog><dialog aria-label="Search" class="bento-dlg" id="dlg-search"><button aria-label="Close" class="dlg-close">✕</button><div class="dlg-body"><section aria-labelledby="search-title" class="feature feature-alt" id="search">
+<div class="wrap feature-grid flip">
+<div class="feature-copy">
+<p class="eyebrow">Search</p>
+<h2 id="search-title">Find the thread with <kbd>⌘</kbd><kbd>K</kbd>.</h2>
+<p>One search across your projects, agent sessions, terminal history, Git activity, screenshots and clipboard. The command you ran, the error you copied and the screenshot you took are in the same place.</p>
+<ul class="points">
+<li><strong>Best match first.</strong> A top hit across clips, agent sessions, terminal commands, commits and docs, then the rest grouped by kind.</li>
+<li><strong>Narrow it down.</strong> Filter by kind, or type <code>@project</code> to search one project.</li>
+<li><strong>Straight to the moment.</strong> An agent result opens the session at the matching message.</li>
+<li><strong>Screenshot search.</strong> Find a screenshot by the text inside it.</li>
+<li><strong>Quick panel.</strong> <kbd>⌥</kbd><kbd>Space</kbd> brings up your history from any app.</li>
+</ul>
+</div>
+<figure class="stage shot-narrow mock">
+<div class="win">
+<div class="cmdk-input"><span class="dim">⌕</span><span>token refresh</span><span class="caret"></span></div>
+<div class="cmdk-filters"><span class="chip on">All</span><span class="chip">Clips</span><span class="chip">Agents</span><span class="chip">Terminal</span><span class="chip">Commits</span><span class="chip">Screenshots</span></div>
+<div class="res-group cap">Best match</div>
+<div class="res on"><span class="ico-k">▤</span><div><strong>Make the <mark>token refresh</mark> retry once before logging the user out.</strong><span class="sub">Agent session · Retry token refresh once before logout · yesterday</span></div><span class="ptag"><span class="pdot"></span>Atlas</span></div>
+<div class="res-group cap">Clips</div>
+<div class="res"><span class="ico-k">⧉</span><div><strong>Refresh token revoked error</strong><span class="sub">Xcode · yesterday</span></div></div>
+<div class="res"><span class="ico-k">⧉</span><div><strong>Coalesce in-flight <mark>token refresh</mark></strong><span class="sub">Safari · 3 hours ago</span></div></div>
+<div class="res-group cap">Screenshots</div>
+<div class="res"><span class="ico-k">▣</span><div><strong>AuthRetryTests — testConcurrentRefresh failed</strong><span class="sub">Text found in screenshot · 3 hours ago</span></div><span class="ptag"><span class="pdot"></span>Atlas</span></div>
+<div class="res-group cap">Terminal</div>
+<div class="res"><span class="ico-k">›_</span><div><strong class="mono" style="font-size:12.5px">curl -s -X POST https://api.atlas.app/oauth/token -d grant_type=refresh_token</strong><span class="sub">~/Projects/Atlas · 4 hours ago</span></div><span class="ptag"><span class="pdot"></span>Atlas</span></div>
+</div>
+<figcaption class="mock-note">Example data</figcaption>
+</figure>
+</div>
+</section></div></dialog><dialog aria-label="Clipboard" class="bento-dlg" id="dlg-clipboard"><button aria-label="Close" class="dlg-close">✕</button><div class="dlg-body"><section aria-labelledby="clipboard-title" class="feature" id="clipboard">
+<div class="wrap feature-grid">
+<div class="feature-copy">
+<p class="eyebrow">Clipboard &amp; Terminal</p>
+<h2 id="clipboard-title">Everything you copied and ran, by project.</h2>
+<p>Your clipboard and shell history stop being one long list. Each clip and command lands in the project it came from, so the snippet from this morning is next to the work it was for.</p>
+<ul class="points">
+<li><strong>Smart clipboard.</strong> Clips are recognised as code, JSON, SQL, URLs, colours and more, with actions for each type. Pin the ones you reuse.</li>
+<li><strong>Terminal history.</strong> Every command with its exit code, grouped by day and filterable by project or tool.</li>
+<li><strong>Your shell and your agents.</strong> See the commands you ran, the ones your coding agents ran, or both.</li>
+</ul>
+</div>
+<figure class="stage mock">
+<div class="mock-stack">
+<div class="win">
+<div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">L2Cache — Clipboard</span></div>
+<div class="hsearch">⌕ Search clipboard…</div>
+<div class="hfilters"><span class="chip on">All projects</span><span class="chip"><span class="pdot"></span>Atlas</span><span class="chip"><span class="pdot relay"></span>Relay</span><span class="chip"><span class="pdot lumen"></span>Lumen</span><span class="chip"><span class="pdot nimbus"></span>Nimbus</span></div>
+<div class="hgroup cap">Pinned</div>
+<div class="clip pin"><span class="clip-ico code">&lt;/&gt;</span><div><strong><span>Coalesce in-flight token refresh</span><span class="kind code">Code</span></strong><span class="sub">func refresh() async throws -&gt; Token {</span></div><span class="pdot"></span><span class="when">2h ago</span></div>
+<div class="hgroup cap">Recent</div>
+<div class="clip"><span class="clip-ico cmd">›_</span><div><strong><span>Install zsh completions</span><span class="kind cmd">Command</span></strong><span class="sub">nimbus completions zsh &gt; ~/.zfunc/_nimbus</span></div><span class="pdot nimbus"></span><span class="when">4h ago</span></div>
+<div class="clip"><span class="clip-ico uuid">UUID</span><div><strong><span>Test user id</span></strong><span class="sub">9b1d2f4e-6a0c-4f7b-9d2e-31c5a8e7f0b6</span></div><span class="pdot"></span><span class="when">6h ago</span></div>
+<div class="clip"><span class="clip-ico text">!</span><div><strong><span>Refresh token revoked error</span></strong><span class="sub">AuthError.refreshTokenRevoked: the refresh token was revoked</span></div><span class="pdot"></span><span class="when">23h ago</span></div>
+<div class="clip"><span class="clip-ico url">↗</span><div><strong><span class="purple">github.com</span></strong><span class="sub">https://github.com/alexrivera/lumen/pull/31</span></div><span class="pdot lumen"></span><span class="when">Yesterday</span></div>
+</div>
+<div class="win">
+<div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title">L2Cache — Terminal</span></div>
+<div class="hsearch">⌕ Search commands…</div>
+<div class="hfilters"><span class="chip on">My Shell</span><span class="chip">Agents</span><span class="chip">All</span></div>
+<div class="hgroup cap">Today</div>
+<div class="trow"><span class="pdot"></span><div><code>xcodebuild test -scheme Atlas -only-testing:AtlasTests/AuthRetryTests</code><span class="sub">Run AuthRetryTests</span></div><span class="st fail">× 65</span><span class="t">1:21 PM</span></div>
+<div class="trow"><span class="pdot"></span><div><code>git diff --stat main...fix/ATL-142-auth-retry</code></div><span class="st ok">✓</span><span class="t">12:45 PM</span></div>
+<div class="trow"><span class="pdot nimbus"></span><div><code>cargo clippy -- -D warnings</code></div><span class="st ok">✓</span><span class="t">10:45 AM</span></div>
+<div class="hgroup cap">Yesterday</div>
+<div class="trow"><span class="pdot relay"></span><div><code>npx tsc --noEmit</code><span class="sub">Type-check after the Stripe upgrade</span></div><span class="st fail">× 2</span><span class="t">10:51 AM</span></div>
+<div class="trow"><span class="pdot lumen"></span><div><code>npm run dev -- --port 4321</code></div><span class="st ok">✓</span><span class="t">8:51 AM</span></div>
+</div>
+</div>
+<figcaption class="mock-note">Example data</figcaption>
+</figure>
+</div>
+</section></div></dialog></section>
+<!-- Coding agents -->
+
+<!-- Context & cost: session size, cache state and proactive warnings -->
+
+<!-- Agent tools: MCP server and hooks -->
+
+<!-- Projects & Worklog -->
+
+<!-- Search, terminal, clipboard -->
+
+<!-- Clipboard & Terminal -->
+
+<!-- Privacy -->
+<section aria-labelledby="privacy-title" class="privacy" id="privacy">
+<div class="wrap">
+<div class="section-head reveal">
+<p class="eyebrow">Privacy</p>
+<h2 id="privacy-title">Local-first, by design.</h2>
+<p>Your history lives in L2Cache's database, on your Mac, and its smart features run there too.</p>
+</div>
+<div aria-label="Where L2Cache processes your data" class="boundary reveal" role="group">
+<div class="boundary-mac">
+<p class="boundary-title">
+<svg aria-hidden="true" height="18" viewbox="0 0 24 24" width="18"><rect fill="none" height="12" rx="2" stroke="currentColor" stroke-width="1.6" width="18" x="3" y="4"></rect><path d="M8 20h8M12 16v4" stroke="currentColor" stroke-linecap="round" stroke-width="1.6"></path></svg>
+              On your Mac
+            </p>
+<ul class="boundary-items">
+<li><strong>History database</strong><span>Sessions, commands, Git activity, clips and screenshots</span></li>
+<li><strong>Apple Intelligence</strong><span>On-device, where your Mac supports it</span></li>
+<li><strong>Ollama</strong><span>A local model you run yourself</span></li>
+<li><strong>Rule-based</strong><span>Works with no AI provider at all</span></li>
+</ul>
+</div>
+</div>
+<ul class="privacy-points reveal">
+<li><strong>You choose what's captured.</strong> Exclude apps and pick the folders L2Cache indexes.</li>
+<li><strong>Presentation mode.</strong> Masks project names, paths, prompts and commands when you share your screen.</li>
+<li><strong>Read, don't run.</strong> L2Cache reads your <code>.git</code> files and agent logs. It doesn't run Git or your agents to do it.</li>
+</ul>
+</div>
+</section>
+<!-- Pricing -->
+<section aria-labelledby="pricing-title" class="pricing" id="pricing">
+<div class="wrap pricing-card reveal">
+<img alt="" height="72" loading="lazy" src="img/icon-144.webp" width="72"/>
+<h2 id="pricing-title">Try everything for 15 days.</h2>
+<ul class="price-facts">
+<li>Free download</li>
+<li>15-day Pro trial</li>
+<li>One-time Pro unlock, no subscription</li>
+</ul>
+<a class="btn btn-appstore" href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12">
+<svg aria-hidden="true" height="20" viewbox="0 0 24 24" width="20"><path d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.02-1.5-2.62-1.7-3.19-1.72-1.36-.14-2.65.8-3.34.8-.69 0-1.75-.78-2.88-.76-1.48.02-2.85.86-3.61 2.19-1.54 2.67-.39 6.62 1.11 8.79.73 1.06 1.6 2.25 2.75 2.2 1.1-.04 1.52-.71 2.85-.71 1.33 0 1.71.71 2.88.69 1.19-.02 1.94-1.08 2.67-2.14.84-1.23 1.19-2.42 1.21-2.48-.03-.01-2.31-.89-2.33-3.55zM14.18 6.13c.61-.74 1.02-1.76.91-2.78-.88.04-1.94.59-2.57 1.32-.56.65-1.06 1.7-.93 2.7.98.08 1.98-.5 2.59-1.24z" fill="currentColor"></path></svg>
+          Download on the Mac App Store
+        </a>
+<p class="fineprint">Requires macOS 13 or later.</p>
+</div>
+</section>
+<!-- FAQ -->
+<section aria-labelledby="faq-title" class="faq" id="faq">
+<div class="wrap faq-wrap">
+<h2 id="faq-title">Frequently asked questions</h2>
+<div class="faq-list">
+<details>
+<summary>What is L2Cache?</summary>
+<p>L2Cache is developer memory for Mac. It connects your projects, coding-agent sessions, terminal history, Git activity, screenshots and clipboard content, so when you come back to your Mac you can see where you left off and resume the work.</p>
+</details>
+<details>
+<summary>Is L2Cache a clipboard manager?</summary>
+<p>It includes one. L2Cache started as a clipboard manager and still has searchable clipboard history with smart actions, opened with the <kbd>⌥</kbd><kbd>Space</kbd> quick panel. Version 2.0 adds the Developer Home, which brings clipboard, terminal, Git and coding-agent history together by project.</p>
+</details>
+<details>
+<summary>Which coding agents does L2Cache read history from?</summary>
+<p>L2Cache reads local session history from Claude Code, Codex, GitHub Copilot, Grok Build and Google Antigravity. Available details and live-continuity features vary by agent.</p>
+</details>
+<details>
+<summary>Can I resume a Claude Code or Codex session from L2Cache?</summary>
+<p>Yes. L2Cache generates the resume command for supported sessions and can open it in your terminal. The agent's command-line tool and the original session must still be installed and available on your Mac.</p>
+</details>
+<details>
+<summary>Can my coding agents use L2Cache directly?</summary>
+<p>Yes. Connect the L2Cache MCP server and agents such as Claude Code, Codex, Cursor and Antigravity can search your clipboard history, screenshots and saved folders themselves. Optional hooks for Claude Code, Codex, GitHub Copilot and Grok Build share your recent clipboard items and the previous session's context with each new session. Agents can also look up earlier sessions' fixes, decisions and work summaries. Both run on your Mac, and sensitive items are never shared.</p>
+</details>
+<details>
+<summary>Where is my history stored?</summary>
+<p>Your history is stored locally in L2Cache's database on your Mac. Smart features use on-device Apple Intelligence where your Mac supports it, a local Ollama model, or rule-based processing.</p>
+</details>
+<details>
+<summary>Does L2Cache help with coding-agent token use?</summary>
+<p>Yes, for Claude Code and Codex. L2Cache shows each session's context size and whether its prompt cache is still warm, warns before a heavy session's cache expires, and can stop the first message to a Claude Code session whose cache has gone cold, so you can start fresh with a handoff instead of reloading the whole context.</p>
+</details>
+<details>
+<summary>How much does L2Cache cost?</summary>
+<p>L2Cache is a free download from the Mac App Store with a 15-day Pro trial. Pro is a one-time unlock with no subscription.</p>
+</details>
+</div>
+</div>
+</section>
+</main>
+<footer class="site-footer">
+<div class="wrap footer-grid">
+<div class="footer-brand">
+<a aria-label="L2Cache home" class="brand" href="/">
+<img alt="" height="24" loading="lazy" src="img/icon-144.webp" width="24"/>
+<span>L2Cache</span>
+</a>
+<p>Developer memory for Mac.</p>
+</div>
+<nav aria-label="Product">
+<h3>Product</h3>
+<ul>
+<li><a href="/en/clipboard-history-mac">Clipboard history</a></li>
+<li><a href="/en/mac-command-history">Terminal history</a></li>
+<li><a href="/en/screenshot-ocr-mac">Screenshot search</a></li>
+<li><a href="/en/custom-actions">Custom actions</a></li>
+<li><a href="/en/changelog">Changelog</a></li>
+</ul>
+</nav>
+<nav aria-label="Coding agents">
+<h3>Coding agents</h3>
+<ul>
+<li><a href="/en/claude-code-session-history-mac">Claude Code history</a></li>
+<li><a href="/en/codex-session-history-mac">Codex history</a></li>
+<li><a href="/en/github-copilot-history-lifesaver">GitHub Copilot history</a></li>
+<li><a href="/en/grok-coding-session-history">Grok Build history</a></li>
+</ul>
+</nav>
+<nav aria-label="Compare">
+<h3>Compare</h3>
+<ul>
+<li><a href="/en/best-mac-clipboard-managers">Best Mac clipboard managers</a></li>
+<li><a href="/en/l2cache-vs-maccy">L2Cache vs Maccy</a></li>
+<li><a href="/en/l2cache-vs-paste">L2Cache vs Paste</a></li>
+<li><a href="/en/l2cache-vs-raycast">L2Cache vs Raycast</a></li>
+</ul>
+</nav>
+<nav aria-label="Resources">
+<h3>Resources</h3>
+<ul>
+<li><a href="/en/blog">Blog</a></li>
+<li><a href="/en/benchmark">Clipboard benchmark</a></li>
+<li><a href="/en/tools">Developer tools</a></li>
+<li><a href="/en/support">Support</a></li>
+<li><a href="/en/privacy">Privacy policy</a></li>
+</ul>
+</nav>
+</div>
+<div class="wrap footer-legal">
+<p>© 2026 Amvotech. Mac and macOS are trademarks of Apple Inc.</p>
+</div>
+</footer>
+
+<script>
+(function () {
+  function fit() {
+    document.querySelectorAll('.bento-shot').forEach(function (s) {
+      s.style.setProperty('--z', Math.min(1, s.clientWidth / 960).toFixed(3));
+    });
+  }
+  window.addEventListener('resize', fit);
+  fit();
+  document.querySelectorAll('.bento-card').forEach(function (card) {
+    card.addEventListener('click', function () { document.getElementById(card.dataset.dlg).showModal(); });
+  });
+  document.querySelectorAll('dialog.bento-dlg').forEach(function (d) {
+    d.querySelector('.dlg-close').addEventListener('click', function () { d.close(); });
+    d.addEventListener('click', function (e) { if (e.target === d) d.close(); });
+  });
+  var hit = document.querySelector('.bento-card[data-feature="' + location.hash.slice(1) + '"]');
+  if (hit) hit.click();
+})();
+</script>
+</body>
+</html>
