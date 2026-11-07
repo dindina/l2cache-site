@@ -78,14 +78,56 @@
   fig.addEventListener('click', function (e) { if (e.target.closest('[role="tab"]')) fig.classList.add('touched'); });
 })();
 (function () {
-  // Feature tiles open their full section in a dialog, in place.
+  // Feature tiles open the feature carousel at their slide; neighbours peek in and are one click, key or swipe away.
+  var dlg = document.querySelector('dialog.feat-dlg');
+  if (!dlg) return;
+  var track = dlg.querySelector('.feat-track'), slides = Array.prototype.slice.call(track.children);
+  var prev = dlg.querySelector('.feat-nav.prev'), next = dlg.querySelector('.feat-nav.next');
+  var count = dlg.querySelector('.feat-count'), dots = dlg.querySelector('.feat-dots'), active = -1;
+  slides.forEach(function (s, i) {
+    var d = document.createElement('i');
+    d.addEventListener('click', function () { go(i, true); });
+    dots.appendChild(d);
+    s.addEventListener('click', function () { if (i !== active) go(i, true); });
+  });
+  function go(i, smooth) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    var s = slides[i];
+    track.scrollTo({ left: s.offsetLeft - (track.clientWidth - s.clientWidth) / 2, behavior: smooth ? 'smooth' : 'auto' });
+    mark(i);
+  }
+  function nearest() {
+    var mid = track.scrollLeft + track.clientWidth / 2, best = 0, dist = Infinity;
+    slides.forEach(function (s, i) { var d = Math.abs(s.offsetLeft + s.clientWidth / 2 - mid); if (d < dist) { dist = d; best = i; } });
+    return best;
+  }
+  function mark(i) {
+    if (i === active) return;
+    active = i;
+    slides.forEach(function (s, j) { s.classList.toggle('is-active', j === i); s.setAttribute('aria-hidden', String(j !== i)); });
+    Array.prototype.forEach.call(dots.children, function (d, j) { d.classList.toggle('on', j === i); });
+    count.textContent = (i + 1) + ' / ' + slides.length;
+    prev.disabled = i === 0; next.disabled = i === slides.length - 1;
+  }
+  var settle;
+  track.addEventListener('scroll', function () { clearTimeout(settle); settle = setTimeout(function () { mark(nearest()); }, 60); }, { passive: true });
+  prev.addEventListener('click', function () { go(active - 1, true); });
+  next.addEventListener('click', function () { go(active + 1, true); });
+  dlg.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') { e.preventDefault(); go(active + 1, true); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); go(active - 1, true); }
+  });
+  dlg.querySelector('.dlg-close').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg || e.target === track || e.target.classList.contains('feat-stage')) dlg.close(); });
   document.querySelectorAll('.bento-card[data-dlg]').forEach(function (card) {
-    card.addEventListener('click', function () { document.getElementById(card.dataset.dlg).showModal(); });
+    card.addEventListener('click', function () {
+      var i = slides.indexOf(document.getElementById(card.dataset.dlg));
+      active = -1;
+      dlg.showModal();
+      requestAnimationFrame(function () { go(i, false); });
+    });
   });
-  document.querySelectorAll('dialog.bento-dlg').forEach(function (d) {
-    d.querySelector('.dlg-close').addEventListener('click', function () { d.close(); });
-    d.addEventListener('click', function (e) { if (e.target === d) d.close(); });
-  });
+  window.addEventListener('resize', function () { if (dlg.open) go(active, false); });
 })();
 (function () {
   var fig = document.querySelector('.hero-shot.sb');
