@@ -63,14 +63,18 @@
       if (d) { e.preventDefault(); select(tabs[(i + d + tabs.length) % tabs.length], true); }
     });
   });
+  // Menu links that name a feature without its own sidebar item open the item it lives in.
+  var ALIAS = { home: 'today', context: 'agents', 'agent-tools': 'settings' };
   function fromHash() {
-    var t = stage.querySelector('[data-feature="' + location.hash.slice(1) + '"]');
+    var h = location.hash.slice(1);
+    var t = stage.querySelector('[data-feature="' + (ALIAS[h] || h) + '"]');
     if (t) { select(t); (document.getElementById('features') || stage).scrollIntoView({ block: 'center' }); }
   }
   window.addEventListener('hashchange', fromHash);
   stage.__select = select;
+  stage.__alias = ALIAS;
   stage.__tabs = tabs;
-  select(tabs[0]);
+  select(tabs.filter(function (t) { return t.getAttribute('aria-selected') === 'true'; })[0] || tabs[0]);
   fromHash();
 })();
 (function () {
@@ -167,7 +171,8 @@
   fig.addEventListener('mouseleave', function () { hovering = false; restartBar(); schedule(); });
   document.addEventListener('visibilitychange', schedule);
   new IntersectionObserver(function (es) { visible = es[0].isIntersecting; schedule(); }, { threshold: 0.4 }).observe(fig);
-  if (location.hash && fig.querySelector('[data-feature="' + location.hash.slice(1) + '"]')) stop(); else fig.classList.add('autoplay');
+  var h = location.hash.slice(1);
+  if (h && fig.querySelector('[data-feature="' + (fig.__alias[h] || h) + '"]')) stop(); else fig.classList.add('autoplay');
 })();
 (function () {
   var row = document.querySelector('.icon-grid'), dots = document.querySelector('.grid-dots');
@@ -181,4 +186,10 @@
   row.addEventListener('scroll', update, { passive: true });
   window.addEventListener('resize', update);
   update();
+})();
+
+// The token spotlight's "How it works" opens the feature carousel at the Context slide.
+(function () {
+  var more = document.querySelector('.tk-more');
+  if (more) more.addEventListener('click', function () { document.querySelector('.icon-grid [data-feature="context"]').click(); });
 })();
