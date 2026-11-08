@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="author" content="Amvo"/>
+  <meta name="theme-color" content="#0d1117"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Why Resuming a Cold Claude Code Session Costs More | L2Cache</title>
+  <meta name="description" content="The first message after Claude Code's prompt cache expires reloads your whole context at the cache-write price, 12× to 40× a warm turn. How to see it coming, and what to do instead."/>
+  <link rel="icon" type="image/png" href="icon.png"/>
+  <link rel="apple-touch-icon" href="icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #00C896; --bg: #f7f7f5; --bg2: #ffffff; --bg3: #eeeeea;
+      --border: #e4e4e0; --text: #0a0a0a;
+      --text-muted: #555550; --text-dim: #999992;
+      --mono: 'DM Mono', monospace; --serif: "Playfair Display", serif; --sans: 'DM Sans', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .container { max-width: 720px; margin: 0 auto; padding: 80px 24px; min-height: 80vh; }
+    .label { font-family: var(--mono); font-size: 12px; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: inline-block; }
+    h1 { font-family: var(--serif); font-size: 40px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; color: var(--text); }
+    .meta { font-family: var(--mono); font-size: 13px; color: var(--text-dim); margin-bottom: 32px; }
+    h2 { font-family: var(--serif); font-size: 28px; font-weight: 700; margin-top: 48px; margin-bottom: 16px; color: var(--text); }
+    h3 { font-size: 19px; font-weight: 600; margin-top: 28px; margin-bottom: 12px; color: var(--text); }
+    p { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; }
+    ul, ol { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; padding-left: 24px; }
+    li { margin-bottom: 10px; }
+    a { color: #008765; }
+    pre { background: #0D0C1A; padding: 18px; border-radius: 10px; overflow-x: auto; margin-bottom: 24px; border: 1px solid var(--border); }
+    code { font-family: var(--mono); font-size: 14px; background: rgba(0,200,150,0.1); color: #008765; padding: 2px 5px; border-radius: 4px; }
+    pre code { background: transparent; color: #e0ffe8; padding: 0; white-space: pre-wrap; }
+    strong { color: var(--text); font-weight: 600; }
+    .highlight-box { background: rgba(0,200,150,0.08); border-left: 4px solid var(--purple); padding: 22px; margin: 32px 0; border-radius: 0 10px 10px 0; }
+    .highlight-box p { margin-bottom: 0; color: var(--text); }
+    .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; }
+    th { color: var(--text); font-weight: 600; background: var(--bg3); }
+    .note { font-size: 14px; color: var(--text-dim); }
+    .cta-box { background: var(--bg2); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
+    .cta-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+    .cta-btn { display: inline-block; background: var(--purple); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
+    .cta-btn:hover { background: #00a87f; }
+    .related { margin-top: 48px; border-top: 1px solid var(--border); padding-top: 36px; }
+    .related h3 { font-family: var(--serif); font-size: 22px; margin-top: 0; margin-bottom: 20px; }
+    .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .related-grid a { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; }
+    .related-grid a:hover { border-color: var(--purple); }
+    .r-tag { font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em; }
+    .r-title { font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4; }
+    .r-more { font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; }
+    footer { padding: 48px 24px; text-align: center; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-dim); }
+    footer a { color: var(--text-dim); text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: var(--text-muted); }
+    @media (max-width: 600px) {
+      nav { padding: 16px; }
+      .container { padding: 48px 16px; }
+      h1 { font-size: 32px; }
+      h2 { font-size: 24px; }
+    }
+  </style>
+  <link rel="stylesheet" href="theme.css">
+  <link rel="canonical" href="https://l2cache.amvo.store/en/claude-code-cold-cache-resume-cost">
+
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="L2Cache">
+  <meta property="og:url" content="https://l2cache.amvo.store/en/claude-code-cold-cache-resume-cost">
+  <meta property="og:title" content="Why Resuming a Cold Claude Code Session Costs More">
+  <meta property="og:description" content="The first message after Claude Code's prompt cache expires reloads your whole context at the cache-write price, 12× to 40× a warm turn. How to see it coming, and what to do instead.">
+  <meta property="og:image" content="https://l2cache.amvo.store/icon.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="L2Cache app icon">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:url" content="https://l2cache.amvo.store/en/claude-code-cold-cache-resume-cost">
+  <meta name="twitter:title" content="Why Resuming a Cold Claude Code Session Costs More">
+  <meta name="twitter:description" content="The first message after Claude Code's prompt cache expires reloads your whole context at the cache-write price, 12× to 40× a warm turn. How to see it coming, and what to do instead.">
+  <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
+  <meta name="twitter:image:alt" content="L2Cache app icon">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Why Resuming a Cold Claude Code Session Costs More (and What to Do Instead)",
+  "description": "The first message after Claude Code's prompt cache expires reloads your whole context at the cache-write price, 12× to 40× a warm turn. How to see it coming, and what to do instead.",
+  "url": "https://l2cache.amvo.store/en/claude-code-cold-cache-resume-cost",
+  "datePublished": "2026-11-09",
+  "dateModified": "2026-11-09",
+  "author": { "@type": "Organization", "name": "Amvo", "url": "https://l2cache.amvo.store/en" },
+  "publisher": { "@type": "Organization", "name": "Amvo", "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" } },
+  "image": "https://l2cache.amvo.store/icon.png",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://l2cache.amvo.store/en/claude-code-cold-cache-resume-cost" }
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://l2cache.amvo.store/en" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://l2cache.amvo.store/en/blog" },
+    { "@type": "ListItem", "position": 3, "name": "Why Resuming a Cold Claude Code Session Costs More", "item": "https://l2cache.amvo.store/en/claude-code-cold-cache-resume-cost" }
+  ]
+}
+  </script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="icon.png" width="28" height="28" alt="L2Cache" style="border-radius:7px"/>
+    L2Cache
+  </a>
+</nav>
+
+<div class="container">
+  <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
+  <h1>Why resuming a cold Claude Code session costs more (and what to do instead)</h1>
+  <p class="meta">November 9, 2026 · 7 min read</p>
+
+  <p>You leave a long Claude Code session for lunch, or overnight. You come back, type one short message, and that single message uses more of your budget than the last twenty did. Nothing is broken. The session's <strong>prompt cache</strong> expired while you were away, and the first message back paid to rebuild it.</p>
+
+  <p>This article explains what the prompt cache is, why the first message after it expires costs so much, how to see it coming, and the cheaper ways to carry on.</p>
+
+  <h2>What the prompt cache is</h2>
+  <p>A model remembers nothing between requests. Every time you send a message, Claude Code sends the whole conversation again: the system prompt, your project context, every earlier message and tool result, and your new message at the end.</p>
+  <p>Most of each request is the same as the one before it, so the API caches it. On a normal turn the API reads the unchanged start of the request (the <em>prefix</em>) from cache, and only fully processes the new part. Reading from cache is billed at a small fraction of the normal input price.</p>
+  <p>The cache doesn't last forever. It expires after a period with no requests, called its <strong>time to live (TTL)</strong>. Each request that hits the cache resets the timer, so it stays warm while you keep working.</p>
+
+  <h3>Five minutes or one hour</h3>
+  <p>The API offers two lifetimes, and which one Claude Code uses depends on how you pay:</p>
+  <ul>
+    <li><strong>Claude subscription (Pro, Max and so on), within your plan's usage:</strong> the main conversation uses the <strong>1-hour</strong> cache.</li>
+    <li><strong>API key, usage credits or a cloud provider:</strong> the main conversation uses the <strong>5-minute</strong> cache. Once a subscription goes over its plan limit and draws on usage credits, Claude Code drops to five minutes too.</li>
+    <li>Subagents, compaction and other side requests use five minutes either way.</li>
+  </ul>
+  <p>You can choose the lifetime yourself with the <code>promptCacheTtl</code> setting (Claude Code 2.1.242 or later). A coffee break is enough to cool a 5-minute cache. A 1-hour cache survives a meeting, but not lunch.</p>
+
+  <h2>Why the first message back costs so much</h2>
+  <p>When the cache has expired, there's nothing to read. The first request back has to process the whole context again and <strong>write</strong> it to the cache. Cache writes cost <em>more</em> than normal input, while cache reads cost far less:</p>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Price per token, relative to normal input</th><th>Cache read (warm turn)</th><th>Cache write (cold reload)</th><th>Cold ÷ warm</th></tr></thead>
+    <tbody>
+      <tr><td>Opus 5.5 and Sonnet 5.5, 1-hour cache</td><td>0.05×</td><td>2×</td><td><strong>40×</strong></td></tr>
+      <tr><td>Opus 5.5 and Sonnet 5.5, 5-minute cache</td><td>0.05×</td><td>1.25×</td><td><strong>25×</strong></td></tr>
+      <tr><td>Most other models, 1-hour cache</td><td>0.1×</td><td>2×</td><td><strong>20×</strong></td></tr>
+      <tr><td>Most other models, 5-minute cache</td><td>0.1×</td><td>1.25×</td><td><strong>12.5×</strong></td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Multipliers from Anthropic's prompt-caching pricing, checked November 9, 2026. Opus 5.5 and Sonnet 5.5 price cache reads at 0.05× base input; most other models at 0.1×.</p>
+
+  <p>So for the context part of the request, the first message after expiry costs roughly <strong>12× to 40× a warm turn</strong>, depending on the model and the cache lifetime.</p>
+
+  <div class="highlight-box">
+    <p><strong>A worked example.</strong> A 241k-token Opus 5.5 session on a 1-hour cache. A warm turn reads that context for about $0.05 at API list prices (241k × $0.20 per million). After the cache expires, the next message writes it again for about $1.93 (241k × $8 per million). That's one message costing what about forty warm turns cost, before Claude has written a word.</p>
+  </div>
+
+  <p>On a subscription you don't see dollars, but the reload still counts against your plan's 5-hour and weekly limits. Anthropic doesn't publish exactly how cache reads and writes are weighted there, so treat the API multipliers as a guide to the shape of the cost, not an exact figure.</p>
+
+  <h3>It hits once, then the cache is warm again</h3>
+  <p>The expensive part is that one request. After it, the context is cached again and the following turns are back to cheap reads, until the next long break. A session you leave and come back to every few hours pays the reload every time.</p>
+  <p>Size makes it worse. In our own Claude Code sessions, once context passed about 600k tokens, cache rewrites after expiry made up 60–66% of all the cost. Large sessions don't get expensive because of each warm turn; they get expensive every time they go cold.</p>
+
+  <h3>Resuming alone costs nothing</h3>
+  <p><code>claude --resume</code>, <code>claude --continue</code> and <code>/resume</code> load the transcript from disk and show it to you. Nothing is sent to the model until you submit a prompt. That gives you a free moment to decide what to do before you pay for anything.</p>
+
+  <h2>How to see it coming</h2>
+  <p>Two numbers tell you what the next message will cost: <strong>how big the context is</strong>, and <strong>whether the cache is still warm</strong>.</p>
+  <ul>
+    <li><strong>In Claude Code:</strong> <code>/usage</code> (2.1.251 or later) adds a <code>Prompt cache (main)</code> line that says whether the cache is warm, which lifetime it's on, and how long the session has been idle. <code>/context</code> shows what's filling the context.</li>
+    <li><strong>From the transcript:</strong> each reply's <code>usage</code> record holds the context size (<code>input_tokens + cache_creation_input_tokens + cache_read_input_tokens</code>) and a timestamp. The cache lifetime shows in <code>cache_creation.ephemeral_1h_input_tokens</code> versus <code>ephemeral_5m_input_tokens</code>. If the time since the last reply is longer than the lifetime, the cache is cold.</li>
+  </ul>
+
+  <h2>What to do instead</h2>
+
+  <h3>1. Before you step away: compact while it's warm</h3>
+  <p><code>/compact</code> asks the model to summarize the conversation and carry on from the summary. While the cache is warm, the summary request reads the history from cache, so it costs a fraction of what the size suggests. After a break, it reprocesses the whole history as uncached input, which is why compacting costs the most when you resume an old session. If you're going to compact, do it before you leave. <code>/compact &lt;focus&gt;</code> tells it what to keep.</p>
+  <p>Claude Code can also do this for you: <strong>idle compaction</strong> compacts a session on the 1-hour cache once it's at least 200k tokens and has sat idle for about an hour, as long as your Mac stays awake. It's on by default; the setting is <code>idleCompaction</code>.</p>
+
+  <h3>2. Coming back cold: start fresh with a handoff</h3>
+  <p><code>/clear</code> starts a new, empty session in the same terminal. It costs nothing, and the new session starts small instead of reloading the old one. What you lose is the context, so the trick is to bring the important part with you: a short <a href="coding-agent-session-handoff.html">handoff</a> with the goal, the files you were in, what's done, what's next and where you left off. A handoff is usually a few hundred to 1.5k tokens, not hundreds of thousands.</p>
+  <p>A cold session is also a natural place to start fresh anyway. If the next thing you want to do is a different task, the old context mostly gets in the way.</p>
+
+  <h3>3. Keeping a heavy session warm</h3>
+  <p>On a 1-hour cache, a single short message before the hour is up resets the timer for a small fraction of what a cold reload costs. That's worth it for a big session you really will come back to soon. It isn't worth doing all night, or on a 5-minute cache, where you'd need one every few minutes.</p>
+
+  <h3>4. Or just send it</h3>
+  <p>For a small session, the reload doesn't matter much. A 30k-token session reloaded cold is still a cheap request. Save the thinking for the big ones.</p>
+
+  <h2>How L2Cache helps</h2>
+  <p>L2Cache reads your Claude Code session files on your Mac, so it knows each session's size, cache lifetime and the time of its last request. It uses that to warn you at three points:</p>
+  <ul>
+    <li><strong>Before it expires.</strong> When a very heavy session's cache (over 400k tokens) is about to go cold, a menu-bar badge and a row at the top of the quick panel suggest compacting while it's still cheap. A macOS notification is available if you turn it on.</li>
+    <li><strong>While you're away.</strong> For a heavy session (150k–400k tokens) on a 1-hour cache, L2Cache offers a <strong>Copy heartbeat</strong> button: a one-line message you paste into the session yourself to keep it warm. L2Cache never types into your terminal. It offers this at most twice per break, and never between 8 pm and 7 am. Heartbeats are left out of recaps, summaries, handoffs and search.</li>
+    <li><strong>After it expires: the cold resume guard.</strong> When you resume a session whose cache has expired, the terminal shows a warning before you type anything:</li>
+  </ul>
+  <pre><code>Cold cache at 14:05 — this session's cache expired 3 h ago.
+Your next message reloads 241k tokens (≈ 20× a warm turn).
+Cheaper: type /clear — L2Cache starts a fresh session with this session's handoff.
+Or just send your message to continue as is.</code></pre>
+  <p>If you type a message anyway, L2Cache stops that one message, once, so it doesn't reload the context by accident. Your text isn't lost: press <strong>↑</strong> and <strong>Return</strong> to send it as is, and you won't be stopped again in that session. Or type <code>/clear</code>, and the new session starts with the cold session's handoff already loaded. The same check runs on a terminal left open overnight, which never fires a resume event.</p>
+  <p class="note">The multiplier in the warning is a rounded figure. As the table above shows, the real ratio is between 12× and 40× depending on model and cache lifetime.</p>
+
+  <h3>The details</h3>
+  <ul>
+    <li><strong>Where it runs:</strong> in Claude Code, through L2Cache's hooks. The warning and the stop come from the hook reading the session file, so they work even when the L2Cache app isn't open. The handoff after <code>/clear</code> is a file L2Cache writes when the cache expires.</li>
+    <li><strong>When it stays quiet:</strong> when the cache is still warm, when the session is smaller than the minimum size (50k tokens by default), and on short cold gaps under 30 minutes in a session left open, where you get a note after the fact instead of a stop.</li>
+    <li><strong>Scripts are never blocked:</strong> non-interactive runs such as <code>claude -p --continue</code> only get the warning.</li>
+    <li><strong>Settings › Coding agents:</strong> <em>Warn when resuming a cold session</em>, <em>Stop the first message</em>, and <em>Minimum size</em> (25k, 50k or 100k). Both switches are on by default.</li>
+    <li><strong>Codex:</strong> the same check runs in Codex, where <code>/new</code> starts the fresh session. Codex doesn't record a cache lifetime, so L2Cache assumes the short five-minute one.</li>
+    <li><strong>Privacy:</strong> everything is read from files on your Mac. Nothing is sent anywhere, and the flag files hold only numbers, the folder and the session ID.</li>
+  </ul>
+
+  <h2>The short version</h2>
+  <ul>
+    <li>The first message after the cache expires rewrites your whole context at the cache-write price: about 12× to 40× a warm turn.</li>
+    <li>It happens once per cold stretch, and it grows with the session.</li>
+    <li>Compact before you leave, keep a big session warm if you're coming right back, or come back with <code>/clear</code> and a handoff.</li>
+    <li>For small sessions, just send the message.</li>
+  </ul>
+
+  <div class="related">
+    <h3>Related reading</h3>
+    <div class="related-grid">
+      <a href="coding-agent-session-handoff.html"><div><div class="r-tag">Coding agents</div><div class="r-title">Start a fresh coding-agent session without losing context</div></div><div class="r-more">Read article →</div></a>
+      <a href="claude-code-session-history-mac.html"><div><div class="r-tag">Claude Code</div><div class="r-title">Claude Code session history on Mac</div></div><div class="r-more">Read guide →</div></a>
+      <a href="ai-agent-jsonl-and-session-resume-guide.html"><div><div class="r-tag">Coding agents</div><div class="r-title">Coding-agent JSONL and session resume, explained</div></div><div class="r-more">Read guide →</div></a>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <div class="cta-title">See where every session stands</div>
+    <p>L2Cache shows each coding-agent session's size and cache state, and warns you before a cold reload.</p>
+    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="cta-btn">Download L2Cache for Mac</a>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">Home</a>
+  <a href="blog.html">Blog</a>
+  <a href="support.html">Support</a>
+  <a href="privacy.html">Privacy Policy</a>
+  <br/><br/>
+  © 2026 Amvotech
+</footer>
+</body>
+</html>

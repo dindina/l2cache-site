@@ -41,6 +41,8 @@ PUBLIC_PAGES = [
     "blog-zero-cloud-mac-desktop-ai.html",
     "blog-agent-history-analytics.html",
     "blog-screenshot-ocr-search.html",
+    "claude-code-cold-cache-resume-cost.html",
+    "coding-agent-session-handoff.html",
 ]
 
 # Comparison pages are generated (generate_comparisons.py) and can grow over
