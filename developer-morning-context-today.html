@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="author" content="Amvo"/>
+  <meta name="theme-color" content="#0d1117"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Morning Starts With Context, Not Archaeology | L2Cache</title>
+  <meta name="description" content="L2Cache's Today page shows each feature in progress with what you asked, what your agent did, the last commit and the next step, plus cache state, Needs attention and a standup ready to paste."/>
+  <link rel="icon" type="image/png" href="icon.png"/>
+  <link rel="apple-touch-icon" href="icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #00C896; --bg: #f7f7f5; --bg2: #ffffff; --bg3: #eeeeea;
+      --border: #e4e4e0; --text: #0a0a0a;
+      --text-muted: #555550; --text-dim: #999992;
+      --mono: 'DM Mono', monospace; --serif: "Playfair Display", serif; --sans: 'DM Sans', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .container { max-width: 720px; margin: 0 auto; padding: 80px 24px; min-height: 80vh; }
+    .label { font-family: var(--mono); font-size: 12px; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: inline-block; }
+    h1 { font-family: var(--serif); font-size: 40px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; color: var(--text); }
+    .meta { font-family: var(--mono); font-size: 13px; color: var(--text-dim); margin-bottom: 32px; }
+    h2 { font-family: var(--serif); font-size: 28px; font-weight: 700; margin-top: 48px; margin-bottom: 16px; color: var(--text); }
+    h3 { font-size: 19px; font-weight: 600; margin-top: 28px; margin-bottom: 12px; color: var(--text); }
+    p { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; }
+    ul, ol { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; padding-left: 24px; }
+    li { margin-bottom: 10px; }
+    a { color: #008765; }
+    pre { background: #0D0C1A; padding: 18px; border-radius: 10px; overflow-x: auto; margin-bottom: 24px; border: 1px solid var(--border); }
+    code { font-family: var(--mono); font-size: 14px; background: rgba(0,200,150,0.1); color: #008765; padding: 2px 5px; border-radius: 4px; }
+    pre code { background: transparent; color: #e0ffe8; padding: 0; white-space: pre-wrap; }
+    strong { color: var(--text); font-weight: 600; }
+    .highlight-box { background: rgba(0,200,150,0.08); border-left: 4px solid var(--purple); padding: 22px; margin: 32px 0; border-radius: 0 10px 10px 0; }
+    .highlight-box p { margin-bottom: 0; color: var(--text); }
+    .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; }
+    th { color: var(--text); font-weight: 600; background: var(--bg3); }
+    .note { font-size: 14px; color: var(--text-dim); }
+    .cta-box { background: var(--bg2); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
+    .cta-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+    .cta-btn { display: inline-block; background: var(--purple); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
+    .cta-btn:hover { background: #00a87f; }
+    .related { margin-top: 48px; border-top: 1px solid var(--border); padding-top: 36px; }
+    .related h3 { font-family: var(--serif); font-size: 22px; margin-top: 0; margin-bottom: 20px; }
+    .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .related-grid a { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; }
+    .related-grid a:hover { border-color: var(--purple); }
+    .r-tag { font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em; }
+    .r-title { font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4; }
+    .r-more { font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; }
+    footer { padding: 48px 24px; text-align: center; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-dim); }
+    footer a { color: var(--text-dim); text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: var(--text-muted); }
+    @media (max-width: 600px) {
+      nav { padding: 16px; }
+      .container { padding: 48px 16px; }
+      h1 { font-size: 32px; }
+      h2 { font-size: 24px; }
+      th, td { padding: 8px 6px; font-size: 14px; }
+    }
+  </style>
+  <link rel="stylesheet" href="theme.css">
+  <link rel="canonical" href="https://l2cache.amvo.store/en/developer-morning-context-today">
+
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="L2Cache">
+  <meta property="og:url" content="https://l2cache.amvo.store/en/developer-morning-context-today">
+  <meta property="og:title" content="Your Morning Starts With Context, Not Archaeology">
+  <meta property="og:description" content="L2Cache's Today page shows each feature in progress with what you asked, what your agent did, the last commit and the next step, plus cache state, Needs attention and a standup ready to paste.">
+  <meta property="og:image" content="https://l2cache.amvo.store/icon.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="L2Cache app icon">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:url" content="https://l2cache.amvo.store/en/developer-morning-context-today">
+  <meta name="twitter:title" content="Your Morning Starts With Context, Not Archaeology">
+  <meta name="twitter:description" content="L2Cache's Today page shows each feature in progress with what you asked, what your agent did, the last commit and the next step, plus cache state, Needs attention and a standup ready to paste.">
+  <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
+  <meta name="twitter:image:alt" content="L2Cache app icon">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Your Morning Starts With Context, Not Archaeology",
+  "description": "L2Cache's Today page shows each feature in progress with what you asked, what your agent did, the last commit and the next step, plus cache state, Needs attention and a standup ready to paste.",
+  "url": "https://l2cache.amvo.store/en/developer-morning-context-today",
+  "datePublished": "2026-11-09",
+  "dateModified": "2026-11-09",
+  "author": { "@type": "Organization", "name": "Amvo", "url": "https://l2cache.amvo.store/en" },
+  "publisher": { "@type": "Organization", "name": "Amvo", "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" } },
+  "image": "https://l2cache.amvo.store/icon.png",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://l2cache.amvo.store/en/developer-morning-context-today" }
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://l2cache.amvo.store/en" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://l2cache.amvo.store/en/blog" },
+    { "@type": "ListItem", "position": 3, "name": "Your Morning Starts With Context, Not Archaeology", "item": "https://l2cache.amvo.store/en/developer-morning-context-today" }
+  ]
+}
+  </script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="icon.png" width="28" height="28" alt="L2Cache" style="border-radius:7px"/>
+    L2Cache
+  </a>
+</nav>
+
+<div class="container">
+  <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
+  <h1>Your morning starts with context, not archaeology</h1>
+  <p class="meta">November 9, 2026 · 4 min read</p>
+
+  <p>The first half hour of a working day often goes on digging. Which branch was I on? What did I ask the agent last night, and did it finish? Did the tests pass before I left? Is anything sitting unpushed? You scroll through terminal history, reopen agent sessions and run <code>git status</code> in three repositories before writing a line of code.</p>
+
+  <p>L2Cache's <strong>Today</strong> page answers those questions before you ask them. It's the first page of the Developer Home, and it's built from what's already on your Mac: your coding-agent sessions, your Git repositories and your commands.</p>
+
+  <h2>Pick up where you left off</h2>
+  <p>The main card lists the work in progress, one row per feature, newest first. If nothing has happened yet today, it shows <em>Where you left off</em>: the features you were working on before, labelled with the day you last touched them.</p>
+  <p>Each row gives you what you need to carry on:</p>
+  <ul>
+    <li><strong>A session recap:</strong> what <em>you asked</em>, the agent's <em>last update</em>, and the latest <em>commit</em>, with a link to it on GitHub when the branch is pushed.</li>
+    <li><strong>The context strip:</strong> how big the agent's session has grown, and whether its prompt cache is still warm. A warm session says how long it's cheap to continue. A cold one says the next message would reload everything, and offers <em>Start fresh with handoff</em> instead.</li>
+    <li><strong>Continue This Session:</strong> copies the command to resume that exact session, ready to paste into your terminal.</li>
+    <li><strong>Recap ›</strong> opens the full session, and the branch chip shows which branch the work is on.</li>
+  </ul>
+  <p>The rows come from short summaries your coding agents write as they work. With L2Cache's hooks connected, Claude Code and Codex end each turn that edited files with one line: the feature, what changed, and the next step. L2Cache checks each line against the file changes it recorded. Work without a summary still shows up, built from the raw edits. See <a href="developer-timesheet-standup-from-activity.html">how Your Day and the work summaries work</a>.</p>
+
+  <h3>Why the cache state matters in the morning</h3>
+  <p>A session you left overnight has almost certainly gone cold. Its prompt cache expired hours ago, so your first message would reload the whole conversation at the most expensive rate. The card tells you this before you type, and a fresh session with a short handoff is usually the cheaper way back in. The details are in <a href="claude-code-cold-cache-resume-cost.html">why resuming a cold Claude Code session costs more</a> and <a href="coding-agent-session-handoff.html">starting a fresh session without losing context</a>.</p>
+
+  <h2>The numbers at the top</h2>
+  <p>A row of stats gives you the shape of the day at a glance:</p>
+  <ul>
+    <li><strong>Projects</strong> active recently.</li>
+    <li><strong>Commits</strong> you've made.</li>
+    <li><strong>Need attention:</strong> how many loose ends are waiting, from the card below.</li>
+    <li><strong>Claude Code and Codex usage:</strong> how much of your weekly limit is left and when it resets, or roughly how many days until you run out at your current pace.</li>
+  </ul>
+
+  <h2>Needs attention</h2>
+  <p>Beside your work, a <strong>Needs attention</strong> card gathers the loose ends from every project:</p>
+  <ul>
+    <li>The last test or build run <strong>failed</strong>.</li>
+    <li>Commits that are <strong>only on this Mac</strong>.</li>
+    <li>Branches <strong>waiting for review</strong>: pushed but not merged.</li>
+    <li>Branches idle for 30 days or more, and groups of related branches.</li>
+  </ul>
+  <p>Long details fold to two lines and expand on click. If something isn't urgent, dismiss it for a week and it gets out of the way. When nothing needs you, the card says <em>All clear.</em></p>
+
+  <h2>Your other projects</h2>
+  <p>Below, <strong>Other active projects</strong> has a card for each project you've touched lately: the branch, what you were doing or the next step, and when you were last there. Each card can open the project in your editor or in Terminal, or copy the command to resume its latest agent session. A small bar chart of the past seven days shows where your time went, in the same project colours L2Cache uses everywhere.</p>
+
+  <h2>Standup and Weekly Brief</h2>
+  <ul>
+    <li><strong>Copy standup</strong> writes a Yesterday / Today / Blockers standup from your sessions and Git history, ready to paste into Slack. It works with AI off. With AI on, your provider rewrites it and may only use the facts it's given.</li>
+    <li><strong>Weekly Brief</strong> opens a summary of your week: what got done and where to pick up. It appears by itself on Mondays, and the button toggles it any day.</li>
+  </ul>
+  <p>Sharing your screen in a standup? <strong>Presentation mode</strong> masks project names, paths, prompts and commands while keeping the layout, so you can show the page without showing the work.</p>
+
+  <h2>Setting it up</h2>
+  <p>The first time you open Today, a short checklist asks for two things: your <strong>projects folder</strong>, so L2Cache can read your repositories, and your <strong>coding-agent folders</strong>, so it can read your sessions. After that the page fills itself in. Connecting L2Cache's hooks adds the work summaries and the live cache state.</p>
+
+  <h2>All local</h2>
+  <p>Everything on Today is read from your Mac: session files, the <code>.git</code> folders of your repositories, and L2Cache's own history. L2Cache never runs Git, and nothing is sent anywhere. The usage figures come from the limits Claude Code and Codex already report to your terminal.</p>
+  <p>For how this fits into a whole working day, see <a href="day-in-the-life-mac-developer.html">a day in the life of a Mac developer</a>. For each project's longer history, see <a href="project-story-git-timeline-mac.html">Project Story</a>.</p>
+
+  <h2>The short version</h2>
+  <ul>
+    <li>Today shows each feature in progress with what you asked, what the agent did, the last commit and the next step.</li>
+    <li>Each row shows whether the agent's cache is still warm, and copies the command to resume the session.</li>
+    <li>Needs attention gathers failed runs, unpushed commits and unmerged branches across projects.</li>
+    <li>Copy standup and the Weekly Brief turn the same facts into something you can paste.</li>
+  </ul>
+
+  <div class="related">
+    <h3>Related reading</h3>
+    <div class="related-grid">
+      <a href="day-in-the-life-mac-developer.html"><div><div class="r-tag">Workflow</div><div class="r-title">A day in the life of a modern Mac developer</div></div><div class="r-more">Read article →</div></a>
+      <a href="claude-code-cold-cache-resume-cost.html"><div><div class="r-tag">Context &amp; cost</div><div class="r-title">Why resuming a cold Claude Code session costs more</div></div><div class="r-more">Read article →</div></a>
+      <a href="developer-timesheet-standup-from-activity.html"><div><div class="r-tag">Worklog</div><div class="r-title">A timesheet and standup from your coding activity</div></div><div class="r-more">Read article →</div></a>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <div class="cta-title">Start the day where you left off</div>
+    <p>L2Cache's Today page shows your work in progress, what needs you and a standup ready to paste, built on your Mac.</p>
+    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="cta-btn">Download L2Cache for Mac</a>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">Home</a>
+  <a href="blog.html">Blog</a>
+  <a href="support.html">Support</a>
+  <a href="privacy.html">Privacy Policy</a>
+  <br/><br/>
+  © 2026 Amvotech
+</footer>
+</body>
+</html>

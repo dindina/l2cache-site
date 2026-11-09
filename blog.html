@@ -136,6 +136,19 @@
       .blog-card.featured { flex-direction: column; }
       .blog-card.featured .blog-card-img { width: 100%; min-height: 200px; }
     }
+
+    .blog-topics { max-width: 1200px; margin: -24px auto 40px; padding: 0 40px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .blog-topics a { font-size: 14px; font-weight: 600; color: var(--text); text-decoration: none; border: 1px solid var(--border); background: var(--bg2); border-radius: 999px; padding: 6px 14px; }
+    .blog-topics a:hover { border-color: var(--purple); }
+    .blog-section { scroll-margin-top: 90px; }
+    .blog-section-head { max-width: 1200px; margin: 0 auto 20px; padding: 0 40px; }
+    .blog-section-head h2 { font-family: var(--serif, inherit); font-size: 28px; font-weight: 700; margin: 0 0 6px; color: var(--text); }
+    .blog-section-head p { font-size: 15px; color: var(--text-muted); margin: 0; }
+    .blog-section .blog-grid { padding-bottom: 64px; }
+    @media (max-width: 760px) {
+      .blog-topics, .blog-section-head { padding: 0 20px; }
+      .blog-section .blog-grid { padding-bottom: 48px; }
+    }
   </style>
   <link rel="canonical" href="https://l2cache.amvo.store/en/blog">
   <script type="application/ld+json">
@@ -193,65 +206,14 @@
 <div class="blog-hero">
   <div class="label">Developer Blog</div>
   <h1>Articles & Guides</h1>
-  <p class="subtitle">Deep dives into developer productivity, clipboard management, and macOS power user tips.</p>
+  <p class="subtitle">Guides for working with coding agents, keeping their context cheap, and getting more from your clipboard and projects on Mac.</p>
 </div>
 
+<div class="blog-topics" role="navigation" aria-label="Topics"><a href="#context-cost">Context &amp; cost</a><a href="#coding-agents">Coding agents</a><a href="#projects-worklog">Today, projects &amp; Worklog</a><a href="#clipboard">Clipboard &amp; search</a><a href="#engineering">Engineering &amp; guides</a></div>
+
+<section class="blog-section" id="context-cost" aria-labelledby="context-cost-title">
+  <div class="blog-section-head"><h2 id="context-cost-title">Context &amp; cost</h2><p>Keep long coding-agent sessions cheap, and come back to them without paying to reload everything.</p></div>
 <div class="blog-grid">
-
-  <a href="day-in-the-life-mac-developer.html" class="blog-card featured">
-    <div class="blog-card-body">
-      <div class="blog-tag">macOS Engineering · Developer Stack</div>
-      <div class="blog-title">A Day in the Life of a Modern Mac Developer: The 2026 Toolkit</div>
-      <div class="blog-desc">From morning standup and OrbStack containers to offline JWT debugging, directory-aware terminal replay, and Claude Code AI agents—a realistic look at modern macOS developer workflows.</div>
-      <div class="blog-readmore">Read Article →</div>
-    </div>
-  </a>
-
-  <a href="project-story-git-timeline-mac.html" class="blog-card">
-    <div class="blog-card-body">
-      <div class="blog-tag">Projects · Git</div>
-      <div class="blog-title">See How Your Project Got Here: Commits, Sessions and Tests on One Timeline</div>
-      <div class="blog-desc">Project Story lines up commits, coding-agent sessions, test runs and releases, read from .git without running Git, with milestones labelled by how they're verified.</div>
-      <div class="blog-readmore">Read Article →</div>
-    </div>
-  </a>
-
-  <a href="developer-timesheet-standup-from-activity.html" class="blog-card">
-    <div class="blog-card-body">
-      <div class="blog-tag">Worklog · Timesheet</div>
-      <div class="blog-title">Your Hours, Already Counted: A Timesheet and Standup From Your Coding Activity</div>
-      <div class="blog-desc">Ticket IDs learned from your branches and commits, approximate hours per ticket per day, corrections and CSV export, plus a standup and weekly recap.</div>
-      <div class="blog-readmore">Read Article →</div>
-    </div>
-  </a>
-
-  <a href="programmable-clipboard-mac.html" class="blog-card">
-    <div class="blog-card-body">
-      <div class="blog-tag">Clipboard · Smart actions</div>
-      <div class="blog-title">A Programmable Clipboard for Mac: Smart Actions at Your Cursor</div>
-      <div class="blog-desc">Copy JSON, a JWT, SQL, cURL, a log or a colour and the smart bubble offers the right transform at your cursor. Add your own actions as shell commands or AI prompts.</div>
-      <div class="blog-readmore">Read Article →</div>
-    </div>
-  </a>
-
-  <a href="coding-agent-memory-mcp-hooks.html" class="blog-card">
-    <div class="blog-card-body">
-      <div class="blog-tag">Coding agents · MCP &amp; hooks</div>
-      <div class="blog-title">Give Your Coding Agents Memory: L2Cache's MCP Server and Hooks</div>
-      <div class="blog-desc">Twelve read-only MCP tools let Claude Code, Codex, Cursor and Antigravity look up earlier sessions, fixes, clips and screenshots, while hooks brief every new session.</div>
-      <div class="blog-readmore">Read Article →</div>
-    </div>
-  </a>
-
-  <a href="universal-search-mac-developer.html" class="blog-card">
-    <div class="blog-card-body">
-      <div class="blog-tag">Search · ⌘K</div>
-      <div class="blog-title">One ⌘K Search for Everything You Did as a Developer</div>
-      <div class="blog-desc">Clips, screenshot text, agent sessions, terminal commands, commits and files in one search, with the best match first and agent results opened at the matching message.</div>
-      <div class="blog-readmore">Read Article →</div>
-    </div>
-  </a>
-
   <a href="claude-code-cold-cache-resume-cost.html" class="blog-card">
     <div class="blog-card-body">
       <div class="blog-tag">Claude Code · Context &amp; cost</div>
@@ -269,12 +231,17 @@
       <div class="blog-readmore">Read Article →</div>
     </div>
   </a>
+</div>
+</section>
 
-  <a href="rest-api-developer-tools.html" class="blog-card">
+<section class="blog-section" id="coding-agents" aria-labelledby="coding-agents-title">
+  <div class="blog-section-head"><h2 id="coding-agents-title">Coding agents</h2><p>Session history, memory and resume for Claude Code, Codex, Copilot and Grok Build.</p></div>
+<div class="blog-grid">
+  <a href="coding-agent-memory-mcp-hooks.html" class="blog-card">
     <div class="blog-card-body">
-      <div class="blog-tag">REST API · Security &amp; Smart Actions</div>
-      <div class="blog-title">The Modern REST API Developer Toolkit for macOS</div>
-      <div class="blog-desc">Stop leaking production JWTs to public websites. From cURL and Bruno to offline JSON formatting, certificate decoding, and biometric secret protection.</div>
+      <div class="blog-tag">Coding agents · MCP &amp; hooks</div>
+      <div class="blog-title">Give Your Coding Agents Memory: L2Cache's MCP Server and Hooks</div>
+      <div class="blog-desc">Twelve read-only MCP tools let Claude Code, Codex, Cursor and Antigravity look up earlier sessions, fixes, clips and screenshots, while hooks brief every new session.</div>
       <div class="blog-readmore">Read Article →</div>
     </div>
   </a>
@@ -297,29 +264,11 @@
     </div>
   </a>
 
-  <a href="ai-agent-jsonl-and-session-resume-guide.html" class="blog-card">
+  <a href="github-copilot-history-lifesaver.html" class="blog-card">
     <div class="blog-card-body">
-      <div class="blog-tag">AI Architecture · JSONL Deep Dive</div>
-      <div class="blog-title">Understanding AI Coding Agent JSONL &amp; Built-In Session Resumption</div>
-      <div class="blog-desc">Deep technical guide to transcript.jsonl architecture, event schemas, and native CLI commands to view and resume Claude Code, OpenAI Codex, and Copilot sessions.</div>
-      <div class="blog-readmore">Read Article →</div>
-    </div>
-  </a>
-
-  <a href="codex-session-history-mac.html" class="blog-card">
-    <div class="blog-card-body">
-      <div class="blog-tag">CLI Agents · OpenAI Codex</div>
-      <div class="blog-title">How to Find &amp; Resume OpenAI Codex CLI Sessions on Mac</div>
-      <div class="blog-desc">Complete guide on how to find and resume OpenAI Codex CLI sessions on Mac. Inspect rollout JSONL logs, track token usage, and compare native CLI commands with instant search.</div>
-      <div class="blog-readmore">Read Article →</div>
-    </div>
-  </a>
-
-  <a href="claude-code-session-history-mac.html" class="blog-card">
-    <div class="blog-card-body">
-      <div class="blog-tag">CLI Agents · Claude Code</div>
-      <div class="blog-title">How to Search, View &amp; Resume Claude Code CLI Sessions</div>
-      <div class="blog-desc">Complete guide to searching, viewing, and resuming Claude Code CLI sessions on macOS, Linux, and Windows. Inspect transcript.jsonl logs, search past prompts, and use the free viewer.</div>
+      <div class="blog-tag">AI Tooling · GitHub Copilot</div>
+      <div class="blog-title">Where Did My Copilot Context Go? GitHub Copilot History Guide</div>
+      <div class="blog-desc">3 real-world developer scenarios where saving and searching GitHub Copilot Chat and Copilot Edits history prevents context loss, proves code provenance, and preserves prompt chains.</div>
       <div class="blog-readmore">Read Article →</div>
     </div>
   </a>
@@ -333,48 +282,29 @@
     </div>
   </a>
 
-  <a href="github-copilot-history-lifesaver.html" class="blog-card">
+  <a href="ai-agent-jsonl-and-session-resume-guide.html" class="blog-card">
     <div class="blog-card-body">
-      <div class="blog-tag">AI Tooling · GitHub Copilot</div>
-      <div class="blog-title">Where Did My Copilot Context Go? GitHub Copilot History Guide</div>
-      <div class="blog-desc">3 real-world developer scenarios where saving and searching GitHub Copilot Chat and Copilot Edits history prevents context loss, proves code provenance, and preserves prompt chains.</div>
+      <div class="blog-tag">AI Architecture · JSONL Deep Dive</div>
+      <div class="blog-title">Understanding AI Coding Agent JSONL &amp; Built-In Session Resumption</div>
+      <div class="blog-desc">Deep technical guide to transcript.jsonl architecture, event schemas, and native CLI commands to view and resume Claude Code, OpenAI Codex, and Copilot sessions.</div>
       <div class="blog-readmore">Read Article →</div>
     </div>
   </a>
 
-  <a href="best-mac-developer-apps.html" class="blog-card">
+  <a href="claude-code-session-history-mac.html" class="blog-card">
     <div class="blog-card-body">
-      <div class="blog-tag">Developer Stack · 2026 Roundup</div>
-      <div class="blog-title">10 Best Mac Apps for Developers in 2026 (Essential macOS Tools)</div>
-      <div class="blog-desc">Curated list of the top 10 essential macOS developer apps and utilities in 2026. Boost coding speed, terminal efficiency, clipboard management, container performance, and database workflows.</div>
+      <div class="blog-tag">CLI Agents · Claude Code</div>
+      <div class="blog-title">How to Search, View &amp; Resume Claude Code CLI Sessions</div>
+      <div class="blog-desc">Complete guide to searching, viewing, and resuming Claude Code CLI sessions on macOS, Linux, and Windows. Inspect transcript.jsonl logs, search past prompts, and use the free viewer.</div>
       <div class="blog-readmore">Read Article →</div>
     </div>
   </a>
 
-  <a href="best-mac-clipboard-managers.html" class="blog-card">
+  <a href="codex-session-history-mac.html" class="blog-card">
     <div class="blog-card-body">
-      <div class="blog-tag">macOS Productivity · Benchmark</div>
-      <div class="blog-title">Best Mac Clipboard Managers (2026 Guide)</div>
-      <div class="blog-desc">Comprehensive comparison of the best macOS clipboard managers for developers. Performance benchmarks, memory usage, security analysis, and local-first AI features.</div>
-      <div class="blog-readmore">Read Article →</div>
-    </div>
-  </a>
-
-  <a href="clipboard-privacy-report.html" class="blog-card">
-    <div class="blog-card-body">
-      <div class="blog-tag">Security · Privacy Audit</div>
-      <div class="blog-title">Mac Clipboard Privacy &amp; Security Report (2026)</div>
-      <div class="blog-desc">Why developer clipboard managers must be local-first. Analysis of how cloud clipboard tools handle API keys, SSH tokens, passwords, and PII on macOS.</div>
-      <div class="blog-readmore">Read Article →</div>
-    </div>
-  </a>
-
-  <a href="blog-screenshot-ocr-search.html" class="blog-card">
-    <video autoplay loop muted playsinline class="blog-card-img" aria-label="OCR screenshot search"><source src="screenshots/l2cache-ocr.mp4" type="video/mp4"></video>
-    <div class="blog-card-body">
-      <div class="blog-tag">OCR · Vision Framework</div>
-      <div class="blog-title">How to Search Text Inside Screenshots on Mac with On-Device Apple Vision OCR</div>
-      <div class="blog-desc">Discover how L2Cache automatically scans and indexes text in copied images and screenshots using native Apple Vision OCR, turning pixel blobs into searchable developer code.</div>
+      <div class="blog-tag">CLI Agents · OpenAI Codex</div>
+      <div class="blog-title">How to Find &amp; Resume OpenAI Codex CLI Sessions on Mac</div>
+      <div class="blog-desc">Complete guide on how to find and resume OpenAI Codex CLI sessions on Mac. Inspect rollout JSONL logs, track token usage, and compare native CLI commands with instant search.</div>
       <div class="blog-readmore">Read Article →</div>
     </div>
   </a>
@@ -385,6 +315,70 @@
       <div class="blog-tag">AI · Claude Code · CLI Agents</div>
       <div class="blog-title">How to Find &amp; Resume Claude Code Sessions on Mac</div>
       <div class="blog-desc">Learn how tracking local Claude Code transcripts, JSONL schemas, token usage, and prompt cache hit ratios inside L2Cache helps engineers resume workflows instantly.</div>
+      <div class="blog-readmore">Read Article →</div>
+    </div>
+  </a>
+</div>
+</section>
+
+<section class="blog-section" id="projects-worklog" aria-labelledby="projects-worklog-title">
+  <div class="blog-section-head"><h2 id="projects-worklog-title">Today, projects &amp; Worklog</h2><p>Where you left off, how each project got here, and your hours, from activity already on your Mac.</p></div>
+<div class="blog-grid">
+  <a href="developer-morning-context-today.html" class="blog-card">
+    <div class="blog-card-body">
+      <div class="blog-tag">Today · Developer Home</div>
+      <div class="blog-title">Your Morning Starts With Context, Not Archaeology</div>
+      <div class="blog-desc">Each feature in progress with what you asked, what your agent did, the last commit and the next step, plus cache state, Needs attention and a standup ready to paste.</div>
+      <div class="blog-readmore">Read Article →</div>
+    </div>
+  </a>
+
+  <a href="project-story-git-timeline-mac.html" class="blog-card">
+    <div class="blog-card-body">
+      <div class="blog-tag">Projects · Git</div>
+      <div class="blog-title">See How Your Project Got Here: Commits, Sessions and Tests on One Timeline</div>
+      <div class="blog-desc">Project Story lines up commits, coding-agent sessions, test runs and releases, read from .git without running Git, with milestones labelled by how they're verified.</div>
+      <div class="blog-readmore">Read Article →</div>
+    </div>
+  </a>
+
+  <a href="developer-timesheet-standup-from-activity.html" class="blog-card">
+    <div class="blog-card-body">
+      <div class="blog-tag">Worklog · Timesheet</div>
+      <div class="blog-title">Your Hours, Already Counted: A Timesheet and Standup From Your Coding Activity</div>
+      <div class="blog-desc">Ticket IDs learned from your branches and commits, approximate hours per ticket per day, corrections and CSV export, plus a standup and weekly recap.</div>
+      <div class="blog-readmore">Read Article →</div>
+    </div>
+  </a>
+
+  <a href="day-in-the-life-mac-developer.html" class="blog-card">
+    <div class="blog-card-body">
+      <div class="blog-tag">macOS Engineering · Developer Stack</div>
+      <div class="blog-title">A Day in the Life of a Modern Mac Developer: The 2026 Toolkit</div>
+      <div class="blog-desc">From morning standup and OrbStack containers to offline JWT debugging, directory-aware terminal replay, and Claude Code AI agents—a realistic look at modern macOS developer workflows.</div>
+      <div class="blog-readmore">Read Article →</div>
+    </div>
+  </a>
+</div>
+</section>
+
+<section class="blog-section" id="clipboard" aria-labelledby="clipboard-title">
+  <div class="blog-section-head"><h2 id="clipboard-title">Clipboard &amp; search</h2><p>Smart actions at your cursor, screenshot text, and one search for everything.</p></div>
+<div class="blog-grid">
+  <a href="programmable-clipboard-mac.html" class="blog-card">
+    <div class="blog-card-body">
+      <div class="blog-tag">Clipboard · Smart actions</div>
+      <div class="blog-title">A Programmable Clipboard for Mac: Smart Actions at Your Cursor</div>
+      <div class="blog-desc">Copy JSON, a JWT, SQL, cURL, a log or a colour and the smart bubble offers the right transform at your cursor. Add your own actions as shell commands or AI prompts.</div>
+      <div class="blog-readmore">Read Article →</div>
+    </div>
+  </a>
+
+  <a href="universal-search-mac-developer.html" class="blog-card">
+    <div class="blog-card-body">
+      <div class="blog-tag">Search · ⌘K</div>
+      <div class="blog-title">One ⌘K Search for Everything You Did as a Developer</div>
+      <div class="blog-desc">Clips, screenshot text, agent sessions, terminal commands, commits and files in one search, with the best match first and agent results opened at the matching message.</div>
       <div class="blog-readmore">Read Article →</div>
     </div>
   </a>
@@ -399,52 +393,21 @@
     </div>
   </a>
 
-  <a href="blog-apple-intelligence-clipboard.html" class="blog-card">
-    <video autoplay loop muted playsinline class="blog-card-img" aria-label="Apple Intelligence clipboard privacy"><source src="screenshots/l2cache-smart-connections.mp4" type="video/mp4"></video>
+  <a href="blog-screenshot-ocr-search.html" class="blog-card">
+    <video autoplay loop muted playsinline class="blog-card-img" aria-label="OCR screenshot search"><source src="screenshots/l2cache-ocr.mp4" type="video/mp4"></video>
     <div class="blog-card-body">
-      <div class="blog-tag">Privacy · Apple Intelligence</div>
-      <div class="blog-title">Your Clipboard Manager Is Reading Your API Keys: Why Developer Tools Need On-Device Apple Intelligence</div>
-      <div class="blog-desc">Discover why cloud clipboard tools risk leaking sensitive API keys and JWTs, and how L2Cache uses native Apple Intelligence to keep clipboard history 100% private.</div>
+      <div class="blog-tag">OCR · Vision Framework</div>
+      <div class="blog-title">How to Search Text Inside Screenshots on Mac with On-Device Apple Vision OCR</div>
+      <div class="blog-desc">Discover how L2Cache automatically scans and indexes text in copied images and screenshots using native Apple Vision OCR, turning pixel blobs into searchable developer code.</div>
       <div class="blog-readmore">Read Article →</div>
     </div>
   </a>
 
-  <a href="blog-developer-workflow-apple-intelligence.html" class="blog-card">
-    <video autoplay loop muted playsinline class="blog-card-img" aria-label="Developer workflow on-device AI"><source src="screenshots/l2cache-jwt.mp4" type="video/mp4"></video>
+  <a href="rest-api-developer-tools.html" class="blog-card">
     <div class="blog-card-body">
-      <div class="blog-tag">Developer Tools · AI</div>
-      <div class="blog-title">5 Ways On-Device AI Supercharges macOS Developer Workflows</div>
-      <div class="blog-desc">See how native Apple Intelligence and macOS Vision transform clipboard history for software engineers with instant code detection, terminal screenshot OCR, and smart transformations.</div>
-      <div class="blog-readmore">Read Article →</div>
-    </div>
-  </a>
-
-  <a href="blog-zero-cloud-mac-desktop-ai.html" class="blog-card">
-    <video autoplay loop muted playsinline class="blog-card-img" aria-label="Zero cloud desktop AI"><source src="screenshots/terminal-history.mp4" type="video/mp4"></video>
-    <div class="blog-card-body">
-      <div class="blog-tag">Swift · Architecture</div>
-      <div class="blog-title">Building Zero-Cloud Desktop AI: Swift Concurrency & Apple Intelligence on macOS</div>
-      <div class="blog-desc">Discover how L2Cache achieves sub-100ms desktop AI on macOS using Swift Concurrency, Apple Silicon NPUs, and zero-cloud on-device compute.</div>
-      <div class="blog-readmore">Read Article →</div>
-    </div>
-  </a>
-
-  <a href="blog-sqlite-fts5-hangs.html" class="blog-card">
-    <img loading="lazy" src="screenshots/spotlight-clipboard-search.gif" alt="SQLite FTS5 search" class="blog-card-img"/>
-    <div class="blog-card-body">
-      <div class="blog-tag">SQLite · Performance</div>
-      <div class="blog-title">Preventing SQLite FTS5 Tokenization Hangs on Large Datasets</div>
-      <div class="blog-desc">Learn how to prevent SQLite FTS5 from hanging on massive text blobs using a simple 8KB trigger hack for your full-text search indexes.</div>
-      <div class="blog-readmore">Read Article →</div>
-    </div>
-  </a>
-
-  <a href="blog-swift-sqlite-concurrency.html" class="blog-card">
-    <img loading="lazy" src="screenshots/history-grep.png" alt="Swift SQLite concurrency" class="blog-card-img"/>
-    <div class="blog-card-body">
-      <div class="blog-tag">Swift · SQLite · Concurrency</div>
-      <div class="blog-title">Safe SQLite Concurrency in macOS using Swift Actors and GRDB</div>
-      <div class="blog-desc">Learn how to build a buttery smooth macOS app by isolating heavy SQLite FTS5 operations off the main thread using Swift Actors and GRDB.</div>
+      <div class="blog-tag">REST API · Security &amp; Smart Actions</div>
+      <div class="blog-title">The Modern REST API Developer Toolkit for macOS</div>
+      <div class="blog-desc">Stop leaking production JWTs to public websites. From cURL and Bruno to offline JSON formatting, certificate decoding, and biometric secret protection.</div>
       <div class="blog-readmore">Read Article →</div>
     </div>
   </a>
@@ -479,7 +442,91 @@
     </div>
   </a>
 
+  <a href="best-mac-clipboard-managers.html" class="blog-card">
+    <div class="blog-card-body">
+      <div class="blog-tag">macOS Productivity · Benchmark</div>
+      <div class="blog-title">Best Mac Clipboard Managers (2026 Guide)</div>
+      <div class="blog-desc">Comprehensive comparison of the best macOS clipboard managers for developers. Performance benchmarks, memory usage, security analysis, and local-first AI features.</div>
+      <div class="blog-readmore">Read Article →</div>
+    </div>
+  </a>
+
+  <a href="clipboard-privacy-report.html" class="blog-card">
+    <div class="blog-card-body">
+      <div class="blog-tag">Security · Privacy Audit</div>
+      <div class="blog-title">Mac Clipboard Privacy &amp; Security Report (2026)</div>
+      <div class="blog-desc">Why developer clipboard managers must be local-first. Analysis of how cloud clipboard tools handle API keys, SSH tokens, passwords, and PII on macOS.</div>
+      <div class="blog-readmore">Read Article →</div>
+    </div>
+  </a>
+
+  <a href="blog-apple-intelligence-clipboard.html" class="blog-card">
+    <video autoplay loop muted playsinline class="blog-card-img" aria-label="Apple Intelligence clipboard privacy"><source src="screenshots/l2cache-smart-connections.mp4" type="video/mp4"></video>
+    <div class="blog-card-body">
+      <div class="blog-tag">Privacy · Apple Intelligence</div>
+      <div class="blog-title">Your Clipboard Manager Is Reading Your API Keys: Why Developer Tools Need On-Device Apple Intelligence</div>
+      <div class="blog-desc">Discover why cloud clipboard tools risk leaking sensitive API keys and JWTs, and how L2Cache uses native Apple Intelligence to keep clipboard history 100% private.</div>
+      <div class="blog-readmore">Read Article →</div>
+    </div>
+  </a>
+
+  <a href="blog-developer-workflow-apple-intelligence.html" class="blog-card">
+    <video autoplay loop muted playsinline class="blog-card-img" aria-label="Developer workflow on-device AI"><source src="screenshots/l2cache-jwt.mp4" type="video/mp4"></video>
+    <div class="blog-card-body">
+      <div class="blog-tag">Developer Tools · AI</div>
+      <div class="blog-title">5 Ways On-Device AI Supercharges macOS Developer Workflows</div>
+      <div class="blog-desc">See how native Apple Intelligence and macOS Vision transform clipboard history for software engineers with instant code detection, terminal screenshot OCR, and smart transformations.</div>
+      <div class="blog-readmore">Read Article →</div>
+    </div>
+  </a>
 </div>
+</section>
+
+<section class="blog-section" id="engineering" aria-labelledby="engineering-title">
+  <div class="blog-section-head"><h2 id="engineering-title">Engineering &amp; guides</h2><p>How L2Cache is built, and developer tool roundups.</p></div>
+<div class="blog-grid">
+  <a href="blog-sqlite-fts5-hangs.html" class="blog-card">
+    <img loading="lazy" src="screenshots/spotlight-clipboard-search.gif" alt="SQLite FTS5 search" class="blog-card-img"/>
+    <div class="blog-card-body">
+      <div class="blog-tag">SQLite · Performance</div>
+      <div class="blog-title">Preventing SQLite FTS5 Tokenization Hangs on Large Datasets</div>
+      <div class="blog-desc">Learn how to prevent SQLite FTS5 from hanging on massive text blobs using a simple 8KB trigger hack for your full-text search indexes.</div>
+      <div class="blog-readmore">Read Article →</div>
+    </div>
+  </a>
+
+  <a href="blog-swift-sqlite-concurrency.html" class="blog-card">
+    <img loading="lazy" src="screenshots/history-grep.png" alt="Swift SQLite concurrency" class="blog-card-img"/>
+    <div class="blog-card-body">
+      <div class="blog-tag">Swift · SQLite · Concurrency</div>
+      <div class="blog-title">Safe SQLite Concurrency in macOS using Swift Actors and GRDB</div>
+      <div class="blog-desc">Learn how to build a buttery smooth macOS app by isolating heavy SQLite FTS5 operations off the main thread using Swift Actors and GRDB.</div>
+      <div class="blog-readmore">Read Article →</div>
+    </div>
+  </a>
+
+  <a href="blog-zero-cloud-mac-desktop-ai.html" class="blog-card">
+    <video autoplay loop muted playsinline class="blog-card-img" aria-label="Zero cloud desktop AI"><source src="screenshots/terminal-history.mp4" type="video/mp4"></video>
+    <div class="blog-card-body">
+      <div class="blog-tag">Swift · Architecture</div>
+      <div class="blog-title">Building Zero-Cloud Desktop AI: Swift Concurrency & Apple Intelligence on macOS</div>
+      <div class="blog-desc">Discover how L2Cache achieves sub-100ms desktop AI on macOS using Swift Concurrency, Apple Silicon NPUs, and zero-cloud on-device compute.</div>
+      <div class="blog-readmore">Read Article →</div>
+    </div>
+  </a>
+
+  <a href="best-mac-developer-apps.html" class="blog-card">
+    <div class="blog-card-body">
+      <div class="blog-tag">Developer Stack · 2026 Roundup</div>
+      <div class="blog-title">10 Best Mac Apps for Developers in 2026 (Essential macOS Tools)</div>
+      <div class="blog-desc">Curated list of the top 10 essential macOS developer apps and utilities in 2026. Boost coding speed, terminal efficiency, clipboard management, container performance, and database workflows.</div>
+      <div class="blog-readmore">Read Article →</div>
+    </div>
+  </a>
+</div>
+</section>
+
+
 
 <footer>
   <div class="footer-wrap">

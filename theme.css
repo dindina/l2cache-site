@@ -82,6 +82,14 @@ nav {
 }
 .nav-cta:hover { background: #222; transform: translateY(-1px); }
 .nav-mobile-cta { display: none; }
+/* Phones: the link row and the desktop button don't fit; show the compact Download button instead. */
+@media (max-width: 700px) {
+  .nav-links, .nav-cta { display: none; }
+  .nav-mobile-cta {
+    display: inline-flex; background: #00C896; color: #fff;
+    padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none;
+  }
+}
 
 /* ── Sticky Offline Challenge Bar ── */
 #offline-challenge-bar {
@@ -701,7 +709,7 @@ footer {
 }
 .footer-wrap { max-width: 960px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
 .footer-brand { font-family: var(--mono); color: #fff; font-size: 16px; font-weight: 600; }
-.footer-links { display: flex; gap: 20px; list-style: none; }
+.footer-links { display: flex; flex-wrap: wrap; gap: 12px 20px; list-style: none; }
 .footer-links a { color: #888; text-decoration: none; transition: color 0.15s; }
 .footer-links a:hover { color: #fff; }
 

@@ -48,6 +48,7 @@ PUBLIC_PAGES = [
     "programmable-clipboard-mac.html",
     "project-story-git-timeline-mac.html",
     "developer-timesheet-standup-from-activity.html",
+    "developer-morning-context-today.html",
 ]
 
 # Comparison pages are generated (generate_comparisons.py) and can grow over
