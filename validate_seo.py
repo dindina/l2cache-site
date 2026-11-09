@@ -46,6 +46,8 @@ PUBLIC_PAGES = [
     "coding-agent-memory-mcp-hooks.html",
     "universal-search-mac-developer.html",
     "programmable-clipboard-mac.html",
+    "project-story-git-timeline-mac.html",
+    "developer-timesheet-standup-from-activity.html",
 ]
 
 # Comparison pages are generated (generate_comparisons.py) and can grow over

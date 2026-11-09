@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="author" content="Amvo"/>
+  <meta name="theme-color" content="#0d1117"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>See How Your Project Got Here: Commits, Sessions and Tests | L2Cache</title>
+  <meta name="description" content="L2Cache's Project Story puts commits, coding-agent sessions, test runs and releases on one graph and timeline, read from .git without running Git, with milestones labelled by how they're verified."/>
+  <link rel="icon" type="image/png" href="icon.png"/>
+  <link rel="apple-touch-icon" href="icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #00C896; --bg: #f7f7f5; --bg2: #ffffff; --bg3: #eeeeea;
+      --border: #e4e4e0; --text: #0a0a0a;
+      --text-muted: #555550; --text-dim: #999992;
+      --mono: 'DM Mono', monospace; --serif: "Playfair Display", serif; --sans: 'DM Sans', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .container { max-width: 720px; margin: 0 auto; padding: 80px 24px; min-height: 80vh; }
+    .label { font-family: var(--mono); font-size: 12px; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: inline-block; }
+    h1 { font-family: var(--serif); font-size: 40px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; color: var(--text); }
+    .meta { font-family: var(--mono); font-size: 13px; color: var(--text-dim); margin-bottom: 32px; }
+    h2 { font-family: var(--serif); font-size: 28px; font-weight: 700; margin-top: 48px; margin-bottom: 16px; color: var(--text); }
+    h3 { font-size: 19px; font-weight: 600; margin-top: 28px; margin-bottom: 12px; color: var(--text); }
+    p { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; }
+    ul, ol { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; padding-left: 24px; }
+    li { margin-bottom: 10px; }
+    a { color: #008765; }
+    pre { background: #0D0C1A; padding: 18px; border-radius: 10px; overflow-x: auto; margin-bottom: 24px; border: 1px solid var(--border); }
+    code { font-family: var(--mono); font-size: 14px; background: rgba(0,200,150,0.1); color: #008765; padding: 2px 5px; border-radius: 4px; }
+    pre code { background: transparent; color: #e0ffe8; padding: 0; white-space: pre-wrap; }
+    strong { color: var(--text); font-weight: 600; }
+    .highlight-box { background: rgba(0,200,150,0.08); border-left: 4px solid var(--purple); padding: 22px; margin: 32px 0; border-radius: 0 10px 10px 0; }
+    .highlight-box p { margin-bottom: 0; color: var(--text); }
+    .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; }
+    th { color: var(--text); font-weight: 600; background: var(--bg3); }
+    .note { font-size: 14px; color: var(--text-dim); }
+    .cta-box { background: var(--bg2); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
+    .cta-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+    .cta-btn { display: inline-block; background: var(--purple); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
+    .cta-btn:hover { background: #00a87f; }
+    .related { margin-top: 48px; border-top: 1px solid var(--border); padding-top: 36px; }
+    .related h3 { font-family: var(--serif); font-size: 22px; margin-top: 0; margin-bottom: 20px; }
+    .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .related-grid a { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; }
+    .related-grid a:hover { border-color: var(--purple); }
+    .r-tag { font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em; }
+    .r-title { font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4; }
+    .r-more { font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; }
+    footer { padding: 48px 24px; text-align: center; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-dim); }
+    footer a { color: var(--text-dim); text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: var(--text-muted); }
+    @media (max-width: 600px) {
+      nav { padding: 16px; }
+      .container { padding: 48px 16px; }
+      h1 { font-size: 32px; }
+      h2 { font-size: 24px; }
+      th, td { padding: 8px 6px; font-size: 14px; }
+    }
+  </style>
+  <link rel="stylesheet" href="theme.css">
+  <link rel="canonical" href="https://l2cache.amvo.store/en/project-story-git-timeline-mac">
+
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="L2Cache">
+  <meta property="og:url" content="https://l2cache.amvo.store/en/project-story-git-timeline-mac">
+  <meta property="og:title" content="See How Your Project Got Here: Commits, Sessions and Tests">
+  <meta property="og:description" content="L2Cache's Project Story puts commits, coding-agent sessions, test runs and releases on one graph and timeline, read from .git without running Git, with milestones labelled by how they're verified.">
+  <meta property="og:image" content="https://l2cache.amvo.store/icon.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="L2Cache app icon">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:url" content="https://l2cache.amvo.store/en/project-story-git-timeline-mac">
+  <meta name="twitter:title" content="See How Your Project Got Here: Commits, Sessions and Tests">
+  <meta name="twitter:description" content="L2Cache's Project Story puts commits, coding-agent sessions, test runs and releases on one graph and timeline, read from .git without running Git, with milestones labelled by how they're verified.">
+  <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
+  <meta name="twitter:image:alt" content="L2Cache app icon">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "See How Your Project Got Here: Commits, Sessions and Tests on One Timeline",
+  "description": "L2Cache's Project Story puts commits, coding-agent sessions, test runs and releases on one graph and timeline, read from .git without running Git, with milestones labelled by how they're verified.",
+  "url": "https://l2cache.amvo.store/en/project-story-git-timeline-mac",
+  "datePublished": "2026-11-09",
+  "dateModified": "2026-11-09",
+  "author": { "@type": "Organization", "name": "Amvo", "url": "https://l2cache.amvo.store/en" },
+  "publisher": { "@type": "Organization", "name": "Amvo", "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" } },
+  "image": "https://l2cache.amvo.store/icon.png",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://l2cache.amvo.store/en/project-story-git-timeline-mac" }
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://l2cache.amvo.store/en" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://l2cache.amvo.store/en/blog" },
+    { "@type": "ListItem", "position": 3, "name": "See How Your Project Got Here: Commits, Sessions and Tests", "item": "https://l2cache.amvo.store/en/project-story-git-timeline-mac" }
+  ]
+}
+  </script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="icon.png" width="28" height="28" alt="L2Cache" style="border-radius:7px"/>
+    L2Cache
+  </a>
+</nav>
+
+<div class="container">
+  <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
+  <h1>See how your project got here: commits, sessions and tests on one timeline</h1>
+  <p class="meta">November 9, 2026 · 7 min read</p>
+
+  <p>Ask "what happened on this project last week?" and the answer is spread across tools. Commits are in Git, the reasoning is in a dozen coding-agent sessions, the test results scrolled off a terminal, and the release is a tag somebody pushed on Friday. <code>git log</code> tells you what changed, but not which session produced it, whether the tests passed afterwards, or what's still waiting to be pushed.</p>
+
+  <p>L2Cache already records your agent sessions, commands and Git activity on your Mac. Each project in its <strong>Projects</strong> section brings those together in one place: a <strong>Project Story</strong> of commits, sessions and runs, a short overview of where things stand, and milestones that say exactly how sure they are.</p>
+
+  <h2>Project Story: graph and timeline</h2>
+  <p>Open a project and the Project Story section has two views:</p>
+  <ul>
+    <li><strong>Graph:</strong> the project's commit graph, with branches and merges, and a detail panel for the selected commit. It says plainly when something unusual is going on: a detached HEAD, a merge or rebase in progress, a shallow clone, or no remote.</li>
+    <li><strong>Timeline:</strong> the same history as a list, with everything else that happened around it.</li>
+  </ul>
+  <p>The timeline mixes kinds of events that normally live apart:</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>From</th><th>What appears</th></tr></thead>
+    <tbody>
+      <tr><td>Git</td><td>Commits, merges, new branches and tags</td></tr>
+      <tr><td>Coding agents</td><td>Sessions in Claude Code, Codex, GitHub Copilot, Grok Build and Antigravity</td></tr>
+      <tr><td>Tests and builds</td><td>Runs that passed and runs that failed</td></tr>
+      <tr><td>L2Cache</td><td>Recovery points: snapshots of where you left off</td></tr>
+      <tr><td>Your project</td><td>Dependency changes and deploys</td></tr>
+    </tbody>
+  </table></div>
+  <p>So you can see that a failing test run came right after a particular session, and that the fix landed two commits later.</p>
+
+  <h3>Read from <code>.git</code>, never run</h3>
+  <p>L2Cache reads your repository's files directly: the reflogs and the object store inside <code>.git</code>. It never runs <code>git</code>, never writes to the repository, and drops author and committer identities as it reads. Repositories are found by listing the projects folder you add in Settings; worktrees and submodules count too. If a project has no Git history, the timeline still shows its sessions and runs.</p>
+
+  <h2>Where the project stands</h2>
+  <p>Above the story, a short overview sums up the project in plain lines. Each line links to the evidence behind it: the branches, commits or runs it's counting. Depending on the project, you'll see lines such as:</p>
+  <ul>
+    <li><em>Working on</em> the current branch, and how many commits landed in the last 7 days</li>
+    <li>Merges, active branches and recent releases by tag</li>
+    <li>Uncommitted files, with when that was last seen</li>
+    <li><em>Commits only on this Mac</em>: work that hasn't been pushed</li>
+    <li><em>Branches pushed but not merged</em>, and <em>unmerged branches idle 30+ days</em></li>
+    <li>Failed commands this week, and unfinished agent tasks</li>
+    <li>Commits since the last passing build or test, or <em>No successful build or test recorded on this branch</em></li>
+  </ul>
+  <p>That last line is the one that saves you from shipping on hope: it tells you how much has changed since anything was last verified.</p>
+
+  <h2>Milestones that say how sure they are</h2>
+  <p>L2Cache picks out the moments worth remembering: a branch <strong>started</strong>, a branch <strong>merged</strong>, <strong>tests fixed</strong>, a version <strong>released</strong>, or a <strong>big day</strong> with an unusual amount of work. Work on one branch is grouped into a journey: when it started, how many commits and sessions it took, and where it was merged.</p>
+  <p>The important part is that every milestone carries a label saying where the claim comes from:</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Label</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Git verified</strong></td><td>Backed by the repository itself: a merge commit, a tag, a branch</td></tr>
+      <tr><td><strong>Test verified</strong></td><td>Backed by a recorded passing test or build run</td></tr>
+      <tr><td><strong>You noted</strong></td><td>Something you added or corrected yourself</td></tr>
+      <tr><td><strong>L2Cache inferred</strong></td><td>A reasonable guess from the activity, never shown as fact</td></tr>
+    </tbody>
+  </table></div>
+  <p>Milestones are sorted into <em>In progress</em>, <em>Completed this week</em>, <em>Shipped</em> and <em>Earlier</em>, plus <em>Needs evidence</em> for claims nothing confirms yet and <em>Pinned</em> for the ones you want to keep in view.</p>
+  <p>You stay in charge of the story. You can pin, hide or rename a milestone, correct its type, move it to another project or add a note. The actions on each one depend on what it is and what data backs it: <em>Compare with previous release</em> and <em>Copy release recap</em> for a release, <em>Inspect failure</em> and <em>Continue fixing</em> for a broken build, <em>Open merge commit</em> for a merge, <em>Resume</em> or <em>Open recovery point</em> for unfinished work.</p>
+
+  <h2>Needs attention</h2>
+  <p>L2Cache's Today page has a <strong>Needs attention</strong> card that pulls the loose ends from every project into one list:</p>
+  <ul>
+    <li><strong>The last run failed</strong> on a branch you're working on.</li>
+    <li><strong>Unpushed commits</strong> that exist only on this Mac.</li>
+    <li><strong>Waiting for review:</strong> branches that are pushed but not merged.</li>
+    <li><strong>Idle branches</strong> that haven't moved in 30 days, and groups of related branches that may be the same piece of work.</li>
+  </ul>
+  <p>Several items of the same kind in one project collapse into a single line, so the card stays short.</p>
+
+  <h2>Sharing it</h2>
+  <ul>
+    <li><strong>Weekly recap:</strong> a draft built from the last seven days of milestones. Include or leave out items, edit the wording, then <em>Copy as Markdown</em> or <em>Copy for Slack</em>. <em>Mask names</em> swaps project and branch names for neutral ones when you're sharing outside the team.</li>
+    <li><strong>Project standup:</strong> <em>Copy project standup</em> gives you the last two days of commits and merges, and what's still open, ready to paste.</li>
+    <li><strong>Presentation mode:</strong> masks project names, paths, prompts and commands on screen while you share it.</li>
+  </ul>
+
+  <h2>All local</h2>
+  <p>Everything here is built from files already on your Mac: your repositories, your agents' session files and L2Cache's own history. Nothing is uploaded, and L2Cache doesn't need access to GitHub or any other host to build it.</p>
+  <p>For the time side of the same activity, how many hours went to which ticket, see <a href="developer-timesheet-standup-from-activity.html">a timesheet and standup from your coding activity</a>. For a picture of how this fits into a working day, see <a href="day-in-the-life-mac-developer.html">a day in the life of a Mac developer</a>.</p>
+
+  <h2>The short version</h2>
+  <ul>
+    <li>Project Story shows commits, agent sessions, test runs, recovery points and deploys on one graph and timeline.</li>
+    <li>L2Cache reads <code>.git</code> directly. It never runs or writes Git.</li>
+    <li>Every milestone is labelled Git verified, Test verified, You noted or L2Cache inferred.</li>
+    <li>Needs attention gathers failed runs, unpushed commits and unmerged branches across projects.</li>
+  </ul>
+
+  <div class="related">
+    <h3>Related reading</h3>
+    <div class="related-grid">
+      <a href="developer-timesheet-standup-from-activity.html"><div><div class="r-tag">Worklog</div><div class="r-title">Your hours, already counted: a timesheet and standup from your coding activity</div></div><div class="r-more">Read article →</div></a>
+      <a href="day-in-the-life-mac-developer.html"><div><div class="r-tag">Workflow</div><div class="r-title">A day in the life of a modern Mac developer</div></div><div class="r-more">Read article →</div></a>
+      <a href="universal-search-mac-developer.html"><div><div class="r-tag">Search</div><div class="r-title">One ⌘K search for everything you did as a developer</div></div><div class="r-more">Read article →</div></a>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <div class="cta-title">See your project's whole story</div>
+    <p>L2Cache lines up your commits, coding-agent sessions and test runs per project, on your Mac.</p>
+    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="cta-btn">Download L2Cache for Mac</a>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">Home</a>
+  <a href="blog.html">Blog</a>
+  <a href="support.html">Support</a>
+  <a href="privacy.html">Privacy Policy</a>
+  <br/><br/>
+  © 2026 Amvotech
+</footer>
+</body>
+</html>
