@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="author" content="Amvo"/>
+  <meta name="theme-color" content="#0d1117"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>A Programmable Clipboard for Mac: Smart Actions at Your Cursor | L2Cache</title>
+  <meta name="description" content="Copy JSON, a JWT, SQL, cURL, a log or a colour and L2Cache's smart bubble offers the right transform at your cursor. Add your own actions as shell commands or AI prompts. No Accessibility access needed."/>
+  <link rel="icon" type="image/png" href="icon.png"/>
+  <link rel="apple-touch-icon" href="icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #00C896; --bg: #f7f7f5; --bg2: #ffffff; --bg3: #eeeeea;
+      --border: #e4e4e0; --text: #0a0a0a;
+      --text-muted: #555550; --text-dim: #999992;
+      --mono: 'DM Mono', monospace; --serif: "Playfair Display", serif; --sans: 'DM Sans', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .container { max-width: 720px; margin: 0 auto; padding: 80px 24px; min-height: 80vh; }
+    .label { font-family: var(--mono); font-size: 12px; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: inline-block; }
+    h1 { font-family: var(--serif); font-size: 40px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; color: var(--text); }
+    .meta { font-family: var(--mono); font-size: 13px; color: var(--text-dim); margin-bottom: 32px; }
+    h2 { font-family: var(--serif); font-size: 28px; font-weight: 700; margin-top: 48px; margin-bottom: 16px; color: var(--text); }
+    h3 { font-size: 19px; font-weight: 600; margin-top: 28px; margin-bottom: 12px; color: var(--text); }
+    p { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; }
+    ul, ol { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; padding-left: 24px; }
+    li { margin-bottom: 10px; }
+    a { color: #008765; }
+    pre { background: #0D0C1A; padding: 18px; border-radius: 10px; overflow-x: auto; margin-bottom: 24px; border: 1px solid var(--border); }
+    code { font-family: var(--mono); font-size: 14px; background: rgba(0,200,150,0.1); color: #008765; padding: 2px 5px; border-radius: 4px; }
+    pre code { background: transparent; color: #e0ffe8; padding: 0; white-space: pre-wrap; }
+    strong { color: var(--text); font-weight: 600; }
+    .highlight-box { background: rgba(0,200,150,0.08); border-left: 4px solid var(--purple); padding: 22px; margin: 32px 0; border-radius: 0 10px 10px 0; }
+    .highlight-box p { margin-bottom: 0; color: var(--text); }
+    .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; }
+    th { color: var(--text); font-weight: 600; background: var(--bg3); }
+    .note { font-size: 14px; color: var(--text-dim); }
+    .cta-box { background: var(--bg2); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
+    .cta-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+    .cta-btn { display: inline-block; background: var(--purple); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
+    .cta-btn:hover { background: #00a87f; }
+    .related { margin-top: 48px; border-top: 1px solid var(--border); padding-top: 36px; }
+    .related h3 { font-family: var(--serif); font-size: 22px; margin-top: 0; margin-bottom: 20px; }
+    .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .related-grid a { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; }
+    .related-grid a:hover { border-color: var(--purple); }
+    .r-tag { font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em; }
+    .r-title { font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4; }
+    .r-more { font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; }
+    footer { padding: 48px 24px; text-align: center; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-dim); }
+    footer a { color: var(--text-dim); text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: var(--text-muted); }
+    @media (max-width: 600px) {
+      nav { padding: 16px; }
+      .container { padding: 48px 16px; }
+      h1 { font-size: 32px; }
+      h2 { font-size: 24px; }
+      th, td { padding: 8px 6px; font-size: 14px; }
+    }
+  </style>
+  <link rel="stylesheet" href="theme.css">
+  <link rel="canonical" href="https://l2cache.amvo.store/en/programmable-clipboard-mac">
+
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="L2Cache">
+  <meta property="og:url" content="https://l2cache.amvo.store/en/programmable-clipboard-mac">
+  <meta property="og:title" content="A Programmable Clipboard for Mac: Smart Actions at Your Cursor">
+  <meta property="og:description" content="Copy JSON, a JWT, SQL, cURL, a log or a colour and L2Cache's smart bubble offers the right transform at your cursor. Add your own actions as shell commands or AI prompts. No Accessibility access needed.">
+  <meta property="og:image" content="https://l2cache.amvo.store/icon.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="L2Cache app icon">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:url" content="https://l2cache.amvo.store/en/programmable-clipboard-mac">
+  <meta name="twitter:title" content="A Programmable Clipboard for Mac: Smart Actions at Your Cursor">
+  <meta name="twitter:description" content="Copy JSON, a JWT, SQL, cURL, a log or a colour and L2Cache's smart bubble offers the right transform at your cursor. Add your own actions as shell commands or AI prompts. No Accessibility access needed.">
+  <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
+  <meta name="twitter:image:alt" content="L2Cache app icon">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "A Programmable Clipboard for Mac: Smart Actions at Your Cursor",
+  "description": "Copy JSON, a JWT, SQL, cURL, a log or a colour and L2Cache's smart bubble offers the right transform at your cursor. Add your own actions as shell commands or AI prompts. No Accessibility access needed.",
+  "url": "https://l2cache.amvo.store/en/programmable-clipboard-mac",
+  "datePublished": "2026-11-09",
+  "dateModified": "2026-11-09",
+  "author": { "@type": "Organization", "name": "Amvo", "url": "https://l2cache.amvo.store/en" },
+  "publisher": { "@type": "Organization", "name": "Amvo", "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" } },
+  "image": "https://l2cache.amvo.store/icon.png",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://l2cache.amvo.store/en/programmable-clipboard-mac" }
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://l2cache.amvo.store/en" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://l2cache.amvo.store/en/blog" },
+    { "@type": "ListItem", "position": 3, "name": "A Programmable Clipboard for Mac: Smart Actions at Your Cursor", "item": "https://l2cache.amvo.store/en/programmable-clipboard-mac" }
+  ]
+}
+  </script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="icon.png" width="28" height="28" alt="L2Cache" style="border-radius:7px"/>
+    L2Cache
+  </a>
+</nav>
+
+<div class="container">
+  <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
+  <h1>A programmable clipboard for Mac: smart actions at your cursor</h1>
+  <p class="meta">November 9, 2026 · 7 min read</p>
+
+  <p>A lot of developer work is reshaping text you just copied. Minified JSON that needs formatting, a JWT you want to read, a SQL query you need as an <code>UPDATE</code>, a hex colour you need as a Tailwind class, a URL full of tracking parameters. Usually that means opening a browser tab, finding a tool, pasting, copying the result and pasting again.</p>
+
+  <p>L2Cache does it where you already are. Copy something, and a small <strong>smart bubble</strong> appears next to your cursor with the actions that make sense for what you copied. Pick one, then paste as usual.</p>
+
+  <h2>How it works: copy, pick, paste</h2>
+  <ol>
+    <li><strong>Copy</strong> as you normally would, with ⌘C or the Copy menu, in any app.</li>
+    <li><strong>The bubble appears</strong> next to your cursor. L2Cache has already worked out what kind of content it is, so the bubble's title says so (<em>Code Actions</em>, <em>Table Actions</em>, <em>Docker Actions</em>…) and the best action is first.</li>
+    <li><strong>Pick an action.</strong> L2Cache transforms the text and puts the result back on your clipboard.</li>
+    <li><strong>Paste</strong> with ⌘V. You get the transformed version.</li>
+  </ol>
+  <p>If you don't need it, ignore it. The bubble fades after about four seconds (it waits while your pointer is over it), and a click elsewhere or <strong>Esc</strong> closes it straight away. It never takes keyboard focus from the app you're typing in.</p>
+
+  <h3>Why it doesn't paste for you</h3>
+  <p>Tools that read your selection and paste on your behalf need macOS Accessibility access and simulated keystrokes. The Mac App Store doesn't allow that for an app like L2Cache, and it's a lot of trust to hand over. L2Cache only reads and writes the clipboard, which it already does as a clipboard manager. You do the copying and pasting. That's the whole trick, and it means no extra permissions.</p>
+
+  <h3>It learns your favourite</h3>
+  <p>The bubble remembers the last action you used for each kind of content and puts it first next time. If you always minify JSON rather than format it, minify moves to the front.</p>
+
+  <h2>What it recognises, and what it can do</h2>
+  <p>Here are some of the content types the bubble knows and a few of the actions for each. The labels are the ones you'll see in the app.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>You copy</th><th>Some of the actions</th></tr></thead>
+    <tbody>
+      <tr><td><strong>JSON</strong></td><td>Format JSON · Minify JSON · Repair JSON · Sort JSON keys · Convert to TypeScript interface · Convert to Swift Codable · Convert JSON to Zod Schema · Mask Secret Values</td></tr>
+      <tr><td><strong>JWT</strong></td><td>Decode JWT</td></tr>
+      <tr><td><strong>SQL</strong></td><td>Format SQL · Extract table names · Parameterize · Convert to SELECT (Preview) · Add WHERE safeguard · Convert to Mermaid ER Diagram</td></tr>
+      <tr><td><strong>CSV and tables</strong></td><td>Convert to Markdown table · Convert to JSON array · Convert to SQL Inserts · Transpose Table · Extract headers</td></tr>
+      <tr><td><strong>cURL and HTTP requests</strong></td><td>Sanitize Headers &amp; Auth · Extract URL · Extract body · → Fetch (JS) · → Python requests · → URLSession</td></tr>
+      <tr><td><strong>YAML and XML</strong></td><td>→ JSON · → TOML · Format XML · XML → JSON · XML → Swift Codable</td></tr>
+      <tr><td><strong>Logs</strong></td><td>Redact PII &amp; Secrets · Noise Filter · Search Stack Overflow · Search GitHub Issues</td></tr>
+      <tr><td><strong>AWS ARNs</strong></td><td>Extract ARN components · Open in AWS Console</td></tr>
+      <tr><td><strong>Docker images</strong></td><td>Extract image details · Docker pull command · Docker run command</td></tr>
+      <tr><td><strong>Kubernetes and Terraform</strong></td><td>Extract resource identity · Extract container images · Extract resource addresses</td></tr>
+      <tr><td><strong>Colours</strong></td><td>Copy as RGB · Copy as HSL · Copy as Tailwind class · Copy as Swift Color · Copy as CSS variable</td></tr>
+      <tr><td><strong>Timestamps</strong></td><td>The local and UTC time shown right in the bubble · Convert to ISO 8601 · Convert to Epoch (seconds) · Copy Swift Date() snippet</td></tr>
+      <tr><td><strong>Base64</strong></td><td>Decode Base64 · Inspect Base64</td></tr>
+      <tr><td><strong>Git URLs</strong></td><td>Git clone command · Git add remote origin · Git add submodule</td></tr>
+      <tr><td><strong>Regular expressions</strong></td><td>Test Regex, a live tester that opens in the bubble</td></tr>
+      <tr><td><strong>Links</strong></td><td>Remove UTM params · Decode URL · Encode URL · Convert to cURL</td></tr>
+    </tbody>
+  </table></div>
+  <p>Connection strings, MongoDB queries, GraphQL, Markdown and AI prompts have their own actions too. Most actions run locally and instantly. A few, such as <em>Explain error</em> or <em>Explain request</em>, use AI, and anything that makes a network call says so in its label, such as <em>Execute cURL — sends request</em>.</p>
+
+  <h3>When a copied error has a history</h3>
+  <p>Copy a failing test or an error message, and the bubble can also show <strong>Related History</strong>: commands you ran for the same error before, and, if a coding agent fixed it earlier, a <strong>Previously fixed</strong> card with the cause and the fix. See <a href="coding-agent-memory-mcp-hooks.html">how L2Cache remembers fixes</a>.</p>
+
+  <h2>Make it yours: custom actions</h2>
+  <p>The built-in list covers the common cases. For everything else, add your own in Settings › Custom Actions. Each one has a name, the content types it applies to, and one of two kinds of body:</p>
+  <ul>
+    <li><strong>Shell Command.</strong> Run with <code>/bin/bash -c</code>, with the copied clip on standard input. Whatever the command prints becomes the new clipboard. Anything that reads stdin works: <code>jq</code>, <code>sed</code>, <code>awk</code>, a script of your own.</li>
+    <li><strong>AI Prompt.</strong> L2Cache adds the copied clip to your prompt and runs it with the AI provider you've chosen.</li>
+  </ul>
+  <p>Choose which content types an action applies to, such as JSON, SQL, logs, Docker images, Git URLs and so on, so it only appears when it's relevant. Choosing <em>Text</em> makes it available for any text clip. A built-in playground lets you try an action on sample input before you save it.</p>
+  <pre><code># Shell Command · applies to JSON
+# Keep only the "data" field of an API response
+jq '.data'</code></pre>
+  <p>Custom actions appear in the bubble under their own <strong>Custom Actions</strong> heading, and in the clipboard panel. For a set of ready-made recipes, see <a href="custom-actions.html">custom clipboard actions</a>.</p>
+
+  <h2>Choosing when it appears</h2>
+  <p>By default the bubble appears for <strong>code and developer items</strong>: code, JSON, SQL, YAML, XML, cURL and HTTP requests, JWTs, Base64, colours, CSV, system logs, ARNs, Docker images, Kubernetes manifests, Terraform, connection strings, Git URLs and regular expressions. In Settings › Clipboard you can switch it to <strong>All content types</strong>, which adds links and plain text, pick <strong>Selected types only</strong>, or turn the bubble off. Every action stays available from the clipboard panel either way.</p>
+
+  <h2>Privacy and limits</h2>
+  <ul>
+    <li><strong>Sensitive clips get no bubble.</strong> Passwords, API keys and other clips L2Cache marks sensitive never trigger it, and no action, built-in or custom, runs on them.</li>
+    <li><strong>Cloud AI is labelled.</strong> If you've chosen a cloud AI provider and the bubble offers AI actions, it shows a <em>Cloud AI</em> marker, because those actions send the selected text to that provider. With local AI or AI turned off, nothing leaves your Mac.</li>
+    <li><strong>Big clips stay fast.</strong> To keep the bubble instant, L2Cache decides which actions to offer from the first 4,000 characters. The action you pick still runs on the whole clip.</li>
+    <li><strong>No loops.</strong> When L2Cache writes a result back to the clipboard, it doesn't pop up a bubble for its own copy.</li>
+  </ul>
+
+  <h2>Free and Pro</h2>
+  <p>On the free plan, the first built-in action and the first custom action in each bubble work. The rest need L2Cache Pro, and so does creating and editing custom actions. The free trial includes everything.</p>
+
+  <h2>The short version</h2>
+  <ul>
+    <li>Copy, pick an action from the bubble at your cursor, paste. No extra permissions, no switching apps.</li>
+    <li>It recognises JSON, JWTs, SQL, CSV, cURL, logs, ARNs, Docker, Kubernetes, colours, timestamps, regex and more.</li>
+    <li>Add your own actions as shell commands or AI prompts, limited to the content types you choose.</li>
+    <li>Sensitive clips never get actions, and cloud AI is always labelled.</li>
+  </ul>
+
+  <div class="related">
+    <h3>Related reading</h3>
+    <div class="related-grid">
+      <a href="custom-actions.html"><div><div class="r-tag">Clipboard</div><div class="r-title">Custom clipboard actions and recipes</div></div><div class="r-more">Read guide →</div></a>
+      <a href="clipboard-history-mac.html"><div><div class="r-tag">Clipboard</div><div class="r-title">Clipboard history for Mac</div></div><div class="r-more">Read guide →</div></a>
+      <a href="json-formatter-mac.html"><div><div class="r-tag">Free tool</div><div class="r-title">JSON formatter for Mac</div></div><div class="r-more">Open tool →</div></a>
+      <a href="jwt-decoder-mac.html"><div><div class="r-tag">Free tool</div><div class="r-title">JWT decoder for Mac</div></div><div class="r-more">Open tool →</div></a>
+      <a href="regex-clipboard-mac.html"><div><div class="r-tag">Free tool</div><div class="r-title">Regex tester for your clipboard</div></div><div class="r-more">Open tool →</div></a>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <div class="cta-title">Make your clipboard do the work</div>
+    <p>L2Cache recognises what you copy and offers the right action at your cursor, on your Mac.</p>
+    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="cta-btn">Download L2Cache for Mac</a>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">Home</a>
+  <a href="blog.html">Blog</a>
+  <a href="support.html">Support</a>
+  <a href="privacy.html">Privacy Policy</a>
+  <br/><br/>
+  © 2026 Amvotech
+</footer>
+</body>
+</html>

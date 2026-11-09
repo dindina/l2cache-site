@@ -126,7 +126,7 @@
     }
     .recipe-grid {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       gap: 32px;
       margin-top: 40px;
     }
@@ -136,7 +136,9 @@
       border-radius: 16px;
       padding: 28px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      min-width: 0;
     }
+    @media (max-width: 600px) { .recipe-card { padding: 20px 16px; } }
     .recipe-title {
       font-size: 18px;
       font-weight: 600;
@@ -399,7 +401,8 @@
         padding: 16px 20px;
       }
 
-      .nav-links {
+      .nav-links,
+      .nav-cta {
         display: none;
       }
 
@@ -467,6 +470,8 @@
     <h1>Scriptable Clipboard & Custom Actions</h1>
     <p class="lede">L2Cache lets you build your own custom Clipboard Actions using standard shell commands, ruby scripts, or AI Prompts. Scoped dynamically to target only specific content types.</p>
 
+    <p>Custom actions sit alongside dozens of built-in ones in L2Cache's smart bubble, which appears at your cursor when you copy something. For how the bubble works and what it recognises, see <a href="programmable-clipboard-mac.html">a programmable clipboard for Mac</a>. This page covers building your own, with recipes.</p>
+
     <p>Standard clipboard managers are passive filing cabinets. They store your copied strings but can't do anything with them. If you want to transform a clipboard item (e.g. format JSON, strip formatting, extract IDs), you are forced to paste it into a scratchpad app, modify it, and copy it back.</p>
 
     <p><strong>L2Cache makes your clipboard programmable.</strong> With Custom Shell Actions, you can run any tool that accepts standard input (<code>stdin</code>), processes it, and returns the output via standard output (<code>stdout</code>).</p>
@@ -476,7 +481,7 @@
     <ol style="margin-left: 20px; margin-bottom: 24px;">
       <li style="margin-bottom: 12px;">L2Cache pipes the copied text directly into the standard input (<code>stdin</code>) of your shell script.</li>
       <li style="margin-bottom: 12px;">Your shell script executes (using <code>/bin/bash -c</code> under the hood).</li>
-      <li style="margin-bottom: 12px;">L2Cache intercepts the output (<code>stdout</code>) and updates the clipboard copy with the formatted result.</li>
+      <li style="margin-bottom: 12px;">L2Cache takes the output (<code>stdout</code>) and puts it on the clipboard, ready to paste. Settings › Custom Actions has a playground to try a command on sample input before you save it.</li>
     </ol>
     
     <div style="background: rgba(0, 200, 150, 0.08); border-left: 4px solid #00C896; padding: 16px 20px; margin-bottom: 32px; border-radius: 6px;">
@@ -487,7 +492,7 @@
     <p>You don't want a "Format SQL" action cluttering your options when you copy an image or a URL. L2Cache lets you choose exactly which content types trigger your action:</p>
     <ul style="margin-left: 20px; margin-bottom: 24px;">
       <li>JSON, YAML, XML, SQL, Markdown, GraphQL</li>
-      <li>Docker commands, Kubernetes manifests, AWS resources</li>
+      <li>Docker images, Kubernetes manifests, AWS ARNs, system logs, terminal commands, cURL and HTTP requests</li>
       <li>Git URLs, raw URLs, plain text, or code blocks</li>
     </ul>
 

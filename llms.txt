@@ -14,6 +14,7 @@ L2Cache is designed specifically for software engineers, power users, and privac
 - [OpenAI Codex Session History on Mac](https://l2cache.amvo.store/en/codex-session-history-mac): Guide to locating, parsing, and searching OpenAI Codex terminal rollout JSONL sessions on macOS.
 - [Free Claude & Codex Session Viewer](https://l2cache.amvo.store/en/tools/claude-session-viewer): In-browser, zero-upload tool to inspect and filter JSONL transcripts.
 - [10 Best Mac Apps for Developers in 2026](https://l2cache.amvo.store/en/best-mac-developer-apps): Curated guide to essential macOS developer utilities, terminals, container engines, editors, and offline clipboard security.
+- [A Programmable Clipboard for Mac](https://l2cache.amvo.store/en/programmable-clipboard-mac): The smart bubble that appears at the cursor on copy and offers content-aware transforms for JSON, JWT, SQL, CSV, cURL, logs, AWS ARNs, Docker, Kubernetes, colours, timestamps and regex, plus custom shell-command and AI-prompt actions. No Accessibility access or simulated paste.
 - [Custom Actions & Workflows](https://l2cache.amvo.store/en/custom-actions): Automated clipboard transformations using regex, bash scripts, and custom formatting pipelines.
 - [Developer Clipboard Features](https://l2cache.amvo.store/en/developer-clipboard): Specialized developer workflows, code snippet management, and fast keyboard navigation.
 - [Performance Benchmarks](https://l2cache.amvo.store/en/benchmark): Independent memory and CPU benchmarks showing under 15MB RAM footprint and 0.0% idle CPU usage.
