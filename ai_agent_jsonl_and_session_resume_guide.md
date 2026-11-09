@@ -330,7 +330,7 @@ If you have a `transcript.jsonl` or `rollout-*.jsonl` file and want an instant, 
 If you are on macOS and want an ambient, background indexer:
 * **[L2Cache for Mac](https://apps.apple.com/us/app/l2cache/id6774423992?mt=12)** monitors `~/.claude/projects/` and `~/.codex/sessions/` in real time.
 * It indexes every turn into an embedded **SQLite FTS5 (Full-Text Search)** database.
-* Press `⌥ Space` (Option+Space) from anywhere on your Mac to summon the floating search bar: search any prompt, bash snippet, or tool output across all repositories.
+* Press `⌘⇧V` (Command+Shift+V) from anywhere on your Mac to summon the floating search bar: search any prompt, bash snippet, or tool output across all repositories.
 * Click **"Resume in Terminal"** to launch your terminal directly into that project and resume the session with one keystroke.
 
 ---
