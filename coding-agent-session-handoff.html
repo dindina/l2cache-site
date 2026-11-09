@@ -64,6 +64,7 @@
       .container { padding: 48px 16px; }
       h1 { font-size: 32px; }
       h2 { font-size: 24px; }
+      th, td { padding: 8px 6px; font-size: 14px; }
     }
   </style>
   <link rel="stylesheet" href="theme.css">
@@ -167,7 +168,7 @@ earlier changes may be uncommitted.
     <li><strong>Completed</strong> and <strong>Pending</strong> stop it redoing finished work and point it at the next step.</li>
     <li><strong>Where it left off</strong> keeps your last request and the agent's last reply, so the thread picks up mid-thought.</li>
   </ul>
-  <p>When L2Cache's MCP server is connected (Claude Code and Codex), the handoff ends with the old session's ID and asks the agent to look up earlier fixes and decisions there before re-running diagnostics. The new session then pulls in detail only when it needs it. Without the MCP, the handoff lists the decisions made and the approaches already rejected instead, so nothing only L2Cache knows is lost.</p>
+  <p>When <a href="coding-agent-memory-mcp-hooks.html">L2Cache's MCP server</a> is connected (Claude Code and Codex), the handoff ends with the old session's ID and asks the agent to look up earlier fixes and decisions there before re-running diagnostics. The new session then pulls in detail only when it needs it. Without the MCP, the handoff lists the decisions made and the approaches already rejected instead, so nothing only L2Cache knows is lost.</p>
 
   <h2>How L2Cache adds it for you</h2>
   <p>L2Cache's hooks record each session as it happens: the files changed, the commands run and a short work summary per turn. The handoff is built from that record, on your Mac. There are three ways it reaches a new session.</p>

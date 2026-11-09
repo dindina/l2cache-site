@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="author" content="Amvo"/>
+  <meta name="theme-color" content="#0d1117"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Give Your Coding Agents Memory: MCP Server and Hooks | L2Cache</title>
+  <meta name="description" content="L2Cache's local MCP server gives Claude Code, Codex, Cursor and Antigravity twelve read-only tools for earlier sessions, fixes, clipboard and screenshots, while hooks brief every new session."/>
+  <link rel="icon" type="image/png" href="icon.png"/>
+  <link rel="apple-touch-icon" href="icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #00C896; --bg: #f7f7f5; --bg2: #ffffff; --bg3: #eeeeea;
+      --border: #e4e4e0; --text: #0a0a0a;
+      --text-muted: #555550; --text-dim: #999992;
+      --mono: 'DM Mono', monospace; --serif: "Playfair Display", serif; --sans: 'DM Sans', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .container { max-width: 720px; margin: 0 auto; padding: 80px 24px; min-height: 80vh; }
+    .label { font-family: var(--mono); font-size: 12px; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: inline-block; }
+    h1 { font-family: var(--serif); font-size: 40px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; color: var(--text); }
+    .meta { font-family: var(--mono); font-size: 13px; color: var(--text-dim); margin-bottom: 32px; }
+    h2 { font-family: var(--serif); font-size: 28px; font-weight: 700; margin-top: 48px; margin-bottom: 16px; color: var(--text); }
+    h3 { font-size: 19px; font-weight: 600; margin-top: 28px; margin-bottom: 12px; color: var(--text); }
+    p { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; }
+    ul, ol { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; padding-left: 24px; }
+    li { margin-bottom: 10px; }
+    a { color: #008765; }
+    pre { background: #0D0C1A; padding: 18px; border-radius: 10px; overflow-x: auto; margin-bottom: 24px; border: 1px solid var(--border); }
+    code { font-family: var(--mono); font-size: 14px; background: rgba(0,200,150,0.1); color: #008765; padding: 2px 5px; border-radius: 4px; }
+    pre code { background: transparent; color: #e0ffe8; padding: 0; white-space: pre-wrap; }
+    strong { color: var(--text); font-weight: 600; }
+    .highlight-box { background: rgba(0,200,150,0.08); border-left: 4px solid var(--purple); padding: 22px; margin: 32px 0; border-radius: 0 10px 10px 0; }
+    .highlight-box p { margin-bottom: 0; color: var(--text); }
+    .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; }
+    th { color: var(--text); font-weight: 600; background: var(--bg3); }
+    .note { font-size: 14px; color: var(--text-dim); }
+    .cta-box { background: var(--bg2); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
+    .cta-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+    .cta-btn { display: inline-block; background: var(--purple); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
+    .cta-btn:hover { background: #00a87f; }
+    .related { margin-top: 48px; border-top: 1px solid var(--border); padding-top: 36px; }
+    .related h3 { font-family: var(--serif); font-size: 22px; margin-top: 0; margin-bottom: 20px; }
+    .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .related-grid a { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; }
+    .related-grid a:hover { border-color: var(--purple); }
+    .r-tag { font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em; }
+    .r-title { font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4; }
+    .r-more { font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; }
+    footer { padding: 48px 24px; text-align: center; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-dim); }
+    footer a { color: var(--text-dim); text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: var(--text-muted); }
+    @media (max-width: 600px) {
+      nav { padding: 16px; }
+      .container { padding: 48px 16px; }
+      h1 { font-size: 32px; }
+      h2 { font-size: 24px; }
+      th, td { padding: 8px 6px; font-size: 14px; }
+    }
+  </style>
+  <link rel="stylesheet" href="theme.css">
+  <link rel="canonical" href="https://l2cache.amvo.store/en/coding-agent-memory-mcp-hooks">
+
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="L2Cache">
+  <meta property="og:url" content="https://l2cache.amvo.store/en/coding-agent-memory-mcp-hooks">
+  <meta property="og:title" content="Give Your Coding Agents Memory: MCP Server and Hooks">
+  <meta property="og:description" content="L2Cache's local MCP server gives Claude Code, Codex, Cursor and Antigravity twelve read-only tools for earlier sessions, fixes, clipboard and screenshots, while hooks brief every new session.">
+  <meta property="og:image" content="https://l2cache.amvo.store/icon.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="L2Cache app icon">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:url" content="https://l2cache.amvo.store/en/coding-agent-memory-mcp-hooks">
+  <meta name="twitter:title" content="Give Your Coding Agents Memory: MCP Server and Hooks">
+  <meta name="twitter:description" content="L2Cache's local MCP server gives Claude Code, Codex, Cursor and Antigravity twelve read-only tools for earlier sessions, fixes, clipboard and screenshots, while hooks brief every new session.">
+  <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
+  <meta name="twitter:image:alt" content="L2Cache app icon">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Give Your Coding Agents Memory: L2Cache's MCP Server and Hooks",
+  "description": "L2Cache's local MCP server gives Claude Code, Codex, Cursor and Antigravity twelve read-only tools for earlier sessions, fixes, clipboard and screenshots, while hooks brief every new session.",
+  "url": "https://l2cache.amvo.store/en/coding-agent-memory-mcp-hooks",
+  "datePublished": "2026-11-09",
+  "dateModified": "2026-11-09",
+  "author": { "@type": "Organization", "name": "Amvo", "url": "https://l2cache.amvo.store/en" },
+  "publisher": { "@type": "Organization", "name": "Amvo", "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" } },
+  "image": "https://l2cache.amvo.store/icon.png",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://l2cache.amvo.store/en/coding-agent-memory-mcp-hooks" }
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://l2cache.amvo.store/en" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://l2cache.amvo.store/en/blog" },
+    { "@type": "ListItem", "position": 3, "name": "Give Your Coding Agents Memory: MCP Server and Hooks", "item": "https://l2cache.amvo.store/en/coding-agent-memory-mcp-hooks" }
+  ]
+}
+  </script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="icon.png" width="28" height="28" alt="L2Cache" style="border-radius:7px"/>
+    L2Cache
+  </a>
+</nav>
+
+<div class="container">
+  <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
+  <h1>Give your coding agents memory: L2Cache's MCP server and hooks</h1>
+  <p class="meta">November 9, 2026 · 8 min read</p>
+
+  <p>Every coding-agent session starts out knowing nothing about yesterday. It doesn't know the bug you fixed last week, the approach you already ruled out, the error you just copied, or the screenshot of the failing build. You end up explaining all of it again, and the agent re-runs diagnostics it ran before.</p>
+
+  <p>L2Cache already keeps that history on your Mac: your clipboard, screenshots, terminal commands and every coding-agent session. It connects that history to your agents in two directions:</p>
+  <ul>
+    <li><strong>The agent asks L2Cache</strong>, through an <strong>MCP server</strong>. When it needs an earlier fix, decision or copied snippet, it looks it up.</li>
+    <li><strong>L2Cache briefs the agent</strong>, through <strong>hooks</strong>. At the start of a session and with each prompt, it adds the small amount of context the agent can't get any other way.</li>
+  </ul>
+
+  <h2>Direction 1: agents ask, through MCP</h2>
+  <p>The <a href="https://modelcontextprotocol.io" rel="noopener">Model Context Protocol</a> is a standard way for an AI agent to call tools outside itself. L2Cache ships an MCP server with twelve tools. All of them are <strong>read-only</strong>: they never change your data.</p>
+
+  <h3>Coding-agent memory</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Tool</th><th>What the agent gets back</th></tr></thead>
+    <tbody>
+      <tr><td><code>get_session_summary</code></td><td>What an earlier session worked on: the feature, what got done, the next step and the files it touched. The tool agents are told to call first when resuming.</td></tr>
+      <tr><td><code>search_agent_history</code></td><td>Matches across earlier sessions in Claude Code, Codex, Copilot, Grok Build and Antigravity, by words, code symbols, file paths or error codes. Filters for project, branch, agent and kind (fix, decision, failed command, prompt and so on).</td></tr>
+      <tr><td><code>get_agent_event</code></td><td>One result in full, with the messages just before and after it.</td></tr>
+      <tr><td><code>get_error_resolutions</code></td><td>Earlier fixes: the symptom, root cause, what changed, how it was verified and which files were involved.</td></tr>
+      <tr><td><code>get_decisions</code></td><td>Design decisions and trade-offs from earlier sessions, so the agent doesn't undo one by accident.</td></tr>
+      <tr><td><code>get_recovery_point</code></td><td>Where you left off in a project: the last request and reply, failing commands, recent terminal commands and changed files.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Clipboard, screenshots and files</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Tool</th><th>What the agent gets back</th></tr></thead>
+    <tbody>
+      <tr><td><code>get_recent_clips</code></td><td>Short previews of what you copied recently, filtered by type or source app if needed.</td></tr>
+      <tr><td><code>search_clips</code></td><td>Full-text search of your clipboard history.</td></tr>
+      <tr><td><code>get_clip</code></td><td>One clip in full, including the image if it's a screenshot.</td></tr>
+      <tr><td><code>search_screenshots</code></td><td>Screenshots found by the text inside them, read with on-device OCR.</td></tr>
+      <tr><td><code>search_memory_folders</code></td><td>Text inside the files, PDFs and images in folders you've connected to L2Cache.</td></tr>
+      <tr><td><code>get_folder_item</code></td><td>One of those files in full, or a downscaled image the agent can look at.</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>So "what was that error in the screenshot I took this morning?" or "we fixed this crash before, how?" become questions the agent can answer itself, without you digging through history.</p>
+
+  <h3>Built to stay small</h3>
+  <p>Everything an MCP tool returns lands in the agent's context, so the results are kept short: a handful of results by default, short excerpts rather than whole conversations, and fields the agent already knows left out. The agent fetches the full item only when it needs it. The tool list never changes while the server runs, so it doesn't break the agent's prompt cache.</p>
+
+  <h3>Which agents can use it</h3>
+  <p>Settings › MCP has a ready-to-copy setup line for <strong>Claude Code</strong>, <strong>Claude Desktop</strong>, <strong>Codex</strong>, <strong>Cursor</strong> and <strong>Google Antigravity</strong>. You can also paste a prompt into the agent and let it add the server itself.</p>
+
+  <h2>Direction 2: L2Cache briefs the agent, through hooks</h2>
+  <p>MCP only helps when the agent thinks to ask. Hooks cover the rest. They're small shell commands that coding agents run at fixed moments: when a session starts, when you send a prompt, after the agent edits a file or runs a command, and when it stops. L2Cache uses them for two jobs: <strong>recording</strong> what happens, and <strong>adding</strong> a little context at the right moment.</p>
+
+  <h3>What gets recorded</h3>
+  <ul>
+    <li>Which files the agent edited, and which shell commands it ran, including the ones that failed.</li>
+    <li>A one-line work summary at the end of each turn that edited files. The agent writes it as a hidden comment: the feature, what changed, and the next step. L2Cache checks it against the file changes it recorded, so it never shows the agent's claim as fact. These summaries feed the <strong>Your Day</strong> card on L2Cache's Today page and the handoffs below.</li>
+    <li>When you copied an error and the agent fixed it <em>and</em> confirmed the fix with a passing test or build, a short fix record: symptom, cause, fix, verification and files. Copy the same error later and L2Cache's action bubble shows the earlier fix; agents can find it with <code>get_error_resolutions</code>.</li>
+  </ul>
+
+  <h3>What gets added</h3>
+  <ul>
+    <li><strong>A handoff when a new session starts:</strong> the goal, files, completed and pending work, and where the last session left off. See <a href="coding-agent-session-handoff.html">starting a fresh session without losing context</a>.</li>
+    <li><strong>Recent clipboard items with your prompt:</strong> up to five things you copied in the last 30 minutes that the session hasn't seen and you didn't paste yourself. Most prompts get nothing, which is the point: it only speaks up when you just copied something relevant.</li>
+    <li><strong>What compaction dropped:</strong> after Claude Code or Codex compacts its context, L2Cache checks the summary and adds back up to five missing facts, such as files edited since the last commit, a command that's still failing, or the next step.</li>
+    <li><strong>Cost warnings:</strong> a note when a session gets heavy, and the cold resume guard when you resume a session whose prompt cache has expired. See <a href="claude-code-cold-cache-resume-cost.html">why resuming a cold session costs more</a>.</li>
+  </ul>
+
+  <h3>Which agents get which hooks</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Hook feature</th><th>Claude Code</th><th>Codex</th><th>Grok Build</th><th>GitHub Copilot</th></tr></thead>
+    <tbody>
+      <tr><td>Live capture (edits, commands, sessions)</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Handoff when a session starts</td><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+      <tr><td>Recent clipboard with your prompt</td><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+      <tr><td>Work summaries</td><td>Yes</td><td>Yes</td><td>No</td><td>No</td></tr>
+      <tr><td>Cost warnings and cold resume guard</td><td>Yes</td><td>Yes</td><td>No</td><td>No</td></tr>
+    </tbody>
+  </table></div>
+  <p>You connect each agent in Settings › Coding agents, and each feature has its own switch. Hooks and agent history over MCP are part of Developer Pro, which the free trial includes.</p>
+
+  <h2>Why both</h2>
+  <p>The two halves cover each other's gaps. A hook can add context before the first prompt, but it has to stay short, because whatever it adds is carried in every request after that. MCP can go deep, but only when the agent decides to look. So L2Cache uses hooks for the few lines every session needs, and gives the agent tools to fetch everything else on demand. A handoff ends by pointing the new session at <code>get_session_summary</code> and the old session's ID, so the deep detail is one call away.</p>
+
+  <h2>Privacy and safety</h2>
+  <ul>
+    <li><strong>Everything stays on your Mac.</strong> The MCP server reads a local snapshot that L2Cache keeps in <code>~/.l2cache</code>. Nothing listens on a network port, and nothing is sent to L2Cache's servers.</li>
+    <li><strong>No helper binary.</strong> The MCP server is a script run by macOS's own JavaScript interpreter (<code>osascript</code>), so there's nothing extra to install or approve.</li>
+    <li><strong>Sensitive items are never available.</strong> Clips marked sensitive, such as passwords and API keys, and apps you've excluded are filtered out before the snapshot is written. Agents can't ask for them.</li>
+    <li><strong>History is treated as reference, not instructions.</strong> Context L2Cache adds is labelled as earlier history, so the agent checks it against the code instead of following it blindly.</li>
+    <li><strong>Hooks fail quietly.</strong> They have short time limits, and if anything goes wrong they get out of the way. A broken hook never blocks a prompt or prints L2Cache errors into your terminal.</li>
+    <li><strong>You can turn it off.</strong> Switching off agent history in Settings removes the session history from the snapshot straight away.</li>
+  </ul>
+
+  <h2>The short version</h2>
+  <ul>
+    <li>MCP gives agents twelve read-only tools to look up your earlier sessions, fixes, decisions, clipboard, screenshots and files.</li>
+    <li>Hooks record what agents do and add a handoff, recent clips and missing facts at the moments that matter.</li>
+    <li>It all runs locally, and sensitive items are never shared.</li>
+  </ul>
+
+  <div class="related">
+    <h3>Related reading</h3>
+    <div class="related-grid">
+      <a href="coding-agent-session-handoff.html"><div><div class="r-tag">Coding agents</div><div class="r-title">Start a fresh coding-agent session without losing context</div></div><div class="r-more">Read article →</div></a>
+      <a href="universal-search-mac-developer.html"><div><div class="r-tag">Search</div><div class="r-title">One ⌘K search for everything you did as a developer</div></div><div class="r-more">Read article →</div></a>
+      <a href="claude-code-session-history-mac.html"><div><div class="r-tag">Claude Code</div><div class="r-title">Claude Code session history on Mac</div></div><div class="r-more">Read guide →</div></a>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <div class="cta-title">Give your agents a memory</div>
+    <p>L2Cache connects your clipboard, screenshots and coding-agent history to Claude Code, Codex and more, all on your Mac.</p>
+    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="cta-btn">Download L2Cache for Mac</a>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">Home</a>
+  <a href="blog.html">Blog</a>
+  <a href="support.html">Support</a>
+  <a href="privacy.html">Privacy Policy</a>
+  <br/><br/>
+  © 2026 Amvotech
+</footer>
+</body>
+</html>
