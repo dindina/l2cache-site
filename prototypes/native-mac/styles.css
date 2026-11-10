@@ -349,6 +349,7 @@ h2 kbd { font-size: 0.62em; vertical-align: 0.12em; }
     var(--bg);
 }
 .bridge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-5); align-items: stretch; }
+.bridge-grid.single-col { grid-template-columns: 1fr; max-width: 820px; margin: 0 auto; }
 .bridge-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -832,11 +833,83 @@ h2 kbd { font-size: 0.62em; vertical-align: 0.12em; }
 .sb-pane .today-mock { max-width: none; }
 .sb-pane .bridge-grid { grid-template-columns: 1fr 1fr; }
 /* Bridge cards are light-theme cards; restyle them as dark app panels inside the window. */
-.sb-pane .bridge-card { background: #1b1a21; border-color: var(--m-line); color: var(--m-text); box-shadow: none; }
-.sb-pane .bridge-card h3 { color: var(--m-text); }
+.sb-pane .bridge-card { background: #1b1a21; border-color: var(--m-line); color: var(--m-text); box-shadow: none; padding: 20px 22px; }
+.sb-pane .bridge-card h3 { color: var(--m-text); font-size: 20px; line-height: 1.25; margin: 8px 0 10px; }
 .sb-pane .bridge-card p, .sb-pane .bridge-card li, .sb-pane .bridge-kicker { color: var(--m-text-2); }
+.sb-pane .bridge-card p { font-size: 13.5px; line-height: 1.5; margin-bottom: 12px; }
+.sb-pane .bridge-card .points { font-size: 13px; line-height: 1.45; margin-bottom: 10px; }
+.sb-pane .bridge-card .points li { margin-bottom: 8px; }
 .sb-pane .bridge-card li strong { color: var(--m-text); }
-.sb-pane .tool-chips code { background: rgba(255,255,255,.06); border-color: var(--m-line); color: var(--m-text-2); }
+.sb-pane .bridge-foot { font-size: 12px !important; padding-top: 8px !important; margin-top: auto !important; }
+.sb-pane .bridge-badge {
+  background: rgba(167, 139, 250, 0.16);
+  color: #c4b5fd;
+  border: 1px solid rgba(167, 139, 250, 0.3);
+}
+.sb-pane code {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #93c5fd;
+  padding: 1px 6px;
+  border-radius: 5px;
+}
+.sb-pane .tool-chips code { background: rgba(255,255,255,.06); border-color: var(--m-line); color: var(--m-text-2); font-size: 12px; padding: 4px 8px; }
+
+/* Daily Timeline Flow inside MCP and Hooks cards */
+.sb-pane .day-flow { display: flex; flex-direction: column; gap: 7px; margin: 4px 0 10px; }
+.sb-pane .day-step {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--m-line);
+  border-radius: 8px;
+  padding: 8px 11px;
+}
+.sb-pane .day-step-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.sb-pane .day-step-time {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #c4b5fd;
+}
+.sb-pane .day-step-tag {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #a19fad;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.sb-pane .day-step-cmd {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.sb-pane .day-step-cmd code {
+  background: rgba(15, 14, 23, 0.85);
+  border: 1px solid rgba(110, 231, 183, 0.28);
+  color: #6ee7b7;
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-size: 11px;
+}
+.sb-pane .day-step-desc {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: #c4c2d4;
+  margin: 0;
+}
+.sb-pane .day-step-desc strong {
+  color: #ffffff;
+}
 .sb-pane.is-in { animation: sb-in .3s ease both; }
 @keyframes sb-in { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: none; } }
 .sb-caption { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--s-7); margin-top: var(--s-6); align-items: start; }
