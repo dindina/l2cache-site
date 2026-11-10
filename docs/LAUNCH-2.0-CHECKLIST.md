@@ -12,7 +12,7 @@ Do these in order once 2.0 is live in the App Store.
 - [ ] `day-in-the-life-mac-developer.html`: "Coming in L2Cache 2.0: the Today page shows…" → "L2Cache's Today page shows…", and "2.0 builds one" → "L2Cache builds one".
 - [ ] `grep -rn "Coming in\|coming soon\|1\.4\.6" --include=*.html .` comes back clean (outside `out/`).
 
-## 2. Tighten the redirects (one hop each) — done 2026-11-11, not yet deployed
+## 2. Tighten the redirects (one hop each) — done and deployed 2026-11-11
 - [x] Old-host language homepages (`/de`, `/fr`, `/it`, `/es`, `/ja`, `/ko`, `/pt-BR`, `/vi`, `/zh-Hans`, `/zh-hans`, `/pt-br`, `/{lang}/index.html`) take 2–3 hops via `l2cache.app/{lang}`. Point them straight at `https://l2cache.app/` until translated homepages (W3) exist.
 - [x] Old-host `/tools` goes `/en/tools/` → `/en/tools`. Add an explicit `/tools` → `https://l2cache.app/en/tools` rule before `/tools/:tool*`.
 - [x] Leave `/{lang}/page.html` (2 hops through Vercel's clean-URL redirect); Google follows it.
