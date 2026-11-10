@@ -64,7 +64,7 @@
     });
   });
   // Menu links that name a feature without its own sidebar item open the item it lives in.
-  var ALIAS = { home: 'today', context: 'agents', 'agent-tools': 'mcp', mcp: 'mcp', hooks: 'hooks', settings: 'settings' };
+  var ALIAS = { home: 'today', context: 'agents', 'agent-tools': 'mcp' };
   function fromHash() {
     var h = location.hash.slice(1);
     var t = stage.querySelector('[data-feature="' + (ALIAS[h] || h) + '"]');

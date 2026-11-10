@@ -65,17 +65,17 @@
       <h2>Agents made coding faster. Nobody can see what the sessions cost.</h2>
     </div>
     <div class="problems">
-      <div class="problem"><span class="big">≈20×</span><h3>Cold restarts cost the most</h3><p>Resume a big session after its cache expired and the next message re-writes the whole context, about 20 times the cost of reading it from a warm cache. Nothing tells you it happened.</p></div>
+      <div class="problem"><span class="big">12–80×</span><h3>Cold restarts cost the most</h3><p>Resume a big session after its cache expired and the next message re-writes the whole context, 12 to 80 times the cost of reading it from a warm cache, depending on the model. Nothing tells you it happened.</p></div>
       <div class="problem"><span class="big">Tokens ≠ work</span><h3>Usage without outcomes</h3><p>Vendor dashboards count usage per tool. They don't show which sessions became commits, which ones stalled, or what was wasted.</p></div>
       <div class="problem"><span class="big">Day 2</span><h3>Context gets lost</h3><p>After a /clear, a new day or a hand-over to a teammate, the agent starts over and work gets redone.</p></div>
     </div>
     <details class="method">
-      <summary>How we got ≈20×</summary>
+      <summary>How we got 12–80×</summary>
       <div class="method-body">
-        <p>Under Anthropic's standard prompt-cache pricing, writing context into a 1-hour cache costs 2× the model's base input price per token. Reading that context from a warm cache costs 0.1×.</p>
+        <p>Under Anthropic's standard prompt-cache pricing, writing context into a 1-hour cache costs 2× the model's base input price per token. Reading that context from a warm cache costs 0.1× on Sonnet 5.5 and most models, 0.05× on Opus 5.5 and 0.025× on Fable 5.1.</p>
         <p>When the cache has expired, resuming a session can require writing the existing context again instead of reading it from cache:</p>
-        <p><strong>2 ÷ 0.1 = 20× the cost for that context.</strong></p>
-        <p>With a 5-minute cache, the write costs 1.25×, giving a <strong>12.5×</strong> comparison.</p>
+        <p><strong>2 ÷ 0.1 = 20× the cost for that context on Sonnet 5.5, 40× on Opus 5.5 and 80× on Fable 5.1.</strong></p>
+        <p>With a 5-minute cache, the write costs 1.25×, giving <strong>12.5×</strong>, 25× and 50×.</p>
         <p>This is the cost of reloading the existing context, not the entire turn. The new message and generated reply still cost the same either way. For a large session, however, reloading the context can dominate the cost.</p>
         <h4>What we observed</h4>
         <p>Across one heavy Claude Code user's sessions over 30 days, cold reloads accounted for:</p>

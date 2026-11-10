@@ -26,7 +26,7 @@
 
   <link rel="icon" href="img/icon-64.png" type="image/png">
   <link rel="apple-touch-icon" href="img/icon-180.png">
-  <link rel="stylesheet" href="styles.css?v=20261110_7">
+  <link rel="stylesheet" href="styles.css?v=20261110_8">
   <style>
     /* Direct override to guarantee instant browser update */
     .hero-reasons li {
@@ -86,112 +86,9 @@
       border-color: var(--sc) !important;
       color: var(--sc) !important;
     }
-
-    /* Live Demo MCP & Hooks Daily Timeline */
-    .sb-pane .bridge-card {
-      padding: 18px 20px !important;
-    }
-    .sb-pane .bridge-card h3 {
-      font-size: 19px !important;
-      line-height: 1.25 !important;
-      margin: 6px 0 8px !important;
-    }
-    .sb-pane .bridge-card p {
-      font-size: 13px !important;
-      line-height: 1.45 !important;
-      margin-bottom: 10px !important;
-    }
-    .sb-pane .bridge-card .points {
-      font-size: 12.5px !important;
-      line-height: 1.4 !important;
-      margin-bottom: 8px !important;
-    }
-    .sb-pane .bridge-card .points li {
-      margin-bottom: 6px !important;
-    }
-    .sb-pane .bridge-foot {
-      font-size: 11.5px !important;
-      padding-top: 8px !important;
-      margin-top: auto !important;
-      color: var(--m-text-3) !important;
-    }
-    .sb-pane .bridge-badge {
-      background: rgba(167, 139, 250, 0.16) !important;
-      color: #c4b5fd !important;
-      border: 1px solid rgba(167, 139, 250, 0.3) !important;
-    }
-    .sb-pane code {
-      background: rgba(0, 0, 0, 0.45) !important;
-      border: 1px solid rgba(255, 255, 255, 0.1) !important;
-      color: #93c5fd !important;
-      padding: 1px 6px !important;
-      border-radius: 5px !important;
-    }
-    .sb-pane .tool-chips code {
-      background: rgba(255,255,255,.06) !important;
-      border-color: var(--m-line) !important;
-      color: var(--m-text-2) !important;
-      font-size: 11.5px !important;
-      padding: 3px 7px !important;
-    }
-    .sb-pane .day-flow { display: flex; flex-direction: column; gap: 6px; margin: 3px 0 8px; }
-    .sb-pane .day-step {
-      background: rgba(0, 0, 0, 0.32) !important;
-      border: 1px solid var(--m-line) !important;
-      border-radius: 8px !important;
-      padding: 7px 10px !important;
-    }
-    .sb-pane .day-step-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 3px;
-    }
-    .sb-pane .day-step-time {
-      font-family: var(--font-mono);
-      font-size: 9.5px !important;
-      font-weight: 700 !important;
-      letter-spacing: 0.04em !important;
-      color: #c4b5fd !important;
-    }
-    .sb-pane .day-step-tag {
-      font-family: var(--font-mono);
-      font-size: 9px !important;
-      padding: 1px 5px !important;
-      border-radius: 4px !important;
-      background: rgba(255, 255, 255, 0.08) !important;
-      color: #a19fad !important;
-      border: 1px solid rgba(255, 255, 255, 0.06) !important;
-    }
-    .sb-pane .day-step-cmd {
-      font-family: var(--font-mono);
-      font-size: 11px !important;
-      margin-bottom: 2px !important;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .sb-pane .day-step-cmd code {
-      background: rgba(15, 14, 23, 0.9) !important;
-      border: 1px solid rgba(110, 231, 183, 0.3) !important;
-      color: #6ee7b7 !important;
-      padding: 2px 6px !important;
-      border-radius: 4px !important;
-      font-size: 10.5px !important;
-      font-weight: 500 !important;
-    }
-    .sb-pane .day-step-desc {
-      font-size: 11px !important;
-      line-height: 1.4 !important;
-      color: #c4c2d4 !important;
-      margin: 0 !important;
-    }
-    .sb-pane .day-step-desc strong {
-      color: #ffffff !important;
-    }
   </style>
   <script>document.documentElement.classList.add("js");</script>
-  <script src="script.js?v=20261110_4" defer></script>
+  <script src="script.js?v=20261110_7" defer></script>
 
   <script type="application/ld+json">
   {
@@ -412,7 +309,7 @@
           <li class="reason-lead">
             <p class="reason-time"><span class="pulse-dot" aria-hidden="true">●</span> 13:30 · Cache alert</p>
             <p class="reason-title">“Will resuming this cost me?”</p>
-            <p>Resuming an expired session can cost up to 40× more. L2Cache flags cold caches before they burn your weekly limit.</p>
+            <p>Resuming an expired session can cost up to 80× more. L2Cache flags cold caches before they burn your weekly limit.</p>
             <a class="reason-link" href="/en/claude-code-cold-cache-resume-cost">Why →</a>
           </li>
           <li>
@@ -439,7 +336,7 @@
 
       <figure class="wrap hero-shot stage mock sb">
 <p class="demo-hint"><span><i aria-hidden="true"></i><b>Live demo.</b> Click around the app to explore L2Cache.</span></p>
-<div class="sb-caption-wrap" style="--sc: var(--c-agent)"><div class="sb-caption" id="cap-today"><div><p class="eyebrow">Today</p><h3>Your morning starts with context, not archaeology.</h3></div><div><p class="lead">Open L2Cache and Today shows the last thing you were doing in every project: what you asked your agent, what it finished, and the one step that comes next.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Today</span><span class="when-open">Less about Today</span></summary><div class="sbm-body"><ul><li><strong>You were working on.</strong><span>The goal of your last agent session, in your own words.</span></li><li><strong>Last update.</strong><span>What the agent reported before you stopped.</span></li><li><strong>Resume.</strong><span>Reopen the session in the agent you were using, in one click.</span></li><li><strong>Needs attention.</strong><span>Failed runs, unpushed commits and branches pushed but never merged.</span></li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-agents"><div><p class="eyebrow">Coding agents</p><h3>Your coding agents finally have a history.</h3></div><div><p class="lead">Every agent keeps its sessions in a different place and format. L2Cache reads your Claude Code session history and Codex session history, plus Copilot, Grok Build and Antigravity, from your Mac and lays it out by project and branch. A conversation from last Tuesday is a search away, and you can resume Claude Code or Codex right where it stopped.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Coding agents</span><span class="when-open">Less about Coding agents</span></summary><div class="sbm-body"><ul><li><strong>Resume.</strong><span>Copy or run the resume command for a supported session. The agent's CLI and the original session need to be available.</span></li><li><strong>Handoff.</strong><span>Live capture and session handoff for Claude Code, Codex, GitHub Copilot and Grok Build.</span></li><li><strong>Plans and skills.</strong><span>Browse plans from Claude Code and Antigravity, and installed skills and their use from Claude Code and Codex.</span></li></ul><p class="note">Available details and live-continuity features vary by agent.</p></div></details></div><div class="sb-caption" hidden="" id="cap-mcp"><div><p class="eyebrow">MCP Server</p><h3>Your agents can ask L2Cache directly.</h3></div><div><p class="lead">Connect the L2Cache MCP server and Claude Code, Codex, Cursor and Antigravity query your clips, screenshots, past error resolutions and decisions on-demand.</p></div><details class="sbm-more"><summary><span class="when-closed">More about MCP Server</span><span class="when-open">Less about MCP Server</span></summary><div class="sbm-body"><ul><li><strong>11 Built-in MCP Tools.</strong><span>Clips, screenshots, git recovery points, decisions and error resolutions.</span></li><li><strong>No copy-pasting.</strong><span>Agents recall what you copied and debugged without manual prompt entry.</span></li><li><strong>Local-only.</strong><span>Runs strictly on your Mac. Sensitive keys and tokens are automatically masked.</span></li><li><strong>Works across clients.</strong><span>Claude Code, Claude Desktop, Codex, Cursor and Google Antigravity.</span></li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-hooks"><div><p class="eyebrow">Continuity Hooks</p><h3>Every session starts briefed, with zero setup.</h3></div><div><p class="lead">Turn-by-turn hooks brief new agent sessions with what you copied, hand off context between sessions, and guard against expensive cold cache reloads.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Hooks</span><span class="when-open">Less about Hooks</span></summary><div class="sbm-body"><ul><li><strong>Recent clipboard injection.</strong><span>Clips from the last 30 minutes ride along with new prompts.</span></li><li><strong>Session handoff.</strong><span>A fresh session picks up where the last one stopped.</span></li><li><strong>Cold resume guard.</strong><span>Claude Code warns you before your first message into an expired cache.</span></li><li><strong>Work summaries.</strong><span>Finished edits feed your automated timesheet and standup.</span></li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-settings"><div><p class="eyebrow">Settings</p><h3>Privacy, exclusions, and local control.</h3></div><div><p class="lead">Manage app exclusions, sensitive secret masking, retention rules, and global shortcuts—everything stored locally on your Mac.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Settings</span><span class="when-open">Less about Settings</span></summary><div class="sbm-body"><ul><li><strong>App exclusions.</strong><span>Prevent password managers or private windows from ever being captured.</span></li><li><strong>Secret masking.</strong><span>API keys, JWTs, and bearer tokens are automatically masked.</span></li><li><strong>Presentation mode.</strong><span>Mask project names, prompts, and paths during screen sharing.</span></li><li><strong>Shortcuts.</strong><span>Customize ⌘⇧V, ⌘K, and ⌥V for your workflow.</span></li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-worklog"><div><p class="eyebrow">Worklog</p><h3>Your hours, already counted.</h3></div><div><p class="lead">Tickets you worked on and approximate hours per day, which you can correct and copy into your timesheet tool, plus an editable standup built from your recorded activity.</p></div><ul></ul></div><div class="sb-caption" hidden="" id="cap-projects"><div><p class="eyebrow">Projects</p><h3>Every project keeps its story.</h3></div><div><p class="lead">Commits, branches, agent sessions, test runs and releases line up on one timeline per project, so you can see how the work got here, not just where it is.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Projects</span><span class="when-open">Less about Projects</span></summary><div class="sbm-body"><ul><li><strong>Project Story.</strong> A commit graph and timeline read straight from <code>.git</code>. L2Cache never runs Git for you.</li><li><strong>Milestones.</strong> Each piece of evidence is labelled Git verified, Test verified, You noted, or L2Cache inferred.</li><li><strong>Worklog.</strong> Tickets you worked on and approximate hours per day, which you can correct and copy into your timesheet tool.</li><li><strong>Weekly Brief &amp; standup.</strong> An editable standup built from your recorded activity.</li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-search"><div><p class="eyebrow">Search</p><h3>Find the thread with <kbd>⌘</kbd><kbd>K</kbd>.</h3></div><div><p class="lead">One search across your projects, agent sessions, terminal history, Git activity, screenshots and clipboard. The command you ran, the error you copied and the screenshot you took are in the same place.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Search</span><span class="when-open">Less about Search</span></summary><div class="sbm-body"><ul><li><strong>Best match first.</strong> A top hit across clips, agent sessions, terminal commands, commits and docs, then the rest grouped by kind.</li><li><strong>Narrow it down.</strong> Filter by kind, or type <code>@project</code> to search one project.</li><li><strong>Straight to the moment.</strong> An agent result opens the session at the matching message.</li><li><strong>Screenshot search.</strong> Find a screenshot by the text inside it.</li><li><strong>Quick panel.</strong> <kbd>⌘</kbd><kbd>⇧</kbd><kbd>V</kbd> brings up your history from any app.</li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-clipboard"><div><p class="eyebrow">Clipboard</p><h3>Everything you copied and ran, by project.</h3></div><div><p class="lead">Your clipboard and shell history stop being one long list. Each clip and command lands in the project it came from, so the snippet from this morning is next to the work it was for.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Clipboard</span><span class="when-open">Less about Clipboard</span></summary><div class="sbm-body"><ul><li><strong>Smart clipboard.</strong> Clips are recognised as code, JSON, SQL, URLs, colours and more, with actions for each type. Pin the ones you reuse.</li><li><strong>Terminal history.</strong> Every command with its exit code, grouped by day and filterable by project or tool.</li><li><strong>Your shell and your agents.</strong> See the commands you ran, the ones your coding agents ran, or both.</li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-terminal"><div><p class="eyebrow">Terminal</p><h3>Every command, with its exit code.</h3></div><div><p class="lead">Every command, grouped by day and filterable by project or tool. See the commands you ran, the ones your coding agents ran, or both.</p></div><ul></ul></div></div>
+<div class="sb-caption-wrap" style="--sc: var(--c-agent)"><div class="sb-caption" id="cap-today"><div><p class="eyebrow">Today</p><h3>Your morning starts with context, not archaeology.</h3></div><div><p class="lead">Open L2Cache and Today shows the last thing you were doing in every project: what you asked your agent, what it finished, and the one step that comes next.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Today</span><span class="when-open">Less about Today</span></summary><div class="sbm-body"><ul><li><strong>You were working on.</strong><span>The goal of your last agent session, in your own words.</span></li><li><strong>Last update.</strong><span>What the agent reported before you stopped.</span></li><li><strong>Resume.</strong><span>Reopen the session in the agent you were using, in one click.</span></li><li><strong>Needs attention.</strong><span>Failed runs, unpushed commits and branches pushed but never merged.</span></li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-agents"><div><p class="eyebrow">Coding agents</p><h3>Your coding agents finally have a history.</h3></div><div><p class="lead">Every agent keeps its sessions in a different place and format. L2Cache reads your Claude Code session history and Codex session history, plus Copilot, Grok Build and Antigravity, from your Mac and lays it out by project and branch. A conversation from last Tuesday is a search away, and you can resume Claude Code or Codex right where it stopped.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Coding agents</span><span class="when-open">Less about Coding agents</span></summary><div class="sbm-body"><ul><li><strong>Resume.</strong><span>Copy or run the resume command for a supported session. The agent's CLI and the original session need to be available.</span></li><li><strong>Handoff.</strong><span>Live capture and session handoff for Claude Code, Codex, GitHub Copilot and Grok Build.</span></li><li><strong>Plans and skills.</strong><span>Browse plans from Claude Code and Antigravity, and installed skills and their use from Claude Code and Codex.</span></li></ul><p class="note">Available details and live-continuity features vary by agent.</p></div></details></div><div class="sb-caption" hidden="" id="cap-mcp"><div><p class="eyebrow">MCP Server</p><h3>Your agents can ask L2Cache directly.</h3></div><div><p class="lead">Connect the L2Cache MCP server and Claude Code, Codex, Cursor and Antigravity query your clips, screenshots, past error resolutions and decisions on-demand.</p></div><details class="sbm-more"><summary><span class="when-closed">More about MCP Server</span><span class="when-open">Less about MCP Server</span></summary><div class="sbm-body"><ul><li><strong>12 built-in MCP tools.</strong><span>Clips, screenshots, git recovery points, decisions and error resolutions.</span></li><li><strong>No copy-pasting.</strong><span>Agents recall what you copied and debugged without manual prompt entry.</span></li><li><strong>Local-only.</strong><span>Runs strictly on your Mac. Sensitive keys and tokens are automatically masked.</span></li><li><strong>Works across clients.</strong><span>Claude Code, Claude Desktop, Codex, Cursor and Google Antigravity.</span></li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-hooks"><div><p class="eyebrow">Continuity Hooks</p><h3>Every session starts briefed, with zero setup.</h3></div><div><p class="lead">Turn-by-turn hooks brief new agent sessions with what you copied, hand off context between sessions, and guard against expensive cold cache reloads.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Hooks</span><span class="when-open">Less about Hooks</span></summary><div class="sbm-body"><ul><li><strong>Recent clipboard injection.</strong><span>Clips from the last 30 minutes ride along with new prompts.</span></li><li><strong>Session handoff.</strong><span>A fresh session picks up where the last one stopped.</span></li><li><strong>Cold resume guard.</strong><span>Claude Code warns you before your first message into an expired cache.</span></li><li><strong>Work summaries.</strong><span>Finished edits feed your automated timesheet and standup.</span></li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-settings"><div><p class="eyebrow">Settings</p><h3>Privacy, exclusions, and local control.</h3></div><div><p class="lead">Manage app exclusions, sensitive secret masking, retention rules, and global shortcuts—everything stored locally on your Mac.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Settings</span><span class="when-open">Less about Settings</span></summary><div class="sbm-body"><ul><li><strong>App exclusions.</strong><span>Prevent password managers or private windows from ever being captured.</span></li><li><strong>Secret masking.</strong><span>Passwords, API keys and access tokens are detected and masked automatically.</span></li><li><strong>Presentation mode.</strong><span>Mask project names, prompts, and paths during screen sharing.</span></li><li><strong>Shortcuts.</strong><span>Customize ⌘⇧V, ⌘K, and ⌥V for your workflow.</span></li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-worklog"><div><p class="eyebrow">Worklog</p><h3>Your hours, already counted.</h3></div><div><p class="lead">Tickets you worked on and approximate hours per day, which you can correct and copy into your timesheet tool, plus an editable standup built from your recorded activity.</p></div><ul></ul></div><div class="sb-caption" hidden="" id="cap-projects"><div><p class="eyebrow">Projects</p><h3>Every project keeps its story.</h3></div><div><p class="lead">Commits, branches, agent sessions, test runs and releases line up on one timeline per project, so you can see how the work got here, not just where it is.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Projects</span><span class="when-open">Less about Projects</span></summary><div class="sbm-body"><ul><li><strong>Project Story.</strong> A commit graph and timeline read straight from <code>.git</code>. L2Cache never runs Git for you.</li><li><strong>Milestones.</strong> Each piece of evidence is labelled Git verified, Test verified, You noted, or L2Cache inferred.</li><li><strong>Worklog.</strong> Tickets you worked on and approximate hours per day, which you can correct and copy into your timesheet tool.</li><li><strong>Weekly Brief &amp; standup.</strong> An editable standup built from your recorded activity.</li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-search"><div><p class="eyebrow">Search</p><h3>Find the thread with <kbd>⌘</kbd><kbd>K</kbd>.</h3></div><div><p class="lead">One search across your projects, agent sessions, terminal history, Git activity, screenshots and clipboard. The command you ran, the error you copied and the screenshot you took are in the same place.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Search</span><span class="when-open">Less about Search</span></summary><div class="sbm-body"><ul><li><strong>Best match first.</strong> A top hit across clips, agent sessions, terminal commands, commits and docs, then the rest grouped by kind.</li><li><strong>Narrow it down.</strong> Filter by kind, or type <code>@project</code> to search one project.</li><li><strong>Straight to the moment.</strong> An agent result opens the session at the matching message.</li><li><strong>Screenshot search.</strong> Find a screenshot by the text inside it.</li><li><strong>Quick panel.</strong> <kbd>⌘</kbd><kbd>⇧</kbd><kbd>V</kbd> brings up your history from any app.</li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-clipboard"><div><p class="eyebrow">Clipboard</p><h3>Everything you copied and ran, by project.</h3></div><div><p class="lead">Your clipboard and shell history stop being one long list. Each clip and command lands in the project it came from, so the snippet from this morning is next to the work it was for.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Clipboard</span><span class="when-open">Less about Clipboard</span></summary><div class="sbm-body"><ul><li><strong>Smart clipboard.</strong> Clips are recognised as code, JSON, SQL, URLs, colours and more, with actions for each type. Pin the ones you reuse.</li><li><strong>Terminal history.</strong> Every command with its exit code, grouped by day and filterable by project or tool.</li><li><strong>Your shell and your agents.</strong> See the commands you ran, the ones your coding agents ran, or both.</li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-terminal"><div><p class="eyebrow">Terminal</p><h3>Every command, with its exit code.</h3></div><div><p class="lead">Every command, grouped by day and filterable by project or tool. See the commands you ran, the ones your coding agents ran, or both.</p></div><ul></ul></div></div>
 <div class="win">
 <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title sb-title">L2Cache — Developer Home</span><span class="win-chip" title="Example data"><i aria-hidden="true"></i>Cache warm · 49 min left</span></div>
 <div class="dh">
@@ -534,7 +431,7 @@
 <li><code>search_screenshots</code></li>
 <li><code>search_agent_history</code></li>
 </ul>
-<p class="bridge-foot">Local SQLite · Secrets automatically masked · Zero cloud calls</p>
+<p class="bridge-foot">Queries run on your Mac. Sensitive items such as passwords and keys are never returned.</p>
 </article>
 <article class="bridge-card">
 <p class="bridge-kicker"><span class="bridge-badge">Daily Flow</span> Morning to Evening</p>
@@ -543,7 +440,7 @@
   <div class="day-step">
     <div class="day-step-head"><span class="day-step-time">09:15 · MORNING RAMP-UP</span><span class="day-step-tag">Claude Code</span></div>
     <div class="day-step-cmd">⚡ <code>search_clips("auth refresh curl")</code></div>
-    <p class="day-step-desc">Pulls the test token copied 8m ago. Fixed 401 loop in 1 turn.</p>
+    <p class="day-step-desc">Finds the curl command you copied this morning, so you don't paste it in.</p>
   </div>
   <div class="day-step">
     <div class="day-step-head"><span class="day-step-time">14:10 · AFTERNOON FLOW</span><span class="day-step-tag">Codex</span></div>
@@ -553,10 +450,10 @@
   <div class="day-step">
     <div class="day-step-head"><span class="day-step-time">17:50 · EVENING WRAP-UP</span><span class="day-step-tag">Antigravity / Claude</span></div>
     <div class="day-step-cmd">⚡ <code>get_session_summary("Atlas")</code></div>
-    <p class="day-step-desc">Auto-summarizes 6 steps, 3 files, and 2 commits for your PR.</p>
+    <p class="day-step-desc">Recaps what the last session changed and where it stopped.</p>
   </div>
 </div>
-<p class="bridge-foot">&lt;10ms local query response · 0 cloud roundtrips</p>
+<p class="bridge-foot">Example session. Agents call these tools when they need context.</p>
 </article>
 </div></div><div aria-labelledby="sbt-hooks" class="sb-pane" data-title="L2Cache — Continuity Hooks" hidden="" id="pane-hooks" role="tabpanel" style="--sc: var(--c-agent)"><div class="bridge-grid">
 <article class="bridge-card">
@@ -566,7 +463,7 @@
 <li><strong>Recent clipboard.</strong> Last 30m of clips ride along with prompt #1.</li>
 <li><strong>Session handoff.</strong> Pick up right where your last agent stopped.</li>
 <li><strong>Fixes remembered.</strong> Solved errors are saved for the next run.</li>
-<li><strong>Cold resume guard.</strong> Warns before prompt cache expires.</li>
+<li><strong>Cold resume guard.</strong> Warns before your first message to a session whose cache has expired.</li>
 </ul>
 <p class="bridge-foot">Works with Claude Code, Codex, Copilot &amp; Grok Build</p>
 </article>
@@ -575,22 +472,22 @@
 <h3>Context injected at every turn.</h3>
 <div class="day-flow">
   <div class="day-step">
-    <div class="day-step-head"><span class="day-step-time">09:00 · MORNING RAMP-UP</span><span class="day-step-tag">pre_prompt</span></div>
-    <div class="day-step-cmd">🛡 <code>inject_context("fix/ATL-142")</code></div>
-    <p class="day-step-desc">Auto-attaches last goal, failing test &amp; clips to turn #1.</p>
+    <div class="day-step-head"><span class="day-step-time">09:00 · MORNING RAMP-UP</span><span class="day-step-tag">Claude Code</span></div>
+    <div class="day-step-cmd">🛡 <code>SessionStart</code></div>
+    <p class="day-step-desc">A new session gets the last session's handoff and what you copied recently.</p>
   </div>
   <div class="day-step">
-    <div class="day-step-head"><span class="day-step-time">13:30 · POST-LUNCH RECOVERY</span><span class="day-step-tag">cache_guard</span></div>
-    <div class="day-step-cmd">⚠️ <code>cold_resume_warning("55m idle")</code></div>
-    <p class="day-step-desc">Warns Claude Code before 241k cache expires. Saves ~$1.20.</p>
+    <div class="day-step-head"><span class="day-step-time">13:30 · AFTER LUNCH</span><span class="day-step-tag">Claude Code</span></div>
+    <div class="day-step-cmd">⚠️ <code>UserPromptSubmit</code></div>
+    <p class="day-step-desc">The session's cache expired over lunch, so you're warned before your first message reloads it.</p>
   </div>
   <div class="day-step">
-    <div class="day-step-head"><span class="day-step-time">18:15 · EVENING WRAP-UP</span><span class="day-step-tag">post_session</span></div>
-    <div class="day-step-cmd">✓ <code>sync_worklog("Atlas", 2.5h)</code></div>
-    <p class="day-step-desc">Logs commits, files, and standup bullets to Today &amp; Worklog.</p>
+    <div class="day-step-head"><span class="day-step-time">18:15 · EVENING WRAP-UP</span><span class="day-step-tag">Codex</span></div>
+    <div class="day-step-cmd">✓ <code>Stop</code></div>
+    <p class="day-step-desc">Edits and a one-line summary of the finished change feed Your Day and Worklog.</p>
   </div>
 </div>
-<p class="bridge-foot">Executes in 12ms locally on your Mac · Zero background daemon</p>
+<p class="bridge-foot">You turn each agent on in Settings; nothing is installed until you do.</p>
 </article>
 </div></div><div aria-labelledby="sbt-settings" class="sb-pane" data-title="L2Cache — Settings" hidden="" id="pane-settings" role="tabpanel" style="--sc: var(--accent)"><div class="bridge-grid">
 <article class="bridge-card">
@@ -598,21 +495,21 @@
 <h3>You choose what's captured.</h3>
 <ul class="points">
 <li><strong>App exclusions.</strong> Prevent 1Password, Bitwarden, or private browsers from ever being logged.</li>
-<li><strong>Secret masking.</strong> API keys, JWTs, and bearer tokens are detected and masked automatically.</li>
+<li><strong>Secret masking.</strong> Passwords, API keys and access tokens are detected and masked automatically.</li>
 <li><strong>Presentation mode.</strong> One click to mask project names, prompts, and paths during screen sharing.</li>
-<li><strong>Retention rules.</strong> Keep clips for 7 days, 30 days, or forever—stored locally in SQLite.</li>
+<li><strong>Retention rules.</strong> Keep clipboard history from 7 days to a year, or forever.</li>
 </ul>
-<p class="bridge-foot">All preferences live strictly in your local SQLite database on your Mac.</p>
+<p class="bridge-foot">Your history and settings stay on your Mac.</p>
 </article>
 <article class="bridge-card">
-<p class="bridge-kicker"><span class="bridge-badge">Shortcuts</span> Global keyboard access</p>
+<p class="bridge-kicker"><span class="bridge-badge">Shortcuts</span> Keyboard access</p>
 <h3>Instant access from anywhere.</h3>
 <ul class="points">
 <li><strong><kbd>⌘</kbd><kbd>⇧</kbd><kbd>V</kbd></strong> Quick clipboard panel with smart actions.</li>
-<li><strong><kbd>⌘</kbd><kbd>K</kbd></strong> Universal search across sessions, terminal, and clips.</li>
+<li><strong><kbd>⌘</kbd><kbd>K</kbd></strong> Universal search across sessions, terminal, and clips, inside L2Cache.</li>
 <li><strong><kbd>⌥</kbd><kbd>V</kbd></strong> Smart transform menu right at your cursor.</li>
 </ul>
-<p class="bridge-foot">Fully customizable shortcuts configured in macOS System Settings.</p>
+<p class="bridge-foot">Change any shortcut in L2Cache Settings.</p>
 </article>
 </div></div><div aria-labelledby="sbt-projects" class="sb-pane" data-title="L2Cache — Projects" hidden="" id="pane-projects" role="tabpanel" style="--sc: var(--c-git)"><figure class="stage mock">
 <div class="mock-stack">
@@ -965,7 +862,7 @@
 <li><code>search_screenshots</code></li>
 <li><code>search_agent_history</code></li>
 </ul>
-<p class="bridge-foot">Works with Claude Code, Claude Desktop, Codex, Cursor and Antigravity. 100% on-device SQLite.</p>
+<p class="bridge-foot">Works with Claude Code, Claude Desktop, Codex, Cursor and Antigravity. Queries run on your Mac, and sensitive items such as passwords and keys are never returned.</p>
 </article>
 <article aria-labelledby="hooks-title" class="bridge-card">
 <p class="bridge-kicker"><span class="bridge-badge">Hooks</span> L2Cache briefs your agents</p>
@@ -974,9 +871,9 @@
 <li><strong>Recent clipboard.</strong> Last 30m of clips ride along with prompt #1.</li>
 <li><strong>Session handoff.</strong> Pick up right where your last agent stopped.</li>
 <li><strong>Fixes remembered.</strong> Solved errors are saved for the next run.</li>
-<li><strong>Cold resume guard.</strong> Warns before prompt cache expires.</li>
+<li><strong>Cold resume guard.</strong> Warns before your first message to a session whose cache has expired.</li>
 </ul>
-<p class="bridge-foot">For Claude Code, Codex, GitHub Copilot and Grok Build. Configurable per agent in Settings.</p>
+<p class="bridge-foot">For Claude Code, Codex, GitHub Copilot and Grok Build. You turn each agent on in Settings; nothing is installed until you do.</p>
 </article>
 </div>
 </div>
@@ -1253,7 +1150,7 @@
       <div class="wrap">
         <div class="blog-head"><div><p class="eyebrow">From the blog</p><h2 id="blog-title">Guides for developers working with coding agents.</h2></div><a class="blog-all" href="/en/blog">Read all articles <span aria-hidden="true">→</span></a></div>
         <div class="blog-grid">
-        <a class="blog-card" href="/en/claude-code-cold-cache-resume-cost" style="--c: var(--c-agent)"><span class="blog-tag">Context &amp; cost</span><h3>Why resuming a cold Claude Code session costs more</h3><p>The first message after the prompt cache expires reloads everything, 12× to 40× a warm turn. What to do instead.</p><span class="blog-meta">8 min read</span></a>
+        <a class="blog-card" href="/en/claude-code-cold-cache-resume-cost" style="--c: var(--c-agent)"><span class="blog-tag">Context &amp; cost</span><h3>Why resuming a cold Claude Code session costs more</h3><p>The first message after the prompt cache expires reloads everything, 12× to 80× a warm turn. What to do instead.</p><span class="blog-meta">8 min read</span></a>
         <a class="blog-card" href="/en/coding-agent-session-handoff" style="--c: var(--c-agent)"><span class="blog-tag">Context &amp; cost</span><h3>Start a fresh coding-agent session without losing context</h3><p>What a good handoff carries, and how L2Cache adds it to a new Claude Code, Codex or Grok Build session.</p><span class="blog-meta">5 min read</span></a>
         <a class="blog-card" href="/en/coding-agent-memory-mcp-hooks" style="--c: var(--c-agent)"><span class="blog-tag">Coding agents</span><h3>Give your coding agents memory: MCP server and hooks</h3><p>Twelve read-only tools for earlier sessions, fixes, clips and screenshots, and hooks that brief every new session.</p><span class="blog-meta">6 min read</span></a>
         <a class="blog-card" href="/en/programmable-clipboard-mac" style="--c: var(--c-clip)"><span class="blog-tag">Clipboard</span><h3>A programmable clipboard for Mac</h3><p>Copy JSON, a JWT, SQL or a log and the right transform appears at your cursor. Add your own as shell commands or AI prompts.</p><span class="blog-meta">6 min read</span></a>

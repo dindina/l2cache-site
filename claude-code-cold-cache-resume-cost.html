@@ -6,7 +6,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Why Resuming a Cold Claude Code Session Costs More | L2Cache</title>
-  <meta name="description" content="The first message after Claude Code's prompt cache expires reloads your whole context at the cache-write price, 12× to 40× a warm turn. How to see it coming, and what to do instead."/>
+  <meta name="description" content="The first message after Claude Code's prompt cache expires reloads your whole context at the cache-write price, 12× to 80× a warm turn. How to see it coming, and what to do instead."/>
   <link rel="icon" type="image/png" href="icon.png"/>
   <link rel="apple-touch-icon" href="icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -76,7 +76,7 @@
   <meta property="og:site_name" content="L2Cache">
   <meta property="og:url" content="https://l2cache.amvo.store/en/claude-code-cold-cache-resume-cost">
   <meta property="og:title" content="Why Resuming a Cold Claude Code Session Costs More">
-  <meta property="og:description" content="The first message after Claude Code's prompt cache expires reloads your whole context at the cache-write price, 12× to 40× a warm turn. How to see it coming, and what to do instead.">
+  <meta property="og:description" content="The first message after Claude Code's prompt cache expires reloads your whole context at the cache-write price, 12× to 80× a warm turn. How to see it coming, and what to do instead.">
   <meta property="og:image" content="https://l2cache.amvo.store/icon.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
@@ -84,7 +84,7 @@
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:url" content="https://l2cache.amvo.store/en/claude-code-cold-cache-resume-cost">
   <meta name="twitter:title" content="Why Resuming a Cold Claude Code Session Costs More">
-  <meta name="twitter:description" content="The first message after Claude Code's prompt cache expires reloads your whole context at the cache-write price, 12× to 40× a warm turn. How to see it coming, and what to do instead.">
+  <meta name="twitter:description" content="The first message after Claude Code's prompt cache expires reloads your whole context at the cache-write price, 12× to 80× a warm turn. How to see it coming, and what to do instead.">
   <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
   <meta name="twitter:image:alt" content="L2Cache app icon">
   <script type="application/ld+json">
@@ -92,10 +92,10 @@
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": "Why Resuming a Cold Claude Code Session Costs More (and What to Do Instead)",
-  "description": "The first message after Claude Code's prompt cache expires reloads your whole context at the cache-write price, 12× to 40× a warm turn. How to see it coming, and what to do instead.",
+  "description": "The first message after Claude Code's prompt cache expires reloads your whole context at the cache-write price, 12× to 80× a warm turn. How to see it coming, and what to do instead.",
   "url": "https://l2cache.amvo.store/en/claude-code-cold-cache-resume-cost",
   "datePublished": "2026-11-09",
-  "dateModified": "2026-11-09",
+  "dateModified": "2026-11-10",
   "author": { "@type": "Organization", "name": "Amvo", "url": "https://l2cache.amvo.store/en" },
   "publisher": { "@type": "Organization", "name": "Amvo", "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" } },
   "image": "https://l2cache.amvo.store/icon.png",
@@ -152,15 +152,17 @@
   <div class="table-wrap"><table>
     <thead><tr><th>Price per token, relative to normal input</th><th>Cache read (warm turn)</th><th>Cache write (cold reload)</th><th>Cold ÷ warm</th></tr></thead>
     <tbody>
-      <tr><td>Opus 5.5 and Sonnet 5.5, 1-hour cache</td><td>0.05×</td><td>2×</td><td><strong>40×</strong></td></tr>
-      <tr><td>Opus 5.5 and Sonnet 5.5, 5-minute cache</td><td>0.05×</td><td>1.25×</td><td><strong>25×</strong></td></tr>
-      <tr><td>Most other models, 1-hour cache</td><td>0.1×</td><td>2×</td><td><strong>20×</strong></td></tr>
-      <tr><td>Most other models, 5-minute cache</td><td>0.1×</td><td>1.25×</td><td><strong>12.5×</strong></td></tr>
+      <tr><td>Fable 5.1, 1-hour cache</td><td>0.025×</td><td>2×</td><td><strong>80×</strong></td></tr>
+      <tr><td>Fable 5.1, 5-minute cache</td><td>0.025×</td><td>1.25×</td><td><strong>50×</strong></td></tr>
+      <tr><td>Opus 5.5, 1-hour cache</td><td>0.05×</td><td>2×</td><td><strong>40×</strong></td></tr>
+      <tr><td>Opus 5.5, 5-minute cache</td><td>0.05×</td><td>1.25×</td><td><strong>25×</strong></td></tr>
+      <tr><td>Sonnet 5.5, Haiku 4.5 and most other models, 1-hour cache</td><td>0.1×</td><td>2×</td><td><strong>20×</strong></td></tr>
+      <tr><td>Sonnet 5.5, Haiku 4.5 and most other models, 5-minute cache</td><td>0.1×</td><td>1.25×</td><td><strong>12.5×</strong></td></tr>
     </tbody>
   </table></div>
-  <p class="note">Multipliers from Anthropic's prompt-caching pricing, checked November 9, 2026. Opus 5.5 and Sonnet 5.5 price cache reads at 0.05× base input; most other models at 0.1×.</p>
+  <p class="note">Multipliers from Anthropic's prompt-caching pricing, checked November 10, 2026. Fable 5.1 prices cache reads at 0.025× base input ($0.25 per million on $10), Opus 5.5 at 0.05× ($0.20 on $4), and Sonnet 5.5 and most other models at 0.1×.</p>
 
-  <p>So for the context part of the request, the first message after expiry costs roughly <strong>12× to 40× a warm turn</strong>, depending on the model and the cache lifetime.</p>
+  <p>So for the context part of the request, the first message after expiry costs roughly <strong>12× to 80× a warm turn</strong>, depending on the model and the cache lifetime: 20× on Sonnet 5.5, 40× on Opus 5.5 and 80× on Fable 5.1 with a 1-hour cache.</p>
 
   <div class="highlight-box">
     <p><strong>A worked example.</strong> A 241k-token Opus 5.5 session on a 1-hour cache. A warm turn reads that context for about $0.05 at API list prices (241k × $0.20 per million). After the cache expires, the next message writes it again for about $1.93 (241k × $8 per million). That's one message costing what about forty warm turns cost, before Claude has written a word.</p>
@@ -206,11 +208,11 @@
     <li><strong>After it expires: the cold resume guard.</strong> When you resume a session whose cache has expired, the terminal shows a warning before you type anything:</li>
   </ul>
   <pre><code>Cold cache at 14:05 — this session's cache expired 3 h ago.
-Your next message reloads 241k tokens (≈ 20× a warm turn).
+Your next message reloads 241k tokens (≈ 40× a warm turn).
 Cheaper: type /clear — L2Cache starts a fresh session with this session's handoff.
 Or just send your message to continue as is.</code></pre>
   <p>If you type a message anyway, L2Cache stops that one message, once, so it doesn't reload the context by accident. Your text isn't lost: press <strong>↑</strong> and <strong>Return</strong> to send it as is, and you won't be stopped again in that session. Or type <code>/clear</code>, and the new session starts with the cold session's handoff already loaded. The same check runs on a terminal left open overnight, which never fires a resume event.</p>
-  <p class="note">The multiplier in the warning is a rounded figure. As the table above shows, the real ratio is between 12× and 40× depending on model and cache lifetime.</p>
+  <p class="note">The warning shows the multiplier for your session's model and cache lifetime, from the table above.</p>
 
   <h3>The details</h3>
   <ul>
@@ -224,7 +226,7 @@ Or just send your message to continue as is.</code></pre>
 
   <h2>The short version</h2>
   <ul>
-    <li>The first message after the cache expires rewrites your whole context at the cache-write price: about 12× to 40× a warm turn.</li>
+    <li>The first message after the cache expires rewrites your whole context at the cache-write price: about 12× to 80× a warm turn, depending on the model and the cache lifetime.</li>
     <li>It happens once per cold stretch, and it grows with the session.</li>
     <li>Compact before you leave, keep a big session warm if you're coming right back, or come back with <code>/clear</code> and a handoff.</li>
     <li>For small sessions, just send the message.</li>
