@@ -26,7 +26,7 @@
 
   <link rel="icon" href="img/icon-64.png" type="image/png">
   <link rel="apple-touch-icon" href="img/icon-180.png">
-  <link rel="stylesheet" href="styles.css?v=20261110_8">
+  <link rel="stylesheet" href="styles.css?v=20261110_9">
   <style>
     /* Direct override to guarantee instant browser update */
     .hero-reasons li {
@@ -503,13 +503,13 @@
 <header><strong>Pick up where you left off</strong><span class="dim">‹ Tue, Nov 10 ›</span></header>
 <article class="tp-card tp-card-cold">
 <div class="tp-head">
-<span class="l2" style="background: linear-gradient(145deg, #8b5cf6, #6d28d9); position: relative; color: #fff; font-weight: 800; border-radius: 9px; width: 34px; height: 34px; display: grid; place-items: center; font-size: 13px;">L2<span class="ag" style="background: #e27338; position: absolute; right: -3px; bottom: -3px; width: 14px; height: 14px; border-radius: 50%; display: grid; place-items: center; font-size: 9px; border: 1.5px solid #16151c;">✳</span></span>
-<div><strong>Cold cache multiplier</strong><span class="dim">Claude Code · L2Cache</span></div>
+<span class="l2 ni" style="background: linear-gradient(145deg, #5b8cff, #3a6fd8); position: relative; color: #fff; font-weight: 800; border-radius: 9px; width: 34px; height: 34px; display: grid; place-items: center; font-size: 13px;">NI<span class="ag" style="background: #e27338; position: absolute; right: -3px; bottom: -3px; width: 14px; height: 14px; border-radius: 50%; display: grid; place-items: center; font-size: 9px; border: 1.5px solid #16151c;">✳</span></span>
+<div><strong>Query parser refactor</strong><span class="dim">Claude Code · Nimbus</span></div>
 <span class="tp-meta"><span class="amber" style="display: inline-flex; align-items: center; gap: 4px; color: #fbbf24;"><i style="font-style: normal;">⏱</i> 254k</span><span class="amber" style="display: inline-flex; align-items: center; gap: 4px; color: #f87171;"><i style="font-style: normal;">⚡</i> Expired</span></span>
 </div>
 <div class="tp-cold-say">
 <p class="tp-cold-title">A fresh session could save you from carrying unnecessary context.</p>
-<p class="tp-cold-desc">This session moved on from Site 2.0 homepage review to Cold cache multiplier. Continue with a focused handoff for the new work.</p>
+<p class="tp-cold-desc">Your previous context cache has expired after 55 min idle. Continue with a focused handoff instead of reloading the entire conversation.</p>
 </div>
 <div class="tp-dual-boxes">
 <div class="tp-dbox cur">
@@ -535,11 +535,11 @@
 <div class="tp-alt-act"><span>Alternative:</span> <a class="tp-alt-link" href="#compact">⧉ Copy /compact Command</a></div>
 <div class="tp-recap">
 <div class="tp-recap-top"><span class="cap" style="display: inline-flex; align-items: center; gap: 5px;"><svg fill="currentColor" height="12" viewBox="0 0 16 16" width="12"><path d="M2 3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H5l-3 3V3z"></path></svg> SESSION RECAP</span><span class="dim">4 minutes ago</span></div>
-<div class="tp-line"><span class="k">● Last user request</span><span class="tp-val">19.99 is the right new price</span></div>
-<div class="tp-line"><span class="k">✦ Last agent action</span><span class="tp-val">Price set to $19.99 in StoreKit test config and project notes</span></div>
-<div class="tp-line"><span class="k">⑂ Commit</span><span class="tp-val"><span class="mono">d10b358</span> <span class="chip-not-pushed">not pushed</span> chore(pricing): $19.99 launch price in StoreKit...</span></div>
+<div class="tp-line"><span class="k">● Last user request</span><span class="tp-val">Add zero-copy buffering to parser and fix benchmarks</span></div>
+<div class="tp-line"><span class="k">✦ Last agent action</span><span class="tp-val">Buffer reuse implemented; 1 parser benchmark still fails</span></div>
+<div class="tp-line"><span class="k">⑂ Commit</span><span class="tp-val"><span class="mono">7f2a9d1</span> <span class="chip-not-pushed">not pushed</span> perf(parser): reuse buffer across chunk boundaries</span></div>
 </div>
-<div class="tp-foot"><span class="muted-btn">Recap ›</span><span class="chip mono">⑂ l2cache2.0</span><span class="btn-m tp-resume-btn"><span class="ag-dot anthropic" style="color: #e27338;">✳</span>Copy resume command</span></div>
+<div class="tp-foot"><span class="muted-btn">Recap ›</span><span class="chip mono">⑂ dev/query-parser</span><span class="btn-m tp-resume-btn"><span class="ag-dot anthropic" style="color: #e27338;">✳</span>Copy resume command</span></div>
 </article>
 </section>
 <div class="dh-projects">
@@ -796,6 +796,7 @@
     <li><span class="ic" aria-hidden="true">♨</span><span class="when">While you're away</span><strong>Keep it warm</strong><p>One short heartbeat keeps a 1-hour cache alive.</p></li>
     <li><span class="ic" aria-hidden="true">✋</span><span class="when">After it expires</span><strong>The costly message, held</strong><p>Your first message waits once. <code>/clear</code> starts fresh with a handoff.</p></li>
   </ul>
+  <p class="tk-proof"><strong>Your weekly limit, to the last day.</strong> Act on these warnings and the reloads that quietly eat your plan stop happening, so your weekly limit can last until it resets.</p>
   <div class="tk-foot"><button type="button" class="tk-more">How it works ›</button>
   <p class="tk-fine">For Claude Code, with L2Cache hooks on. Read from session files on your Mac. Nothing is sent anywhere. <a href="/en/claude-code-cold-cache-resume-cost">How the cold resume guard works</a></p></div>
 </div></section>
