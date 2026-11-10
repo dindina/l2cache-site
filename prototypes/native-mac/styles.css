@@ -1160,6 +1160,8 @@ dialog.feat-dlg::backdrop { background: rgba(10,10,14,.6); backdrop-filter: blur
 .tk-points .when { display: block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
 .tk-points strong { display: block; color: var(--text); font-size: 17px; margin-bottom: 4px; }
 .tk-points p { margin: 0; }
+.tk-proof { margin: var(--s-6) auto 0; max-width: 720px; text-align: center; font-size: 17px; line-height: 1.5; color: var(--text-2); }
+.tk-proof strong { color: var(--text); }
 .tk-foot { margin-top: var(--s-6); display: flex; flex-direction: column; align-items: center; gap: var(--s-3); text-align: center; }
 .tk-more { display: inline-flex; gap: 8px; align-items: center; font: inherit; font-weight: 600; font-size: 15px; color: var(--accent); background: var(--surface);
   border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); border-radius: 999px; padding: 9px 16px; cursor: pointer; }

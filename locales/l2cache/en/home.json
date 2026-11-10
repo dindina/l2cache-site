@@ -356,6 +356,7 @@
   "After it expires": "After it expires",
   "The costly message, held": "The costly message, held",
   "Your first message waits once. <code>/clear</code> starts fresh with a handoff.": "Your first message waits once. <code>/clear</code> starts fresh with a handoff.",
+  "<strong>Your weekly limit, to the last day.</strong> Act on these warnings and the reloads that quietly eat your plan stop happening, so your weekly limit can last until it resets.": "<strong>Your weekly limit, to the last day.</strong> Act on these warnings and the reloads that quietly eat your plan stop happening, so your weekly limit can last until it resets.",
   "How it works ›": "How it works ›",
   "For Claude Code, with L2Cache hooks on. Read from session files on your Mac. Nothing is sent anywhere. <a href=\"/en/claude-code-cold-cache-resume-cost\">How the cold resume guard works</a>": "For Claude Code, with L2Cache hooks on. Read from session files on your Mac. Nothing is sent anywhere. <a href=\"/en/claude-code-cold-cache-resume-cost\">How the cold resume guard works</a>",
   "What's inside": "What's inside",
