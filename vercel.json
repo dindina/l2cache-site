@@ -53,6 +53,28 @@
       "permanent": true
     },
     {
+      "source": "/tools",
+      "has": [
+        {
+          "type": "host",
+          "value": "l2cache.amvo.store"
+        }
+      ],
+      "destination": "https://l2cache.app/en/tools",
+      "permanent": true
+    },
+    {
+      "source": "/:lang(zh-Hans|fr|de|it|ja|ko|pt-BR|es|vi)/tools",
+      "has": [
+        {
+          "type": "host",
+          "value": "l2cache.amvo.store"
+        }
+      ],
+      "destination": "https://l2cache.app/en/tools",
+      "permanent": true
+    },
+    {
       "source": "/tools/:tool*",
       "has": [
         {
@@ -82,7 +104,7 @@
           "value": "l2cache.amvo.store"
         }
       ],
-      "destination": "https://l2cache.app/zh-Hans",
+      "destination": "https://l2cache.app/",
       "permanent": true
     },
     {
@@ -93,7 +115,7 @@
           "value": "l2cache.amvo.store"
         }
       ],
-      "destination": "https://l2cache.app/zh-Hans",
+      "destination": "https://l2cache.app/",
       "permanent": true
     },
     {
@@ -104,7 +126,7 @@
           "value": "l2cache.amvo.store"
         }
       ],
-      "destination": "https://l2cache.app/pt-BR",
+      "destination": "https://l2cache.app/",
       "permanent": true
     },
     {
@@ -115,7 +137,7 @@
           "value": "l2cache.amvo.store"
         }
       ],
-      "destination": "https://l2cache.app/pt-BR",
+      "destination": "https://l2cache.app/",
       "permanent": true
     },
     {
@@ -131,6 +153,28 @@
     },
     {
       "source": "/:lang(ta|ru)/index(\\.html)?",
+      "has": [
+        {
+          "type": "host",
+          "value": "l2cache.amvo.store"
+        }
+      ],
+      "destination": "https://l2cache.app/",
+      "permanent": true
+    },
+    {
+      "source": "/:lang(zh-Hans|fr|de|it|ja|ko|pt-BR|es|vi)",
+      "has": [
+        {
+          "type": "host",
+          "value": "l2cache.amvo.store"
+        }
+      ],
+      "destination": "https://l2cache.app/",
+      "permanent": true
+    },
+    {
+      "source": "/:lang(zh-Hans|fr|de|it|ja|ko|pt-BR|es|vi)/index(\\.html)?",
       "has": [
         {
           "type": "host",
