@@ -125,6 +125,7 @@ kbd {
 .hero-eyebrow { font-family: var(--font-display); font-size: 19px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: var(--s-3); }
 h1, h2 { font-family: var(--font-display); letter-spacing: -0.025em; line-height: 1.06; margin: 0; }
 h1 { font-size: clamp(40px, 5vw, 68px); font-weight: 700; }
+.hero-subhead { margin: var(--s-4) 0 0; font-family: var(--font-display); font-size: clamp(20px, 2.2vw, 28px); font-weight: 600; letter-spacing: -0.015em; line-height: 1.25; color: var(--accent); }
 h2 { font-size: clamp(32px, 4.4vw, 52px); font-weight: 700; }
 .sources { text-align: center; padding-top: var(--s-7); padding-bottom: var(--s-8); }
 .sources-label { margin: 0 0 var(--s-4); color: var(--text-3); font-size: 14px; }
@@ -136,6 +137,34 @@ h2 { font-size: clamp(32px, 4.4vw, 52px); font-weight: 700; }
 .hero-sources li span { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; color: #fff; background: var(--c); }
 @media (max-width: 520px) { .hero-sources { gap: 8px; } .hero-sources li { font-size: 14px; padding: 6px 12px 6px 6px; } .hero-sources li span { width: 22px; height: 22px; font-size: 11px; } }
 .lede { font-size: clamp(17px, 1.5vw, 20px); color: var(--text-2); max-width: 920px; margin: var(--s-4) 0 0; }
+.reasons-title { margin: var(--s-6) 0 0; font-family: var(--font-display); font-size: 20px; font-weight: 700; letter-spacing: -0.01em; color: var(--text); }
+.reasons-title span { color: var(--text-2); font-weight: 600; }
+.hero-reasons { list-style: none; padding: 0; margin: var(--s-4) 0 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--s-3); }
+.hero-reasons li {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-4) var(--s-4) var(--s-5);
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--c);
+  color: var(--text-2);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.hero-reasons p { margin: 0; }
+.hero-reasons .reason-title { font-family: var(--font-display); font-size: 17px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; color: var(--text); }
+.hero-reasons .reason-lead { background: color-mix(in srgb, var(--c) 8%, var(--surface)); border-color: color-mix(in srgb, var(--c) 30%, transparent); border-top-color: var(--c); }
+.reason-time { color: color-mix(in srgb, var(--c) 75%, var(--text)); font-size: 13px; font-weight: 700; }
+.reason-link { margin-top: auto; padding-top: var(--s-1); font-weight: 600; font-size: 15px; }
+@media (max-width: 960px) {
+  .hero-reasons { grid-template-columns: repeat(2, 1fr); }
+  .hero-reasons .reason-lead { grid-column: 1 / -1; order: -1; }
+}
+@media (max-width: 620px) {
+  .hero-reasons { grid-template-columns: 1fr; }
+}
 .fineprint { color: var(--text-3); font-size: 14px; margin: var(--s-4) 0 0; }
 .prerelease-pill { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 var(--s-4); padding: 6px 14px; border-radius: 999px;
   background: var(--accent-soft); color: var(--accent); font-size: 14px; font-weight: 700; }
