@@ -3,10 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Prototype: remove noindex when promoted to https://l2cache.app/ -->
-  <meta name="robots" content="noindex,nofollow">
-  <title>L2Cache — Developer Memory for Mac | Resume Your Work</title>
-  <meta name="description" content="L2Cache remembers your dev work on Mac: coding-agent sessions, terminal history, Git activity, screenshots and clipboard. Resume faster and recover context.">
+  <meta name="robots" content="index,follow">
+  <title>L2Cache — Developer Memory, Coding Agents &amp; Terminal History for Mac</title>
+  <meta name="description" content="L2Cache is developer memory for Mac: proactive cache guard for Claude Code &amp; Codex, terminal command history, Git activity and programmable clipboard.">
   <link rel="canonical" href="https://l2cache.app/">
   <meta name="theme-color" content="#f7f6f3">
   <meta name="color-scheme" content="light">
@@ -14,22 +13,82 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="L2Cache">
   <meta property="og:url" content="https://l2cache.app/">
-  <meta property="og:title" content="L2Cache — Your coding work, remembered">
-  <meta property="og:description" content="Developer memory for Mac. Your agent sessions, terminal, Git activity, screenshots and clipboard, connected and searchable on your Mac.">
+  <meta property="og:title" content="L2Cache — Developer Memory &amp; Coding Agent Telemetry for Mac">
+  <meta property="og:description" content="Proactive prompt cache intelligence, terminal replay, Git timelines, and smart clipboard for Mac. Never fly blind with your coding agents.">
   <meta property="og:image" content="https://l2cache.app/img/og-home.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="The L2Cache Developer Home window showing Today, projects and items that need attention">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="L2Cache — Your coding work, remembered">
-  <meta name="twitter:description" content="Developer memory for Mac. Agent sessions, terminal, Git, screenshots and clipboard, connected on your Mac.">
+  <meta name="twitter:title" content="L2Cache — Developer Memory &amp; Coding Agent Telemetry for Mac">
+  <meta name="twitter:description" content="Proactive prompt cache intelligence, terminal replay, Git timelines, and smart clipboard for Mac. Never fly blind with your coding agents.">
   <meta name="twitter:image" content="https://l2cache.app/img/og-home.jpg">
 
   <link rel="icon" href="img/icon-64.png" type="image/png">
   <link rel="apple-touch-icon" href="img/icon-180.png">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20261110_4">
+  <style>
+    /* Direct override to guarantee instant browser update */
+    .hero-reasons li {
+      border-top: 1px solid var(--border) !important;
+      border: 1px solid var(--border) !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+      background: var(--surface) !important;
+      transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease !important;
+    }
+    .hero-reasons li:hover {
+      border-color: color-mix(in srgb, var(--text) 22%, var(--border)) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+    }
+    .reason-time {
+      font-family: var(--font-mono, ui-monospace, monospace) !important;
+      font-size: 11px !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.04em !important;
+      text-transform: uppercase !important;
+      color: var(--text-3) !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+    }
+    .hero-reasons .reason-lead {
+      border-color: color-mix(in srgb, var(--accent) 40%, var(--border)) !important;
+      background: color-mix(in srgb, var(--accent) 3.5%, var(--surface)) !important;
+    }
+    .hero-reasons .reason-lead .reason-time {
+      color: var(--accent) !important;
+    }
+    .hero-reasons .reason-lead .pulse-dot {
+      font-size: 8px !important;
+      color: var(--accent) !important;
+    }
+
+    /* Professional Dev Bento Cards: subtle, clean, non-game */
+    .icon-grid .bento-card {
+      background: var(--surface) !important;
+      border: 1px solid var(--border) !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+      transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease !important;
+    }
+    .icon-grid .bento-card:hover {
+      border-color: color-mix(in srgb, var(--text) 25%, var(--border)) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06) !important;
+    }
+    .icon-grid .tile-ico {
+      background: var(--surface) !important;
+      border: 1px solid var(--border) !important;
+      color: var(--text) !important;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+    }
+    .icon-grid .bento-card:hover .tile-ico {
+      border-color: var(--sc) !important;
+      color: var(--sc) !important;
+    }
+  </style>
   <script>document.documentElement.classList.add("js");</script>
-  <script src="script.js" defer></script>
+  <script src="script.js?v=20261110_4" defer></script>
 
   <script type="application/ld+json">
   {
@@ -70,9 +129,9 @@
         },
         "offers": {
           "@type": "Offer",
-          "price": "0",
+          "price": "19.99",
           "priceCurrency": "USD",
-          "description": "Free download with a 15-day Pro trial and a one-time Pro unlock."
+          "description": "Free download with unlimited clipboard history, a 15-day unrestricted Pro trial, and a one-time $19.99 launch unlock (regular $29.00). No subscription."
         },
         "screenshot": "https://l2cache.app/img/developer-home-2000.webp",
         "featureList": [
@@ -208,39 +267,57 @@
     <section class="hero" aria-labelledby="hero-title">
       <div class="wrap hero-copy">
         <p class="prerelease-pill"><span aria-hidden="true">●</span> L2Cache 2.0 is coming soon</p>
-        <h1 id="hero-title">The flight recorder for your developer&nbsp;loop.</h1>
-        <p class="hero-subhead">Session intelligence for Mac that helps Claude Code and Codex remember, resume and cost less.</p>
-        <ul class="hero-sources" aria-label="What L2Cache remembers">
-          <li style="--c: var(--c-agent)"><span aria-hidden="true">▤</span>Agent sessions</li>
-          <li style="--c: var(--c-term)"><span aria-hidden="true">›_</span>Terminal history</li>
-          <li style="--c: var(--c-git)"><span aria-hidden="true">⑂</span>Git activity</li>
-          <li style="--c: var(--c-shot)"><span aria-hidden="true">▣</span>Screenshots</li>
-          <li style="--c: var(--c-clip)"><span aria-hidden="true">⧉</span>Programmable clipboard</li>
-        </ul>
-        <p class="reasons-title" id="reasons-title">Same agents. Better day. <span>Your history stays on your Mac.</span></p>
+        <h1 id="hero-title" class="rotating-headline">
+          <span class="sr-only">L2Cache — Developer Memory, Coding Agent Telemetry &amp; Terminal History for Mac.</span>
+          <span class="rotate-item is-active" aria-hidden="true">The proactive cache guard for your coding&nbsp;agents.</span>
+          <span class="rotate-item" aria-hidden="true">The flight recorder for your developer&nbsp;loop.</span>
+          <span class="rotate-item" aria-hidden="true">A developer-focused clipboard with smart&nbsp;actions.</span>
+          <span class="rotate-item" aria-hidden="true">Every terminal command you ran, ready to&nbsp;replay.</span>
+          <span class="rotate-item" aria-hidden="true">Stop burning weekly limits on cold&nbsp;resumes.</span>
+          <span class="rotate-item" aria-hidden="true">Pick up where you left off, every&nbsp;morning.</span>
+        </h1>
+        <script>
+          (function() {
+            var h = document.getElementById('hero-title');
+            if (!h) return;
+            var items = h.querySelectorAll('.rotate-item');
+            if (items.length <= 1) return;
+            var cur = 0, hovering = false;
+            h.addEventListener('mouseenter', function() { hovering = true; });
+            h.addEventListener('mouseleave', function() { hovering = false; });
+            setInterval(function() {
+              if (hovering || document.hidden) return;
+              items[cur].classList.remove('is-active');
+              cur = (cur + 1) % items.length;
+              items[cur].classList.add('is-active');
+            }, 3000);
+          })();
+        </script>
+        <p class="hero-subhead">Developer memory for Mac. Connect your coding agents, terminal history, Git activity and clipboard—100% on your Mac.</p>
+        <p class="reasons-title" id="reasons-title">Built for your entire coding day. <span>From morning ramp-up to evening wrap-up.</span></p>
         <ol class="hero-reasons" aria-labelledby="reasons-title">
-          <li style="--c: var(--stage-teal)">
-            <p class="reason-time">9:00 · Morning</p>
+          <li>
+            <p class="reason-time">09:00 · Morning</p>
             <p class="reason-title">“Where was I?”</p>
             <p>Yesterday's sessions, branch and next step, ready to resume.</p>
           </li>
-          <li style="--c: var(--c-shot)">
+          <li>
             <p class="reason-time">11:00 · Hit an error</p>
             <p class="reason-title">“Just fix this.”</p>
-            <p>Copy the error or screenshot and keep typing. Your agent's next prompt already has it.</p>
+            <p>Copy the error or screenshot and keep typing. Your agent's next prompt already has the full trace.</p>
           </li>
-          <li class="reason-lead" style="--c: var(--c-agent)">
-            <p class="reason-time">13:30 · Back from lunch</p>
+          <li class="reason-lead">
+            <p class="reason-time"><span class="pulse-dot" aria-hidden="true">●</span> 13:30 · Cache alert</p>
             <p class="reason-title">“Will resuming this cost me?”</p>
-            <p>Resuming an expired session can cost up to 40× more. L2Cache flags it before you burn your weekly limit.</p>
+            <p>Resuming an expired session can cost up to 40× more. L2Cache flags cold caches before they burn your weekly limit.</p>
             <a class="reason-link" href="/en/claude-code-cold-cache-resume-cost">Why →</a>
           </li>
-          <li style="--c: var(--c-git)">
+          <li>
             <p class="reason-time">15:00 · New task</p>
             <p class="reason-title">“Didn't I work on this ticket before?”</p>
-            <p>Search past tickets with their branches, commits and time spent.</p>
+            <p>Search past tickets with their prompts, branches, commits and time spent.</p>
           </li>
-          <li style="--c: var(--c-clip)">
+          <li>
             <p class="reason-time">18:00 · Wrap up</p>
             <p class="reason-title">“Fill in my timesheet.”</p>
             <p>Hours per ticket and a standup, built from your actual work.</p>
@@ -951,18 +1028,23 @@
     <!-- Pricing -->
     <section class="pricing" id="pricing" aria-labelledby="pricing-title">
       <div class="wrap pricing-card reveal">
-        <img src="img/icon-144.webp" alt="" width="72" height="72" loading="lazy">
-        <h2 id="pricing-title">Try everything for 15 days.</h2>
+        <img src="img/icon-144.webp" alt="L2Cache App Icon" width="72" height="72" loading="lazy">
+        <h2 id="pricing-title">Try everything free for 15 days.</h2>
+        <div class="pricing-price">
+          <span class="price-val">$19.99</span>
+          <span class="price-type">launch special · <span class="price-strike">$29</span> regular · one-time unlock</span>
+        </div>
         <ul class="price-facts">
-          <li>Free download</li>
-          <li>15-day Pro trial</li>
-          <li>One-time Pro unlock, no subscription</li>
+          <li>Clipboard history 100% free forever</li>
+          <li>15-day unrestricted Developer Pro trial</li>
+          <li>Pay once, own forever</li>
+          <li>No subscriptions, no cloud accounts</li>
         </ul>
         <a class="btn btn-appstore" href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12">
           <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.02-1.5-2.62-1.7-3.19-1.72-1.36-.14-2.65.8-3.34.8-.69 0-1.75-.78-2.88-.76-1.48.02-2.85.86-3.61 2.19-1.54 2.67-.39 6.62 1.11 8.79.73 1.06 1.6 2.25 2.75 2.2 1.1-.04 1.52-.71 2.85-.71 1.33 0 1.71.71 2.88.69 1.19-.02 1.94-1.08 2.67-2.14.84-1.23 1.19-2.42 1.21-2.48-.03-.01-2.31-.89-2.33-3.55zM14.18 6.13c.61-.74 1.02-1.76.91-2.78-.88.04-1.94.59-2.57 1.32-.56.65-1.06 1.7-.93 2.7.98.08 1.98-.5 2.59-1.24z"/></svg>
           Download on the Mac App Store
         </a>
-        <p class="fineprint">Requires macOS 13 or later. The App Store has version 1.4.6 today; 2.0 is coming soon.</p>
+        <p class="fineprint">Requires macOS 13 or later. Fully functional 15-day Pro trial starts on first launch.</p>
       </div>
     </section>
 
@@ -1001,7 +1083,7 @@
           </details>
           <details>
             <summary>How much does L2Cache cost?</summary>
-            <p>L2Cache is a free download from the Mac App Store with a 15-day Pro trial. Pro is a one-time unlock with no subscription.</p>
+            <p>L2Cache is free to download from the Mac App Store. Clipboard history is 100% free and unlimited forever. Developer Pro features (terminal command history, Claude Code and Codex session continuity, prompt cache guard, MCP server) include an unrestricted 15-day free trial, followed by a one-time $19.99 launch unlock ($29.00 regular). Pay once, own it forever—no subscriptions, ever.</p>
           </details>
         </div>
       </div>

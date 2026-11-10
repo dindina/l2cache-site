@@ -193,3 +193,33 @@
   var more = document.querySelector('.tk-more');
   if (more) more.addEventListener('click', function () { document.querySelector('.icon-grid [data-feature="context"]').click(); });
 })();
+
+// Rotating headline in hero
+(function () {
+  function initRotator() {
+    var headline = document.querySelector('.rotating-headline');
+    if (!headline) return;
+    var items = headline.querySelectorAll('.rotate-item');
+    if (items.length <= 1) return;
+
+    var current = 0;
+    var interval = 3000;
+    var hovering = false;
+
+    headline.addEventListener('mouseenter', function () { hovering = true; });
+    headline.addEventListener('mouseleave', function () { hovering = false; });
+
+    setInterval(function () {
+      if (hovering || document.hidden) return;
+      items[current].classList.remove('is-active');
+      current = (current + 1) % items.length;
+      items[current].classList.add('is-active');
+    }, interval);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initRotator);
+  } else {
+    initRotator();
+  }
+})();
