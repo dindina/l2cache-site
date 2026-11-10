@@ -37,3 +37,6 @@ Do these in order once 2.0 is live in the App Store.
 - [ ] Weekly: indexed pages, 404s, Google-selected canonical, impressions for `protect` pages vs the W1 baseline. Fix Search Console script access first (`fetch_gsc_stats.py` returned 403).
 - [ ] If a `protect` page loses more than 50% of its impressions after 3 weeks, investigate before changing anything else.
 - [ ] Never remove the old-domain redirects: installed copies of the app link to `l2cache.amvo.store`.
+
+## 7. Housekeeping (after launch has settled)
+- [ ] Move the homepage source out of `prototypes/native-mac/` (it's the live 2.0 homepage, not a prototype) to a folder such as `home/`. Update the path in `build.py`, `scripts/site_i18n.py` (`SOURCE_DIR`), `scripts/check_home_links.py`, this checklist and `docs/PRD-Teams-Waitlist.md`. Then `python3 build.py` and `python3 scripts/check_home_links.py` must pass, and `out/l2cache/index.html` must be unchanged apart from the move. Deferred from 2026-11-10 to keep launch-week builds stable.
