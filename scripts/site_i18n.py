@@ -345,6 +345,7 @@ def render(source, lang, cat, published=tuple(LOCALES)):
 
 
 NOINDEX_RE = re.compile(r'  <!-- Prototype:[^\n]*-->\n  <meta name="robots" content="noindex,nofollow">\n')
+INDEX_META = '<meta name="robots" content="index,follow">'
 
 
 def complete_locales():
@@ -363,9 +364,10 @@ def build(out_dir=OUT_DIR, only_complete=False, clean=True):
             raise SystemExit(f"\n{len(errors)} localization error(s); nothing built.")
         published = list(LOCALES)
     source = open(SOURCE, encoding="utf-8").read()
-    if not NOINDEX_RE.search(source):
-        raise SystemExit("prototype noindex block not found; update NOINDEX_RE")
+    # Older sources carry a prototype noindex block; the published page must always be indexable.
     source = NOINDEX_RE.sub("", source, count=1)
+    if "noindex" in source or INDEX_META not in source:
+        raise SystemExit(f"homepage source must have {INDEX_META} and no noindex")
     if clean:
         shutil.rmtree(out_dir, ignore_errors=True)
     os.makedirs(os.path.join(out_dir, "img"), exist_ok=True)
