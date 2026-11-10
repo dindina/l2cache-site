@@ -86,6 +86,139 @@
       border-color: var(--sc) !important;
       color: var(--sc) !important;
     }
+
+    /* Today Mockup: Cold Cache Expired Pickup Card */
+    .win-chip.cold {
+      color: #f87171 !important;
+      background: rgba(248, 113, 113, 0.12) !important;
+      border-color: rgba(248, 113, 113, 0.3) !important;
+    }
+    .win-chip.cold i {
+      background: #f87171 !important;
+    }
+    .mock .tp-card.tp-card-cold {
+      padding: 14px 16px !important;
+      border: 1px solid var(--m-line) !important;
+      border-radius: 14px !important;
+      background: rgba(255, 255, 255, 0.035) !important;
+      margin-top: var(--s-2) !important;
+    }
+    .mock .tp-card-cold .tp-head strong { font-size: 15.5px !important; font-weight: 700 !important; color: #fff !important; }
+    .mock .tp-card-cold .tp-head .dim { font-size: 12px !important; color: var(--m-text-3) !important; }
+    .mock .tp-cold-say { margin: 10px 0 12px !important; }
+    .mock .tp-cold-title { font-size: 13.5px !important; font-weight: 700 !important; color: #f3f2f8 !important; margin: 0 0 3px !important; line-height: 1.35 !important; }
+    .mock .tp-cold-desc { font-size: 12px !important; color: var(--m-text-2) !important; margin: 0 !important; line-height: 1.45 !important; }
+    .mock .tp-dual-boxes {
+      display: grid !important;
+      grid-template-columns: 1fr auto 1fr !important;
+      align-items: center !important;
+      gap: 10px !important;
+      margin: 12px 0 14px !important;
+    }
+    .mock .tp-dbox {
+      position: relative !important;
+      display: flex !important;
+      gap: 10px !important;
+      padding: 10px 12px !important;
+      border-radius: 12px !important;
+      background: rgba(0, 0, 0, 0.28) !important;
+      border: 1px solid var(--m-line) !important;
+    }
+    .mock .tp-dbox.cur { border-color: rgba(245, 158, 11, 0.25) !important; }
+    .mock .tp-dbox.fresh { border-color: rgba(52, 211, 153, 0.25) !important; }
+    .mock .tp-dbox-ico { font-size: 16px !important; line-height: 1.2 !important; }
+    .mock .tp-dbox.cur .tp-dbox-ico { color: #f59e0b !important; }
+    .mock .tp-dbox.fresh .tp-dbox-ico { color: #34d399 !important; }
+    .mock .tp-dbox-body { flex: 1 !important; min-width: 0 !important; }
+    .mock .tp-dbox-body .cap {
+      display: block !important;
+      font-size: 9.5px !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.06em !important;
+      text-transform: uppercase !important;
+      color: var(--m-text-3) !important;
+    }
+    .mock .tp-dbox.fresh .cap { color: #34d399 !important; }
+    .mock .tp-dbox-num {
+      font-size: 24px !important;
+      font-weight: 800 !important;
+      line-height: 1.1 !important;
+      letter-spacing: -0.01em !important;
+      margin: 2px 0 3px !important;
+    }
+    .mock .tp-dbox-num.cur {
+      background: linear-gradient(90deg, #ffcf4d, #f08a5d 85%) !important;
+      -webkit-background-clip: text !important;
+      background-clip: text !important;
+      color: transparent !important;
+    }
+    .mock .tp-dbox-num.fresh { color: #6ee7b7 !important; }
+    .mock .tp-dbox-sub { display: block !important; font-size: 11px !important; color: var(--m-text-2) !important; white-space: nowrap !important; }
+    .mock .tp-dbox.cur .tp-dbox-sub { color: #f87171 !important; font-weight: 500 !important; }
+    .mock .tp-dbox-arrow { color: var(--m-text-3) !important; font-size: 16px !important; }
+    .mock .tp-dbox-info {
+      position: absolute !important;
+      top: 8px !important;
+      right: 9px !important;
+      width: 14px !important;
+      height: 14px !important;
+      border-radius: 50% !important;
+      border: 1px solid var(--m-text-3) !important;
+      color: var(--m-text-3) !important;
+      font-size: 9px !important;
+      font-weight: 700 !important;
+      display: grid !important;
+      place-items: center !important;
+    }
+    .mock .tp-handoff-btn {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 8px !important;
+      width: 100% !important;
+      padding: 10px 14px !important;
+      border-radius: 10px !important;
+      font-weight: 700 !important;
+      font-size: 13.5px !important;
+      color: #ffffff !important;
+      background: linear-gradient(180deg, #a78bfa, #8b5cf6) !important;
+      border: none !important;
+      box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+      cursor: pointer !important;
+    }
+    .mock .tp-alt-act { margin: 7px 0 10px !important; text-align: center !important; font-size: 11.5px !important; color: var(--m-text-3) !important; }
+    .mock .tp-alt-link { color: #c4b5fd !important; text-decoration: none !important; font-weight: 600 !important; }
+    .mock .chip-not-pushed {
+      background: rgba(245, 158, 11, 0.18) !important;
+      color: #fbbf24 !important;
+      font-size: 10px !important;
+      font-weight: 700 !important;
+      padding: 1px 5px !important;
+      border-radius: 4px !important;
+      margin-inline: 4px !important;
+    }
+    .mock .tp-val { color: var(--m-text) !important; font-size: 12px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+    .mock .muted-btn {
+      background: rgba(255, 255, 255, 0.06) !important;
+      padding: 3px 8px !important;
+      border-radius: 6px !important;
+      font-size: 11px !important;
+      color: #b9b6c6 !important;
+      border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+    .mock .btn-m.tp-resume-btn {
+      margin-left: auto !important;
+      background: rgba(255, 255, 255, 0.07) !important;
+      color: #fff !important;
+      padding: 5px 11px !important;
+      border-radius: 7px !important;
+      font-size: 11.5px !important;
+      font-weight: 600 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
   </style>
   <script>document.documentElement.classList.add("js");</script>
   <script src="script.js?v=20261110_7" defer></script>
@@ -338,7 +471,7 @@
 <p class="demo-hint"><span><i aria-hidden="true"></i><b>Live demo.</b> Click around the app to explore L2Cache.</span></p>
 <div class="sb-caption-wrap" style="--sc: var(--c-agent)"><div class="sb-caption" id="cap-today"><div><p class="eyebrow">Today</p><h3>Your morning starts with context, not archaeology.</h3></div><div><p class="lead">Open L2Cache and Today shows the last thing you were doing in every project: what you asked your agent, what it finished, and the one step that comes next.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Today</span><span class="when-open">Less about Today</span></summary><div class="sbm-body"><ul><li><strong>You were working on.</strong><span>The goal of your last agent session, in your own words.</span></li><li><strong>Last update.</strong><span>What the agent reported before you stopped.</span></li><li><strong>Resume.</strong><span>Reopen the session in the agent you were using, in one click.</span></li><li><strong>Needs attention.</strong><span>Failed runs, unpushed commits and branches pushed but never merged.</span></li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-agents"><div><p class="eyebrow">Coding agents</p><h3>Your coding agents finally have a history.</h3></div><div><p class="lead">Every agent keeps its sessions in a different place and format. L2Cache reads your Claude Code session history and Codex session history, plus Copilot, Grok Build and Antigravity, from your Mac and lays it out by project and branch. A conversation from last Tuesday is a search away, and you can resume Claude Code or Codex right where it stopped.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Coding agents</span><span class="when-open">Less about Coding agents</span></summary><div class="sbm-body"><ul><li><strong>Resume.</strong><span>Copy or run the resume command for a supported session. The agent's CLI and the original session need to be available.</span></li><li><strong>Handoff.</strong><span>Live capture and session handoff for Claude Code, Codex, GitHub Copilot and Grok Build.</span></li><li><strong>Plans and skills.</strong><span>Browse plans from Claude Code and Antigravity, and installed skills and their use from Claude Code and Codex.</span></li></ul><p class="note">Available details and live-continuity features vary by agent.</p></div></details></div><div class="sb-caption" hidden="" id="cap-mcp"><div><p class="eyebrow">MCP Server</p><h3>Your agents can ask L2Cache directly.</h3></div><div><p class="lead">Connect the L2Cache MCP server and Claude Code, Codex, Cursor and Antigravity query your clips, screenshots, past error resolutions and decisions on-demand.</p></div><details class="sbm-more"><summary><span class="when-closed">More about MCP Server</span><span class="when-open">Less about MCP Server</span></summary><div class="sbm-body"><ul><li><strong>12 built-in MCP tools.</strong><span>Clips, screenshots, git recovery points, decisions and error resolutions.</span></li><li><strong>No copy-pasting.</strong><span>Agents recall what you copied and debugged without manual prompt entry.</span></li><li><strong>Local-only.</strong><span>Runs strictly on your Mac. Sensitive keys and tokens are automatically masked.</span></li><li><strong>Works across clients.</strong><span>Claude Code, Claude Desktop, Codex, Cursor and Google Antigravity.</span></li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-hooks"><div><p class="eyebrow">Continuity Hooks</p><h3>Every session starts briefed, with zero setup.</h3></div><div><p class="lead">Turn-by-turn hooks brief new agent sessions with what you copied, hand off context between sessions, and guard against expensive cold cache reloads.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Hooks</span><span class="when-open">Less about Hooks</span></summary><div class="sbm-body"><ul><li><strong>Recent clipboard injection.</strong><span>Clips from the last 30 minutes ride along with new prompts.</span></li><li><strong>Session handoff.</strong><span>A fresh session picks up where the last one stopped.</span></li><li><strong>Cold resume guard.</strong><span>Claude Code warns you before your first message into an expired cache.</span></li><li><strong>Work summaries.</strong><span>Finished edits feed your automated timesheet and standup.</span></li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-settings"><div><p class="eyebrow">Settings</p><h3>Privacy, exclusions, and local control.</h3></div><div><p class="lead">Manage app exclusions, sensitive secret masking, retention rules, and global shortcuts—everything stored locally on your Mac.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Settings</span><span class="when-open">Less about Settings</span></summary><div class="sbm-body"><ul><li><strong>App exclusions.</strong><span>Prevent password managers or private windows from ever being captured.</span></li><li><strong>Secret masking.</strong><span>Passwords, API keys and access tokens are detected and masked automatically.</span></li><li><strong>Presentation mode.</strong><span>Mask project names, prompts, and paths during screen sharing.</span></li><li><strong>Shortcuts.</strong><span>Customize ⌘⇧V, ⌘K, and ⌥V for your workflow.</span></li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-worklog"><div><p class="eyebrow">Worklog</p><h3>Your hours, already counted.</h3></div><div><p class="lead">Tickets you worked on and approximate hours per day, which you can correct and copy into your timesheet tool, plus an editable standup built from your recorded activity.</p></div><ul></ul></div><div class="sb-caption" hidden="" id="cap-projects"><div><p class="eyebrow">Projects</p><h3>Every project keeps its story.</h3></div><div><p class="lead">Commits, branches, agent sessions, test runs and releases line up on one timeline per project, so you can see how the work got here, not just where it is.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Projects</span><span class="when-open">Less about Projects</span></summary><div class="sbm-body"><ul><li><strong>Project Story.</strong> A commit graph and timeline read straight from <code>.git</code>. L2Cache never runs Git for you.</li><li><strong>Milestones.</strong> Each piece of evidence is labelled Git verified, Test verified, You noted, or L2Cache inferred.</li><li><strong>Worklog.</strong> Tickets you worked on and approximate hours per day, which you can correct and copy into your timesheet tool.</li><li><strong>Weekly Brief &amp; standup.</strong> An editable standup built from your recorded activity.</li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-search"><div><p class="eyebrow">Search</p><h3>Find the thread with <kbd>⌘</kbd><kbd>K</kbd>.</h3></div><div><p class="lead">One search across your projects, agent sessions, terminal history, Git activity, screenshots and clipboard. The command you ran, the error you copied and the screenshot you took are in the same place.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Search</span><span class="when-open">Less about Search</span></summary><div class="sbm-body"><ul><li><strong>Best match first.</strong> A top hit across clips, agent sessions, terminal commands, commits and docs, then the rest grouped by kind.</li><li><strong>Narrow it down.</strong> Filter by kind, or type <code>@project</code> to search one project.</li><li><strong>Straight to the moment.</strong> An agent result opens the session at the matching message.</li><li><strong>Screenshot search.</strong> Find a screenshot by the text inside it.</li><li><strong>Quick panel.</strong> <kbd>⌘</kbd><kbd>⇧</kbd><kbd>V</kbd> brings up your history from any app.</li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-clipboard"><div><p class="eyebrow">Clipboard</p><h3>Everything you copied and ran, by project.</h3></div><div><p class="lead">Your clipboard and shell history stop being one long list. Each clip and command lands in the project it came from, so the snippet from this morning is next to the work it was for.</p></div><details class="sbm-more"><summary><span class="when-closed">More about Clipboard</span><span class="when-open">Less about Clipboard</span></summary><div class="sbm-body"><ul><li><strong>Smart clipboard.</strong> Clips are recognised as code, JSON, SQL, URLs, colours and more, with actions for each type. Pin the ones you reuse.</li><li><strong>Terminal history.</strong> Every command with its exit code, grouped by day and filterable by project or tool.</li><li><strong>Your shell and your agents.</strong> See the commands you ran, the ones your coding agents ran, or both.</li></ul></div></details></div><div class="sb-caption" hidden="" id="cap-terminal"><div><p class="eyebrow">Terminal</p><h3>Every command, with its exit code.</h3></div><div><p class="lead">Every command, grouped by day and filterable by project or tool. See the commands you ran, the ones your coding agents ran, or both.</p></div><ul></ul></div></div>
 <div class="win">
-<div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title sb-title">L2Cache — Developer Home</span><span class="win-chip" title="Example data"><i aria-hidden="true"></i>Cache warm · 49 min left</span></div>
+<div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="win-title sb-title">L2Cache — Developer Home</span><span class="win-chip cold" title="Example data"><i aria-hidden="true">❄</i>Cache expired · 254k cold</span></div>
 <div class="dh">
 <aside class="dh-side"><div class="dh-brand"><span class="l2">L2</span>L2Cache</div>
 <div aria-label="L2Cache sidebar" aria-orientation="vertical" class="dh-nav" role="tablist">
@@ -367,24 +500,46 @@
 <div class="dh-stat"><b>0</b><span>need attention</span></div>
 </div>
 <section class="dh-pick tp">
-<header><strong>Pick up where you left off</strong><span class="dim">‹ Thu, Oct 22 ›</span></header>
-<article class="tp-card">
-<div class="tp-head"><span class="l2">AT<span class="ag">✳</span></span><div><strong>Auth token retry</strong><span class="dim">Claude Code · Atlas</span></div>
-<span class="tp-meta"><span class="amber">◔ 241k</span><span class="amber">⚡ 49m</span></span></div>
-<p class="tp-say"><b>Cheap to continue for 49 min.</b><span>After that, the next message reloads all of it.</span></p>
-<div class="tp-box warm"><span class="ico"><svg viewBox="0 0 16 22" fill="none" stroke="currentColor" stroke-width="1.6" width="16" height="22" aria-hidden="true"><path d="M6 3a2 2 0 0 1 4 0v9.5a4 4 0 1 1-4 0z"/><circle cx="8" cy="16" r="1.6" fill="currentColor"/><path d="M8 8v6.5"/><path d="M12.5 5h2M12.5 8h2M12.5 11h2"/></svg></span><div><span class="cap">Current session</span><b>241k</b><span>Cached · 49 min left</span></div><span class="info" aria-hidden="true">i</span></div>
-<div class="tp-acts"><span>⧉ Copy /compact command</span><i>·</i><span>✦ Start fresh with handoff</span></div>
-<div class="tp-recap"><div class="tp-recap-top"><span class="cap">Session recap</span><span class="dim">2h ago</span></div>
-<div class="tp-line"><span class="k">● Last user request</span><span>Add the concurrency test too so we don't race in-flight refreshes.</span></div>
-<div class="tp-line"><span class="k">✦ Last agent action</span><span>Background refresh handles 401s; one concurrency test still fails.</span></div></div>
-<div class="tp-foot"><span class="muted">Recap ›</span><span class="chip mono">⑂ fix/ATL-142</span><span class="btn-m"><span class="ag-dot">✳</span>Copy resume command</span></div>
-</article>
-<article class="tp-card">
-<div class="tp-head"><span class="l2 ni">NI<span class="ag codex">◎</span></span><div><strong>Shell completions</strong><span class="dim">Codex · Nimbus</span></div>
-<span class="tp-meta"><span class="green">◔ 41k</span></span></div>
-<p class="tp-say ok"><b><i aria-hidden="true">✓</i>This session is <em>healthy.</em></b><span>Your context is still reusable. You can continue without worry.</span></p>
-<div class="tp-box"><span class="ico"><svg viewBox="0 0 16 22" fill="none" stroke="currentColor" stroke-width="1.6" width="16" height="22" aria-hidden="true"><path d="M6 3a2 2 0 0 1 4 0v9.5a4 4 0 1 1-4 0z"/><circle cx="8" cy="16" r="1.6" fill="currentColor"/><path d="M8 8v6.5"/><path d="M12.5 5h2M12.5 8h2M12.5 11h2"/></svg></span><div><span class="cap">Current session</span><b>41k</b><span>Context loaded</span></div><span class="info" aria-hidden="true">i</span></div>
-<div class="tp-go">▶ Continue this session</div>
+<header><strong>Pick up where you left off</strong><span class="dim">‹ Tue, Nov 10 ›</span></header>
+<article class="tp-card tp-card-cold">
+<div class="tp-head">
+<span class="l2" style="background: linear-gradient(145deg, #8b5cf6, #6d28d9); position: relative; color: #fff; font-weight: 800; border-radius: 9px; width: 34px; height: 34px; display: grid; place-items: center; font-size: 13px;">L2<span class="ag" style="background: #e27338; position: absolute; right: -3px; bottom: -3px; width: 14px; height: 14px; border-radius: 50%; display: grid; place-items: center; font-size: 9px; border: 1.5px solid #16151c;">✳</span></span>
+<div><strong>Cold cache multiplier</strong><span class="dim">Claude Code · L2Cache</span></div>
+<span class="tp-meta"><span class="amber" style="display: inline-flex; align-items: center; gap: 4px; color: #fbbf24;"><i style="font-style: normal;">⏱</i> 254k</span><span class="amber" style="display: inline-flex; align-items: center; gap: 4px; color: #f87171;"><i style="font-style: normal;">⚡</i> Expired</span></span>
+</div>
+<div class="tp-cold-say">
+<p class="tp-cold-title">A fresh session could save you from carrying unnecessary context.</p>
+<p class="tp-cold-desc">This session moved on from Site 2.0 homepage review to Cold cache multiplier. Continue with a focused handoff for the new work.</p>
+</div>
+<div class="tp-dual-boxes">
+<div class="tp-dbox cur">
+<div class="tp-dbox-ico">🌡</div>
+<div class="tp-dbox-body">
+<span class="cap">CURRENT SESSION</span>
+<div class="tp-dbox-num cur">254k</div>
+<span class="tp-dbox-sub">Cache expired · 55 min idle</span>
+</div>
+</div>
+<span class="tp-dbox-arrow" aria-hidden="true">→</span>
+<div class="tp-dbox fresh">
+<span class="tp-dbox-info" aria-hidden="true">ⓘ</span>
+<div class="tp-dbox-ico">⚡</div>
+<div class="tp-dbox-body">
+<span class="cap">FRESH + HANDOFF</span>
+<div class="tp-dbox-num fresh">52k</div>
+<span class="tp-dbox-sub">Estimated starting context</span>
+</div>
+</div>
+</div>
+<button class="tp-handoff-btn" type="button"><span>✨</span> Start Fresh with L2Cache Handoff</button>
+<div class="tp-alt-act"><span>Alternative:</span> <a class="tp-alt-link" href="#compact">⧉ Copy /compact Command</a></div>
+<div class="tp-recap">
+<div class="tp-recap-top"><span class="cap" style="display: inline-flex; align-items: center; gap: 5px;"><svg fill="currentColor" height="12" viewBox="0 0 16 16" width="12"><path d="M2 3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H5l-3 3V3z"></path></svg> SESSION RECAP</span><span class="dim">4 minutes ago</span></div>
+<div class="tp-line"><span class="k">● Last user request</span><span class="tp-val">19.99 is the right new price</span></div>
+<div class="tp-line"><span class="k">✦ Last agent action</span><span class="tp-val">Price set to $19.99 in StoreKit test config and project notes</span></div>
+<div class="tp-line"><span class="k">⑂ Commit</span><span class="tp-val"><span class="mono">d10b358</span> <span class="chip-not-pushed">not pushed</span> chore(pricing): $19.99 launch price in StoreKit...</span></div>
+</div>
+<div class="tp-foot"><span class="muted-btn">Recap ›</span><span class="chip mono">⑂ l2cache2.0</span><span class="btn-m tp-resume-btn"><span class="ag-dot anthropic" style="color: #e27338;">✳</span>Copy resume command</span></div>
 </article>
 </section>
 <div class="dh-projects">
