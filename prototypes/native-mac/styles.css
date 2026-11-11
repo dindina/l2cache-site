@@ -196,12 +196,6 @@ h2 { font-size: clamp(32px, 4.4vw, 52px); font-weight: 700; }
   .hero-reasons { grid-template-columns: 1fr; }
 }
 .fineprint { color: var(--text-3); font-size: 14px; margin: var(--s-4) 0 0; }
-.prerelease-pill { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 var(--s-4); padding: 6px 14px; border-radius: 999px;
-  background: var(--accent-soft); color: var(--accent); font-size: 14px; font-weight: 700; }
-.prerelease-pill span { font-size: 10px; }
-.prerelease-note { max-width: 680px; margin: var(--s-4) 0 0; padding: 12px 16px; border: 1px solid var(--border); border-radius: 12px;
-  background: var(--surface); color: var(--text-2); font-size: 14px; line-height: 1.55; }
-.prerelease-note strong { color: inherit; }
 
 /* Hero */
 .hero { padding-top: var(--s-7); overflow: hidden; }

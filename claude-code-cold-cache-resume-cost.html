@@ -37,8 +37,6 @@
     code { font-family: var(--mono); font-size: 14px; background: rgba(0,200,150,0.1); color: #008765; padding: 2px 5px; border-radius: 4px; }
     pre code { background: transparent; color: #e0ffe8; padding: 0; white-space: pre-wrap; }
     strong { color: var(--text); font-weight: 600; }
-    .prerelease-box { background: rgba(127,119,221,0.08); border: 1px solid rgba(127,119,221,0.3); border-radius: 10px; padding: 14px 18px; margin: 0 0 32px; }
-    .prerelease-box p { margin: 0; font-size: 15px; color: var(--text); }
     .highlight-box { background: rgba(0,200,150,0.08); border-left: 4px solid var(--purple); padding: 22px; margin: 32px 0; border-radius: 0 10px 10px 0; }
     .highlight-box p { margin-bottom: 0; color: var(--text); }
     .table-wrap { overflow-x: auto; margin-bottom: 24px; }
@@ -126,7 +124,6 @@
   <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
   <h1>Why resuming a cold Claude Code session costs more (and what to do instead)</h1>
   <p class="meta">November 9, 2026 · 8 min read</p>
-  <div class="prerelease-box" role="note"><p><strong>Coming in L2Cache 2.0.</strong> The cache warnings, keep-warm heartbeat and cold resume guard described below arrive in 2.0, which is coming soon. The explanation of prompt caching and the Claude Code commands apply today. The App Store has version 1.4.6.</p></div>
 
   <p>You leave a long Claude Code session for lunch, or overnight. You come back, type one short message, and that single message uses more of your budget than the last twenty did. Nothing is broken. The session's <strong>prompt cache</strong> expired while you were away, and the first message back paid to rebuild it.</p>
 
@@ -154,15 +151,15 @@
     <tbody>
       <tr><td>Fable 5.1, 1-hour cache</td><td>0.025×</td><td>2×</td><td><strong>80×</strong></td></tr>
       <tr><td>Fable 5.1, 5-minute cache</td><td>0.025×</td><td>1.25×</td><td><strong>50×</strong></td></tr>
-      <tr><td>Opus 5.5, 1-hour cache</td><td>0.05×</td><td>2×</td><td><strong>40×</strong></td></tr>
-      <tr><td>Opus 5.5, 5-minute cache</td><td>0.05×</td><td>1.25×</td><td><strong>25×</strong></td></tr>
-      <tr><td>Sonnet 5.5, Haiku 4.5 and most other models, 1-hour cache</td><td>0.1×</td><td>2×</td><td><strong>20×</strong></td></tr>
-      <tr><td>Sonnet 5.5, Haiku 4.5 and most other models, 5-minute cache</td><td>0.1×</td><td>1.25×</td><td><strong>12.5×</strong></td></tr>
+      <tr><td>Opus 5.5 and Sonnet 5.5, 1-hour cache</td><td>0.05×</td><td>2×</td><td><strong>40×</strong></td></tr>
+      <tr><td>Opus 5.5 and Sonnet 5.5, 5-minute cache</td><td>0.05×</td><td>1.25×</td><td><strong>25×</strong></td></tr>
+      <tr><td>Haiku 4.5 and most other models, 1-hour cache</td><td>0.1×</td><td>2×</td><td><strong>20×</strong></td></tr>
+      <tr><td>Haiku 4.5 and most other models, 5-minute cache</td><td>0.1×</td><td>1.25×</td><td><strong>12.5×</strong></td></tr>
     </tbody>
   </table></div>
-  <p class="note">Multipliers from Anthropic's prompt-caching pricing, checked November 10, 2026. Fable 5.1 prices cache reads at 0.025× base input ($0.25 per million on $10), Opus 5.5 at 0.05× ($0.20 on $4), and Sonnet 5.5 and most other models at 0.1×.</p>
+  <p class="note">Multipliers from Anthropic's prompt-caching pricing, checked November 11, 2026. Fable 5.1 prices cache reads at 0.025× base input ($0.25 per million on $10), Opus 5.5 at 0.05× ($0.20 on $4), Sonnet 5.5 at 0.05× ($0.10 on $2), and Haiku 4.5 and most other models at 0.1×.</p>
 
-  <p>So for the context part of the request, the first message after expiry costs roughly <strong>12× to 80× a warm turn</strong>, depending on the model and the cache lifetime: 20× on Sonnet 5.5, 40× on Opus 5.5 and 80× on Fable 5.1 with a 1-hour cache.</p>
+  <p>So for the context part of the request, the first message after expiry costs roughly <strong>12× to 80× a warm turn</strong>, depending on the model and the cache lifetime: 20× on Haiku 4.5, 40× on Sonnet 5.5 and Opus 5.5, and 80× on Fable 5.1 with a 1-hour cache.</p>
 
   <div class="highlight-box">
     <p><strong>A worked example.</strong> A 241k-token Opus 5.5 session on a 1-hour cache. A warm turn reads that context for about $0.05 at API list prices (241k × $0.20 per million). After the cache expires, the next message writes it again for about $1.93 (241k × $8 per million). That's one message costing what about forty warm turns cost, before Claude has written a word.</p>
@@ -235,6 +232,7 @@ Or just send your message to continue as is.</code></pre>
   <div class="related">
     <h3>Related reading</h3>
     <div class="related-grid">
+      <a href="claude-code-cold-session-tax.html"><div><div class="r-tag">Claude Code · Measured</div><div class="r-title">The hidden cost of a cold session: what 10,000 requests showed</div></div><div class="r-more">Read article →</div></a>
       <a href="coding-agent-session-handoff.html"><div><div class="r-tag">Coding agents</div><div class="r-title">Start a fresh coding-agent session without losing context</div></div><div class="r-more">Read article →</div></a>
       <a href="claude-code-session-history-mac.html"><div><div class="r-tag">Claude Code</div><div class="r-title">Claude Code session history on Mac</div></div><div class="r-more">Read guide →</div></a>
       <a href="ai-agent-jsonl-and-session-resume-guide.html"><div><div class="r-tag">Coding agents</div><div class="r-title">Coding-agent JSONL and session resume, explained</div></div><div class="r-more">Read guide →</div></a>

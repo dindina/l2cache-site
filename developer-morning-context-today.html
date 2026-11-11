@@ -37,8 +37,6 @@
     code { font-family: var(--mono); font-size: 14px; background: rgba(0,200,150,0.1); color: #008765; padding: 2px 5px; border-radius: 4px; }
     pre code { background: transparent; color: #e0ffe8; padding: 0; white-space: pre-wrap; }
     strong { color: var(--text); font-weight: 600; }
-    .prerelease-box { background: rgba(127,119,221,0.08); border: 1px solid rgba(127,119,221,0.3); border-radius: 10px; padding: 14px 18px; margin: 0 0 32px; }
-    .prerelease-box p { margin: 0; font-size: 15px; color: var(--text); }
     .highlight-box { background: rgba(0,200,150,0.08); border-left: 4px solid var(--purple); padding: 22px; margin: 32px 0; border-radius: 0 10px 10px 0; }
     .highlight-box p { margin-bottom: 0; color: var(--text); }
     .table-wrap { overflow-x: auto; margin-bottom: 24px; }
@@ -126,7 +124,6 @@
   <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
   <h1>Your morning starts with context, not archaeology</h1>
   <p class="meta">November 9, 2026 · 4 min read</p>
-  <div class="prerelease-box" role="note"><p><strong>Coming in L2Cache 2.0.</strong> The Today page is part of the Developer Home, arriving in 2.0, which is coming soon. The App Store has version 1.4.6 today.</p></div>
 
   <p>The first half hour of a working day often goes on digging. Which branch was I on? What did I ask the agent last night, and did it finish? Did the tests pass before I left? Is anything sitting unpushed? You scroll through terminal history, reopen agent sessions and run <code>git status</code> in three repositories before writing a line of code.</p>
 
@@ -173,7 +170,6 @@
     <li><strong>Copy standup</strong> writes a Yesterday / Today / Blockers standup from your sessions and Git history, ready to paste into Slack. It works with AI off. With AI on, your provider rewrites it and may only use the facts it's given.</li>
     <li><strong>Weekly Brief</strong> opens a summary of your week: what got done and where to pick up. It appears by itself on Mondays, and the button toggles it any day.</li>
   </ul>
-  <p>Sharing your screen in a standup? <strong>Presentation mode</strong> masks project names, paths, prompts and commands while keeping the layout, so you can show the page without showing the work.</p>
 
   <h2>Setting it up</h2>
   <p>The first time you open Today, a short checklist asks for two things: your <strong>projects folder</strong>, so L2Cache can read your repositories, and your <strong>coding-agent folders</strong>, so it can read your sessions. After that the page fills itself in. Connecting L2Cache's hooks adds the work summaries and the live cache state.</p>
@@ -193,6 +189,7 @@
   <div class="related">
     <h3>Related reading</h3>
     <div class="related-grid">
+      <a href="your-mac-knows-what-you-did-yesterday.html"><div><div class="r-tag">Today</div><div class="r-title">Your Mac already knows what you did yesterday</div></div><div class="r-more">Read article →</div></a>
       <a href="day-in-the-life-mac-developer.html"><div><div class="r-tag">Workflow</div><div class="r-title">A day in the life of a modern Mac developer</div></div><div class="r-more">Read article →</div></a>
       <a href="claude-code-cold-cache-resume-cost.html"><div><div class="r-tag">Context &amp; cost</div><div class="r-title">Why resuming a cold Claude Code session costs more</div></div><div class="r-more">Read article →</div></a>
       <a href="developer-timesheet-standup-from-activity.html"><div><div class="r-tag">Worklog</div><div class="r-title">A timesheet and standup from your coding activity</div></div><div class="r-more">Read article →</div></a>
