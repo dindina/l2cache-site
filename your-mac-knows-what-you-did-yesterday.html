@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="author" content="Amvo"/>
+  <meta name="theme-color" content="#0d1117"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Mac already knows what you did yesterday | L2Cache</title>
+  <meta name="description" content="Rebuild your morning context from data already on disk: agent transcripts, shell history and git, with no time tracking. With a script to try it."/>
+  <link rel="icon" type="image/png" href="icon.png"/>
+  <link rel="apple-touch-icon" href="icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #00C896; --bg: #f7f7f5; --bg2: #ffffff; --bg3: #eeeeea;
+      --border: #e4e4e0; --text: #0a0a0a;
+      --text-muted: #555550; --text-dim: #999992;
+      --mono: 'DM Mono', monospace; --serif: "Playfair Display", serif; --sans: 'DM Sans', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .container { max-width: 720px; margin: 0 auto; padding: 80px 24px; min-height: 80vh; }
+    .label { font-family: var(--mono); font-size: 12px; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: inline-block; }
+    h1 { font-family: var(--serif); font-size: 40px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; color: var(--text); }
+    .meta { font-family: var(--mono); font-size: 13px; color: var(--text-dim); margin-bottom: 32px; }
+    h2 { font-family: var(--serif); font-size: 28px; font-weight: 700; margin-top: 48px; margin-bottom: 16px; color: var(--text); }
+    h3 { font-size: 19px; font-weight: 600; margin-top: 28px; margin-bottom: 12px; color: var(--text); }
+    p { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; }
+    ul, ol { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; padding-left: 24px; }
+    li { margin-bottom: 10px; }
+    a { color: #008765; }
+    pre { background: #0D0C1A; padding: 18px; border-radius: 10px; overflow-x: auto; margin-bottom: 24px; border: 1px solid var(--border); }
+    code { font-family: var(--mono); font-size: 14px; background: rgba(0,200,150,0.1); color: #008765; padding: 2px 5px; border-radius: 4px; }
+    pre code { background: transparent; color: #e0ffe8; padding: 0; white-space: pre-wrap; }
+    strong { color: var(--text); font-weight: 600; }
+    .highlight-box { background: rgba(0,200,150,0.08); border-left: 4px solid var(--purple); padding: 22px; margin: 32px 0; border-radius: 0 10px 10px 0; }
+    .highlight-box p { margin-bottom: 0; color: var(--text); }
+    .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; }
+    th { color: var(--text); font-weight: 600; background: var(--bg3); }
+    .note { font-size: 14px; color: var(--text-dim); }
+    .cta-box { background: var(--bg2); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
+    .cta-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+    .cta-btn { display: inline-block; background: var(--purple); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
+    .cta-btn:hover { background: #00a87f; }
+    .related { margin-top: 48px; border-top: 1px solid var(--border); padding-top: 36px; }
+    .related h3 { font-family: var(--serif); font-size: 22px; margin-top: 0; margin-bottom: 20px; }
+    .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .related-grid a { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; }
+    .related-grid a:hover { border-color: var(--purple); }
+    .r-tag { font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em; }
+    .r-title { font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4; }
+    .r-more { font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; }
+    footer { padding: 48px 24px; text-align: center; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-dim); }
+    footer a { color: var(--text-dim); text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: var(--text-muted); }
+    @media (max-width: 600px) {
+      nav { padding: 16px; }
+      .container { padding: 48px 16px; }
+      h1 { font-size: 32px; }
+      h2 { font-size: 24px; }
+      th, td { padding: 8px 6px; font-size: 14px; }
+    }
+  </style>
+  <link rel="stylesheet" href="theme.css">
+  <link rel="canonical" href="https://l2cache.amvo.store/en/your-mac-knows-what-you-did-yesterday">
+
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="L2Cache">
+  <meta property="og:url" content="https://l2cache.amvo.store/en/your-mac-knows-what-you-did-yesterday">
+  <meta property="og:title" content="Your Mac already knows what you did yesterday">
+  <meta property="og:description" content="Rebuild your morning context from data already on disk: agent transcripts, shell history and git, with no time tracking. With a script to try it.">
+  <meta property="og:image" content="https://l2cache.amvo.store/icon.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="L2Cache app icon">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:url" content="https://l2cache.amvo.store/en/your-mac-knows-what-you-did-yesterday">
+  <meta name="twitter:title" content="Your Mac already knows what you did yesterday">
+  <meta name="twitter:description" content="Rebuild your morning context from data already on disk: agent transcripts, shell history and git, with no time tracking. With a script to try it.">
+  <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
+  <meta name="twitter:image:alt" content="L2Cache app icon">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Your Mac already knows what you did yesterday",
+  "description": "Rebuild your morning context from data already on disk: agent transcripts, shell history and git, with no time tracking. With a script to try it.",
+  "url": "https://l2cache.amvo.store/en/your-mac-knows-what-you-did-yesterday",
+  "datePublished": "2026-11-11",
+  "dateModified": "2026-11-11",
+  "author": { "@type": "Organization", "name": "Amvo", "url": "https://l2cache.amvo.store/en" },
+  "publisher": { "@type": "Organization", "name": "Amvo", "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" } },
+  "image": "https://l2cache.amvo.store/icon.png",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://l2cache.amvo.store/en/your-mac-knows-what-you-did-yesterday" }
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://l2cache.amvo.store/en" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://l2cache.amvo.store/en/blog" },
+    { "@type": "ListItem", "position": 3, "name": "Your Mac Already Knows What You Did Yesterday", "item": "https://l2cache.amvo.store/en/your-mac-knows-what-you-did-yesterday" }
+  ]
+}
+  </script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="icon.png" width="28" height="28" alt="L2Cache" style="border-radius:7px"/>
+    L2Cache
+  </a>
+</nav>
+
+<div class="container">
+  <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
+  <h1>Your Mac already knows what you did yesterday</h1>
+  <p class="meta">November 11, 2026 · 7 min read</p>
+  <p><strong>Most of us start the day rebuilding yesterday by hand. The answers are already sitting in plain files on your disk.</strong></p>
+<p>Picture 9:10 on a Tuesday. Coffee in one hand, trackpad in the other, you're trying to remember where you were.</p>
+
+<p>Which branch were you on in the app repo? Did the agent finish the refactor you left it with at seven last night, or did it stop halfway and ask you something? Did the tests pass before you closed the lid? Is there a commit sitting on this laptop that never got pushed? And what did you actually do yesterday, because standup is in twenty minutes and "worked on stuff" won't cut it.</p>
+
+<p>So you do the usual. <code>git status</code> in three repositories. Scroll back through the terminal. Reopen two agent sessions and skim the last screen of each. Open GitHub to check what's merged. By the time you've rebuilt yesterday, the first coffee is cold and you haven't written a line.</p>
+
+<p>It was my routine too, and here's what eventually annoyed me enough to fix it: <strong>none of those questions need you to remember anything.</strong> Every answer is already written down, on your own disk, by tools you use all day. Nothing reads them.</p>
+
+<h2>The evidence is already on disk</h2>
+
+<p>Your Mac keeps a surprisingly complete diary of your working day. It isn't in one place, and none of it was designed for you to read, but it's there.</p>
+
+<img style="max-width:100%;height:auto;display:block;margin:32px auto 8px;border-radius:8px" src="screenshots/medium-your-mac-knows-what-you-did-yesterday-1-morning-questions-table.png" loading="lazy" alt="Table: the morning questions (which branch, what did I commit, is it pushed, what did I ask the agent, did tests pass, what did I run) and the files on disk that answer each one">
+
+<p><strong>Git keeps a reflog for every branch.</strong> Every time a branch moves, because you committed, amended, merged or created it, git appends one line to a plain text file under <code>.git/logs/refs/heads/</code>: the old commit, the new one, a Unix timestamp and a short message like <code>commit: fix login redirect</code> or <code>merge feature/search</code>. Branch switches go to <code>.git/logs/HEAD</code>. Whether a branch is pushed or merged is in the refs next to it. That's "which branch was I on", "what did I commit" and "is it pushed" answered without running a single command.</p>
+
+<p><strong>Coding agents write a transcript of every session.</strong> Claude Code keeps each session as a JSONL file under <code>~/.claude/projects</code>, one line per message, each with a timestamp and the folder the session ran in. Your prompts are there. So are the agent's replies, the commands it ran and the files it edited. When it ran your test suite, the output, including how many tests passed or failed, is in there too.</p>
+
+<p><strong>Your shell keeps a history.</strong> Every command you typed, in <code>~/.zsh_history</code>. With one caveat, which I'll come to.</p>
+
+<p>Put those three together and you have most of a developer's day: what you asked for, what got built, what got tested, what got committed and where it stands now.</p>
+
+<h2>I tried it on my own Tuesday</h2>
+
+<p>Before building anything, I wanted to know whether the files really held enough to answer "what did I do yesterday?". So I wrote a small script that reads only those files, finds my last working day, and prints counts: no commit messages, prompts or commands, just numbers.</p>
+
+<p>This is what it printed for my Tuesday:</p>
+
+<pre><code>Your last working day: Tuesday, November 10
+
+  L2Cache: agent prompts                     57
+  L2Cache: agent sessions                     4
+  L2Cache: commits                            3
+  l2cache-site: commits                       7
+
+  (Terminal skipped: your zsh history has no timestamps. Add `setopt EXTENDED_HISTORY` to ~/.zshrc.)</code></pre>
+
+<p>Fifty-seven prompts across four agent sessions in the app, three commits there and seven on the website. I checked the commit counts against <code>git log</code> for the same day: three and seven. The reflogs had it exactly, and the script never ran git to get it.</p>
+
+<p>What the counts can't show is intent. Fifty-seven prompts could be one hard bug or six small features; three commits could be a release or three typo fixes. The files know <em>that</em> I worked and <em>where</em>. They don't know <em>what for</em>. Hold that thought.</p>
+
+<p>That last line is the interesting part. My shell history couldn't say what I did on Tuesday, because by default zsh doesn't record <em>when</em> a command ran. It also doesn't record which folder you were in, or whether the command succeeded. Plain shell history is a list of strings. That turned out to matter later.</p>
+
+<h2>What I learned building it properly</h2>
+
+<p>The script was an afternoon. Turning it into a morning page I'd actually trust took a lot longer, and most of the work was in a handful of decisions. I think they apply to any tool that tries to tell you about your own work.</p>
+
+<h3>1. Read the files; don't run the tools</h3>
+
+<p>The obvious way to get git state is to run git: <code>git log</code>, <code>git status</code>, <code>git branch -vv</code> in every repository, every few minutes. I deliberately didn't. The app reads the reflogs and refs as files and never starts a git process or writes a byte to your repository. That means no lock files appearing mid-rebase and no surprise <code>index.lock</code> errors in your terminal. It also works inside the Mac App Store sandbox, where the only thing the app gets is read access to the folder you granted.</p>
+
+<p>There's a bonus. Because each branch has its own reflog, every commit lands on the branch it was made on. You get "three commits on <code>feature/search</code>, one on <code>main</code>" without reconstructing the history from the commit graph.</p>
+
+<h3>2. "Yesterday" needs a definition</h3>
+
+<p>This sounds trivial and isn't. If you open your laptop on Monday, "yesterday" is Sunday, and Sunday was empty. If you took Wednesday off, Thursday's "yesterday" is a blank page.</p>
+
+<p>The rule I settled on: <strong>yesterday is the last day before today that has any activity.</strong> On Mondays, it's the whole of last week, Monday to Sunday. And the numbers don't change while you work today, so the morning summary stays a summary of the past, not a moving target.</p>
+
+<h3>3. Rules you can check before AI you can't</h3>
+
+<p>It would have been easy to throw everything at a language model and ask it to "summarise my day". I didn't want my morning to start with a confident paragraph I'd have to fact-check.</p>
+
+<p>So everything on the page comes from fixed rules you could check by hand. A branch needs attention when its last test run failed. It needs attention when it has commits that are a day old and not pushed. It needs attention when it was pushed but has sat unmerged for between three and thirty days. A branch untouched for thirty days is idle. Each item says why it's there, and you can dismiss it for a week.</p>
+
+<p>The standup works the same way. Yesterday, Today, Blockers, built from commit subjects, merges and new branches, with AI switched off. If you do turn AI on, it can only rewrite the facts it's handed. It doesn't get to invent a productive Tuesday.</p>
+
+<h3>4. Let the agent leave a note</h3>
+
+<p>Raw evidence has a limit. Fifty-seven prompts and a list of edited files tell you <em>that</em> you worked; they don't say <em>on what</em>. The fix turned out to be asking the agent. At the end of every turn that changed files, the agent adds one invisible line to its reply: the feature, what changed, and the next step. Something like:</p>
+
+<pre><code>&lt;!-- l2c: {"f":"Medium pillar articles","d":"First article drafted with sourced facts","n":"Review the draft"} --&gt;</code></pre>
+
+<p>The app keeps each note next to the file edits it recorded from the transcript, so the summary sits beside the evidence. Those notes are what turn "57 prompts" into "Medium pillar articles: first article drafted; next, review it".</p>
+
+<h3>5. Be honest about the gaps</h3>
+
+<p>The shell history problem from my script doesn't go away by wishing. Without timestamps, folders and exit codes, a command history can't be placed on a day or tied to a project. I ended up recording those myself, through an optional shell hook that logs the time, folder, branch and exit code of each command (it asks git for the branch name, in your own shell) and scrubs anything that looks like a token or password before it touches disk. The line is written when the command finishes, so the exit code is real: a command that failed in your terminal just before you stopped shows up the next morning as an open loop. The "last test run failed" alert comes from the agent's test runs, where the pass and fail counts are in the transcript.</p>
+
+<p>If you're not ready for a hook, one line gets you timestamps for free:</p>
+
+<pre><code>setopt EXTENDED_HISTORY   # add to ~/.zshrc</code></pre>
+
+<h2>The page I open every morning now</h2>
+
+<p>All of this ended up as the Today page in L2Cache, the Mac app I build. It's the first thing I see in the morning. It shows the work in progress, newest first, each with what I last asked the agent, the agent's last update and the latest commit. Beside it is the list of loose ends: the failing run, the unpushed commit, the branch waiting for review. Below are the other projects I touched this week. A Copy standup button writes Yesterday / Today / Blockers from the same facts.</p>
+
+<img style="max-width:100%;height:auto;display:block;margin:32px auto 8px;border-radius:8px" src="screenshots/medium-your-mac-knows-what-you-did-yesterday-2-today-page.png" loading="lazy" alt="Top of the Today page: yesterday's projects and commits, and a pick-up card for the last session">
+<figcaption class="note" style="text-align:center;margin-bottom:32px">The top of the Today page: yesterday at a glance, and the session you can pick up.</figcaption>
+
+<p>None of it asked me to log anything. I didn't start a timer, write a journal or tag a single commit. It's built entirely from files that were already there.</p>
+
+<h2>Try it on your own yesterday</h2>
+
+<p>You don't need my app to see how much your Mac already knows. Here's the script. It reads your git reflogs, your Claude Code transcripts and your zsh history, and prints counts for your last working day. It prints no commit messages, prompts or commands, and it never runs git.</p>
+
+<pre><code>"""What did I do yesterday? Rebuilt from files already on your Mac.
+
+Reads git reflogs (no git commands), Claude Code transcripts and zsh history,
+and prints counts only: no commit messages, prompts or commands.
+Usage: python3 yesterday.py [projects folder]   (default: ~/Developer)
+"""
+import functools
+import glob
+import json
+import os
+import sys
+from collections import Counter, defaultdict
+from datetime import date, datetime
+
+ROOT = os.path.expanduser(sys.argv[1] if len(sys.argv) &gt; 1 else "~/Developer")
+activity = defaultdict(Counter)  # day -&gt; Counter of "project: what"
+
+
+def day_of(epoch):
+    return datetime.fromtimestamp(epoch).date()
+
+
+@functools.lru_cache(maxsize=None)
+def repo_of(folder):
+    """The repository a folder belongs to (nearest parent with a .git), so `app/docs` counts as `app`."""
+    path = folder
+    while path and path != os.path.dirname(path):
+        if os.path.exists(os.path.join(path, ".git")):
+            return os.path.basename(path)
+        path = os.path.dirname(path)
+    return os.path.basename(folder) or "?"
+
+
+# 1. Git: every branch's reflog records commits, merges and new branches with a timestamp.
+for git_dir in glob.glob(os.path.join(ROOT, "*", ".git")):
+    project = os.path.basename(os.path.dirname(git_dir))
+    for log in glob.glob(os.path.join(git_dir, "logs", "refs", "heads", "**"), recursive=True):
+        if not os.path.isfile(log):
+            continue
+        for line in open(log, errors="replace"):
+            head, _, message = line.partition("\t")
+            parts = head.split()
+            if len(parts) &lt; 2:
+                continue
+            day = day_of(int(parts[-2]))
+            if message.startswith(("commit", "commit (amend)", "commit (initial)")):
+                activity[day][f"{project}: commits"] += 1
+            elif message.startswith("merge"):
+                activity[day][f"{project}: merges"] += 1
+            elif message.startswith("branch: Created"):
+                activity[day][f"{project}: new branches"] += 1
+
+# 2. Claude Code: each transcript line has a timestamp; count sessions and prompts per day.
+for path in glob.glob(os.path.expanduser("~/.claude/projects/*/*.jsonl")):
+    sessions = set()
+    for line in open(path, errors="replace"):
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        text = (row.get("message") or {}).get("content")
+        # Typed prompts are plain strings; tool results and slash-command output are not.
+        # Compaction summaries are stored as user messages too, but nobody typed them.
+        if row.get("type") != "user" or not isinstance(text, str) or text.startswith("&lt;"):
+            continue
+        if row.get("isMeta") or row.get("isCompactSummary") or text.startswith("[Request interrupted"):
+            continue
+        day = datetime.fromisoformat(row["timestamp"].replace("Z", "+00:00")).astimezone().date()
+        project = repo_of(row.get("cwd") or "")
+        activity[day][f"{project}: agent prompts"] += 1
+        if (day, project) not in sessions:
+            sessions.add((day, project))
+            activity[day][f"{project}: agent sessions"] += 1
+
+# 3. zsh history (needs EXTENDED_HISTORY for timestamps): count commands per day.
+history = os.path.expanduser("~/.zsh_history")
+stamped = 0
+if os.path.exists(history):
+    for line in open(history, errors="replace"):
+        if line.startswith(": ") and ":" in line[2:]:
+            try:
+                activity[day_of(int(line[2:].split(":", 1)[0]))]["terminal: commands"] += 1
+                stamped += 1
+            except ValueError:
+                pass
+
+past = sorted(d for d in activity if d &lt; date.today())
+if not past:
+    sys.exit("No activity found before today.")
+day = past[-1]
+print(f"Your last working day: {day:%A, %B %d}\n")
+for key, count in sorted(activity[day].items()):
+    print(f"  {key:&lt;40}{count:&gt;5}")
+if not stamped:
+    print("\n  (Terminal skipped: your zsh history has no timestamps. Add `setopt EXTENDED_HISTORY` to ~/.zshrc.)")</code></pre>
+<p class="note"><a href="/downloads/yesterday.py" download>Download yesterday.py</a></p>
+
+<p>Save it as <code>yesterday.py</code> and point it at the folder that holds your repositories:</p>
+
+<pre><code>python3 yesterday.py ~/Developer</code></pre>
+
+<p>If the terminal line is missing, that's the timestamp gap. Turn on <code>EXTENDED_HISTORY</code> and tomorrow's run will include it.</p>
+
+<h2>The takeaway</h2>
+
+<blockquote class="highlight-box"><p>The first half hour of the day shouldn't be archaeology. Everything you need to pick up where you left off is already written down. You just need something that reads it.</p></blockquote>
+
+<p>Read the files instead of running the tools, define "yesterday" properly, and prefer rules you can check over summaries you have to trust. Whether you build that yourself or use something ready-made, your mornings get the half hour back.</p>
+
+<hr>
+
+<p><em>More on how the morning page is put together: <a href="developer-morning-context-today.html">Your morning starts with context, not archaeology</a>. And on reading a project's history straight from git: <a href="project-story-git-timeline-mac.html">See how your project got here</a>.</em></p>
+
+  <div class="related">
+    <h3>Related reading</h3>
+    <div class="related-grid">
+      <a href="developer-morning-context-today.html"><div><div class="r-tag">Today</div><div class="r-title">Where you left off, every morning</div></div><div class="r-more">Read article →</div></a>
+      <a href="project-story-git-timeline-mac.html"><div><div class="r-tag">Projects</div><div class="r-title">Project Story: a git timeline for your Mac</div></div><div class="r-more">Read article →</div></a>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <div class="cta-title">Start the day where you left off</div>
+    <p>L2Cache&#x27;s Today page shows where each project was left, built from history already on your Mac.</p>
+    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="cta-btn">Download L2Cache for Mac</a>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">Home</a>
+  <a href="blog.html">Blog</a>
+  <a href="support.html">Support</a>
+  <a href="privacy.html">Privacy Policy</a>
+  <br/><br/>
+  © 2026 Amvotech
+</footer>
+</body>
+</html>

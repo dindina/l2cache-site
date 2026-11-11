@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="author" content="Amvo"/>
+  <meta name="theme-color" content="#0d1117"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Every error you&#x27;ve already fixed is in your history. Your tools just can&#x27;t find it. | L2Cache</title>
+  <meta name="description" content="I counted the failures my coding agent hit over a month. One in six came back, and most failures were reported as successes. How to capture and find old fixes."/>
+  <link rel="icon" type="image/png" href="icon.png"/>
+  <link rel="apple-touch-icon" href="icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #00C896; --bg: #f7f7f5; --bg2: #ffffff; --bg3: #eeeeea;
+      --border: #e4e4e0; --text: #0a0a0a;
+      --text-muted: #555550; --text-dim: #999992;
+      --mono: 'DM Mono', monospace; --serif: "Playfair Display", serif; --sans: 'DM Sans', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .container { max-width: 720px; margin: 0 auto; padding: 80px 24px; min-height: 80vh; }
+    .label { font-family: var(--mono); font-size: 12px; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: inline-block; }
+    h1 { font-family: var(--serif); font-size: 40px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; color: var(--text); }
+    .meta { font-family: var(--mono); font-size: 13px; color: var(--text-dim); margin-bottom: 32px; }
+    h2 { font-family: var(--serif); font-size: 28px; font-weight: 700; margin-top: 48px; margin-bottom: 16px; color: var(--text); }
+    h3 { font-size: 19px; font-weight: 600; margin-top: 28px; margin-bottom: 12px; color: var(--text); }
+    p { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; }
+    ul, ol { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; padding-left: 24px; }
+    li { margin-bottom: 10px; }
+    a { color: #008765; }
+    pre { background: #0D0C1A; padding: 18px; border-radius: 10px; overflow-x: auto; margin-bottom: 24px; border: 1px solid var(--border); }
+    code { font-family: var(--mono); font-size: 14px; background: rgba(0,200,150,0.1); color: #008765; padding: 2px 5px; border-radius: 4px; }
+    pre code { background: transparent; color: #e0ffe8; padding: 0; white-space: pre-wrap; }
+    strong { color: var(--text); font-weight: 600; }
+    .highlight-box { background: rgba(0,200,150,0.08); border-left: 4px solid var(--purple); padding: 22px; margin: 32px 0; border-radius: 0 10px 10px 0; }
+    .highlight-box p { margin-bottom: 0; color: var(--text); }
+    .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; }
+    th { color: var(--text); font-weight: 600; background: var(--bg3); }
+    .note { font-size: 14px; color: var(--text-dim); }
+    .cta-box { background: var(--bg2); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
+    .cta-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+    .cta-btn { display: inline-block; background: var(--purple); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
+    .cta-btn:hover { background: #00a87f; }
+    .related { margin-top: 48px; border-top: 1px solid var(--border); padding-top: 36px; }
+    .related h3 { font-family: var(--serif); font-size: 22px; margin-top: 0; margin-bottom: 20px; }
+    .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .related-grid a { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; }
+    .related-grid a:hover { border-color: var(--purple); }
+    .r-tag { font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em; }
+    .r-title { font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4; }
+    .r-more { font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; }
+    footer { padding: 48px 24px; text-align: center; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-dim); }
+    footer a { color: var(--text-dim); text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: var(--text-muted); }
+    @media (max-width: 600px) {
+      nav { padding: 16px; }
+      .container { padding: 48px 16px; }
+      h1 { font-size: 32px; }
+      h2 { font-size: 24px; }
+      th, td { padding: 8px 6px; font-size: 14px; }
+    }
+  </style>
+  <link rel="stylesheet" href="theme.css">
+  <link rel="canonical" href="https://l2cache.amvo.store/en/coding-agent-errors-already-fixed">
+
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="L2Cache">
+  <meta property="og:url" content="https://l2cache.amvo.store/en/coding-agent-errors-already-fixed">
+  <meta property="og:title" content="Every error you&#x27;ve already fixed is in your history. Your tools just can&#x27;t find it.">
+  <meta property="og:description" content="I counted the failures my coding agent hit over a month. One in six came back, and most failures were reported as successes. How to capture and find old fixes.">
+  <meta property="og:image" content="https://l2cache.amvo.store/icon.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="L2Cache app icon">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:url" content="https://l2cache.amvo.store/en/coding-agent-errors-already-fixed">
+  <meta name="twitter:title" content="Every error you&#x27;ve already fixed is in your history. Your tools just can&#x27;t find it.">
+  <meta name="twitter:description" content="I counted the failures my coding agent hit over a month. One in six came back, and most failures were reported as successes. How to capture and find old fixes.">
+  <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
+  <meta name="twitter:image:alt" content="L2Cache app icon">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Every error you've already fixed is in your history. Your tools just can't find it.",
+  "description": "I counted the failures my coding agent hit over a month. One in six came back, and most failures were reported as successes. How to capture and find old fixes.",
+  "url": "https://l2cache.amvo.store/en/coding-agent-errors-already-fixed",
+  "datePublished": "2026-11-11",
+  "dateModified": "2026-11-11",
+  "author": { "@type": "Organization", "name": "Amvo", "url": "https://l2cache.amvo.store/en" },
+  "publisher": { "@type": "Organization", "name": "Amvo", "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" } },
+  "image": "https://l2cache.amvo.store/icon.png",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://l2cache.amvo.store/en/coding-agent-errors-already-fixed" }
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://l2cache.amvo.store/en" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://l2cache.amvo.store/en/blog" },
+    { "@type": "ListItem", "position": 3, "name": "Every Error You've Already Fixed Is in Your History", "item": "https://l2cache.amvo.store/en/coding-agent-errors-already-fixed" }
+  ]
+}
+  </script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="icon.png" width="28" height="28" alt="L2Cache" style="border-radius:7px"/>
+    L2Cache
+  </a>
+</nav>
+
+<div class="container">
+  <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
+  <h1>Every error you&#x27;ve already fixed is in your history. Your tools just can&#x27;t find it.</h1>
+  <p class="meta">November 11, 2026 · 8 min read</p>
+  <p><strong>I counted the failures my coding agent hit over a month. One in six came back, and the old fix was always somewhere I couldn't search.</strong></p>
+<p>The app crashed while I was deleting rows quickly. <code>EXC_BAD_ACCESS</code>, with an address that looked like garbage. It took my coding agent and me a while to find: a popover with a hover delay, firing after its row had already been removed from the window. The fix was a couple of lines.</p>
+
+<p>What bothered me afterwards was where that knowledge ended up. The diagnosis, the dead ends and the two-line fix were sitting in a conversation with my agent, somewhere in hundreds of thousands of tokens of transcript, under a session title that said nothing about crashes.</p>
+
+<p>If that crash came back in a month, I knew exactly what would happen. I'd paste it into a fresh session, and the agent would start investigating from zero: reading the same files, forming the same hypotheses, trying the same things. It would get there in the end. It had got there last time too.</p>
+
+<p>That's the strange part of working with coding agents. They produce an enormous, detailed record of how every bug was diagnosed and fixed, and almost none of it is findable when you need it.</p>
+
+<h2>Where fixes actually live</h2>
+
+<p>Think about where the knowledge of a fix ends up today:</p>
+
+<ul>
+  <li><strong>The agent transcript.</strong> The diagnosis, the dead ends, the reasoning, the actual change. Stored as JSONL, indexed by session, not by error.</li>
+  <li><strong>Shell history.</strong> The command that finally passed, if you ran it yourself. No link to what was wrong.</li>
+  <li><strong>The commit.</strong> The diff, and a one-line message that rarely names the symptom you'll search for later.</li>
+  <li><strong>Your clipboard.</strong> The stack trace you copied, gone after a few dozen copies.</li>
+</ul>
+
+<p>Each holds a piece. None of them can answer the only question you have when the error comes back: <em>have I seen this before, and what fixed it?</em></p>
+
+<h2>I measured how often errors come back</h2>
+
+<p>I wanted to know whether errors really come back, or whether that's just a feeling. So I wrote a small script that goes through my own Claude Code transcripts and finds every build, test run and script the agent ran that really failed. Then it groups the failures by a stable signature (the error name such as <code>KeyError</code> or <code>TS2307</code>, the compiler message with names, paths and numbers masked out, or the name of the failing test) and checks which ones show up again in a later session.</p>
+
+<p>Even that took two tries. My first version reported <code>EXC_BAD_ACCESS</code> in five sessions. None of them was a crash: every one was the agent reading a document or a file that happened to mention it. Error text in your history isn't always an error, so the script now ignores commands that only read text, and the agent's own throwaway inline scripts.</p>
+
+<p>The first result surprised me more than the repeats did.</p>
+
+<img style="max-width:100%;height:auto;display:block;margin:32px auto 8px;border-radius:8px" src="screenshots/medium-coding-agent-errors-already-fixed-1-hidden-failures.png" loading="lazy" alt="Bar: of 127 real failures in builds, tests and scripts the agent ran, 120 were reported as success with exit code 0 and only 7 were flagged as errors">
+
+<p><strong>Of 127 real failures, 120 were reported as successes.</strong> The command exited 0, so the transcript marked it as fine. 100 of them were builds and test runs piped through <code>tail</code> or <code>grep</code> to keep the output short; most of the rest had another command after them. A pipeline's exit code is the exit code of its last command, and <code>tail</code> doesn't fail just because the build did. The same goes for <code>xcodebuild test; echo done</code>.</p>
+
+<p>That matters for anything that tries to learn from your history. If you trust exit codes, you miss most of your failures, and worse, you can record a broken build as a passing one. (If you do this too, <code>set -o pipefail</code> makes the pipeline fail when any step fails. I now put it in front of every build command I give an agent, and in my own scripts.)</p>
+
+<p>Then the repeats:</p>
+
+<img style="max-width:100%;height:auto;display:block;margin:32px auto 8px;border-radius:8px" src="screenshots/medium-coding-agent-errors-already-fixed-2-repeated-errors.png" loading="lazy" alt="Bar chart: 21 of 119 distinct errors came back in a later session; a translation test failed in 6 sessions, KeyError and cannot find in scope in 5">
+
+<p>Of 119 distinct errors, <strong>21 came back in a later session</strong>, about one in six. The gap between the first and last time was 10 days at the median and 27 at the longest. The most persistent was a single test, the one that checks every key has a translation, which failed in six different sessions over 17 days.</p>
+
+<p>I want to be honest about what that does and doesn't show. A repeated error name is a family, not proof of the same bug. Five <code>KeyError</code>s can be five different keys, and "cannot find '…' in scope" covers every missing name in Swift. But the families are exactly where an old fix is most useful: the cause is often the same shape even when the details differ. And a test that fails again is the clearest case of all: same name, same check, and very often the same fix.</p>
+
+<h2>Why searching your history doesn't work</h2>
+
+<p>You might think you could just grep for the error. I tried. Three things get in the way.</p>
+
+<p><strong>The error text changes every time.</strong> Line numbers move. Memory addresses are different on every crash. Temporary paths include random IDs. The same bug produces a different string each time it appears, so an exact search misses it and a loose search drowns you.</p>
+
+<p><strong>The fix isn't next to the error.</strong> In a transcript, the error is in a tool result, and the explanation of what caused it is in the agent's prose several turns later, often after two wrong guesses. Finding the error doesn't hand you the fix; you still have to read the whole investigation.</p>
+
+<p><strong>You can't tell a fix from a guess.</strong> Agents say "that should fix it" all the time. Some of those were fixes. Some were followed by the same error ten minutes later. Unless something recorded that a test actually passed afterwards, an old "fixed it" is a rumour.</p>
+
+<h2>What a useful fix memory needs</h2>
+
+<p>I've spent the last few weeks building this into L2Cache, and the design came down to four rules. They apply whether you use a tool or not.</p>
+
+<h3>1. Normalize the error into a signature</h3>
+
+<p>Strip what changes between occurrences: line and column numbers, hex addresses, paths. Keep what identifies the problem: exception names, error codes, test names, and the stable words of the message. Two crashes with different addresses should produce the same signature; a crash and a compiler error shouldn't.</p>
+
+<h3>2. Write the fix down at the moment it's verified</h3>
+
+<p>The best time to capture a fix is right after it works, while the agent still has the whole investigation in context. So I ask the agent for it. When an error I recently copied is part of the context passed to the agent with my prompt, the prompt hook adds one instruction: <em>if you fix this and a relevant test or build passes, end your reply with a short structured note.</em> The note is an HTML comment, so it's invisible in the terminal:</p>
+
+<pre><code>&lt;!-- L2CACHE_FIX: {"version":1,
+  "symptom":"short failure description",
+  "cause":"root cause",
+  "fix":"what changed",
+  "verification":"test or build result",
+  "files":["path/to/file"]} --&gt;</code></pre>
+
+<p>Symptom, cause, fix, how it was verified, and which files. No full error dump, no secrets. It costs the agent a few dozen tokens and turns a 200k-token investigation into five lines.</p>
+
+<h3>3. Only call it verified if something proved it</h3>
+
+<p>An agent's claim isn't evidence. A note is marked verified only when the same session shows a real test or build command (<code>xcodebuild test</code>, <code>pytest</code>, <code>npm test</code>, <code>cargo test</code>, <code>swift test</code> and so on) succeeding after the problem was raised and before the note. Everything else is kept as an unverified note and never presented as a confirmed fix.</p>
+
+<p>Given what I found about exit codes, "succeeding" needs care. The first version of this rule trusted exit code 0, which meant a piped test run could verify a fix whose tests had failed. So now a test only counts when nothing after it can replace its result: it's the last command, or it's followed by <code>&amp;&amp;</code>. <code>xcodebuild test | tail</code>, <code>pytest; echo done</code> and <code>cargo test || true</code> don't verify anything, unless the command turns on <code>pipefail</code>. Fewer fixes get the badge, and the ones that do have earned it.</p>
+
+<h3>4. Don't treat every failed command as a problem</h3>
+
+<p>Agents run thousands of exploratory commands. <code>grep</code> exits 1 when it finds nothing. <code>git diff</code> exits 1 when there are differences. None of that is a bug worth remembering. A fix memory should anchor on things you actually cared about: an error you copied, a test that failed, a build that broke.</p>
+
+<h2>Getting the fix back when you need it</h2>
+
+<p>Capturing is half of it. The other half is retrieval, and there are two moments it matters.</p>
+
+<p><strong>When you hit the error.</strong> You copy the stack trace, as you always do. That's the moment to look it up: same signature in the same repository first, then shared error names, files or test names. Timing alone never counts as a match, and a weak match should stay quiet rather than interrupt you. In L2Cache this shows up as a small "Previously fixed" card next to the copied error, with only verified fixes, the command that proved them, and a link to open the original session.</p>
+
+<p><strong>When the agent hits it.</strong> Half the time it's the agent, not you, that runs into the error, deep in a task. So the same memory is exposed as a tool the agent can call (over MCP, for Claude Code and Codex), with an instruction it reads in the tool list: use this when you hit a build, test or runtime error, or before retrying an approach. It gets back the symptom, cause, fix, verification and files, verified results first, plus the session ID if it wants the full story. Instead of rediscovering the popover bug, it can read the five lines from last time.</p>
+
+<h2>What it deliberately doesn't do</h2>
+
+<p>A memory of fixes is tempting to over-automate, so I drew some hard lines. It never runs a suggested command for you; an old fix is evidence to read, not a script to replay. It never edits code or writes notes into your repository; the fix note lives in the transcript the agent was already writing. Nothing is sent to a cloud model or a server; matching is plain local ranking over your own history. And anything that looks like a secret, in the error, the note or the file list, is dropped rather than stored.</p>
+
+<p>Those limits cost a little convenience. They're also why I'm comfortable letting it read every error I copy.</p>
+
+<h2>Try the cheap version today</h2>
+
+<p>You don't need any of my tooling to get most of the benefit. Three steps:</p>
+
+<p><strong>1. Ask your agent to write fixes down.</strong> Add this to your project's <code>CLAUDE.md</code> (or <code>AGENTS.md</code>):</p>
+
+<pre><code>When you fix a bug and a relevant test or build passes afterwards, end
+your reply with one line in this form:
+FIX: &lt;symptom&gt; | cause: &lt;root cause&gt; | fix: &lt;what changed&gt; | verified by: &lt;command&gt;
+Only write it after the test or build passes. No secrets, no full error text.
+Run builds and tests with `set -o pipefail` so a failure is never hidden by a pipe.</code></pre>
+
+<p><strong>2. Search those notes when an error comes back.</strong> They live in your transcripts, so one command finds them all:</p>
+
+<pre><code>grep -rhoE 'FIX: [^"\\]{10,300}' ~/.claude/projects | grep -v 'FIX: &lt;symptom' | sort -u</code></pre>
+
+<p><strong>3. Measure your own repeats.</strong> This is the script I used. It reads only your transcripts' structure and prints error names, masked compiler messages and failing test names, never your prompts or commands:</p>
+
+<pre><code>"""Repeat error report for Claude Code.
+
+Scans your local transcripts (~/.claude/projects/*/*.jsonl) for builds, tests and
+scripts the agent ran that really failed, and reports how often the same error
+came back in a later session. Only error names, masked compiler messages and
+test names are printed, never your messages or commands.
+"""
+import glob
+import json
+import os
+import re
+from collections import Counter, defaultdict
+from datetime import datetime
+
+# Programs that build, test or run code. A failure in their output is a real failure;
+# the same text printed by cat, grep or sqlite3 is just something being read.
+RUNNERS = {"xcodebuild", "swift", "swiftc", "python", "python3", "pytest", "node", "npm", "npx", "pnpm",
+           "yarn", "bun", "tsc", "cargo", "go", "make", "gradle", "mvn", "dotnet", "ruby", "rspec", "jest", "vitest"}
+SKIP = {"cd", "env", "command", "rtk", "time", "timeout", "nice", "sudo", "exec"}
+
+# What identifies an error, by kind. Each pattern's first group is the key.
+SIGNATURES = [
+    re.compile(r"(?m)^(\w+(?:Error|Exception))\b(?::|$)"),                # Python: last line of a traceback
+    re.compile(r"\berror (TS\d{4})\b"),                                    # TypeScript
+    re.compile(r"(?m)^error\[(E\d{4})\]"),                                 # Rust
+    re.compile(r"(?m)(?:Exception Type:\s+|Thread \d+: )(EXC_[A-Z_]+)"),   # crashes
+    re.compile(r"(?m)^panic: (\w+)"),                                       # Go
+    re.compile(r"(?m):\d+:\d+: (?:fatal )?error: (.{8,160})$"),           # compilers (message is masked)
+    re.compile(r"✘ Test (?:\"[^\"]+\"|\w+\(\))"),                          # Swift Testing failures
+    re.compile(r"Test Case '-\[\S+ (\w+)\]' failed"),                       # XCTest failures
+    re.compile(r"(?m)^FAILED (\S+::\S+)"),                                 # pytest failures
+]
+COMPILER = SIGNATURES[5]
+FAILED_RUN = re.compile(r"\*\* (?:BUILD|TEST) FAILED \*\*|Traceback \(most recent call last\)")
+
+
+def template(message):
+    """cannot find 'fooBar' in scope -&gt; cannot find '…' in scope"""
+    message = re.sub(r"(['\"`‘“]).*?(['\"`’”])", "'…'", message)
+    message = re.sub(r"(?:/[\w.@+-]+)+", "&lt;path&gt;", message)
+    message = re.sub(r"\b0x[0-9a-fA-F]+\b|\b\d+\b", "N", message)
+    return re.sub(r"\s+", " ", message).strip()[:60]
+
+
+def segments(command):
+    """Each piece of a shell command with what follows it: 'end', '&amp;&amp;', '|' or 'other' (; || &amp;)."""
+    parts = re.split(r"(\|\||&amp;&amp;|\|&amp;?|;|(?&lt;![&lt;&gt;])&amp;(?![&gt;&amp;])|\n)", command)
+    out = []
+    for text, sep in zip(parts[::2], parts[1::2] + [None]):
+        follower = "end" if sep is None else "&amp;&amp;" if sep == "&amp;&amp;" else "|" if sep.startswith("|") and sep != "||" else "other"
+        words = [w for w in text.split() if "=" not in w.split("/")[0]]
+        while words and (os.path.basename(words[0]) in SKIP or words[0].isdigit()):
+            words.pop(0)
+        if words:
+            out.append((os.path.basename(words[0]), follower))
+    return out
+
+
+def text_of(block):
+    content = block.get("content")
+    if isinstance(content, list):
+        return " ".join(c.get("text", "") for c in content if isinstance(c, dict))
+    return content if isinstance(content, str) else ""
+
+
+def main():
+    seen = defaultdict(list)  # error -&gt; [(when, session)]
+    failures, hidden, masked_by = 0, 0, Counter()
+    for path in glob.glob(os.path.expanduser("~/.claude/projects/*/*.jsonl")):
+        session = os.path.basename(path)[:8]
+        commands, done = {}, set()
+        for line in open(path):
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            content = (row.get("message") or {}).get("content")
+            if not isinstance(content, list):
+                continue
+            for block in content:
+                if not isinstance(block, dict):
+                    continue
+                if block.get("type") == "tool_use" and block.get("name") == "Bash":
+                    command = str((block.get("input") or {}).get("command", ""))
+                    # Inline scripts (python3 - &lt;&lt;EOF, python3 -c) are the agent's own throwaway tooling:
+                    # their tracebacks are slips in the script, not errors in your project.
+                    inline = re.search(r"\bpython3? +(?:-c\b|-\s|-&lt;&lt;)", command)
+                    commands[block.get("id")] = [s for s in segments(command) if not (inline and s[0].startswith("python"))]
+                    continue
+                use_id = block.get("tool_use_id")
+                if block.get("type") != "tool_result" or use_id not in commands or use_id in done:
+                    continue
+                runs = [(exe, follower) for exe, follower in commands[use_id] if exe in RUNNERS]
+                if not runs:
+                    continue  # nothing was built, tested or run: any error text was only being read
+                body = text_of(block)[:50_000]
+                keys = set()
+                for pattern in SIGNATURES:
+                    for match in pattern.finditer(body):
+                        found = match.group(1) if pattern.groups else match.group(0)
+                        keys.add(template(found) if pattern is COMPILER else found[:60])
+                if not keys and not FAILED_RUN.search(body):
+                    continue
+                done.add(use_id)
+                failures += 1
+                if not block.get("is_error"):
+                    hidden += 1
+                    masked_by[next((f for _, f in runs if f != "end"), "end")] += 1
+                when = datetime.fromisoformat(row["timestamp"].replace("Z", "+00:00")).astimezone()
+                for key in keys:
+                    seen[key].append((when, session))
+
+    repeats = {}
+    for key, hits in seen.items():
+        sessions = {s for _, s in hits}
+        if len(sessions) &gt;= 2:
+            days = (max(w for w, _ in hits) - min(w for w, _ in hits)).days
+            repeats[key] = (len(sessions), len(hits), days)
+
+    labels = {"|": "piped into another command", "other": "followed by ; || or &amp;", "&amp;&amp;": "followed by &amp;&amp;", "end": "last command, still exit 0"}
+    print("REPEAT ERROR REPORT  (Claude Code transcripts)")
+    print("=" * 72)
+    print(f"Builds, tests and scripts that failed: {failures}")
+    print(f"  ...reported as success (exit 0):     {hidden}")
+    for follower, n in masked_by.most_common():
+        print(f"       {labels[follower]:&lt;31}{n:&gt;4}")
+    print(f"Distinct errors:                       {len(seen)}")
+    print(f"Came back in a later session:          {len(repeats)}")
+    if repeats:
+        spans = sorted(d for _, _, d in repeats.values())
+        print(f"Days between first and last time:      median {spans[len(spans) // 2]}, longest {spans[-1]}")
+        print("\nMOST REPEATED")
+        for key, (n_sessions, n_hits, days) in sorted(repeats.items(), key=lambda kv: (-kv[1][0], -kv[1][1]))[:8]:
+            print(f"  {key:&lt;60} {n_sessions:&gt;2} sessions {n_hits:&gt;3}x  {days:&gt;2} days")
+
+
+if __name__ == "__main__":
+    main()</code></pre>
+<p class="note"><a href="/downloads/repeat_errors.py" download>Download repeat_errors.py</a></p>
+
+<p>Save it as <code>repeat_errors.py</code> and run <code>python3 repeat_errors.py</code>. Here's mine:</p>
+
+<pre><code>REPEAT ERROR REPORT  (Claude Code transcripts)
+========================================================================
+Builds, tests and scripts that failed: 127
+  ...reported as success (exit 0):     120
+       piped into another command      100
+       followed by ; || or &amp;            17
+       followed by &amp;&amp;                    3
+Distinct errors:                       119
+Came back in a later session:          21
+Days between first and last time:      median 10, longest 27
+
+MOST REPEATED
+  ✘ Test "Every translatable key has a translation in every la  6 sessions  12x  17 days
+  KeyError                                                      5 sessions   5x   3 days
+  cannot find '…' in scope                                      5 sessions   5x  10 days
+  ✘ Test "upsertAgentSession updates existing session preservi  4 sessions   6x   3 days
+  ✘ Test "Functional E2E: Ingest Claude &amp; Codex JSONL -&gt; Datab  4 sessions   6x   4 days
+  ✘ Test "Global search Developer Pro gating"                   3 sessions   4x   5 days
+  cannot find type '…' in scope                                 3 sessions   3x  15 days
+  ✘ Test "Today snapshot for 20 projects, 3,000 session-days a  2 sessions   7x  12 days</code></pre>
+
+<p>If your "reported as success" line is high too, start with <code>pipefail</code>. If your repeats are high, start writing fixes down.</p>
+
+<h2>The takeaway</h2>
+
+<blockquote class="highlight-box"><p>Your agent already did the hard work of finding the fix. The waste is doing it twice.</p></blockquote>
+
+<p>Capture the fix at the moment it's verified, keep it short, call it verified only when a test proves it, and look it up the moment the error comes back. Whether that's a grep over your own FIX notes or a tool that does it for you, the second time should take seconds, not another investigation.</p>
+
+<hr>
+
+<p><em>More on how coding agents can use your own history as memory: <a href="coding-agent-memory-mcp-hooks.html">Coding agent memory with MCP and hooks</a>. And on keeping and searching Claude Code sessions on your Mac: <a href="claude-code-session-history-mac.html">Claude Code session history on Mac</a>.</em></p>
+
+  <div class="related">
+    <h3>Related reading</h3>
+    <div class="related-grid">
+      <a href="coding-agent-memory-mcp-hooks.html"><div><div class="r-tag">Coding agents</div><div class="r-title">Coding agent memory with MCP and hooks</div></div><div class="r-more">Read article →</div></a>
+      <a href="claude-code-session-history-mac.html"><div><div class="r-tag">Claude Code</div><div class="r-title">Claude Code session history on Mac</div></div><div class="r-more">Read article →</div></a>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <div class="cta-title">Find the fix from last time</div>
+    <p>L2Cache remembers what fixed what, and shows verified fixes when the error comes back.</p>
+    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="cta-btn">Download L2Cache for Mac</a>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">Home</a>
+  <a href="blog.html">Blog</a>
+  <a href="support.html">Support</a>
+  <a href="privacy.html">Privacy Policy</a>
+  <br/><br/>
+  © 2026 Amvotech
+</footer>
+</body>
+</html>

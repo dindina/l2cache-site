@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="author" content="Amvo"/>
+  <meta name="theme-color" content="#0d1117"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The hidden cost of a cold session: why your Claude Code bill spikes after lunch | L2Cache</title>
+  <meta name="description" content="I measured 10,000 requests from my own Claude Code sessions. Big contexts weren&#x27;t the expensive part; the breaks were. With a script to measure your own."/>
+  <link rel="icon" type="image/png" href="icon.png"/>
+  <link rel="apple-touch-icon" href="icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #00C896; --bg: #f7f7f5; --bg2: #ffffff; --bg3: #eeeeea;
+      --border: #e4e4e0; --text: #0a0a0a;
+      --text-muted: #555550; --text-dim: #999992;
+      --mono: 'DM Mono', monospace; --serif: "Playfair Display", serif; --sans: 'DM Sans', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .container { max-width: 720px; margin: 0 auto; padding: 80px 24px; min-height: 80vh; }
+    .label { font-family: var(--mono); font-size: 12px; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: inline-block; }
+    h1 { font-family: var(--serif); font-size: 40px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; color: var(--text); }
+    .meta { font-family: var(--mono); font-size: 13px; color: var(--text-dim); margin-bottom: 32px; }
+    h2 { font-family: var(--serif); font-size: 28px; font-weight: 700; margin-top: 48px; margin-bottom: 16px; color: var(--text); }
+    h3 { font-size: 19px; font-weight: 600; margin-top: 28px; margin-bottom: 12px; color: var(--text); }
+    p { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; }
+    ul, ol { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; padding-left: 24px; }
+    li { margin-bottom: 10px; }
+    a { color: #008765; }
+    pre { background: #0D0C1A; padding: 18px; border-radius: 10px; overflow-x: auto; margin-bottom: 24px; border: 1px solid var(--border); }
+    code { font-family: var(--mono); font-size: 14px; background: rgba(0,200,150,0.1); color: #008765; padding: 2px 5px; border-radius: 4px; }
+    pre code { background: transparent; color: #e0ffe8; padding: 0; white-space: pre-wrap; }
+    strong { color: var(--text); font-weight: 600; }
+    .highlight-box { background: rgba(0,200,150,0.08); border-left: 4px solid var(--purple); padding: 22px; margin: 32px 0; border-radius: 0 10px 10px 0; }
+    .highlight-box p { margin-bottom: 0; color: var(--text); }
+    .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; }
+    th { color: var(--text); font-weight: 600; background: var(--bg3); }
+    .note { font-size: 14px; color: var(--text-dim); }
+    .cta-box { background: var(--bg2); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
+    .cta-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+    .cta-btn { display: inline-block; background: var(--purple); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
+    .cta-btn:hover { background: #00a87f; }
+    .related { margin-top: 48px; border-top: 1px solid var(--border); padding-top: 36px; }
+    .related h3 { font-family: var(--serif); font-size: 22px; margin-top: 0; margin-bottom: 20px; }
+    .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .related-grid a { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; }
+    .related-grid a:hover { border-color: var(--purple); }
+    .r-tag { font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em; }
+    .r-title { font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4; }
+    .r-more { font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; }
+    footer { padding: 48px 24px; text-align: center; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-dim); }
+    footer a { color: var(--text-dim); text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: var(--text-muted); }
+    @media (max-width: 600px) {
+      nav { padding: 16px; }
+      .container { padding: 48px 16px; }
+      h1 { font-size: 32px; }
+      h2 { font-size: 24px; }
+      th, td { padding: 8px 6px; font-size: 14px; }
+    }
+  </style>
+  <link rel="stylesheet" href="theme.css">
+  <link rel="canonical" href="https://l2cache.amvo.store/en/claude-code-cold-session-tax">
+
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="L2Cache">
+  <meta property="og:url" content="https://l2cache.amvo.store/en/claude-code-cold-session-tax">
+  <meta property="og:title" content="The hidden cost of a cold session: why your Claude Code bill spikes after lunch">
+  <meta property="og:description" content="I measured 10,000 requests from my own Claude Code sessions. Big contexts weren&#x27;t the expensive part; the breaks were. With a script to measure your own.">
+  <meta property="og:image" content="https://l2cache.amvo.store/icon.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="L2Cache app icon">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:url" content="https://l2cache.amvo.store/en/claude-code-cold-session-tax">
+  <meta name="twitter:title" content="The hidden cost of a cold session: why your Claude Code bill spikes after lunch">
+  <meta name="twitter:description" content="I measured 10,000 requests from my own Claude Code sessions. Big contexts weren&#x27;t the expensive part; the breaks were. With a script to measure your own.">
+  <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
+  <meta name="twitter:image:alt" content="L2Cache app icon">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "The hidden cost of a cold session: why your Claude Code bill spikes after lunch",
+  "description": "I measured 10,000 requests from my own Claude Code sessions. Big contexts weren't the expensive part; the breaks were. With a script to measure your own.",
+  "url": "https://l2cache.amvo.store/en/claude-code-cold-session-tax",
+  "datePublished": "2026-11-11",
+  "dateModified": "2026-11-11",
+  "author": { "@type": "Organization", "name": "Amvo", "url": "https://l2cache.amvo.store/en" },
+  "publisher": { "@type": "Organization", "name": "Amvo", "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" } },
+  "image": "https://l2cache.amvo.store/icon.png",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://l2cache.amvo.store/en/claude-code-cold-session-tax" }
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://l2cache.amvo.store/en" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://l2cache.amvo.store/en/blog" },
+    { "@type": "ListItem", "position": 3, "name": "The Hidden Cost of a Cold Session", "item": "https://l2cache.amvo.store/en/claude-code-cold-session-tax" }
+  ]
+}
+  </script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="icon.png" width="28" height="28" alt="L2Cache" style="border-radius:7px"/>
+    L2Cache
+  </a>
+</nav>
+
+<div class="container">
+  <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
+  <h1>The hidden cost of a cold session: why your Claude Code bill spikes after lunch</h1>
+  <p class="meta">November 11, 2026 · 8 min read</p>
+  <p><strong>I measured 10,000 requests from my own sessions. Big contexts weren't the expensive part. The breaks were.</strong></p>
+<p>I had a Claude Code session open for most of a day. It was a good one: 250k tokens of context, and the agent knew the codebase, the plan, and the three approaches we'd already thrown away. I went to lunch, came back, and typed one line: "ok, carry on."</p>
+
+<p>That single line used more of my budget than the previous twenty messages put together.</p>
+
+<p>Nothing was broken. I'd paid what I now call the <strong>cold session tax</strong>, and once I started measuring it, I found it in almost every expensive session I'd run.</p>
+
+<h2>Every message resends the whole conversation</h2>
+
+<p>Models don't remember anything between requests. Each time you send a message, Claude Code sends the entire conversation again: the system prompt, your project context, every earlier message and tool result, and your new line at the bottom.</p>
+
+<p>That sounds ruinous, and it would be, except that almost all of each request is identical to the one before. So the API caches it. On a normal turn, the unchanged start of the request is read from cache at a small fraction of the normal input price, and only the new part is processed in full.</p>
+
+<p>The catch is that the cache expires. It has a time to live (TTL), and every request that hits the cache resets the timer. Keep working and it stays warm. Stop, and it goes cold.</p>
+
+<p>There are two lifetimes. On a Claude subscription, within your plan's limits, the main conversation uses a 1-hour cache. On an API key or usage credits, it's 5 minutes. A coffee break cools a 5-minute cache. A 1-hour cache survives a meeting, but not lunch.</p>
+
+<h2>Why the first message back is so expensive</h2>
+
+<p>When the cache has expired, there's nothing to read. The first request back has to process your whole context again and write it to the cache. Cache writes cost more than normal input; cache reads cost far less. The gap between them is the tax.</p>
+
+<img style="max-width:100%;height:auto;display:block;margin:32px auto 8px;border-radius:8px" src="screenshots/medium-claude-code-cold-session-tax-1-cold-vs-warm-table.png" loading="lazy" alt="Table: the first message after a break costs 20× a warm one on Haiku 4.5, 40× on Sonnet 5.5 and Opus 5.5, and 80× on Fable 5.1 with a 1-hour cache">
+
+<ul>
+  <li><strong>Haiku 4.5 and most older models:</strong> cache reads are 0.1× normal input, so a cold reload costs 20× a warm turn on a 1-hour cache (12.5× on 5 minutes).</li>
+  <li><strong>Sonnet 5.5 and Opus 5.5:</strong> reads are 0.05×, so it's 40× (25× on 5 minutes).</li>
+  <li><strong>Fable 5.1:</strong> reads are 0.025×, so it's 80× (50× on 5 minutes).</li>
+</ul>
+
+<p>So for the context part of the request, the first message after a break costs somewhere between <strong>12× and 80× a warm one</strong>, depending on your model and your cache lifetime.</p>
+
+<p>In dollars at API list prices: a 241k-token Opus 5.5 session on a 1-hour cache reads its context for about five cents on a warm turn. After lunch, the next message writes it again for about $1.93. That's forty warm turns' worth, spent before Claude has written a word.</p>
+
+<p>On a subscription you don't see dollars, but the reload still counts against your 5-hour and weekly limits. Anthropic doesn't publish exactly how cache reads and writes are weighted there, so treat these multipliers as the shape of the cost, not an exact figure.</p>
+
+<h2>What I found when I measured my own sessions</h2>
+
+<p>I wanted to know how much this mattered in practice, so I went through 50+ of my own Claude Code transcripts: about 10,000 API requests, three-quarters of them on Opus 5.5. Every request records its context size, how much was read from cache, how much was written, and a timestamp. That's enough to tell warm turns from cold ones.</p>
+
+<p>Three things surprised me.</p>
+
+<p><strong>1. A big warm session is cheaper than I thought.</strong> I had assumed that, per message, a 500k session costs ten times what a 50k one does. It doesn't. The new tokens and the output dominate each request; the cached context adds a small amount on top. A warm request at 500k cost about 2–3× a small session's request, not 10×.</p>
+
+<p><strong>2. The breaks are where the money goes.</strong> The bigger the session, the larger the share of its total cost that came from cold reloads after a break. Under 100k it was about a fifth. At 500k it was over 40%. From 600k up it was 60–66%: most of what those sessions cost was the first message after each gap.</p>
+
+<img style="max-width:100%;height:auto;display:block;margin:32px auto 8px;border-radius:8px" src="screenshots/medium-claude-code-cold-session-tax-2-cold-reload-share-chart.png" loading="lazy" alt="Bar chart: share of session cost spent on cold reloads rises from 21% under 100k tokens to 60–66% above 600k">
+<figcaption class="note" style="text-align:center;margin-bottom:32px">Shares use estimated subscription weights, since Anthropic doesn't publish exact ones. Read them as directional.</figcaption>
+
+<p><strong>3. One "message" is really five to ten requests.</strong> When you type a prompt, the agent reads files, runs commands and edits code. Each of those steps is another API request that re-reads the context. The median prompt in my data was 5 requests and the mean was 10. That matters later.</p>
+
+<p>What I didn't find was any sign that the agent got sloppier as sessions grew. Re-reading files it had already read stayed at 1–2% all the way past 800k. The one thing that did make a difference was changing tasks. After I switched to a different feature in the same session, re-reads and my corrections roughly doubled. It's thin evidence (31 task switches), but it points the same way as the cost data: <strong>a break or a new task is a better reason to start fresh than size alone.</strong></p>
+
+<h2>Three rules I follow now</h2>
+
+<h3>Rule 1: Before you step away from a big session, deal with it while it's warm</h3>
+
+<p><code>/compact</code> summarizes the conversation and carries on from the summary. While the cache is warm, the summary request reads the history from cache, so it's cheap. After a break, the same command reprocesses the whole history at full price. If you're going to compact, do it before lunch, not after.</p>
+
+<p>On a 1-hour cache there's a second option for a session you really will come back to soon: send one short message before the hour is up. It resets the timer for a tiny fraction of a cold reload. It isn't worth doing all night, and on a 5-minute cache you'd be doing it constantly.</p>
+
+<h3>Rule 2: Coming back cold, start fresh with a handoff</h3>
+
+<p>Resuming costs nothing on its own. <code>claude --resume</code> loads the transcript from disk and shows it to you, and nothing is sent until you submit a prompt. That's a free moment to decide.</p>
+
+<p>If the session is big and cold, type <code>/clear</code> and start a new one. It starts small instead of reloading 250k. What you lose is the context, so bring the important part with you: a short handoff with the goal, the files you were in, what's done, what's next, and the approaches you already rejected. A good handoff is a few hundred to 1,500 tokens, not hundreds of thousands.</p>
+
+<p>Is it worth it, given the new session has to rediscover some things? In my data a fresh session started at about 50k and spent another 40k or so finding its feet. Against the extra cost of carrying a large context on every request, that pays for itself in roughly 7–12 requests. At 5–10 requests per prompt, that's <strong>one or two prompts</strong>. If you have more than a couple of prompts left in the task, the fresh session is cheaper, even while the cache is still warm.</p>
+
+<h3>Rule 3: Small sessions can just send it</h3>
+
+<p>A 30k-token session reloaded cold is still a cheap request. Don't overthink it. Save the ritual for the big ones.</p>
+
+<h2>Check your own sessions in a minute</h2>
+
+<p>You don't have to take my numbers on faith. Claude Code keeps every session as a JSONL file under <code>~/.claude/projects</code>. Each reply's usage record holds the context size, a timestamp, and whether the cache was written for 5 minutes or an hour. If the gap since the previous reply is longer than that lifetime, the reply was a cold reload.</p>
+
+<h3>Ask your agent</h3>
+
+<p>The easiest way is to let Claude Code do the analysis. Start a <strong>new</strong> session (so the analysis itself doesn't run on a big context) and paste this prompt:</p>
+
+<pre><code>Analyze my Claude Code history for cold-cache reloads. Don't read the
+transcript files into your context: write and run a Python script, and
+never print message text.
+
+Data: every *.jsonl file under ~/.claude/projects. Use lines with
+"type": "assistant" that have message.usage, counting each message.id once.
+
+For each reply:
+- context size = input_tokens + cache_creation_input_tokens
+  + cache_read_input_tokens
+- cache lifetime = 1 hour if the latest earlier reply in the same file that
+  wrote to the cache had cache_creation.ephemeral_1h_input_tokens > 0,
+  otherwise 5 minutes
+- it's a cold reload if the gap since the previous reply in the same file
+  is longer than that lifetime
+
+Estimate cost in units of one normal input token: uncached input 1x,
+output 5x, cache write 2x (1-hour) or 1.25x (5-minute), cache read 0.1x,
+or 0.05x if message.model contains "opus-5-5" or "sonnet-5-5", or 0.025x
+if it contains "fable-5".
+
+Report:
+1. How many cold reloads there were above 100k tokens, and the date range.
+2. The share of total estimated cost that came from cold reloads, by
+   context size: 0-100k, 100-200k, 200-400k, 400-600k, 600k+.
+3. The 5 most expensive cold reloads: date, session file, context size,
+   model, and how long the gap was.
+4. For each of those, how many warm turns of the same size it cost.
+5. Two or three habits that would have avoided most of this cost.</code></pre>
+
+<p>The weights are API list prices relative to normal input. On a subscription, read the result as the shape of the cost, not an exact bill.</p>
+
+<h3>Or run the script yourself</h3>
+
+<p>If you'd rather not spend tokens on it, this script does the same analysis locally. It reads only token counts and timestamps, never your messages, and prints a report: how many times you came back to a cold session, what those cold starts cost, how long you'd been away, and which sessions were hit hardest.</p>
+
+<pre><code>"""Cold start report for Claude Code.
+
+Reads your local transcripts (~/.claude/projects/*/*.jsonl) and reports every
+time you came back to a session after its prompt cache had expired, and what
+that cost. Only token counts and timestamps are read; no message text is printed.
+"""
+import glob
+import json
+import os
+from collections import defaultdict
+from datetime import datetime
+
+# API list prices per million tokens: base input, cache read.
+# Cache writes cost 2x base input on a 1-hour cache, 1.25x on a 5-minute one.
+PRICES = {"fable-5-2": (8, 0.20), "fable-5-1": (10, 0.25), "opus-5-5": (4, 0.20), "sonnet-5-5": (2, 0.10), "haiku-4-5": (1, 0.10)}
+DEFAULT_PRICE = (4, 0.20)
+BUCKETS = [(0, "under 100k"), (100_000, "100-200k"), (200_000, "200-400k"), (400_000, "400-600k"), (600_000, "600k+")]
+
+
+def price_for(model):
+    return next((p for key, p in PRICES.items() if key in (model or "")), DEFAULT_PRICE)
+
+
+def bucket(size):
+    return [label for floor, label in BUCKETS if size &gt;= floor][-1]
+
+
+def gap_text(seconds):
+    hours = seconds / 3600
+    return f"{hours:.1f} h" if hours &gt;= 1 else f"{seconds / 60:.0f} min"
+
+
+def scan(path):
+    """Returns (replies, total cost, cold starts) for one transcript."""
+    last, last_ttl, seen = None, 300, set()
+    replies, total, cold = 0, 0.0, []
+    for line in open(path):
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        msg = row.get("message") or {}
+        usage = msg.get("usage")
+        if row.get("type") != "assistant" or not usage or msg.get("id") in seen:
+            continue
+        seen.add(msg.get("id"))
+        written = usage.get("cache_creation_input_tokens", 0)
+        read = usage.get("cache_read_input_tokens", 0)
+        size = usage.get("input_tokens", 0) + written + read
+        if size == 0:  # system or error replies carry no tokens
+            continue
+        replies += 1
+        when = datetime.fromisoformat(row["timestamp"].replace("Z", "+00:00")).astimezone()
+        writes = usage.get("cache_creation") or {}
+        ttl = 3600 if writes.get("ephemeral_1h_input_tokens", 0) &gt; 0 else last_ttl
+        base, read_price = price_for(msg.get("model"))
+        write_price = base * (2 if ttl == 3600 else 1.25)
+        total += (usage.get("input_tokens", 0) * base + written * write_price
+                  + read * read_price + usage.get("output_tokens", 0) * base * 5) / 1e6
+        if last and (when - last).total_seconds() &gt; last_ttl:
+            cold.append({
+                "when": when, "size": size, "gap": (when - last).total_seconds(),
+                "model": (msg.get("model") or "unknown").replace("claude-", ""),
+                "times": (2 if last_ttl == 3600 else 1.25) * base / read_price,
+                # What this reply paid to rewrite the cache, minus what a warm read would have cost.
+                "extra": written * (write_price - read_price) / 1e6,
+            })
+        if writes.get("ephemeral_1h_input_tokens", 0) &gt; 0:
+            last_ttl = 3600
+        elif writes.get("ephemeral_5m_input_tokens", 0) &gt; 0:
+            last_ttl = 300
+        last = when
+    return replies, total, cold
+
+
+def main():
+    sessions, all_cold, total_cost, total_replies = [], [], 0.0, 0
+    for path in glob.glob(os.path.expanduser("~/.claude/projects/*/*.jsonl")):
+        replies, cost, cold = scan(path)
+        if not replies:
+            continue
+        project = os.path.basename(os.path.dirname(path)).split("-")[-1] or "?"
+        session = os.path.basename(path)[:8]
+        for c in cold:
+            c["session"], c["project"] = session, project
+        sessions.append((session, project, cold))
+        all_cold += cold
+        total_cost += cost
+        total_replies += replies
+
+    if not all_cold:
+        print(f"Scanned {len(sessions)} sessions. No cold starts found.")
+        return
+
+    extra = sum(c["extra"] for c in all_cold)
+    hit = [s for s in sessions if s[2]]
+    first = min(c["when"] for c in all_cold)
+    last = max(c["when"] for c in all_cold)
+
+    print("COLD START REPORT  (Claude Code, estimated at API list prices)")
+    print("=" * 66)
+    print(f"Sessions scanned:        {len(sessions)}  ({total_replies:,} replies)")
+    print(f"Cold starts:             {len(all_cold)}  in {len(hit)} sessions, {first:%b %d} to {last:%b %d}")
+    print(f"  over 100k tokens:      {sum(c['size'] &gt;= 100_000 for c in all_cold)}")
+    print(f"Extra cost of cold starts: ${extra:,.2f}  ({extra / total_cost:.0%} of ${total_cost:,.2f} total)")
+
+    print("\nBY SESSION SIZE AT THE COLD START")
+    print(f"  {'size':&lt;12}{'cold starts':&gt;12}{'extra cost':&gt;13}")
+    for _, label in BUCKETS:
+        rows = [c for c in all_cold if bucket(c["size"]) == label]
+        if rows:
+            print(f"  {label:&lt;12}{len(rows):&gt;12}{'$' + format(sum(c['extra'] for c in rows), ',.2f'):&gt;13}")
+
+    print("\nHOW LONG YOU WERE AWAY")
+    for label, lo, hi in [("under 2 h (breaks, meetings)", 0, 7200),
+                          ("2-8 h (lunch, afternoon)", 7200, 28800),
+                          ("over 8 h (overnight)", 28800, float("inf"))]:
+        rows = [c for c in all_cold if lo &lt;= c["gap"] &lt; hi]
+        print(f"  {label:&lt;30}{len(rows):&gt;4} cold starts   ${sum(c['extra'] for c in rows):,.2f}")
+
+    print("\nSESSIONS THAT COST THE MOST TO RE-WARM")
+    hit.sort(key=lambda s: sum(c["extra"] for c in s[2]), reverse=True)
+    for session, project, cold in hit[:5]:
+        sizes = [c["size"] for c in cold]
+        print(f"  {session}  {project:&lt;14} {len(cold):&gt;2} cold starts, "
+              f"{min(sizes) // 1000}k -&gt; {max(sizes) // 1000}k   ${sum(c['extra'] for c in cold):,.2f}")
+
+    print("\nMOST EXPENSIVE COLD STARTS")
+    for c in sorted(all_cold, key=lambda c: c["extra"], reverse=True)[:5]:
+        print(f"  {c['when']:%b %d %H:%M}  {c['size'] // 1000:&gt;4}k  away {gap_text(c['gap']):&gt;7}  "
+              f"{c['model']:&lt;11} {c['times']:.0f}x a warm turn   ${c['extra']:.2f}")
+
+
+if __name__ == "__main__":
+    main()</code></pre>
+<p class="note"><a href="/downloads/cold_check.py" download>Download cold_check.py</a></p>
+
+<p>Save it as <code>cold_check.py</code> and run <code>python3 cold_check.py</code>. Here's mine:</p>
+
+<pre><code>COLD START REPORT  (Claude Code, estimated at API list prices)
+==================================================================
+Sessions scanned:        68  (9,042 replies)
+Cold starts:             48  in 13 sessions, Oct 08 to Nov 03
+  over 100k tokens:      43
+Extra cost of cold starts: $141.98  (12% of $1,136.43 total)
+
+BY SESSION SIZE AT THE COLD START
+  size         cold starts   extra cost
+  under 100k             5        $1.21
+  100-200k              12       $12.88
+  200-400k              10       $22.61
+  400-600k               8       $30.46
+  600k+                 13       $74.82
+
+HOW LONG YOU WERE AWAY
+  under 2 h (breaks, meetings)    22 cold starts   $77.60
+  2-8 h (lunch, afternoon)        16 cold starts   $31.58
+  over 8 h (overnight)            10 cold starts   $32.80
+
+SESSIONS THAT COST THE MOST TO RE-WARM
+  55d2c061  L2Cache         7 cold starts, 197k -&gt; 852k   $34.96
+  8c6f5a9b  HingeJoy        7 cold starts, 245k -&gt; 682k   $30.46
+  2b5e1400  L2Cache         5 cold starts, 483k -&gt; 874k   $28.34
+  305b3630  L2Cache         7 cold starts, 64k -&gt; 543k   $18.34
+  1f546c39  IronTrack       8 cold starts, 173k -&gt; 431k   $17.62
+
+MOST EXPENSIVE COLD STARTS
+  Oct 23 07:37   874k  away  10.9 h  opus-5-5    40x a warm turn   $6.82
+  Oct 16 19:40   852k  away   3.2 h  opus-5-5    40x a warm turn   $6.65
+  Oct 22 19:01   797k  away   1.9 h  opus-5-5    40x a warm turn   $6.22
+  Oct 16 15:38   795k  away   1.4 h  opus-5-5    40x a warm turn   $6.21
+  Oct 16 13:01   778k  away   1.7 h  opus-5-5    40x a warm turn   $6.07</code></pre>
+
+<p>48 times in under four weeks, I came back to a session after its cache had expired. 43 of those sessions were over 100k tokens, and 13 were past 600k. At API list prices that's about $142 spent only on re-warming caches. The surprise was the "under 2 h" row: most of my cold starts weren't lunch or overnight. They were a meeting that ran a little past the hour.</p>
+
+<p>The report uses API prices, where cold starts were 12% of my total. On a subscription the share is likely higher, because the gap between a cache write and a cache read is estimated to be wider there. That's why the chart above, which uses estimated subscription weights, shows bigger shares.</p>
+
+<h2>Seeing it coming</h2>
+
+<p>The script tells you afterwards. The hard part is knowing in the moment how big your session is and whether its cache is still warm. Claude Code's <code>/context</code> shows what's filling the window, but not the clock.</p>
+
+<p>I got tired of doing that math in my head, so I built it into L2Cache, the Mac app I make. It reads the session files locally and warns me before a heavy session's cache expires. It offers a one-line heartbeat I can paste myself; it never types into my terminal. And when I resume a cold session, it stops my first message once and offers <code>/clear</code> with the handoff already loaded. Here it caught a 254k session with 57 minutes of cache left; the fresh session would start at about 52k.</p>
+
+<img style="max-width:100%;height:auto;display:block;margin:32px auto 8px;border-radius:8px" src="screenshots/medium-claude-code-cold-session-tax-3-handoff-screen.png" loading="lazy" alt="L2Cache handoff screen: current session 254k tokens with 57 minutes of cache left, versus 52k starting context for a fresh session with a handoff">
+<figcaption class="note" style="text-align:center;margin-bottom:32px">A 254k session with 57 minutes of cache left, and what a fresh start with a handoff would cost.</figcaption>
+
+<p>You don't need a tool to follow the rules, though. You only need to know the tax exists.</p>
+
+<h2>The takeaway</h2>
+
+<blockquote class="highlight-box"><p>Long sessions aren't expensive because they're long. They're expensive every time they go cold.</p></blockquote>
+
+<p>Compact or hand off before you leave, start fresh when you come back to something big, and let small sessions be.</p>
+
+<hr>
+
+<p><em>For the full mechanics (TTL settings, the transcript fields and a per-model cost table), I wrote them up here: <a href="claude-code-cold-cache-resume-cost.html">Why resuming a cold Claude Code session costs more</a>. And for what goes into a good handoff: <a href="coding-agent-session-handoff.html">Coding agent session handoff</a>.</em></p>
+
+  <div class="related">
+    <h3>Related reading</h3>
+    <div class="related-grid">
+      <a href="claude-code-cold-cache-resume-cost.html"><div><div class="r-tag">Claude Code</div><div class="r-title">Why resuming a cold Claude Code session costs more</div></div><div class="r-more">Read article →</div></a>
+      <a href="coding-agent-session-handoff.html"><div><div class="r-tag">Coding agents</div><div class="r-title">Start a fresh coding-agent session without losing context</div></div><div class="r-more">Read article →</div></a>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <div class="cta-title">Know before a session goes cold</div>
+    <p>L2Cache warns you before a heavy session&#x27;s cache expires and offers a fresh start with a handoff.</p>
+    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="cta-btn">Download L2Cache for Mac</a>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">Home</a>
+  <a href="blog.html">Blog</a>
+  <a href="support.html">Support</a>
+  <a href="privacy.html">Privacy Policy</a>
+  <br/><br/>
+  © 2026 Amvotech
+</footer>
+</body>
+</html>
