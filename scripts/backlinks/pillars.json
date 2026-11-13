@@ -91,6 +91,24 @@
     ]
   },
   {
+    "id": "M6",
+    "slug": "search-developer-history-mac",
+    "keyword": "search claude code history",
+    "related": [
+      "search terminal history mac",
+      "clipboard history search",
+      "search screenshots text mac",
+      "find old claude code conversation"
+    ],
+    "question": "How do I find something I saw in a Claude Code session, my terminal or a screenshot weeks ago?",
+    "devto_tags": [
+      "productivity",
+      "ai",
+      "macos",
+      "claude"
+    ]
+  },
+  {
     "id": "M7",
     "slug": "copy-screenshots-errors-to-coding-agents",
     "keyword": "paste screenshot into claude code",

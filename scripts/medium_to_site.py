@@ -9,6 +9,14 @@ MODIFIED, MODIFIED_TEXT = "2026-11-13", "November 13, 2026"
 APP = "https://apps.apple.com/us/app/l2cache/id6774423992?mt=12"
 
 ARTICLES = [
+    dict(src="one-search-developer-memory", slug="search-developer-history-mac", date=("2026-11-13", "November 13, 2026"),
+         seo_title="Search Claude Code History, Terminal and Clipboard at Once",
+         section="clipboard",
+         tag="Search · Measured", short="One Search Box for Everything",
+         desc="Seven real questions asked of one search box over agent chats, terminal, clipboard, screenshots and git: what it found, what it missed, what I fixed.",
+         related=[("universal-search-mac-developer", "Search", "One ⌘K search for everything you did as a developer"),
+                  ("screenshot-ocr-mac", "Screenshots", "Search the text inside your screenshots")],
+         cta=("Ask one place", "L2Cache searches your agent sessions, terminal history, clipboard and screenshots together, on your Mac.")),
     dict(src="screenshot-to-agent", slug="copy-screenshots-errors-to-coding-agents", date=("2026-11-13", "November 13, 2026"),
          seo_title="How to Paste Screenshots and Errors Into Claude Code and Codex",
          section="coding-agents",
@@ -47,7 +55,7 @@ ARTICLES = [
          cta=("Start the day where you left off", "L2Cache's Today page shows where each project was left, built from history already on your Mac.")),
     dict(src="timesheet-from-coding-activity", slug="billable-hours-from-coding-activity", seo_title="Billable Hours From Git: A Timesheet From Coding Activity",
          section="projects-worklog",
-         tag="Worklog · Measured", short="The Standup That Writes Itself",
+         tag="Worklog · Measured", short="Fill Your Timesheet From Agent History",
          desc="Estimate billable hours from git and coding-agent activity: 61 h over two weeks vs 120.5 h of first-to-last span. Four rules, a script, the standup.",
          related=[("developer-timesheet-standup-from-activity", "Worklog", "Timesheet and standup from your activity"),
                   ("developer-morning-context-today", "Today", "Where you left off, every morning")],

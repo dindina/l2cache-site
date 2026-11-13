@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="author" content="Amvo"/>
+  <meta name="theme-color" content="#0d1117"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Search Claude Code History, Terminal and Clipboard at Once</title>
+  <meta name="description" content="Seven real questions asked of one search box over agent chats, terminal, clipboard, screenshots and git: what it found, what it missed, what I fixed."/>
+  <link rel="icon" type="image/png" href="icon.png"/>
+  <link rel="apple-touch-icon" href="icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #00C896; --bg: #f7f7f5; --bg2: #ffffff; --bg3: #eeeeea;
+      --border: #e4e4e0; --text: #0a0a0a;
+      --text-muted: #555550; --text-dim: #999992;
+      --mono: 'DM Mono', monospace; --serif: "Playfair Display", serif; --sans: 'DM Sans', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .container { max-width: 720px; margin: 0 auto; padding: 80px 24px; min-height: 80vh; }
+    .label { font-family: var(--mono); font-size: 12px; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: inline-block; }
+    h1 { font-family: var(--serif); font-size: 40px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; color: var(--text); }
+    .meta { font-family: var(--mono); font-size: 13px; color: var(--text-dim); margin-bottom: 32px; }
+    h2 { font-family: var(--serif); font-size: 28px; font-weight: 700; margin-top: 48px; margin-bottom: 16px; color: var(--text); }
+    h3 { font-size: 19px; font-weight: 600; margin-top: 28px; margin-bottom: 12px; color: var(--text); }
+    p { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; }
+    ul, ol { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; padding-left: 24px; }
+    li { margin-bottom: 10px; }
+    a { color: #008765; }
+    pre { background: #0D0C1A; padding: 18px; border-radius: 10px; overflow-x: auto; margin-bottom: 24px; border: 1px solid var(--border); }
+    code { font-family: var(--mono); font-size: 14px; background: rgba(0,200,150,0.1); color: #008765; padding: 2px 5px; border-radius: 4px; }
+    pre code { background: transparent; color: #e0ffe8; padding: 0; white-space: pre-wrap; }
+    strong { color: var(--text); font-weight: 600; }
+    .highlight-box { background: rgba(0,200,150,0.08); border-left: 4px solid var(--purple); padding: 22px; margin: 32px 0; border-radius: 0 10px 10px 0; }
+    .highlight-box p { margin-bottom: 0; color: var(--text); }
+    .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; }
+    th { color: var(--text); font-weight: 600; background: var(--bg3); }
+    .note { font-size: 14px; color: var(--text-dim); }
+    .cta-box { background: var(--bg2); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
+    .cta-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+    .cta-btn { display: inline-block; background: var(--purple); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
+    .cta-btn:hover { background: #00a87f; }
+    .related { margin-top: 48px; border-top: 1px solid var(--border); padding-top: 36px; }
+    .related h3 { font-family: var(--serif); font-size: 22px; margin-top: 0; margin-bottom: 20px; }
+    .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .related-grid a { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; }
+    .related-grid a:hover { border-color: var(--purple); }
+    .r-tag { font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em; }
+    .r-title { font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4; }
+    .r-more { font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; }
+    footer { padding: 48px 24px; text-align: center; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-dim); }
+    footer a { color: var(--text-dim); text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: var(--text-muted); }
+    @media (max-width: 600px) {
+      nav { padding: 16px; }
+      .container { padding: 48px 16px; }
+      h1 { font-size: 32px; }
+      h2 { font-size: 24px; }
+      th, td { padding: 8px 6px; font-size: 14px; }
+    }
+    .key-findings ul { margin: 8px 0 0 20px; }
+    .key-findings li { margin-bottom: 6px; }
+    .table-wrap { overflow-x: auto; margin: 24px 0 32px; }
+    details.table-wrap summary { cursor: pointer; font-family: var(--mono); font-size: 13px; color: var(--purple); margin-bottom: 12px; }
+    table.data { width: 100%; border-collapse: collapse; font-size: 15px; }
+    table.data caption { text-align: left; font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
+    table.data th, table.data td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    table.data code { overflow-wrap: anywhere; }
+    table.data th { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+  </style>
+  <link rel="stylesheet" href="theme.css">
+  <link rel="canonical" href="https://l2cache.amvo.store/en/search-developer-history-mac">
+
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="L2Cache">
+  <meta property="og:url" content="https://l2cache.amvo.store/en/search-developer-history-mac">
+  <meta property="og:title" content="I searched my clipboard, terminal, agent chats and screenshots at once. Here&#x27;s what I found.">
+  <meta property="og:description" content="Seven real questions asked of one search box over agent chats, terminal, clipboard, screenshots and git: what it found, what it missed, what I fixed.">
+  <meta property="og:image" content="https://l2cache.amvo.store/screenshots/medium-search-developer-history-mac-1-what-is-searchable.png">
+  <meta property="og:image:alt" content="Table: 41,686 agent messages across 256 sessions, 1,290 PDFs and images, 872 commits, 551 clips, 1,105 terminal commands and 314 project docs are searchable on the author&#x27;s Mac">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:url" content="https://l2cache.amvo.store/en/search-developer-history-mac">
+  <meta name="twitter:title" content="I searched my clipboard, terminal, agent chats and screenshots at once. Here&#x27;s what I found.">
+  <meta name="twitter:description" content="Seven real questions asked of one search box over agent chats, terminal, clipboard, screenshots and git: what it found, what it missed, what I fixed.">
+  <meta name="twitter:image" content="https://l2cache.amvo.store/screenshots/medium-search-developer-history-mac-1-what-is-searchable.png">
+  <meta name="twitter:image:alt" content="Table: 41,686 agent messages across 256 sessions, 1,290 PDFs and images, 872 commits, 551 clips, 1,105 terminal commands and 314 project docs are searchable on the author&#x27;s Mac">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "I searched my clipboard, terminal, agent chats and screenshots at once. Here's what I found.",
+  "description": "Seven real questions asked of one search box over agent chats, terminal, clipboard, screenshots and git: what it found, what it missed, what I fixed.",
+  "url": "https://l2cache.amvo.store/en/search-developer-history-mac",
+  "datePublished": "2026-11-13",
+  "dateModified": "2026-11-13",
+  "author": { "@type": "Organization", "name": "Amvo", "url": "https://l2cache.amvo.store/en" },
+  "publisher": { "@type": "Organization", "name": "Amvo", "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" } },
+  "image": "https://l2cache.amvo.store/screenshots/medium-search-developer-history-mac-1-what-is-searchable.png",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://l2cache.amvo.store/en/search-developer-history-mac" }
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://l2cache.amvo.store/en" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://l2cache.amvo.store/en/blog" },
+    { "@type": "ListItem", "position": 3, "name": "One Search Box for Everything", "item": "https://l2cache.amvo.store/en/search-developer-history-mac" }
+  ]
+}
+  </script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="icon.png" width="28" height="28" alt="L2Cache" style="border-radius:7px"/>
+    L2Cache
+  </a>
+</nav>
+
+<div class="container">
+  <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
+  <h1>I searched my clipboard, terminal, agent chats and screenshots at once. Here&#x27;s what I found.</h1>
+  <p class="meta">November 13, 2026 · 10 min read</p>
+  <p><strong>Seven real "where did I see that?" questions, asked of one search box instead of six apps.</strong></p>
+<p>Every developer I know has a version of this moment. You've solved this exact problem before. You remember the shape of the fix and roughly when. What you don't remember is <em>where</em> it lives.</p>
+
+<p>Was it in a Claude Code session? A command you ran in the terminal and never wrote down? A commit message? A screenshot of an error you took to "look at later"? The PDF of the vendor docs? Something you copied from Stack Overflow at 11 pm?</p>
+
+<p>So you search in six places, each with its own search box, its own syntax and its own idea of what "recent" means. Half of them can't search at all: there's no search box for your clipboard history, and <code>history | grep</code> only covers the shell you're in.</p>
+
+<p>I build a Mac app that keeps all of those in one local database, and it has one search box over all of them. I wanted to know whether that actually changes anything day to day, or whether it's a nice demo. So I ran an experiment on myself.</p>
+
+<h2>What's actually in there</h2>
+
+<p>Before searching anything, I counted what one search box covers on my Mac. These are real counts from my own local database, read-only, with sensitive items left out.</p>
+
+<img style="max-width:100%;height:auto;display:block;margin:32px auto 8px;border-radius:8px" src="screenshots/medium-search-developer-history-mac-1-what-is-searchable.png" loading="lazy" alt="Table: 41,686 agent messages across 256 sessions, 1,290 PDFs and images, 872 commits, 551 clips, 1,105 terminal commands and 314 project docs are searchable on the author's Mac">
+
+<p>The agent conversations dwarf everything else: 41,686 messages across 256 sessions since May: Claude Code, Codex, Antigravity, Copilot and Grok. That's the part of my working memory that grew fastest this year, and it's the part with the worst search story. Agent transcripts are JSONL files buried in hidden folders. You can grep them, but you get raw JSON back, not the moment in the conversation where the answer was.</p>
+
+<p>The files row is my Downloads and Documents folders, which I added to L2Cache's watched folders: 457 PDFs and 833 images. Text is pulled out of them on my Mac (PDF text directly, images with Apple's on-device text recognition), so a picture of an error dialog is searchable by the words in the dialog.</p>
+
+<p>The terminal row only holds the last few days of commands on this Mac, not months. It's the youngest source, which matters for the results below.</p>
+
+<h2>Where one word lives</h2>
+
+<p>Then I tried a quick test: pick a few words I know I've worked on, and count where each one shows up.</p>
+
+<img style="max-width:100%;height:auto;display:block;margin:32px auto 8px;border-radius:8px" src="screenshots/medium-search-developer-history-mac-2-where-one-word-lives.png" loading="lazy" alt="Table: how many results each of six terms finds in agent sessions, docs, clips, commits, terminal and files">
+
+<p>Three things jumped out.</p>
+
+<p><strong>The answer is almost never in only one place.</strong> "FTS5" (the SQLite full-text engine) shows up in 36 agent sessions, 22 docs, 25 clips, 3 commits and a terminal command. If I only searched my notes, or only my commits, I'd see a sliver of what I know about it.</p>
+
+<p><strong>Agent sessions are where the reasoning lives.</strong> "codesign" appears in 19 agent sessions and one doc, and nowhere else. I never wrote down how I fixed my code-signing problems; the only record is the conversation where an agent and I worked it out. The same goes for "sandbox": 61 sessions, against 3 commits. Commits record <em>what</em> changed. The conversations record <em>why</em>.</p>
+
+<p><strong>Each source has its own blind spots.</strong> "GRDB", the database library my app is built on, appears in 83 docs and 45 sessions, but in zero commit subjects. "cold cache" shows up in 48 terminal commands, almost all of them deploys of a web page with that phrase in its URL. Any single source gives you a skewed picture. Together they're close to the whole story.</p>
+
+<h2>How one search box ranks six kinds of things</h2>
+
+<p>Putting everything in one index raises an obvious problem: what comes first? A clip from this morning, or the agent session from three weeks ago that actually has the answer?</p>
+
+<p>Here's how the search I built handles it, because the choices shaped what I found:</p>
+
+<ul>
+  <li><strong>Relevance first, recency second.</strong> Each result's score is 70% how well it matches and 30% how recent it is. Recency fades over a couple of weeks, so an old exact match still beats a fresh vague one.</li>
+  <li><strong>One "Top Hit" when the results span kinds.</strong> In the All view, when matches come from at least two sources, the single best one goes on top. Everything else is grouped by source, and the groups are ordered by their best result.</li>
+  <li><strong>Exact titles win.</strong> A result whose title is exactly what you typed gets a boost. If you're scoped to a project, results from that project get a smaller one.</li>
+  <li><strong>Agent sessions are one result each.</strong> A session that mentions a word 40 times shows up once, with the best matching message as the excerpt and a count of matches. Opening it jumps to that message, not the top of the conversation.</li>
+  <li><strong>Commit hashes work.</strong> Type four or more hex characters and it matches commit SHAs by prefix as well as subjects.</li>
+</ul>
+
+<p>And when you know where you're looking, a short prefix narrows it: <code>a:</code> for agent sessions, <code>t:</code> or <code>&gt;</code> for terminal, <code>g:</code> for commits, <code>c:</code> for clips, <code>shot:</code> or <code>file:</code> for files, <code>d:</code> for docs, and <code>@project</code> to scope to one project. They only count as filters when followed by a space, so searching for <code>c:\Users</code> still searches for the path.</p>
+
+<h2>The experiment: seven real questions</h2>
+
+<p>I took seven questions of the kind I ask every week and typed each one into the search box, first in the All view, then with the prefix for the source I expected. One thing to know up front: I ran them right after writing this draft, so my own drafting session, the commands I'd used to count things and my notes file all contained every query word. I'll say where that got in the way, because it turned out to be the most useful result.</p>
+
+<h3>1. An error I'd seen before</h3>
+<p><strong>Question:</strong> <code>database is locked</code>, the SQLite error I keep running into on an app with several writers.</p>
+<p><strong>Where I'd normally look:</strong> Google, then scrolling old Claude sessions.</p>
+<p><strong>What came back:</strong> 20 results. The Top Hit was my drafting session from that afternoon. Past my own notes, it was 10 project docs and 2 files; only one older agent session matched the exact phrase, and it wasn't the fix. <strong>Found it?</strong> No. Whatever fixed it last time was never written down in those words.</p>
+
+<h3>2. A command I half remembered</h3>
+<p><strong>Question:</strong> <code>only-testing</code>, from the xcodebuild flag that runs one test suite.</p>
+<p><strong>What came back:</strong> over 99 results in almost every source. The search treats the hyphen as a space, so it matches anything with "only" and "testing" in it. The Top Hit was an agent session that ran the command 48 times; the terminal commands came after four agent sessions. <strong>Found it?</strong> Second group. <code>t:</code> put the commands first. <em>Fixed since; see below.</em></p>
+
+<h3>3. Why we decided something</h3>
+<p><strong>Question:</strong> <code>JXA</code>, from the decision to replace a compiled MCP server binary with a small JavaScript for Automation script.</p>
+<p><strong>What came back:</strong> 27 results: 9 agent sessions, 11 terminal commands, 7 docs. <strong>Found it?</strong> Top Hit: the sprint doc that records the change. With <code>a:</code>, the first session is the one where I set the server up. Opening a session lands on its recap, not the matching message; I had to open the transcript myself. <em>Fixed since; see below.</em></p>
+
+<h3>4. A number in a screenshot</h3>
+<p><strong>Question:</strong> <code>254k</code>, a context size I'd seen on a "Pick up where you left off" card and screenshotted.</p>
+<p><strong>What came back:</strong> 9 results. The Top Hit was a command I'd run that afternoon with "254k" in it. The screenshot was there, matched by its recognised text, in the files group. <strong>Found it?</strong> Later group. <code>shot:</code> made it the only result. The copy of the same screenshot in my clipboard history didn't show up at all, even with <code>c:</code>. <em>Fixed since; see below.</em></p>
+
+<h3>5. Something I copied but never saved</h3>
+<p><strong>Question:</strong> <code>claude-mem</code>, a GitHub repo URL I copied three days earlier while comparing memory tools.</p>
+<p><strong>What came back:</strong> the hyphen again: "claude" and "mem" match nearly everything I do, so over 99 results, with an unrelated command as the Top Hit. My comparison doc did come up in the docs group. <strong>Found it?</strong> The doc, yes; the URL, no. <code>c:</code> cut it to 13 clips, and the URL wasn't in the first seven. <em>Fixed since; see below.</em></p>
+
+<h3>6. A commit from a hash or a word</h3>
+<p><strong>Question:</strong> <code>f1d0be4</code>, a short hash from a log, then the word <code>retitle</code>.</p>
+<p><strong>What came back:</strong> 6 results for the hash. The Top Hit was my notes file, because I'd pasted the hash into it; the commit was first in its own group. For the word: 22 results, 9 of them commits, with my notes file on top again. <strong>Found it?</strong> Commit group, first. Leave out what I'd written that day and it's the Top Hit.</p>
+
+<h3>7. One project, one word</h3>
+<p><strong>Question:</strong> <code>migration</code>, first unscoped, then <code>@L2Cache migration</code>.</p>
+<p><strong>What came back:</strong> unscoped, over 99 results across every project, with a screenshot from a chat app as the Top Hit and another app's database migration as the first agent session. Scoped, the Top Hit was the command I'd used to find this app's migration tests. <strong>Did scoping help?</strong> Yes, more than anything else I tried.</p>
+
+<h3>Scorecard</h3>
+<p>Out of seven questions: the Top Hit was the answer twice (the JXA doc and the scoped migration search), three times if you ignore what I'd written that day (the commit hash). Two answers were further down (the command, the screenshot) and a prefix moved each to the top. Two were misses: the error fix, and the copied URL. The answers came from a doc, the terminal, a watched folder, git and a scoped search, not mostly from agent sessions as I'd expected.</p>
+
+<h3>Fixing what broke</h3>
+<p>The experiment turned up three bugs in my own search, so I fixed them before publishing and ran the affected questions again.</p>
+<ul>
+<li><strong>Hyphens.</strong> A hyphenated word is now searched as a phrase, so <code>claude-mem</code> only matches those two words side by side. It went from over 99 results to 36. The comparison doc leads the docs group, and <code>c:</code> now returns 2 clips: the copied URL and the prompt I pasted it into. For <code>only-testing</code>, clips fell from 22 to 2 and docs from 67 to 9. Agent sessions and terminal commands still pass 99, because they really do contain the flag, and <code>t:</code> still puts the commands first.</li>
+<li><strong>The screenshot clip.</strong> On the re-run, <code>c: 254k</code> returned the clipboard copy of the screenshot, matched by its recognised text. I couldn't make it fail again, so I added a test that keeps it working.</li>
+<li><strong>Opening at the message.</strong> Opening an agent result now switches to the transcript, scrolls to the matching message and outlines it, even when the match is one command inside a folded group of commands. Before, only the quick panel did that.</li>
+</ul>
+<p>With the fixes, the scorecard moves by one: the copied URL is now found, second with <code>c:</code>, which leaves a single miss, the error fix. The new Top Hit for <code>claude-mem</code> was the bug report I'd written about it an hour earlier, which is the recency lesson again.</p>
+
+<h2>What I learned</h2>
+
+<p><strong>Recency cuts both ways.</strong> The ranking gives a fresh result a boost, which is usually right. But anything you wrote today about a thing (a note, a command, an agent session) beats the thing itself. Searches I ran right after drafting were the worst; the same searches a week later will look better.</p>
+
+<p><strong>Prefixes beat ranking for common words.</strong> <code>t:</code>, <code>shot:</code> and <code>@project</code> turned two near-misses and one noisy list into the right answer at the top. When a word is everywhere, telling the search where to look matters more than how it ranks.</p>
+
+<p><strong>Local beats clever.</strong> None of this needs AI or the cloud. It's SQLite full-text search over files that are already on my Mac, plus some care about ranking. Searches stay on the machine, which matters when the index holds your terminal history and every conversation you've had with an agent.</p>
+
+<h2>Try the cheap version first</h2>
+
+<p>You can get some of this without any app. Search your Claude Code history with <code>grep -rl "codesign" ~/.claude/projects</code>. Search your shell history with <code>history | grep</code>, or install a shell history tool. You'll quickly see why I wanted one box: each answer comes back in a different shape, and none of them takes you to the right moment in a conversation.</p>
+
+<p>Here's what the one-box version looks like for me.</p>
+
+<img style="max-width:100%;height:auto;display:block;margin:32px auto 8px;border-radius:8px" src="screenshots/medium-search-developer-history-mac-3-search-results.png" loading="lazy" alt="Universal search results with a Top Hit and results grouped by source">
+<figcaption class="note" style="text-align:center;margin-bottom:32px">Searching “cache egress” in the All view: a clipboard Top Hit, then the agent sessions where the egress problem was worked out, each with its match count.</figcaption>
+
+<img style="max-width:100%;height:auto;display:block;margin:32px auto 8px;border-radius:8px" src="screenshots/medium-search-developer-history-mac-4-agent-match.png" loading="lazy" alt="An agent session opened from search, scrolled to the matching message">
+<figcaption class="note" style="text-align:center;margin-bottom:32px">Opening an agent result jumps to the matching message, not the top of the session.</figcaption>
+
+<h2>The takeaway</h2>
+
+<blockquote class="highlight-box"><p>The hard part of developer memory isn't storing things. It's that every source keeps its own fragment, and none of them is searchable alongside the others.</p></blockquote>
+
+<p>Count where your own answers live. If they're spread across six places like mine, the fix isn't more notes; it's one place to ask.</p>
+
+<hr>
+
+<p><em>For the full tour (every source, the filters and keyboard shortcuts, and how results open), see <a href="universal-search-mac-developer.html">One ⌘K search for everything you did as a developer</a>. For searching screenshots by the text in them: <a href="screenshot-ocr-mac.html">Screenshot search on Mac</a>.</em></p>
+
+  <div class="related">
+    <h3>Related reading</h3>
+    <div class="related-grid">
+      <a href="universal-search-mac-developer.html"><div><div class="r-tag">Search</div><div class="r-title">One ⌘K search for everything you did as a developer</div></div><div class="r-more">Read article →</div></a>
+      <a href="screenshot-ocr-mac.html"><div><div class="r-tag">Screenshots</div><div class="r-title">Search the text inside your screenshots</div></div><div class="r-more">Read article →</div></a>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <div class="cta-title">Ask one place</div>
+    <p>L2Cache searches your agent sessions, terminal history, clipboard and screenshots together, on your Mac.</p>
+    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="cta-btn">Download L2Cache for Mac</a>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">Home</a>
+  <a href="blog.html">Blog</a>
+  <a href="support.html">Support</a>
+  <a href="privacy.html">Privacy Policy</a>
+  <br/><br/>
+  © 2026 Amvotech
+</footer>
+</body>
+</html>
