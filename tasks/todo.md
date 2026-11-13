@@ -1,3 +1,29 @@
+# Competitor Comparison Pages (2026-11-13)
+
+Goal: SEO comparison pages for L2Cache 2.0 (developer memory) against tools in the same space, starting with Pieces.
+
+## Research (first pass, needs checking against vendor pages before publishing)
+- **Pieces**: background desktop app, "living timeline" across apps (LTM), MCP server for Claude/Cursor/Codex, cloud or local models. No free plan: Pro $18.99/mo, Enterprise $22.99/mo, 7-day trial needs a card. Mac + Windows + Linux.
+- **Same space (developer memory / agent history)**: screenpipe (24/7 screen + audio, MCP), SpecStory (saves agent chats as Markdown in the repo), Claude Code History Viewer (free, Tauri app, many agents), Claudoscope (native Mac, Claude Code analytics), Sessions Viewer (MIT, many agents), Contextify.
+- **Memory layers (not apps)**: Mem0/OpenMemory, Letta, Zep, Cognee, claude-mem. Better as one roundup than as single pages.
+- **Already published**: Maccy, Paste, Clipy, Raycast, Alfred, PastePal, CopyClip, CleanClip, Atuin.
+
+## Plan (approved 2026-11-13: Pieces + 2 roundups, English only)
+- [x] 1. Check Pieces facts against its own pages (features, platforms, pricing, privacy, MCP)
+- [x] 2. `l2cache-vs-pieces.html`, written by hand like `l2cache-vs-cleanclip.html`
+- [x] 3. `pieces-alternatives.html` roundup (L2Cache, screenpipe, SpecStory, Mem0/OpenMemory, Claude Code History Viewer)
+- [x] 4. `best-claude-code-history-viewers-mac.html` roundup (History Viewer, Claudoscope, Sessions Viewer, SpecStory, L2Cache)
+- [x] 5. Wire up each page: build.py, sitemap, comparison hub, internal links, vercel.json; English only
+- [x] 6. Claims gate + validate_seo.py + build.py + local preview
+- [ ] 7. Commit after your review; deploy only when you approve
+
+### Review (2026-11-13)
+- New: `l2cache-vs-pieces.html`, `pieces-alternatives.html`, `best-claude-code-history-viewers-mac.html` (English only; Article + Breadcrumb + FAQ schema, plus ItemList on the roundups)
+- Wired: build.py HTML_FILES, sitemap.html, blog.html (new Comparisons section + topic link), llms.txt, cross-links from the Claude Code history guide and the MCP hooks essay; `.gitignore` exception for the Pieces page (l2cache-vs-* is otherwise ignored)
+- Claims matrix: $19.99 one-time (launch price) approved. Competitor prices left out where the vendor doesn't publish them (screenpipe, SpecStory, Mem0 Custom)
+- Verified: build.py OK, validate_seo.py passed (50 pages, incl. blocked-claims gate), desktop render checked, no page overflow at 390px
+- Generator script kept in the session scratchpad, not committed
+
 # Session Insights Dashboard
 
 ## Milestone 1: Analytics Data Foundation

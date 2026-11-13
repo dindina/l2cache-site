@@ -63,7 +63,7 @@ Prototype approval is not legal approval. The production build must reject unres
 | Download free from the Mac App Store | Qualified | “Free download” is not “all features are free” | Current US App Store listing |
 | 15-day trial | Qualified | Reconfirm immediately before the 2.0 launch | StoreKit source and current listing |
 | One-time Pro unlock; no subscription | Qualified | Do not include a numeric price until approved | Non-consumable StoreKit product |
-| Pro costs `[[PRO_PRICE]]` | Placeholder | Must fail production validation until replaced | Commercial decision pending |
+| Pro costs $19.99 one-time (launch price, regular $29) | Approved 2026-11-13 | Always pair with "one-time" and "launch price"; update every page if the launch price ends | App Store listing and StoreKit config; user approval for comparison pages 2026-11-13 |
 | Existing customers before `[[GRANDFATHERING_CUTOFF]]` keep Pro | Placeholder | Do not paraphrase before policy is approved | Commercial decision pending |
 | Direct download | Placeholder | Use `[[DIRECT_DOWNLOAD_URL]]` or omit the secondary CTA | Distribution decision pending |
 

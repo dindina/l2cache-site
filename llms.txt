@@ -36,6 +36,9 @@ L2Cache offers free web versions of its built-in developer tools at https://l2ca
 ## Competitor Comparisons
 
 - [Best Mac Clipboard Managers (2026 Guide)](https://l2cache.amvo.store/en/best-mac-clipboard-managers): In-depth comparison of top macOS clipboard managers.
+- [L2Cache vs Pieces](https://l2cache.amvo.store/en/l2cache-vs-pieces): Developer memory compared: reading coding-agent sessions, terminal and git vs Pieces' screen-and-clipboard timeline; $19.99 one-time vs $18.99/month.
+- [Pieces Alternatives for Developers (2026)](https://l2cache.amvo.store/en/pieces-alternatives): L2Cache, screenpipe, SpecStory, Mem0 OpenMemory and Claude Code History Viewer compared.
+- [Best Claude Code History Viewers for Mac (2026)](https://l2cache.amvo.store/en/best-claude-code-history-viewers-mac): L2Cache, Claude Code History Viewer, Claudoscope, Sessions Viewer and SpecStory compared.
 - [L2Cache vs Atuin](https://l2cache.amvo.store/en/l2cache-vs-atuin): Comparison of native macOS GUI developer clipboard & snippet management vs CLI-only shell history daemons.
 - [L2Cache vs CleanClip](https://l2cache.amvo.store/en/l2cache-vs-cleanclip): Comparison of Smart Bubble at cursor, Touch ID secret encryption, and developer memory vs CleanClip's paste stack and context menu.
 - [L2Cache vs Maccy](https://l2cache.amvo.store/en/l2cache-vs-maccy): Comparison of UI, search capabilities, developer tooling, and memory efficiency.

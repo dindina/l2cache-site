@@ -5,6 +5,7 @@ __pycache__/
 l2cache-vs-*.html
 !l2cache-vs-atuin.html
 !l2cache-vs-cleanclip.html
+!l2cache-vs-pieces.html
 .vercel
 .env*
 node_modules/
