@@ -1,0 +1,42 @@
+[
+  {
+    "id": "M1",
+    "slug": "claude-code-cold-session-tax",
+    "keyword": "claude code prompt cache expired",
+    "related": ["why is claude code so expensive after a break", "claude code usage limit", "prompt caching ttl", "claude code cost"],
+    "question": "Why does my first Claude Code message after a break use so much of my limit?",
+    "devto_tags": ["ai", "claude", "llm", "productivity"]
+  },
+  {
+    "id": "M2",
+    "slug": "coding-agent-memory-what-to-inject",
+    "keyword": "coding agent memory mcp",
+    "related": ["claude code memory", "claude.md", "agents.md", "context engineering", "what to put in agent context"],
+    "question": "How should I give Claude Code memory between sessions?",
+    "devto_tags": ["ai", "claude", "mcp", "productivity"]
+  },
+  {
+    "id": "M3",
+    "slug": "coding-agent-errors-already-fixed",
+    "keyword": "tests failed but exit code 0 pipe",
+    "related": ["claude code repeats the same error", "set -o pipefail", "xcodebuild test tail exit code", "coding agent same mistakes"],
+    "question": "Why does my coding agent think tests passed when they failed?",
+    "devto_tags": ["ai", "testing", "bash", "claude"]
+  },
+  {
+    "id": "M4",
+    "slug": "your-mac-knows-what-you-did-yesterday",
+    "keyword": "what did I do yesterday git",
+    "related": ["git log my commits yesterday", "git log all repos", "zsh history with timestamps", "git reflog"],
+    "question": "How can I see what I worked on yesterday across all my git repos?",
+    "devto_tags": ["git", "productivity", "macos", "terminal"]
+  },
+  {
+    "id": "M5",
+    "slug": "billable-hours-from-coding-activity",
+    "keyword": "billable hours from git commits",
+    "related": ["automatic timesheet from git", "freelance developer time tracking", "timesheet without time tracking app", "standup from git log"],
+    "question": "How can a freelance developer estimate billable hours from git history?",
+    "devto_tags": ["freelance", "git", "productivity", "ai"]
+  }
+]

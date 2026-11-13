@@ -5,8 +5,8 @@
   <meta name="theme-color" content="#0d1117"/>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Every error you&#x27;ve already fixed is in your history. Your tools just can&#x27;t find it. | L2Cache</title>
-  <meta name="description" content="I counted the failures my coding agent hit over a month. One in six came back, and most failures were reported as successes. How to capture and find old fixes."/>
+  <title>Coding Agents Miss Failed Tests (Exit 0) and Repeat Old Errors</title>
+  <meta name="description" content="120 of 127 test and build failures my coding agent hit reported exit 0 because of pipes, and 1 in 6 errors came back. The pipefail fix and how to find old fixes."/>
   <link rel="icon" type="image/png" href="icon.png"/>
   <link rel="apple-touch-icon" href="icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -66,6 +66,15 @@
       h2 { font-size: 24px; }
       th, td { padding: 8px 6px; font-size: 14px; }
     }
+    .key-findings ul { margin: 8px 0 0 20px; }
+    .key-findings li { margin-bottom: 6px; }
+    .table-wrap { overflow-x: auto; margin: 24px 0 32px; }
+    details.table-wrap summary { cursor: pointer; font-family: var(--mono); font-size: 13px; color: var(--purple); margin-bottom: 12px; }
+    table.data { width: 100%; border-collapse: collapse; font-size: 15px; }
+    table.data caption { text-align: left; font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
+    table.data th, table.data td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    table.data code { overflow-wrap: anywhere; }
+    table.data th { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
   </style>
   <link rel="stylesheet" href="theme.css">
   <link rel="canonical" href="https://l2cache.amvo.store/en/coding-agent-errors-already-fixed">
@@ -74,29 +83,27 @@
   <meta property="og:site_name" content="L2Cache">
   <meta property="og:url" content="https://l2cache.amvo.store/en/coding-agent-errors-already-fixed">
   <meta property="og:title" content="Every error you&#x27;ve already fixed is in your history. Your tools just can&#x27;t find it.">
-  <meta property="og:description" content="I counted the failures my coding agent hit over a month. One in six came back, and most failures were reported as successes. How to capture and find old fixes.">
-  <meta property="og:image" content="https://l2cache.amvo.store/icon.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="L2Cache app icon">
+  <meta property="og:description" content="120 of 127 test and build failures my coding agent hit reported exit 0 because of pipes, and 1 in 6 errors came back. The pipefail fix and how to find old fixes.">
+  <meta property="og:image" content="https://l2cache.amvo.store/screenshots/medium-coding-agent-errors-already-fixed-1-hidden-failures.png">
+  <meta property="og:image:alt" content="Bar: of 127 real failures in builds, tests and scripts the agent ran, 120 were reported as success with exit code 0 and only 7 were flagged as errors">
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:url" content="https://l2cache.amvo.store/en/coding-agent-errors-already-fixed">
   <meta name="twitter:title" content="Every error you&#x27;ve already fixed is in your history. Your tools just can&#x27;t find it.">
-  <meta name="twitter:description" content="I counted the failures my coding agent hit over a month. One in six came back, and most failures were reported as successes. How to capture and find old fixes.">
-  <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
-  <meta name="twitter:image:alt" content="L2Cache app icon">
+  <meta name="twitter:description" content="120 of 127 test and build failures my coding agent hit reported exit 0 because of pipes, and 1 in 6 errors came back. The pipefail fix and how to find old fixes.">
+  <meta name="twitter:image" content="https://l2cache.amvo.store/screenshots/medium-coding-agent-errors-already-fixed-1-hidden-failures.png">
+  <meta name="twitter:image:alt" content="Bar: of 127 real failures in builds, tests and scripts the agent ran, 120 were reported as success with exit code 0 and only 7 were flagged as errors">
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": "Every error you've already fixed is in your history. Your tools just can't find it.",
-  "description": "I counted the failures my coding agent hit over a month. One in six came back, and most failures were reported as successes. How to capture and find old fixes.",
+  "description": "120 of 127 test and build failures my coding agent hit reported exit 0 because of pipes, and 1 in 6 errors came back. The pipefail fix and how to find old fixes.",
   "url": "https://l2cache.amvo.store/en/coding-agent-errors-already-fixed",
   "datePublished": "2026-11-11",
-  "dateModified": "2026-11-11",
+  "dateModified": "2026-11-13",
   "author": { "@type": "Organization", "name": "Amvo", "url": "https://l2cache.amvo.store/en" },
   "publisher": { "@type": "Organization", "name": "Amvo", "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" } },
-  "image": "https://l2cache.amvo.store/icon.png",
+  "image": "https://l2cache.amvo.store/screenshots/medium-coding-agent-errors-already-fixed-1-hidden-failures.png",
   "mainEntityOfPage": { "@type": "WebPage", "@id": "https://l2cache.amvo.store/en/coding-agent-errors-already-fixed" }
 }
   </script>
@@ -108,6 +115,46 @@
     { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://l2cache.amvo.store/en" },
     { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://l2cache.amvo.store/en/blog" },
     { "@type": "ListItem", "position": 3, "name": "Every Error You've Already Fixed Is in Your History", "item": "https://l2cache.amvo.store/en/coding-agent-errors-already-fixed" }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Why does my coding agent think the tests passed when they failed?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Usually because it piped the test output through tail or grep, and the pipeline's exit code is the last command's. Put set -o pipefail before the command, or ask the agent to, and failures exit non-zero again."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does Claude Code keep making the same mistakes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Each new session starts without the previous ones. The diagnosis and fix from last time sit in an old transcript that isn't indexed by error, so the agent investigates from zero. A short, searchable fix note per verified fix closes that gap."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I find an old fix in my Claude Code history?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Transcripts are JSONL files under ~/.claude/projects. Exact text search misses because line numbers, addresses and paths change, so search by the stable part of the error: the exception name, error code or test name."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "When should a fix count as verified?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Only when a real test or build command succeeded after the error appeared, and nothing after it in the command line could have masked its result."
+      }
+    }
   ]
 }
   </script>
@@ -123,8 +170,17 @@
 <div class="container">
   <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
   <h1>Every error you&#x27;ve already fixed is in your history. Your tools just can&#x27;t find it.</h1>
-  <p class="meta">November 11, 2026 · 8 min read</p>
+  <p class="meta">November 11, 2026 · Updated November 13, 2026 · 10 min read</p>
   <p><strong>I counted the failures my coding agent hit over a month. One in six came back, and the old fix was always somewhere I couldn't search.</strong></p>
+<div class="highlight-box key-findings">
+<p><strong>Key findings</strong></p>
+<ul>
+  <li>Of 127 real build, test and script failures my coding agent hit in a month, 120 were reported as successes (exit code 0), mostly because the output was piped through <code>tail</code> or <code>grep</code>.</li>
+  <li>Of 119 distinct errors, 21 came back in a later session: about one in six, with a median of 10 days between the first and last time.</li>
+  <li>The fix is easy to keep: write it down as a short note when a test proves it, and look it up by a normalized error signature.</li>
+</ul>
+</div>
+
 <p>The app crashed while I was deleting rows quickly. <code>EXC_BAD_ACCESS</code>, with an address that looked like garbage. It took my coding agent and me a while to find: a popover with a hover delay, firing after its row had already been removed from the window. The fix was a couple of lines.</p>
 
 <p>What bothered me afterwards was where that knowledge ended up. The diagnosis, the dead ends and the two-line fix were sitting in a conversation with my agent, somewhere in hundreds of thousands of tokens of transcript, under a session title that said nothing about crashes.</p>
@@ -158,13 +214,44 @@
 
 <p><strong>Of 127 real failures, 120 were reported as successes.</strong> The command exited 0, so the transcript marked it as fine. 100 of them were builds and test runs piped through <code>tail</code> or <code>grep</code> to keep the output short; most of the rest had another command after them. A pipeline's exit code is the exit code of its last command, and <code>tail</code> doesn't fail just because the build did. The same goes for <code>xcodebuild test; echo done</code>.</p>
 
-<p>That matters for anything that tries to learn from your history. If you trust exit codes, you miss most of your failures, and worse, you can record a broken build as a passing one. (If you do this too, <code>set -o pipefail</code> makes the pipeline fail when any step fails. I now put it in front of every build command I give an agent, and in my own scripts.)</p>
+<div class="table-wrap"><table class="data">
+  <caption>Real failures in builds, tests and scripts my coding agent ran (Claude Code transcripts, one month)</caption>
+  <thead><tr><th>Outcome</th><th>Failures</th></tr></thead>
+  <tbody>
+    <tr><td>Flagged as an error</td><td>7</td></tr>
+    <tr><td>Reported as success (exit 0): piped into another command</td><td>100</td></tr>
+    <tr><td>Reported as success (exit 0): followed by <code>;</code>, <code>||</code> or <code>&amp;</code></td><td>17</td></tr>
+    <tr><td>Reported as success (exit 0): followed by <code>&amp;&amp;</code></td><td>3</td></tr>
+    <tr><td><strong>Total</strong></td><td><strong>127</strong></td></tr>
+  </tbody>
+</table></div>
+
+<h3>Why does a piped test run report success?</h3>
+
+<p>Because a shell pipeline returns the exit status of its last command. In <code>xcodebuild test | tail -20</code>, that's <code>tail</code>, which succeeds whether the tests passed or not. Turn on <code><a href="https://www.gnu.org/software/bash/manual/html_node/The-Set-Builtin.html">pipefail</a></code> and the pipeline fails when any step fails:</p>
+
+<pre><code>set -o pipefail
+xcodebuild test -scheme MyApp | tail -20   # now exits non-zero when tests fail</code></pre>
+
+<p>That matters for anything that tries to learn from your history. If you trust exit codes, you miss most of your failures, and worse, you can record a broken build as a passing one. I now put <code>set -o pipefail</code> in front of every build command I give an agent, and in my own scripts.</p>
 
 <p>Then the repeats:</p>
 
 <img style="max-width:100%;height:auto;display:block;margin:32px auto 8px;border-radius:8px" src="screenshots/medium-coding-agent-errors-already-fixed-2-repeated-errors.png" loading="lazy" alt="Bar chart: 21 of 119 distinct errors came back in a later session; a translation test failed in 6 sessions, KeyError and cannot find in scope in 5">
 
 <p>Of 119 distinct errors, <strong>21 came back in a later session</strong>, about one in six. The gap between the first and last time was 10 days at the median and 27 at the longest. The most persistent was a single test, the one that checks every key has a translation, which failed in six different sessions over 17 days.</p>
+
+<div class="table-wrap"><table class="data">
+  <caption>Errors that came back most often in later sessions</caption>
+  <thead><tr><th>Error</th><th>Sessions</th><th>Days between first and last</th></tr></thead>
+  <tbody>
+    <tr><td>Test: every translatable key has a translation</td><td>6</td><td>17</td></tr>
+    <tr><td><code>KeyError</code></td><td>5</td><td>3</td></tr>
+    <tr><td>cannot find '…' in scope (Swift)</td><td>5</td><td>10</td></tr>
+    <tr><td>Test: upsertAgentSession updates existing session</td><td>4</td><td>3</td></tr>
+    <tr><td>cannot find type '…' in scope (Swift)</td><td>3</td><td>15</td></tr>
+  </tbody>
+</table></div>
 
 <p>I want to be honest about what that does and doesn't show. A repeated error name is a family, not proof of the same bug. Five <code>KeyError</code>s can be five different keys, and "cannot find '…' in scope" covers every missing name in Swift. But the families are exactly where an old fix is most useful: the cause is often the same shape even when the details differ. And a test that fails again is the clearest case of all: same name, same check, and very often the same fix.</p>
 
@@ -411,6 +498,20 @@ MOST REPEATED
 <blockquote class="highlight-box"><p>Your agent already did the hard work of finding the fix. The waste is doing it twice.</p></blockquote>
 
 <p>Capture the fix at the moment it's verified, keep it short, call it verified only when a test proves it, and look it up the moment the error comes back. Whether that's a grep over your own FIX notes or a tool that does it for you, the second time should take seconds, not another investigation.</p>
+
+<h2>Frequently asked questions</h2>
+
+<h3>Why does my coding agent think the tests passed when they failed?</h3>
+<p>Usually because it piped the test output through <code>tail</code> or <code>grep</code>, and the pipeline's exit code is the last command's. Put <code>set -o pipefail</code> before the command, or ask the agent to, and failures exit non-zero again.</p>
+
+<h3>Why does Claude Code keep making the same mistakes?</h3>
+<p>Each new session starts without the previous ones. The diagnosis and fix from last time sit in an old transcript that isn't indexed by error, so the agent investigates from zero. A short, searchable fix note per verified fix closes that gap.</p>
+
+<h3>How do I find an old fix in my Claude Code history?</h3>
+<p>Transcripts are JSONL files under <code>~/.claude/projects</code>. Exact text search misses because line numbers, addresses and paths change, so search by the stable part of the error: the exception name, error code or test name.</p>
+
+<h3>When should a fix count as verified?</h3>
+<p>Only when a real test or build command succeeded after the error appeared, and nothing after it in the command line could have masked its result.</p>
 
 <hr>
 

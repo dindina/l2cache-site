@@ -1,40 +1,46 @@
 """Turn docs/medium/<src>/article.html into l2cache-site article pages (site-first, Medium imports them)."""
-import html, os, re, shutil
+import html, json, os, re, shutil
 
 MEDIUM = "/Users/dinesh/tech/L2Cache/docs/medium"
 SITE = "/Users/dinesh/tech/l2cache-site"
 TEMPLATE = open(f"{SITE}/claude-code-cold-cache-resume-cost.html").read()
 DATE, DATE_TEXT = "2026-11-11", "November 11, 2026"
+MODIFIED, MODIFIED_TEXT = "2026-11-13", "November 13, 2026"
 APP = "https://apps.apple.com/us/app/l2cache/id6774423992?mt=12"
 
 ARTICLES = [
-    dict(src="claude-code-cold-session-cost", slug="claude-code-cold-session-tax", section="context-cost",
-         tag="Claude Code · Measured", short="The Hidden Cost of a Cold Session",
-         desc="I measured 10,000 requests from my own Claude Code sessions. Big contexts weren't the expensive part; the breaks were. With a script to measure your own.",
+    dict(src="claude-code-cold-session-cost", slug="claude-code-cold-session-tax", seo_title="Claude Code Prompt Cache: Why a Cold Session Costs 12–80× More",
+         section="context-cost",
+         tag="Claude Code · Measured", short="Stretch Your Weekly Limit",
+         desc="When Claude Code's prompt cache expires, the first message back costs 12–80× a warm turn. Measured over 10,000 requests, with three rules and a script.",
          related=[("claude-code-cold-cache-resume-cost", "Claude Code", "Why resuming a cold Claude Code session costs more"),
                   ("coding-agent-session-handoff", "Coding agents", "Start a fresh coding-agent session without losing context")],
          cta=("Know before a session goes cold", "L2Cache warns you before a heavy session's cache expires and offers a fresh start with a handoff.")),
-    dict(src="coding-agent-memory-what-to-inject", slug="coding-agent-memory-what-to-inject", section="coding-agents",
+    dict(src="coding-agent-memory-what-to-inject", slug="coding-agent-memory-what-to-inject", seo_title="Coding Agent Memory: What to Inject, What to Pull (MCP)",
+         section="coding-agents",
          tag="Coding agents · Memory", short="Your Coding Agent Has Amnesia",
-         desc="Agent memory works best on a diet: inject only what the agent can't find out for itself, and let it ask for the rest. With real numbers on what agents pull.",
+         desc="Coding agent memory works best on a diet: push only what the agent can't find itself (hooks, CLAUDE.md) and let it pull the rest over MCP. Measured.",
          related=[("coding-agent-memory-mcp-hooks", "Coding agents", "Coding agent memory with MCP and hooks"),
                   ("coding-agent-session-handoff", "Coding agents", "Start a fresh coding-agent session without losing context")],
          cta=("Give your agent the few facts it can't find", "L2Cache hands coding agents a small handoff and lets them ask your local history for the rest.")),
-    dict(src="error-already-fixed", slug="coding-agent-errors-already-fixed", section="coding-agents",
+    dict(src="error-already-fixed", slug="coding-agent-errors-already-fixed", seo_title="Coding Agents Miss Failed Tests (Exit 0) and Repeat Old Errors",
+         section="coding-agents",
          tag="Coding agents · Errors", short="Every Error You've Already Fixed Is in Your History",
-         desc="I counted the failures my coding agent hit over a month. One in six came back, and most failures were reported as successes. How to capture and find old fixes.",
+         desc="120 of 127 test and build failures my coding agent hit reported exit 0 because of pipes, and 1 in 6 errors came back. The pipefail fix and how to find old fixes.",
          related=[("coding-agent-memory-mcp-hooks", "Coding agents", "Coding agent memory with MCP and hooks"),
                   ("claude-code-session-history-mac", "Claude Code", "Claude Code session history on Mac")],
          cta=("Find the fix from last time", "L2Cache remembers what fixed what, and shows verified fixes when the error comes back.")),
-    dict(src="your-mac-knows-yesterday", slug="your-mac-knows-what-you-did-yesterday", section="projects-worklog",
+    dict(src="your-mac-knows-yesterday", slug="your-mac-knows-what-you-did-yesterday", seo_title="What Did I Do Yesterday? Rebuild It From Git and Agent History",
+         section="projects-worklog",
          tag="Today · Local history", short="Your Mac Already Knows What You Did Yesterday",
-         desc="Rebuild your morning context from data already on disk: agent transcripts, shell history and git, with no time tracking. With a script to try it.",
+         desc="What did I do yesterday? Rebuild it from git reflogs, Claude Code transcripts and zsh history on your Mac. One-liners, a script, no time tracking.",
          related=[("developer-morning-context-today", "Today", "Where you left off, every morning"),
                   ("project-story-git-timeline-mac", "Projects", "Project Story: a git timeline for your Mac")],
          cta=("Start the day where you left off", "L2Cache's Today page shows where each project was left, built from history already on your Mac.")),
-    dict(src="timesheet-from-coding-activity", slug="billable-hours-from-coding-activity", section="projects-worklog",
+    dict(src="timesheet-from-coding-activity", slug="billable-hours-from-coding-activity", seo_title="Billable Hours From Git: A Timesheet From Coding Activity",
+         section="projects-worklog",
          tag="Worklog · Measured", short="The Standup That Writes Itself",
-         desc="I estimated two weeks of my working time from coding activity: 61 hours, against 120.5 hours of first-to-last span. The rules, the script, and the standup.",
+         desc="Estimate billable hours from git and coding-agent activity: 61 h over two weeks vs 120.5 h of first-to-last span. Four rules, a script, the standup.",
          related=[("developer-timesheet-standup-from-activity", "Worklog", "Timesheet and standup from your activity"),
                   ("developer-morning-context-today", "Today", "Where you left off, every morning")],
          cta=("A timesheet you only have to correct", "L2Cache estimates your week from local activity, and you fix what it got wrong."))]
@@ -76,15 +82,25 @@ def page(a):
                 break
     body = body.replace("<img ", '<img style="max-width:100%;height:auto;display:block;margin:32px auto 8px;border-radius:8px" ')
     body = body.replace("<figcaption>", '<figcaption class="note" style="text-align:center;margin-bottom:32px">')
+    # Key findings box and data tables: site styling (Medium imports them as a list and plain text).
+    body = body.replace('<div class="key-findings">', '<div class="highlight-box key-findings">')
+    body = body.replace('<table class="data">', '<div class="table-wrap"><table class="data">').replace("</table>", "</table></div>")
+    # A table that repeats the chart right above it: collapsed for readers, still in the HTML for crawlers.
+    body = re.sub(r'(<img [^>]*>\s*(?:<figcaption>.*?</figcaption>\s*)?)<div class="table-wrap">(.*?)</div>',
+                  r'\1<details class="table-wrap"><summary>Show the data as a table</summary>\2</details>', body, flags=re.S)
+    faqs = faq_pairs(body)
     body = body.replace("<blockquote>", '<blockquote class="highlight-box"><p>').replace("</blockquote>", "</p></blockquote>")
     words = len(re.sub(r"<pre>.*?</pre>|<[^>]+>", " ", body, flags=re.S).split())
     minutes = max(1, round(words / 230))
 
     url = f"https://l2cache.amvo.store/en/{a['slug']}"
+    chart = re.search(r'<img [^>]*src="screenshots/([^"]+)"[^>]*alt="([^"]*)"', body)
+    image = f"https://l2cache.amvo.store/screenshots/{chart.group(1)}" if chart else "https://l2cache.amvo.store/icon.png"
+    image_alt = html.escape(html.unescape(chart.group(2)), quote=True) if chart else "L2Cache app icon"
     head, rest = TEMPLATE.split("<body>", 1)
     t = html.escape(title, quote=True)
     d = html.escape(a["desc"], quote=True)
-    head = re.sub(r"<title>.*?</title>", f"<title>{t} | L2Cache</title>", head, flags=re.S)
+    head = re.sub(r"<title>.*?</title>", f"<title>{html.escape(a.get('seo_title', title), quote=True)}</title>", head, flags=re.S)
     head = re.sub(r'<meta name="description" content="[^"]*"', f'<meta name="description" content="{d}"', head)
     head = re.sub(r'(<meta (?:property="og:title"|name="twitter:title") content=")[^"]*"', rf'\g<1>{t}"', head)
     head = re.sub(r'(<meta (?:property="og:description"|name="twitter:description") content=")[^"]*"', rf'\g<1>{d}"', head)
@@ -92,7 +108,16 @@ def page(a):
     head = re.sub(r'"headline": "[^"]*"', f'"headline": {json_str(title)}', head)
     head = re.sub(r'"description": "[^"]*"', f'"description": {json_str(a["desc"])}', head)
     head = re.sub(r'"datePublished": "[^"]*"', f'"datePublished": "{DATE}"', head)
-    head = re.sub(r'"dateModified": "[^"]*"', f'"dateModified": "{DATE}"', head)
+    head = re.sub(r'"dateModified": "[^"]*"', f'"dateModified": "{MODIFIED}"', head)
+    head = head.replace('content="https://l2cache.amvo.store/icon.png"', f'content="{image}"')
+    head = head.replace('"image": "https://l2cache.amvo.store/icon.png"', f'"image": "{image}"')
+    head = re.sub(r'(<meta (?:property="og:image:alt"|name="twitter:image:alt") content=")[^"]*"', rf'\g<1>{image_alt}"', head)
+    head = re.sub(r'\s*<meta property="og:image:(?:width|height)" content="\d+">', "", head)
+    if faqs:
+        faq_ld = {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+            {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": ans}} for q, ans in faqs]}
+        head = head.replace("</head>", f'  <script type="application/ld+json">\n{json.dumps(faq_ld, ensure_ascii=False, indent=2)}\n  </script>\n</head>', 1)
+    head = head.replace("  </style>", STYLE + "  </style>", 1)
     head = re.sub(r'("position": 3, "name": )"[^"]*"', rf'\g<1>{json_str(a["short"])}', head)
     head = head.replace("    .prerelease-box", "    .unused-prerelease")  # template is already clean; harmless
 
@@ -104,7 +129,7 @@ def page(a):
     return a, title, head + "<body>" + nav + f'''<div class="container">
   <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
   <h1>{html.escape(title)}</h1>
-  <p class="meta">{DATE_TEXT} · {minutes} min read</p>
+  <p class="meta">{DATE_TEXT} · Updated {MODIFIED_TEXT} · {minutes} min read</p>
   <p><strong>{subtitle}</strong></p>
 {body.strip()}
 
@@ -126,8 +151,26 @@ def page(a):
 
 
 def json_str(s):
-    import json
     return json.dumps(s, ensure_ascii=False)
+
+
+def faq_pairs(body):
+    """(question, answer) pairs from the visible FAQ section, so the schema matches the page exactly."""
+    section = re.search(r"<h2>Frequently asked questions</h2>(.*?)(?=<h2>|<hr>|$)", body, re.S)
+    text = lambda x: html.unescape(re.sub(r"<[^>]+>", "", x)).strip()
+    return [(text(q), text(ans)) for q, ans in re.findall(r"<h3>(.*?)</h3>\s*<p>(.*?)</p>", section.group(1), re.S)] if section else []
+
+
+STYLE = """    .key-findings ul { margin: 8px 0 0 20px; }
+    .key-findings li { margin-bottom: 6px; }
+    .table-wrap { overflow-x: auto; margin: 24px 0 32px; }
+    details.table-wrap summary { cursor: pointer; font-family: var(--mono); font-size: 13px; color: var(--purple); margin-bottom: 12px; }
+    table.data { width: 100%; border-collapse: collapse; font-size: 15px; }
+    table.data caption { text-align: left; font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
+    table.data th, table.data td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    table.data code { overflow-wrap: anywhere; }
+    table.data th { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+"""
 
 
 def card(a, title):

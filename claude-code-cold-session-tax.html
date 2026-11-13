@@ -5,8 +5,8 @@
   <meta name="theme-color" content="#0d1117"/>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>The hidden cost of a cold session: why your Claude Code bill spikes after lunch | L2Cache</title>
-  <meta name="description" content="I measured 10,000 requests from my own Claude Code sessions. Big contexts weren&#x27;t the expensive part; the breaks were. With a script to measure your own."/>
+  <title>Claude Code Prompt Cache: Why a Cold Session Costs 12–80× More</title>
+  <meta name="description" content="When Claude Code&#x27;s prompt cache expires, the first message back costs 12–80× a warm turn. Measured over 10,000 requests, with three rules and a script."/>
   <link rel="icon" type="image/png" href="icon.png"/>
   <link rel="apple-touch-icon" href="icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -66,6 +66,15 @@
       h2 { font-size: 24px; }
       th, td { padding: 8px 6px; font-size: 14px; }
     }
+    .key-findings ul { margin: 8px 0 0 20px; }
+    .key-findings li { margin-bottom: 6px; }
+    .table-wrap { overflow-x: auto; margin: 24px 0 32px; }
+    details.table-wrap summary { cursor: pointer; font-family: var(--mono); font-size: 13px; color: var(--purple); margin-bottom: 12px; }
+    table.data { width: 100%; border-collapse: collapse; font-size: 15px; }
+    table.data caption { text-align: left; font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
+    table.data th, table.data td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    table.data code { overflow-wrap: anywhere; }
+    table.data th { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
   </style>
   <link rel="stylesheet" href="theme.css">
   <link rel="canonical" href="https://l2cache.amvo.store/en/claude-code-cold-session-tax">
@@ -73,30 +82,28 @@
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="L2Cache">
   <meta property="og:url" content="https://l2cache.amvo.store/en/claude-code-cold-session-tax">
-  <meta property="og:title" content="The hidden cost of a cold session: why your Claude Code bill spikes after lunch">
-  <meta property="og:description" content="I measured 10,000 requests from my own Claude Code sessions. Big contexts weren&#x27;t the expensive part; the breaks were. With a script to measure your own.">
-  <meta property="og:image" content="https://l2cache.amvo.store/icon.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="L2Cache app icon">
+  <meta property="og:title" content="How to use Claude Code&#x27;s prompt cache to stretch your weekly limit">
+  <meta property="og:description" content="When Claude Code&#x27;s prompt cache expires, the first message back costs 12–80× a warm turn. Measured over 10,000 requests, with three rules and a script.">
+  <meta property="og:image" content="https://l2cache.amvo.store/screenshots/medium-claude-code-cold-session-tax-1-cold-vs-warm-table.png">
+  <meta property="og:image:alt" content="Table: the first message after a break costs 20× a warm one on Haiku 4.5, 40× on Sonnet 5.5 and Opus 5.5, and 80× on Fable 5.1 with a 1-hour cache">
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:url" content="https://l2cache.amvo.store/en/claude-code-cold-session-tax">
-  <meta name="twitter:title" content="The hidden cost of a cold session: why your Claude Code bill spikes after lunch">
-  <meta name="twitter:description" content="I measured 10,000 requests from my own Claude Code sessions. Big contexts weren&#x27;t the expensive part; the breaks were. With a script to measure your own.">
-  <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
-  <meta name="twitter:image:alt" content="L2Cache app icon">
+  <meta name="twitter:title" content="How to use Claude Code&#x27;s prompt cache to stretch your weekly limit">
+  <meta name="twitter:description" content="When Claude Code&#x27;s prompt cache expires, the first message back costs 12–80× a warm turn. Measured over 10,000 requests, with three rules and a script.">
+  <meta name="twitter:image" content="https://l2cache.amvo.store/screenshots/medium-claude-code-cold-session-tax-1-cold-vs-warm-table.png">
+  <meta name="twitter:image:alt" content="Table: the first message after a break costs 20× a warm one on Haiku 4.5, 40× on Sonnet 5.5 and Opus 5.5, and 80× on Fable 5.1 with a 1-hour cache">
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "The hidden cost of a cold session: why your Claude Code bill spikes after lunch",
-  "description": "I measured 10,000 requests from my own Claude Code sessions. Big contexts weren't the expensive part; the breaks were. With a script to measure your own.",
+  "headline": "How to use Claude Code's prompt cache to stretch your weekly limit",
+  "description": "When Claude Code's prompt cache expires, the first message back costs 12–80× a warm turn. Measured over 10,000 requests, with three rules and a script.",
   "url": "https://l2cache.amvo.store/en/claude-code-cold-session-tax",
   "datePublished": "2026-11-11",
-  "dateModified": "2026-11-11",
+  "dateModified": "2026-11-13",
   "author": { "@type": "Organization", "name": "Amvo", "url": "https://l2cache.amvo.store/en" },
   "publisher": { "@type": "Organization", "name": "Amvo", "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" } },
-  "image": "https://l2cache.amvo.store/icon.png",
+  "image": "https://l2cache.amvo.store/screenshots/medium-claude-code-cold-session-tax-1-cold-vs-warm-table.png",
   "mainEntityOfPage": { "@type": "WebPage", "@id": "https://l2cache.amvo.store/en/claude-code-cold-session-tax" }
 }
   </script>
@@ -107,7 +114,47 @@
   "itemListElement": [
     { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://l2cache.amvo.store/en" },
     { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://l2cache.amvo.store/en/blog" },
-    { "@type": "ListItem", "position": 3, "name": "The Hidden Cost of a Cold Session", "item": "https://l2cache.amvo.store/en/claude-code-cold-session-tax" }
+    { "@type": "ListItem", "position": 3, "name": "Stretch Your Weekly Limit", "item": "https://l2cache.amvo.store/en/claude-code-cold-session-tax" }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How long does Claude Code's prompt cache last?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "On a Claude subscription, within your plan's limits, the main conversation uses a 1-hour cache. With an API key or usage credits it lasts 5 minutes. Every request that hits the cache resets the timer."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why did one short message use so much of my Claude Code limit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If the session's cache had expired, that message had to re-process and re-cache the whole context. That costs 12× to 80× a warm turn, depending on the model and the cache lifetime, no matter how short your message was."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it cheaper to resume an old session or start a new one?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Resuming is free until you send a prompt. For a big session whose cache has expired, starting fresh with a short handoff is usually cheaper. In my data it paid for itself within one or two prompts."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does /compact save money?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, if you run it while the cache is still warm, because the summary request reads the history from cache. After a break, the same command re-processes the whole history at full price."
+      }
+    }
   ]
 }
   </script>
@@ -122,9 +169,18 @@
 
 <div class="container">
   <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
-  <h1>The hidden cost of a cold session: why your Claude Code bill spikes after lunch</h1>
-  <p class="meta">November 11, 2026 · 8 min read</p>
-  <p><strong>I measured 10,000 requests from my own sessions. Big contexts weren't the expensive part. The breaks were.</strong></p>
+  <h1>How to use Claude Code&#x27;s prompt cache to stretch your weekly limit</h1>
+  <p class="meta">November 11, 2026 · Updated November 13, 2026 · 9 min read</p>
+  <p><strong>I measured 10,000 of my own requests. Warm turns cost almost nothing; the first one after a break costs 12–80× more. Three rules keep you on the cheap side.</strong></p>
+<div class="highlight-box key-findings">
+<p><strong>Key findings</strong></p>
+<ul>
+  <li>When Claude Code's prompt cache expires, the first message back costs 12× to 80× a warm turn, depending on the model and whether the cache lasts 5 minutes or 1 hour.</li>
+  <li>In 10,000 of my own requests, cold reloads were about a fifth of the cost in sessions under 100k tokens and 60–66% above 600k.</li>
+  <li>Compact before a break, start fresh with a handoff after one, and let small sessions be.</li>
+</ul>
+</div>
+
 <p>I had a Claude Code session open for most of a day. It was a good one: 250k tokens of context, and the agent knew the codebase, the plan, and the three approaches we'd already thrown away. I went to lunch, came back, and typed one line: "ok, carry on."</p>
 
 <p>That single line used more of my budget than the previous twenty messages put together.</p>
@@ -135,7 +191,7 @@
 
 <p>Models don't remember anything between requests. Each time you send a message, Claude Code sends the entire conversation again: the system prompt, your project context, every earlier message and tool result, and your new line at the bottom.</p>
 
-<p>That sounds ruinous, and it would be, except that almost all of each request is identical to the one before. So the API caches it. On a normal turn, the unchanged start of the request is read from cache at a small fraction of the normal input price, and only the new part is processed in full.</p>
+<p>That sounds ruinous, and it would be, except that almost all of each request is identical to the one before. So the API caches it (Anthropic calls this <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching">prompt caching</a>). On a normal turn, the unchanged start of the request is read from cache at a small fraction of the normal input price, and only the new part is processed in full.</p>
 
 <p>The catch is that the cache expires. It has a time to live (TTL), and every request that hits the cache resets the timer. Keep working and it stays warm. Stop, and it goes cold.</p>
 
@@ -143,7 +199,7 @@
 
 <h2>Why the first message back is so expensive</h2>
 
-<p>When the cache has expired, there's nothing to read. The first request back has to process your whole context again and write it to the cache. Cache writes cost more than normal input; cache reads cost far less. The gap between them is the tax.</p>
+<p>When the cache has expired, there's nothing to read. The first request back has to process your whole context again and write it to the cache. Cache writes cost more than normal input; cache reads cost far less (see Anthropic's <a href="https://platform.claude.com/docs/en/about-claude/pricing">pricing page</a>). The gap between them is the tax.</p>
 
 <img style="max-width:100%;height:auto;display:block;margin:32px auto 8px;border-radius:8px" src="screenshots/medium-claude-code-cold-session-tax-1-cold-vs-warm-table.png" loading="lazy" alt="Table: the first message after a break costs 20× a warm one on Haiku 4.5, 40× on Sonnet 5.5 and Opus 5.5, and 80× on Fable 5.1 with a 1-hour cache">
 
@@ -157,7 +213,7 @@
 
 <p>In dollars at API list prices: a 241k-token Opus 5.5 session on a 1-hour cache reads its context for about five cents on a warm turn. After lunch, the next message writes it again for about $1.93. That's forty warm turns' worth, spent before Claude has written a word.</p>
 
-<p>On a subscription you don't see dollars, but the reload still counts against your 5-hour and weekly limits. Anthropic doesn't publish exactly how cache reads and writes are weighted there, so treat these multipliers as the shape of the cost, not an exact figure.</p>
+<p>On a subscription you don't see dollars, but the reload still counts against your 5-hour and weekly usage limits. If you hit your limit sooner than expected after a long break, this is often why. Anthropic doesn't publish exactly how cache reads and writes are weighted there, so treat these multipliers as the shape of the cost, not an exact figure.</p>
 
 <h2>What I found when I measured my own sessions</h2>
 
@@ -171,6 +227,22 @@
 
 <img style="max-width:100%;height:auto;display:block;margin:32px auto 8px;border-radius:8px" src="screenshots/medium-claude-code-cold-session-tax-2-cold-reload-share-chart.png" loading="lazy" alt="Bar chart: share of session cost spent on cold reloads rises from 21% under 100k tokens to 60–66% above 600k">
 <figcaption class="note" style="text-align:center;margin-bottom:32px">Shares use estimated subscription weights, since Anthropic doesn't publish exact ones. Read them as directional.</figcaption>
+
+<div class="table-wrap"><table class="data">
+  <caption>Share of all session cost that came from cold reloads, by context size (about 10,000 Claude Code requests)</caption>
+  <thead><tr><th>Context size</th><th>Requests</th><th>Cost from cold reloads</th></tr></thead>
+  <tbody>
+    <tr><td>0–100k</td><td>2,269</td><td>21%</td></tr>
+    <tr><td>100–200k</td><td>3,093</td><td>28%</td></tr>
+    <tr><td>200–300k</td><td>1,255</td><td>25%</td></tr>
+    <tr><td>300–400k</td><td>995</td><td>31%</td></tr>
+    <tr><td>400–500k</td><td>747</td><td>36%</td></tr>
+    <tr><td>500–600k</td><td>569</td><td>42%</td></tr>
+    <tr><td>600–700k</td><td>469</td><td>62%</td></tr>
+    <tr><td>700–800k</td><td>363</td><td>60%</td></tr>
+    <tr><td>800–900k</td><td>211</td><td>66%</td></tr>
+  </tbody>
+</table></div>
 
 <p><strong>3. One "message" is really five to ten requests.</strong> When you type a prompt, the agent reads files, runs commands and edits code. Each of those steps is another API request that re-reads the context. The median prompt in my data was 5 requests and the mean was 10. That matters later.</p>
 
@@ -419,9 +491,11 @@ MOST EXPENSIVE COLD STARTS
 
 <h2>Seeing it coming</h2>
 
-<p>The script tells you afterwards. The hard part is knowing in the moment how big your session is and whether its cache is still warm. Claude Code's <code>/context</code> shows what's filling the window, but not the clock.</p>
+<p>The script tells you afterwards. The hard part is knowing in the moment how big a session is and whether its cache is still warm. Claude Code's <code>/context</code> shows what's filling the window, but not the clock.</p>
 
-<p>I got tired of doing that math in my head, so I built it into L2Cache, the Mac app I make. It reads the session files locally and warns me before a heavy session's cache expires. It offers a one-line heartbeat I can paste myself; it never types into my terminal. And when I resume a cold session, it stops my first message once and offers <code>/clear</code> with the handoff already loaded. Here it caught a 254k session with 57 minutes of cache left; the fresh session would start at about 52k.</p>
+<p>The clock is already on disk, though. Every response Claude Code writes to <code>~/.claude/projects</code> records its token usage and a timestamp, and <a href="https://code.claude.com/docs/en/hooks">Claude Code hooks</a> can run a check just before your message is sent, and stop it.</p>
+
+<p>I got tired of doing that math in my head, so I built it into L2Cache, the Mac app I make. It reads those files locally and warns me <em>before</em> a heavy session's cache expires, not after, and offers a one-line heartbeat I can paste myself; it never types into my terminal. When it does stop a cold first message, <code>/clear</code> starts a fresh session with a handoff already loaded, built from the session I'm leaving. Here it caught a 254k session with 57 minutes of cache left; a fresh session would start at about 52k.</p>
 
 <img style="max-width:100%;height:auto;display:block;margin:32px auto 8px;border-radius:8px" src="screenshots/medium-claude-code-cold-session-tax-3-handoff-screen.png" loading="lazy" alt="L2Cache handoff screen: current session 254k tokens with 57 minutes of cache left, versus 52k starting context for a fresh session with a handoff">
 <figcaption class="note" style="text-align:center;margin-bottom:32px">A 254k session with 57 minutes of cache left, and what a fresh start with a handoff would cost.</figcaption>
@@ -433,6 +507,20 @@ MOST EXPENSIVE COLD STARTS
 <blockquote class="highlight-box"><p>Long sessions aren't expensive because they're long. They're expensive every time they go cold.</p></blockquote>
 
 <p>Compact or hand off before you leave, start fresh when you come back to something big, and let small sessions be.</p>
+
+<h2>Frequently asked questions</h2>
+
+<h3>How long does Claude Code's prompt cache last?</h3>
+<p>On a Claude subscription, within your plan's limits, the main conversation uses a 1-hour cache. With an API key or usage credits it lasts 5 minutes. Every request that hits the cache resets the timer.</p>
+
+<h3>Why did one short message use so much of my Claude Code limit?</h3>
+<p>If the session's cache had expired, that message had to re-process and re-cache the whole context. That costs 12× to 80× a warm turn, depending on the model and the cache lifetime, no matter how short your message was.</p>
+
+<h3>Is it cheaper to resume an old session or start a new one?</h3>
+<p>Resuming is free until you send a prompt. For a big session whose cache has expired, starting fresh with a short handoff is usually cheaper. In my data it paid for itself within one or two prompts.</p>
+
+<h3>Does /compact save money?</h3>
+<p>Yes, if you run it while the cache is still warm, because the summary request reads the history from cache. After a break, the same command re-processes the whole history at full price.</p>
 
 <hr>
 

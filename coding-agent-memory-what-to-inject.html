@@ -5,8 +5,8 @@
   <meta name="theme-color" content="#0d1117"/>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Your coding agent has amnesia. Stuffing its context isn&#x27;t the cure. | L2Cache</title>
-  <meta name="description" content="Agent memory works best on a diet: inject only what the agent can&#x27;t find out for itself, and let it ask for the rest. With real numbers on what agents pull."/>
+  <title>Coding Agent Memory: What to Inject, What to Pull (MCP)</title>
+  <meta name="description" content="Coding agent memory works best on a diet: push only what the agent can&#x27;t find itself (hooks, CLAUDE.md) and let it pull the rest over MCP. Measured."/>
   <link rel="icon" type="image/png" href="icon.png"/>
   <link rel="apple-touch-icon" href="icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -66,6 +66,15 @@
       h2 { font-size: 24px; }
       th, td { padding: 8px 6px; font-size: 14px; }
     }
+    .key-findings ul { margin: 8px 0 0 20px; }
+    .key-findings li { margin-bottom: 6px; }
+    .table-wrap { overflow-x: auto; margin: 24px 0 32px; }
+    details.table-wrap summary { cursor: pointer; font-family: var(--mono); font-size: 13px; color: var(--purple); margin-bottom: 12px; }
+    table.data { width: 100%; border-collapse: collapse; font-size: 15px; }
+    table.data caption { text-align: left; font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
+    table.data th, table.data td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    table.data code { overflow-wrap: anywhere; }
+    table.data th { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
   </style>
   <link rel="stylesheet" href="theme.css">
   <link rel="canonical" href="https://l2cache.amvo.store/en/coding-agent-memory-what-to-inject">
@@ -74,29 +83,27 @@
   <meta property="og:site_name" content="L2Cache">
   <meta property="og:url" content="https://l2cache.amvo.store/en/coding-agent-memory-what-to-inject">
   <meta property="og:title" content="Your coding agent has amnesia. Stuffing its context isn&#x27;t the cure.">
-  <meta property="og:description" content="Agent memory works best on a diet: inject only what the agent can&#x27;t find out for itself, and let it ask for the rest. With real numbers on what agents pull.">
-  <meta property="og:image" content="https://l2cache.amvo.store/icon.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="L2Cache app icon">
+  <meta property="og:description" content="Coding agent memory works best on a diet: push only what the agent can&#x27;t find itself (hooks, CLAUDE.md) and let it pull the rest over MCP. Measured.">
+  <meta property="og:image" content="https://l2cache.amvo.store/screenshots/medium-coding-agent-memory-what-to-inject-1-push-vs-pull-table.png">
+  <meta property="og:image:alt" content="Table: start-fresh handoff up to 1.5k tokens, project brief up to 1,000 bytes, recent clipboard up to 3 items and 600 bytes, compaction gaps up to 5 lines plus a short note; everything else is pulled on demand at a median of about 160 tokens">
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:url" content="https://l2cache.amvo.store/en/coding-agent-memory-what-to-inject">
   <meta name="twitter:title" content="Your coding agent has amnesia. Stuffing its context isn&#x27;t the cure.">
-  <meta name="twitter:description" content="Agent memory works best on a diet: inject only what the agent can&#x27;t find out for itself, and let it ask for the rest. With real numbers on what agents pull.">
-  <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
-  <meta name="twitter:image:alt" content="L2Cache app icon">
+  <meta name="twitter:description" content="Coding agent memory works best on a diet: push only what the agent can&#x27;t find itself (hooks, CLAUDE.md) and let it pull the rest over MCP. Measured.">
+  <meta name="twitter:image" content="https://l2cache.amvo.store/screenshots/medium-coding-agent-memory-what-to-inject-1-push-vs-pull-table.png">
+  <meta name="twitter:image:alt" content="Table: start-fresh handoff up to 1.5k tokens, project brief up to 1,000 bytes, recent clipboard up to 3 items and 600 bytes, compaction gaps up to 5 lines plus a short note; everything else is pulled on demand at a median of about 160 tokens">
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": "Your coding agent has amnesia. Stuffing its context isn't the cure.",
-  "description": "Agent memory works best on a diet: inject only what the agent can't find out for itself, and let it ask for the rest. With real numbers on what agents pull.",
+  "description": "Coding agent memory works best on a diet: push only what the agent can't find itself (hooks, CLAUDE.md) and let it pull the rest over MCP. Measured.",
   "url": "https://l2cache.amvo.store/en/coding-agent-memory-what-to-inject",
   "datePublished": "2026-11-11",
-  "dateModified": "2026-11-11",
+  "dateModified": "2026-11-13",
   "author": { "@type": "Organization", "name": "Amvo", "url": "https://l2cache.amvo.store/en" },
   "publisher": { "@type": "Organization", "name": "Amvo", "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" } },
-  "image": "https://l2cache.amvo.store/icon.png",
+  "image": "https://l2cache.amvo.store/screenshots/medium-coding-agent-memory-what-to-inject-1-push-vs-pull-table.png",
   "mainEntityOfPage": { "@type": "WebPage", "@id": "https://l2cache.amvo.store/en/coding-agent-memory-what-to-inject" }
 }
   </script>
@@ -108,6 +115,46 @@
     { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://l2cache.amvo.store/en" },
     { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://l2cache.amvo.store/en/blog" },
     { "@type": "ListItem", "position": 3, "name": "Your Coding Agent Has Amnesia", "item": "https://l2cache.amvo.store/en/coding-agent-memory-what-to-inject" }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I give Claude Code memory between sessions?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Combine a small push with on-demand pull. Hooks add a short handoff at session start (goal, files, what's done, what was rejected), and an MCP server lets the agent search past sessions only when it needs something."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Should I put session notes in CLAUDE.md?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Keep CLAUDE.md for stable rules the agent can't infer, like how to run tests. It's loaded into every session, so history added there grows without limit and costs tokens on every request."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is injecting memory into the context expensive?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Anything injected at session start is resent on every API request, and one prompt is a median of 5 requests in my transcripts. It's cheap while the prompt cache is warm and 12× to 80× more after a break, so keep it small."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much context does an agent pull through MCP?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Very little in my data: 42 memory calls out of 9,470 tool calls, with a median of about 160 tokens per call and nine in ten under roughly 500."
+      }
+    }
   ]
 }
   </script>
@@ -123,8 +170,17 @@
 <div class="container">
   <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
   <h1>Your coding agent has amnesia. Stuffing its context isn&#x27;t the cure.</h1>
-  <p class="meta">November 11, 2026 · 8 min read</p>
+  <p class="meta">November 11, 2026 · Updated November 13, 2026 · 10 min read</p>
   <p><strong>Agent memory works best when it's on a diet: inject only what the agent can't find out for itself, and let it ask for the rest.</strong></p>
+<div class="highlight-box key-findings">
+<p><strong>Key findings</strong></p>
+<ul>
+  <li>Inject only what a coding agent can't find out for itself: decisions and rejected approaches, where you stopped, and what happened outside the agent. Let it pull the rest through MCP tools.</li>
+  <li>In 9,470 tool calls from my Claude Code transcripts, agents called memory tools 42 times. The median call returned about 160 tokens.</li>
+  <li>Cap every pushed item in code, label it as history rather than instructions, and keep it byte-stable so the prompt cache survives.</li>
+</ul>
+</div>
+
 <p>Picture a Monday morning. You open a fresh Claude Code session on a project you worked on all of last week and type, "Let's finish the export bug."</p>
 
 <p>The agent does what a good engineer new to the codebase would do. It reads the README. It greps for "export". It opens the same six files it opened on Friday. It runs the test that was failing on Friday, and it proposes the fix you tried and threw out on Thursday, because nothing on disk says you threw it out.</p>
@@ -166,13 +222,27 @@
 
 <p>Agents give you two ways to hand them context, and they suit different jobs.</p>
 
-<p><strong>Hooks push.</strong> Claude Code and Codex run scripts at moments like session start, each prompt and compaction, and a hook can add text to the context. Push is right for the small things the agent needs before it knows to ask.</p>
+<p><strong><a href="https://code.claude.com/docs/en/hooks">Hooks</a> push.</strong> Claude Code and Codex run scripts at moments like session start, each prompt and compaction, and a hook can add text to the context. Push is right for the small things the agent needs before it knows to ask.</p>
 
-<p><strong>MCP lets the agent pull.</strong> A Model Context Protocol server exposes tools the agent calls when it decides it needs something: search the history, fetch one past event, list the fixes for an error. Pull is right for everything else, because the agent only pays for what it asks for.</p>
+<p><strong>MCP lets the agent pull.</strong> A <a href="https://modelcontextprotocol.io/">Model Context Protocol</a> server exposes tools the agent calls when it decides it needs something: search the history, fetch one past event, list the fixes for an error. Pull is right for everything else, because the agent only pays for what it asks for.</p>
+
+<p><strong>And CLAUDE.md?</strong> <a href="https://code.claude.com/docs/en/memory">CLAUDE.md</a> (or <a href="https://agents.md/">AGENTS.md</a> for other agents) is push too: it's loaded into every session. That makes it the right place for stable rules the agent can't infer, such as how to run the tests or which conventions to follow, and the wrong place for history. A CLAUDE.md that collects session notes grows forever and rides along on every request. Most of what people now call context engineering comes down to this split: a short, stable file you push, and history the agent pulls when it needs it.</p>
 
 <p>Here's how that split works in the app I build, L2Cache. Every pushed item has a hard cap in the hook script or the app code:</p>
 
 <img style="max-width:100%;height:auto;display:block;margin:32px auto 8px;border-radius:8px" src="screenshots/medium-coding-agent-memory-what-to-inject-1-push-vs-pull-table.png" loading="lazy" alt="Table: start-fresh handoff up to 1.5k tokens, project brief up to 1,000 bytes, recent clipboard up to 3 items and 600 bytes, compaction gaps up to 5 lines plus a short note; everything else is pulled on demand at a median of about 160 tokens">
+
+<details class="table-wrap"><summary>Show the data as a table</summary><table class="data">
+  <caption>What L2Cache pushes into a coding agent's context, and the cap on each</caption>
+  <thead><tr><th>Context</th><th>How it gets there</th><th>Cap</th></tr></thead>
+  <tbody>
+    <tr><td>Handoff when starting fresh from a big or cold session</td><td>Pushed by a hook</td><td>1,500 tokens</td></tr>
+    <tr><td>Project brief (frequent commands and files)</td><td>Pushed by a hook</td><td>1,000 bytes</td></tr>
+    <tr><td>Recent clipboard items that look relevant</td><td>Pushed by a hook</td><td>3 items, 600 bytes</td></tr>
+    <tr><td>Facts the compaction summary dropped</td><td>Pushed by a hook</td><td>5 lines + 1,500-character note</td></tr>
+    <tr><td>Everything else: transcripts, fixes, decisions, screenshots</td><td>Pulled through 12 read-only MCP tools</td><td>On demand, median about 160 tokens</td></tr>
+  </tbody>
+</table></details>
 
 <ul>
   <li><strong>A handoff when I start fresh from a big or cold session:</strong> the goal, the active files, what's done, what's pending, and where the last exchange left off. Every field is clipped so the whole thing stays under 1,500 tokens. It doesn't recap the history. When the MCP tools are connected, it ends by naming the session and the tools to call for more; when they aren't, the decisions and rejected approaches go inline instead. An ordinary new session gets a shorter note: the files changed and the commands that failed last time.</li>
@@ -284,6 +354,20 @@ for name, n in sorted(tools.items(), key=lambda kv: -kv[1])[:15]:
 <blockquote class="highlight-box"><p>An agent with amnesia doesn't need your whole diary. It needs a sticky note and a phone number.</p></blockquote>
 
 <p>Give it the few facts it can't discover, keep them small, and let it call when it needs more. On Monday morning, that's the difference between twenty minutes of rediscovery and something like "picking up where we left off: the streaming parser was rejected, the failing test is <code>export_large_file</code>, and the next step is the chunked writer."</p>
+
+<h2>Frequently asked questions</h2>
+
+<h3>How do I give Claude Code memory between sessions?</h3>
+<p>Combine a small push with on-demand pull. Hooks add a short handoff at session start (goal, files, what's done, what was rejected), and an MCP server lets the agent search past sessions only when it needs something.</p>
+
+<h3>Should I put session notes in CLAUDE.md?</h3>
+<p>Keep CLAUDE.md for stable rules the agent can't infer, like how to run tests. It's loaded into every session, so history added there grows without limit and costs tokens on every request.</p>
+
+<h3>Is injecting memory into the context expensive?</h3>
+<p>Anything injected at session start is resent on every API request, and one prompt is a median of 5 requests in my transcripts. It's cheap while the prompt cache is warm and 12× to 80× more after a break, so keep it small.</p>
+
+<h3>How much context does an agent pull through MCP?</h3>
+<p>Very little in my data: 42 memory calls out of 9,470 tool calls, with a median of about 160 tokens per call and nine in ten under roughly 500.</p>
 
 <hr>
 

@@ -5,8 +5,8 @@
   <meta name="theme-color" content="#0d1117"/>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>The standup that writes itself and the timesheet you never filled in | L2Cache</title>
-  <meta name="description" content="I estimated two weeks of my working time from coding activity: 61 hours, against 120.5 hours of first-to-last span. The rules, the script, and the standup."/>
+  <title>Billable Hours From Git: A Timesheet From Coding Activity</title>
+  <meta name="description" content="Estimate billable hours from git and coding-agent activity: 61 h over two weeks vs 120.5 h of first-to-last span. Four rules, a script, the standup."/>
   <link rel="icon" type="image/png" href="icon.png"/>
   <link rel="apple-touch-icon" href="icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -66,6 +66,15 @@
       h2 { font-size: 24px; }
       th, td { padding: 8px 6px; font-size: 14px; }
     }
+    .key-findings ul { margin: 8px 0 0 20px; }
+    .key-findings li { margin-bottom: 6px; }
+    .table-wrap { overflow-x: auto; margin: 24px 0 32px; }
+    details.table-wrap summary { cursor: pointer; font-family: var(--mono); font-size: 13px; color: var(--purple); margin-bottom: 12px; }
+    table.data { width: 100%; border-collapse: collapse; font-size: 15px; }
+    table.data caption { text-align: left; font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
+    table.data th, table.data td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    table.data code { overflow-wrap: anywhere; }
+    table.data th { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
   </style>
   <link rel="stylesheet" href="theme.css">
   <link rel="canonical" href="https://l2cache.amvo.store/en/billable-hours-from-coding-activity">
@@ -74,29 +83,27 @@
   <meta property="og:site_name" content="L2Cache">
   <meta property="og:url" content="https://l2cache.amvo.store/en/billable-hours-from-coding-activity">
   <meta property="og:title" content="The standup that writes itself and the timesheet you never filled in">
-  <meta property="og:description" content="I estimated two weeks of my working time from coding activity: 61 hours, against 120.5 hours of first-to-last span. The rules, the script, and the standup.">
-  <meta property="og:image" content="https://l2cache.amvo.store/icon.png">
-  <meta property="og:image:width" content="512">
-  <meta property="og:image:height" content="512">
-  <meta property="og:image:alt" content="L2Cache app icon">
+  <meta property="og:description" content="Estimate billable hours from git and coding-agent activity: 61 h over two weeks vs 120.5 h of first-to-last span. Four rules, a script, the standup.">
+  <meta property="og:image" content="https://l2cache.amvo.store/screenshots/medium-billable-hours-from-coding-activity-1-estimated-vs-span-chart.png">
+  <meta property="og:image:alt" content="Bar chart: over 14 days, estimated working time totals 61 hours while the first-to-last activity span totals 120.5 hours">
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:url" content="https://l2cache.amvo.store/en/billable-hours-from-coding-activity">
   <meta name="twitter:title" content="The standup that writes itself and the timesheet you never filled in">
-  <meta name="twitter:description" content="I estimated two weeks of my working time from coding activity: 61 hours, against 120.5 hours of first-to-last span. The rules, the script, and the standup.">
-  <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
-  <meta name="twitter:image:alt" content="L2Cache app icon">
+  <meta name="twitter:description" content="Estimate billable hours from git and coding-agent activity: 61 h over two weeks vs 120.5 h of first-to-last span. Four rules, a script, the standup.">
+  <meta name="twitter:image" content="https://l2cache.amvo.store/screenshots/medium-billable-hours-from-coding-activity-1-estimated-vs-span-chart.png">
+  <meta name="twitter:image:alt" content="Bar chart: over 14 days, estimated working time totals 61 hours while the first-to-last activity span totals 120.5 hours">
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": "The standup that writes itself and the timesheet you never filled in",
-  "description": "I estimated two weeks of my working time from coding activity: 61 hours, against 120.5 hours of first-to-last span. The rules, the script, and the standup.",
+  "description": "Estimate billable hours from git and coding-agent activity: 61 h over two weeks vs 120.5 h of first-to-last span. Four rules, a script, the standup.",
   "url": "https://l2cache.amvo.store/en/billable-hours-from-coding-activity",
   "datePublished": "2026-11-11",
-  "dateModified": "2026-11-11",
+  "dateModified": "2026-11-13",
   "author": { "@type": "Organization", "name": "Amvo", "url": "https://l2cache.amvo.store/en" },
   "publisher": { "@type": "Organization", "name": "Amvo", "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" } },
-  "image": "https://l2cache.amvo.store/icon.png",
+  "image": "https://l2cache.amvo.store/screenshots/medium-billable-hours-from-coding-activity-1-estimated-vs-span-chart.png",
   "mainEntityOfPage": { "@type": "WebPage", "@id": "https://l2cache.amvo.store/en/billable-hours-from-coding-activity" }
 }
   </script>
@@ -108,6 +115,46 @@
     { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://l2cache.amvo.store/en" },
     { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://l2cache.amvo.store/en/blog" },
     { "@type": "ListItem", "position": 3, "name": "The Standup That Writes Itself", "item": "https://l2cache.amvo.store/en/billable-hours-from-coding-activity" }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Can I build a timesheet from my git commits?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Partly. Commits give timestamps and often ticket IDs, but they're sparse. Adding agent prompts, branch switches and terminal commands fills the gaps, and an idle rule (gaps over 15 minutes don't count) keeps breaks out."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do freelance developers track billable hours without a timer?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Estimate them from activity that's already recorded, apply one stated rule for gaps, round to the quarter hour, and correct the estimate by hand for calls and other work that leaves no trace."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is first-to-last activity a fair measure of hours worked?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. In my two weeks it was about double the activity-based estimate (120.5 h against 61 h), because it includes lunch, meetings and time an agent ran on its own."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I explain an activity-based estimate to a client?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "State the method in one sentence (gaps over 15 minutes don't count), show the timestamps behind any day they ask about, and keep your manual corrections visible."
+      }
+    }
   ]
 }
   </script>
@@ -123,13 +170,22 @@
 <div class="container">
   <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
   <h1>The standup that writes itself and the timesheet you never filled in</h1>
-  <p class="meta">November 11, 2026 · 8 min read</p>
+  <p class="meta">November 11, 2026 · Updated November 13, 2026 · 9 min read</p>
   <p><strong>Your Mac already logged your week: in branch names, commits and agent prompts. Here's how to turn that into hours you can defend.</strong></p>
+<div class="highlight-box key-findings">
+<p><strong>Key findings</strong></p>
+<ul>
+  <li>Over two weeks, my coding activity gave 61 hours of estimated working time, against 120.5 hours of first-to-last span. Billing the span would have roughly doubled the hours.</li>
+  <li>Four rules turn timestamps into billable hours: each point owns the time until the next, gaps over 15 minutes are idle, agent work only counts when you're there, and totals are rounded to the quarter hour.</li>
+  <li>Branch names, session titles and commit messages assign the hours to tickets, and the same timeline writes the standup.</li>
+</ul>
+</div>
+
 <p>It's 4:40 on a Friday. The timesheet is due at five. The client wants hours per ticket, per day, and you're staring at Tuesday.</p>
 
 <p>Tuesday. You know you fixed the login bug, because you remember the relief. You know there was a call about the export. Was the call before or after lunch? Did the bug take two hours or five? You open your calendar, then your Git log, then Slack, and slowly reconstruct a day you lived through four days ago. Then you round everything to the nearest hour, add a bit for "investigation", and hope nobody asks.</p>
 
-<p>If you bill by the hour, you know this ritual. It's twenty minutes of unpaid archaeology every week, and the result is a guess wearing a spreadsheet costume.</p>
+<p>If you're a freelance developer or contractor who bills by the hour, you know this ritual. It's twenty minutes of unpaid archaeology every week, and the result is a guess wearing a spreadsheet costume.</p>
 
 <p>The odd thing is that the evidence was there all along. Nobody was reading it.</p>
 
@@ -144,7 +200,7 @@
   <li><strong>Your shell history.</strong> Every <code>npm test</code>, every <code>git push</code>, timestamped.</li>
 </ul>
 
-<p>Put those on one timeline and Tuesday stops being a mystery. The question is how to turn a pile of timestamps into hours without lying in either direction.</p>
+<p>Put those on one timeline and Tuesday stops being a mystery. The question is how to turn a pile of timestamps into billable hours, without a time tracking app and without lying in either direction.</p>
 
 <h2>The naive answer is wrong by half</h2>
 
@@ -164,6 +220,17 @@
 <h2>Four rules that turn timestamps into hours</h2>
 
 <p>After a lot of back and forth, I ended up with four rules. They're simple enough to explain to a client, which matters more than being clever.</p>
+
+<div class="table-wrap"><table class="data">
+  <caption>Four rules for estimating billable hours from coding activity</caption>
+  <thead><tr><th>Rule</th><th>Value</th><th>Why</th></tr></thead>
+  <tbody>
+    <tr><td>Each point of activity owns the time until the next</td><td>Up to 15 minutes</td><td>Covers reading a diff or thinking through a bug</td></tr>
+    <tr><td>A longer gap is idle</td><td>Over 15 minutes: the point gets 5 minutes</td><td>Keeps lunch and meetings off the timesheet</td></tr>
+    <tr><td>Agent work counts only when you're there</td><td>Within 15 minutes of your own input</td><td>An agent running alone isn't your time (724 events left out in my data)</td></tr>
+    <tr><td>Round and label it</td><td>Nearest quarter hour, marked as an estimate</td><td>Honest about the uncertainty; corrections stay yours</td></tr>
+  </tbody>
+</table></div>
 
 <h3>1. Each moment of activity owns the time until the next one</h3>
 
@@ -376,6 +443,20 @@ Agent activity left out because you weren't there (15+ min from your last input)
 <h2>The takeaway</h2>
 
 <blockquote class="highlight-box"><p>Your timesheet shouldn't come from memory. It should come from evidence you already have, with an honest rule for the gaps and room for you to correct it.</p></blockquote>
+
+<h2>Frequently asked questions</h2>
+
+<h3>Can I build a timesheet from my git commits?</h3>
+<p>Partly. Commits give timestamps and often ticket IDs, but they're sparse. Adding agent prompts, branch switches and terminal commands fills the gaps, and an idle rule (gaps over 15 minutes don't count) keeps breaks out.</p>
+
+<h3>How do freelance developers track billable hours without a timer?</h3>
+<p>Estimate them from activity that's already recorded, apply one stated rule for gaps, round to the quarter hour, and correct the estimate by hand for calls and other work that leaves no trace.</p>
+
+<h3>Is first-to-last activity a fair measure of hours worked?</h3>
+<p>No. In my two weeks it was about double the activity-based estimate (120.5 h against 61 h), because it includes lunch, meetings and time an agent ran on its own.</p>
+
+<h3>How do I explain an activity-based estimate to a client?</h3>
+<p>State the method in one sentence (gaps over 15 minutes don't count), show the timestamps behind any day they ask about, and keep your manual corrections visible.</p>
 
 <hr>
 

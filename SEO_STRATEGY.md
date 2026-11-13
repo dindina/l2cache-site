@@ -419,6 +419,15 @@ Initial prompts:
 11. Do Mac clipboard managers store passwords?
 12. How can I prevent a clipboard manager from capturing password-manager data?
 
+Added 2026-11-13 for the 2.0 essays (target page in brackets):
+
+13. Why does my first Claude Code message after a break use so much of my limit? (`/en/claude-code-cold-session-tax`)
+14. How should I give Claude Code memory between sessions? (`/en/coding-agent-memory-what-to-inject`)
+15. Why does my coding agent think tests passed when they failed? (`/en/coding-agent-errors-already-fixed`)
+16. How can I see what I worked on yesterday across all my git repos? (`/en/your-mac-knows-what-you-did-yesterday`)
+17. How can a freelance developer estimate billable hours from git history? (`/en/billable-hours-from-coding-activity`)
+18. How can I search my terminal history, Claude Code sessions and screenshots at once? (`/en/universal-search-mac-developer`; M6 essay when published)
+
 For every test, record:
 
 - Whether L2Cache is mentioned
