@@ -5,8 +5,8 @@
   <meta name="theme-color" content="#0d1117"/>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>How to View and Search Mac Terminal Command History</title>
-  <meta name="description" content="How to view, search, and sync your Mac command history — using the native history command, reverse search (Ctrl+R), and how to organize complex terminal snippets."/>
+  <title>Mac Command History: View, Search and Keep Every Command</title>
+  <meta name="description" content="How to view and search Mac command history with history and Ctrl+R, fix zsh history across tabs, and keep every command with its folder, branch and exit code."/>
   <meta name="keywords" content="Mac command history, Mac 终端历史记录, zsh history, bash history mac, reverse search ctrl r, Mac 终端命令搜索, history command mac, macOS terminal tools, iTerm2 command history, Atuin alternative"/>
   <link rel="canonical" href="https://l2cache.amvo.store/en/mac-command-history">
   <link rel="icon" type="image/png" href="icon.png"/>
@@ -25,10 +25,10 @@
     "applicationCategory": "DeveloperApplication",
     "offers": {
       "@type": "Offer",
-      "price": "4.99",
+      "price": "{{PRICE_RAW}}",
       "priceCurrency": "USD"
     },
-    "description": "Native macOS developer clipboard, snippet, and terminal command history manager with zero-cloud on-device privacy.",
+    "description": "Private macOS developer memory app: clipboard history, terminal commands with folder, branch and exit code, screenshots and AI coding sessions, searchable on-device.",
     "url": "https://l2cache.amvo.store/en/mac-command-history"
   }
   </script>
@@ -38,8 +38,8 @@
   {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    "headline": "How to View and Search Mac Terminal Command History",
-    "description": "How to view, search, and sync your Mac command history — using the native history command, reverse search (Ctrl+R), and how to organize complex terminal snippets.",
+    "headline": "How to View and Search Mac Command History",
+    "description": "How to view and search Mac command history with history and Ctrl+R, fix zsh history across tabs, and keep every command with its folder, branch and exit code.",
     "author": { "@type": "Organization", "name": "Amvo" },
     "publisher": {
       "@type": "Organization",
@@ -48,7 +48,7 @@
     },
     "mainEntityOfPage": "https://l2cache.amvo.store/en/mac-command-history",
     "datePublished": "2026-07-29",
-    "dateModified": "2026-09-27"
+    "dateModified": "2026-11-14"
   }
   </script>
 
@@ -63,7 +63,7 @@
         "name": "How do I see my command history on a Mac?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Open the Terminal and type the command `history`. This will print a numbered list of the most recent commands you have executed."
+          "text": "Open Terminal and type history. It prints a numbered list of your recent commands. Type ! followed by a number (for example !142) to run one again."
         }
       },
       {
@@ -71,7 +71,7 @@
         "name": "Where is the terminal history file located on Mac?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "If you are using Zsh (the default since macOS Catalina), the history file is located at `~/.zsh_history`. For Bash users, it is located at `~/.bash_history`."
+          "text": "Zsh, the default shell since macOS Catalina, saves history to ~/.zsh_history. Bash uses ~/.bash_history. Terminal.app can also keep a separate history per window under ~/.zsh_sessions."
         }
       },
       {
@@ -79,7 +79,31 @@
         "name": "How do I search my previous commands in Mac terminal?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Press `Ctrl + R` inside your terminal to open the reverse-i-search prompt. Start typing part of the command, and it will find the most recent match. Press `Ctrl + R` again to cycle through older matches."
+          "text": "Press Ctrl+R to open reverse-i-search, then type part of the command. Press Ctrl+R again to step back through older matches, Return to run the match, or the right arrow key to edit it first."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why don't commands from one Terminal tab show up in another?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "By default zsh writes history to the file when a shell exits, and each tab reads the file only when it starts. Add setopt SHARE_HISTORY to ~/.zshrc so every tab writes and reads history as you go."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I see which folder a command ran in, or whether it failed?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Not from zsh history. With setopt EXTENDED_HISTORY zsh stores a timestamp and duration, but not the folder, git branch or exit code. L2Cache records all four for every command through a small shell hook."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does L2Cache record commands my AI coding agent ran?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Commands run by coding agents such as Claude Code and Codex appear in L2Cache's Terminal history under an Agents filter, separate from the commands you typed yourself."
         }
       },
       {
@@ -87,7 +111,7 @@
         "name": "How does L2Cache compare to terminal history tools like Atuin or McFly?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Atuin and McFly are CLI-based shell hook daemons that record keystroke execution in terminal sessions. L2Cache is a native macOS developer clipboard and snippet manager that captures commands, code snippets, Claude Code & Codex AI prompts, and sensitive credentials across all IDEs and apps with Touch ID biometric encryption and sub-millisecond SQLite FTS5 search."
+          "text": "Atuin and McFly replace your shell's Ctrl+R search inside the terminal, and Atuin offers optional sync. L2Cache is a Mac app: it records commands with their folder, branch and exit code, keeps them next to your clipboard history and coding-agent sessions, and searches all of them locally with no sync."
         }
       }
     ]
@@ -262,6 +286,19 @@
       white-space: nowrap;
     }
 
+    pre {
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.6;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin: 0 0 24px;
+      overflow-x: auto;
+      color: var(--text);
+    }
+
     .callout {
       background: linear-gradient(135deg, rgba(127,119,221,0.08), rgba(244,114,182,0.05));
       border: 1px solid var(--border);
@@ -346,16 +383,16 @@
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="L2Cache">
   <meta property="og:url" content="https://l2cache.amvo.store/en/mac-command-history">
-  <meta property="og:title" content="How to View and Search Mac Terminal Command History">
-  <meta property="og:description" content="How to view, search, and sync your Mac command history — using the native history command, reverse search (Ctrl+R), and how to organize complex terminal snippets.">
+  <meta property="og:title" content="How to View and Search Mac Command History">
+  <meta property="og:description" content="How to view and search Mac command history with history and Ctrl+R, fix zsh history across tabs, and keep every command with its folder, branch and exit code.">
   <meta property="og:image" content="https://l2cache.amvo.store/icon.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta property="og:image:alt" content="L2Cache app icon">
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:url" content="https://l2cache.amvo.store/en/mac-command-history">
-  <meta name="twitter:title" content="How to View and Search Mac Terminal Command History">
-  <meta name="twitter:description" content="How to view, search, and sync your Mac command history — using the native history command, reverse search (Ctrl+R), and how to organize complex terminal snippets.">
+  <meta name="twitter:title" content="How to View and Search Mac Command History">
+  <meta name="twitter:description" content="How to view and search Mac command history with history and Ctrl+R, fix zsh history across tabs, and keep every command with its folder, branch and exit code.">
   <meta name="twitter:image" content="https://l2cache.amvo.store/icon.png">
   <meta name="twitter:image:alt" content="L2Cache app icon">
 </head>
@@ -384,115 +421,169 @@
   <div class="eyebrow">Guide</div>
   <h1>How to view and search <em>Mac command history</em></h1>
 
-  <p class="lede">The Mac terminal remembers what you type, but finding that one complex curl command or ssh flag from last week can be incredibly frustrating. Here is how to use the built-in native command history, its limitations, and how power users never lose a command again.</p>
+  <p class="lede">The Mac terminal remembers what you type, but finding that one curl command or ssh flag from last week is harder than it should be. Here is how to use the built-in history, how to fix its worst defaults in two minutes, and what to do when you need to know where a command ran and whether it worked.</p>
 
   <div class="callout" style="background: rgba(0, 200, 150, 0.08); border-left: 4px solid var(--purple); margin: 24px 0; border-radius: 12px; padding: 20px 24px;">
-    <span class="callout-label" style="color: var(--purple); font-weight: 600; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;">⚡ Recommended Mac App</span>
-    <p style="margin-bottom: 8px; font-size: 16px; color: var(--text);"><strong>Looking for a native Mac app to search & organize terminal commands across all tabs?</strong></p>
-    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5;">L2Cache automatically captures terminal commands, code snippets, and AI prompts with instant offline FTS5 search, zero cloud tracking, and Touch ID encryption.</p>
-    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="btn-primary" style="padding: 9px 18px; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border-radius: 8px;" target="_blank" rel="noopener">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12l2 2 4-4"/></svg>
-      Get L2Cache for Mac ↗
-    </a>
+    <span class="callout-label" style="color: var(--purple); font-weight: 600; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;">Short answer</span>
+    <p style="margin-bottom: 8px; font-size: 16px; color: var(--text);">Type <kbd>history</kbd> to list recent commands, or press <kbd>Ctrl + R</kbd> and type part of one to search. Zsh keeps them in <code>~/.zsh_history</code>. Add <code>setopt SHARE_HISTORY</code> to <code>~/.zshrc</code> so every tab sees the same history.</p>
+    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 0; line-height: 1.5;">Zsh history doesn't store the folder, git branch or exit code. <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" target="_blank" rel="noopener" style="color: var(--purple); font-weight: 600;">L2Cache</a> records all of that for every command, on your Mac.</p>
   </div>
 
-  <p class="byline">Updated September 2026 · By the team behind L2Cache</p>
+  <p class="byline">Updated November 2026 · By the team behind L2Cache</p>
 
-  <p>If you spend any time in the macOS Terminal (or iTerm2/Warp), you know the feeling: you finally get a Docker build command or an ffmpeg script working perfectly with 10 different flags. A week later, you need to run it again, but you can't remember the flags.</p>
+  <p>If you spend any time in the macOS Terminal (or iTerm2, Warp or Ghostty), you know the feeling: you finally get a Docker build or an ffmpeg script working with ten different flags. A week later you need it again, and the flags are gone from your head.</p>
 
-  <p>macOS has built-in ways to recall these commands, but they have their quirks. Let's look at the standard ways to find your Mac terminal history, and then how to fix the workflow permanently.</p>
+  <p>macOS gives you three ways to get it back. Then we'll look at where they stop.</p>
 
-  <h2>1. Use the `history` command</h2>
+  <h2>1. Use the <code>history</code> command</h2>
 
-  <p>The simplest way to see what you've typed recently is the native history tool.</p>
+  <p>The simplest way to see what you've typed recently is the shell's own history list.</p>
 
   <ol class="steps">
     <li>Open your <strong>Terminal</strong> app.</li>
     <li>Type <kbd>history</kbd> and press <strong>Return</strong>.</li>
   </ol>
 
-  <p>You will see a numbered list of your most recently executed commands. If you want to re-run a specific command, you can type an exclamation mark followed by the number (e.g., <kbd>!142</kbd>) and press Return.</p>
-  
-  <p class="muted">To search the list directly, you can pipe it into grep: <kbd>history | grep docker</kbd></p>
+  <p>You get a numbered list of your recent commands. To run one again, type an exclamation mark and its number (for example <kbd>!142</kbd>) and press Return. <kbd>!!</kbd> repeats the last command.</p>
+
+  <p class="muted">To search the list, pipe it into grep: <kbd>history | grep docker</kbd>. In zsh, <kbd>history 1</kbd> shows the whole file, not just the last 16 entries.</p>
 
   <figure style="margin: 32px 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 8px 24px rgba(0,0,0,0.12);">
-    <img src="screenshots/history-grep.png" alt="Mac Terminal History Grep" style="width: 100%; display: block;"/>
+    <img src="screenshots/history-grep.png" alt="Piping zsh history into grep in Mac Terminal to find docker commands" style="width: 100%; display: block;"/>
   </figure>
-  <h2>2. Reverse Search (Ctrl+R)</h2>
 
-  <p>Scrolling through a list is tedious. If you know a piece of the command, Reverse Search is much faster.</p>
+  <h2>2. Reverse search (Ctrl+R)</h2>
+
+  <p>Scrolling a list is slow. If you remember any piece of the command, reverse search is faster.</p>
 
   <ol class="steps">
     <li>In your terminal window, press <kbd>Ctrl + R</kbd>.</li>
-    <li>Your prompt will change to <code>(reverse-i-search)`':</code></li>
-    <li>Start typing part of the command you remember.</li>
-    <li>The terminal will autocomplete the most recent match. Press <kbd>Ctrl + R</kbd> again to cycle backwards to older matches.</li>
-    <li>Press <strong>Return</strong> to execute it, or the right arrow key to edit it before running.</li>
+    <li>Your prompt changes to <code>(reverse-i-search)`':</code></li>
+    <li>Type part of the command you remember.</li>
+    <li>The shell shows the most recent match. Press <kbd>Ctrl + R</kbd> again to step back to older matches.</li>
+    <li>Press <strong>Return</strong> to run it, or the right arrow key to edit it first.</li>
   </ol>
 
   <figure style="margin: 32px 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 8px 24px rgba(0,0,0,0.12);">
-    <img loading="lazy" src="screenshots/back-search-history.png" alt="Mac Terminal Reverse Search" style="width: 100%; display: block;"/>
+    <img loading="lazy" src="screenshots/back-search-history.png" alt="Ctrl+R reverse-i-search in Mac Terminal" style="width: 100%; display: block;"/>
   </figure>
+
+  <h2>3. Fix zsh's history defaults</h2>
+
+  <p>Most "my command is gone" moments come from three zsh defaults: history is written only when a shell exits, each tab reads it only when it starts, and the file is capped. Add this to <code>~/.zshrc</code> and open a new tab:</p>
+
+<pre>HISTFILE=~/.zsh_history
+HISTSIZE=100000          # lines kept in memory
+SAVEHIST=100000          # lines kept in the file
+setopt SHARE_HISTORY     # every tab writes and reads history as you go
+setopt EXTENDED_HISTORY  # save a timestamp and duration with each command
+setopt HIST_IGNORE_SPACE # a command that starts with a space isn't saved
+setopt HIST_IGNORE_DUPS  # don't save the same command twice in a row</pre>
+
+  <p>Now a command you run in one tab shows up in <kbd>Ctrl + R</kbd> in every other tab, and old commands stop falling off the end. With <code>EXTENDED_HISTORY</code>, <kbd>history -i 1</kbd> shows when each one ran. <code>HIST_IGNORE_SPACE</code> is the one to remember for secrets: put a space before <code>export API_KEY=…</code> and it never reaches the file.</p>
+
   <h2>Where the built-in terminal history stops</h2>
 
-  <p>While `Ctrl+R` is a lifesaver, the native `.zsh_history` file (where macOS stores these commands by default) has several major flaws for modern developers:</p>
+  <p>Even tuned, <code>~/.zsh_history</code> is a text file of command lines. It can't answer the questions you usually have a week later:</p>
 
   <ul class="limit-list">
-    <li><strong>History is isolated by tabs.</strong> By default, if you have multiple terminal tabs open, commands executed in one tab aren't immediately available in the history of another until you close the session.</li>
-    <li><strong>No context or notes.</strong> You might find a complex `git reset` command, but you can't attach a note explaining *why* or *when* to use it.</li>
-    <li><strong>No cross-device syncing.</strong> Your history on your MacBook doesn't sync to your iMac.</li>
-    <li><strong>Truncation.</strong> By default, history files have limits (often 2000 lines). Older golden commands eventually get overwritten.</li>
+    <li><strong>Where did I run it?</strong> There's no working folder, so <code>npm run build</code> from five projects all look the same.</li>
+    <li><strong>Did it work?</strong> There's no exit code. The broken version and the one that finally worked sit side by side.</li>
+    <li><strong>Which branch was I on?</strong> Git context isn't recorded.</li>
+    <li><strong>What did my coding agent run?</strong> Commands that Claude Code or Codex run go through their own shells, not your history file.</li>
+    <li><strong>Secrets sit in plain text.</strong> Anything you didn't prefix with a space, such as a token in a curl header, is stored as typed.</li>
   </ul>
 
   <div class="callout">
     <span class="callout-label">The gap</span>
-    <p>The built-in Mac terminal history is just a text file of raw commands. What developers really need is a way to <strong>capture, organize, and instantly retrieve complex CLI snippets</strong> without relying on brittle dotfiles.</p>
+    <p>Shell history remembers <em>what</em> you typed. A week later you need <em>where</em> it ran, <em>whether</em> it worked, and the other commands from that same afternoon.</p>
   </div>
 
-  <h2>3. Use a smart snippet and clipboard manager</h2>
+  <h2>4. Keep every command with its context in L2Cache</h2>
 
-  <p>Power users don't rely entirely on terminal history. Instead, when they write a command they know they'll need again, they save it to a snippet manager or rely on an intelligent clipboard history tool. This is where <strong>L2Cache</strong> comes in.</p>
+  <p><strong>L2Cache</strong> is a private Mac app for developers. It keeps your clipboard history, terminal commands, screenshots and AI coding sessions on your Mac and makes them searchable. Its Terminal history fills the gaps above.</p>
 
-  <h3>Never lose a terminal command</h3>
-  <p>If you copy a command from StackOverflow or a coworker on Slack, L2Cache automatically saves it. If you build a complex script in your IDE, copying it means it's saved forever. You don't have to execute a command to keep it in your history.</p>
+  <h3>Every command, with folder, branch and exit code</h3>
+  <p>L2Cache installs a small hook for <strong>zsh, bash or fish</strong>. For each command, the hook appends one line to a local log, and L2Cache records the command with its folder, git branch, exit code, shell, terminal app and time. There's no background daemon and no network. A command you run often appears once, with a run count.</p>
 
   <figure style="margin: 32px 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--border);">
-    <img loading="lazy" src="screenshots/screenshot-10-terminal-history.webp" alt="Mac Terminal History in L2Cache" style="width: 100%; display: block;"/>
+    <!-- TODO(2.0 screenshot): replace with Developer Home › Terminal, Presentation mode on, a failed command selected so the "last succeeded" card shows. -->
+    <img loading="lazy" src="screenshots/screenshot-10-terminal-history.webp" alt="Terminal history in L2Cache: commands grouped by day with their folder" style="width: 100%; display: block;"/>
   </figure>
 
-  <h3>Directory-aware search &amp; instant replay</h3>
-  <p>L2Cache associates your terminal snippets and commands with their working directory. You can <strong>search and replay commands from the exact same directory or repository</strong> without having to manually retype flags or switch contexts.</p>
+  <h3>Find it by project, folder, branch or week</h3>
+  <p>Commands are grouped by day. Step back a week at a time, or narrow the list to one project, one folder, one git branch or one kind of command (<code>git</code>, <code>docker</code>, <code>curl</code>…). Type any words to search inside them.</p>
 
-  <h3>AI-powered intelligence</h3>
-  <p>L2Cache uses on-device Apple Intelligence to understand your snippets. It can automatically group your Terminal, Git, and Docker commands into smart albums. Instead of searching for an exact flag, you can search "that command to clear dns cache" and L2Cache finds it instantly.</p>
+  <h3>See what failed, and when it last worked</h3>
+  <p>Each command shows ✓ or ✗ with its exit code. Open a failed one and L2Cache tells you when the same command last succeeded and in which folder, so you can see what changed.</p>
 
-  <h3>Private by design</h3>
-  <p>Terminal commands often contain AWS secrets, passwords, and API keys. L2Cache keeps your history <strong>strictly on your Mac</strong>. Sensitive copied items are detected automatically and locked behind Touch ID, ensuring your secrets don't sit in plain text.</p>
+  <h3>Run it again in the right folder</h3>
+  <p><strong>Open in terminal</strong> copies <code>cd "&lt;folder&gt;" &amp;&amp; &lt;command&gt;</code> and brings your terminal forward. Press <kbd>⌘V</kbd> and Return. Nothing runs until you paste it.</p>
+
+  <h3>Commands your coding agents ran</h3>
+  <p>Commands that Claude Code and Codex run while they work show up too, under an <strong>Agents</strong> filter, apart from the ones you typed. When an agent ran a migration or a test command you want to repeat, it's there with its folder.</p>
+
+  <h3>Secrets are redacted before they're saved</h3>
+  <p>Commands that contain a password, token or API key are redacted before they're written, by default. In Settings you can drop those commands entirely instead. Commands that start with a space are skipped, like in zsh, and you can add your own ignore list. Simple commands like <code>ls</code> and <code>cd</code> are left out.</p>
+
+  <h3>One search across commands, clipboard and agent chats</h3>
+  <p>The search in Developer Home looks through terminal commands alongside your clipboard, coding-agent conversations, git commits and files. Start with <code>term:</code> (or <code>&gt;</code>) to search only commands.</p>
+
+  <h3>Alias suggestions</h3>
+  <p>When you've run the same long command three or more times, L2Cache suggests a short alias for it.</p>
+
+  <h2>Beyond the terminal: what else L2Cache 2.0 keeps</h2>
+
+  <p>Terminal history is one part of L2Cache. The commands you run sit next to the conversations with your coding agents and everything you copy, and the app warns you about some problems before you'd notice them yourself.</p>
+
+  <h3>Your coding agents' sessions</h3>
+  <p>L2Cache keeps the sessions of <strong>Claude Code, Codex, GitHub Copilot, Grok Build and Antigravity</strong> on your Mac, grouped by project, with the full conversation, plans and the commands each agent ran. You can search every session at once and open a result at the exact message that matched. To pick up where an agent stopped, resume a Claude Code or Codex session in Terminal, iTerm2, Warp or Ghostty with one click. More in <a href="https://l2cache.app/en/claude-code-session-history-mac" style="color: var(--purple); font-weight: 600;">Claude Code session history on Mac</a>.</p>
+  <p>Your agents can use this memory too. L2Cache comes with an MCP server of 12 read-only tools: an agent can search your clipboard, earlier sessions, screenshots and saved files, and ask how you fixed an error last time. Sensitive items are never returned. See <a href="https://l2cache.app/en/coding-agent-memory-mcp-hooks" style="color: var(--purple); font-weight: 600;">how the hooks and MCP server work</a>.</p>
+
+  <h3>Clipboard history and quick actions</h3>
+  <p>Everything you copy is saved and searchable, including commands you copied from Slack or a README but never ran. Copied passwords and keys are detected and kept out of search and out of what agents can see, and you can exclude apps like your password manager. When you copy JSON, SQL, a JWT, Base64 or a color, a small bubble near your cursor offers one-click actions: pretty-print or minify JSON, format SQL, decode a token, convert a hex color to RGB or Tailwind. Clipboard history doesn't need Developer Pro. More in <a href="https://l2cache.app/en/clipboard-history-mac" style="color: var(--purple); font-weight: 600;">clipboard history on Mac</a>.</p>
+
+  <h3>Proactive: it speaks up before you have to ask</h3>
+  <ul>
+    <li><strong>Today.</strong> Developer Home opens on what you were doing: your projects, the last prompt you sent each agent, failing runs and open loops, so Monday morning doesn't start with <kbd>history | grep</kbd>.</li>
+    <li><strong>Cache expiry warnings.</strong> When a large Claude Code session's prompt cache is about to expire, L2Cache tells you while compacting or handing off is still cheap, because the first message after expiry can cost up to 80 times a warm one. See <a href="https://l2cache.app/en/claude-code-cold-cache-resume-cost" style="color: var(--purple); font-weight: 600;">why cold sessions cost more</a>.</li>
+    <li><strong>Cold Resume Guard.</strong> Resume a big, long-idle Claude Code session and the terminal warns you before the first message reloads the whole context. If you choose, it stops that first message once, and <code>/clear</code> starts a fresh session with a short handoff.</li>
+    <li><strong>Errors you already fixed.</strong> When an agent hits a build or test error, it can ask L2Cache how that error was fixed before, instead of solving it from scratch. See <a href="https://l2cache.app/en/coding-agent-errors-already-fixed" style="color: var(--purple); font-weight: 600;">errors your agent already fixed</a>.</li>
+  </ul>
 
   <div class="cta-card">
-    <h2>The ultimate developer memory</h2>
-    <p>L2Cache keeps an unlimited, searchable history of your commands, code, and snippets. Free while in early access — join now and keep it free for good.</p>
+    <h2>Never lose a command again</h2>
+    <p>L2Cache keeps your terminal commands, clipboard and AI coding sessions searchable on your Mac, and nothing leaves it. Terminal history and coding-agent sessions are part of Developer Pro, which the free trial includes.</p>
     <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="btn-primary" target="_blank" rel="noopener">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12l2 2 4-4"/></svg>
       Download L2Cache for Mac
     </a>
-    <p class="cta-note">macOS 13 Ventura or later · No credit card</p>
+    <p class="cta-note">{{TRIAL_DAYS}}-day free trial · {{PRICE_LINE}}, one-time · macOS 13 Ventura or later</p>
   </div>
 
   <h2 class="faq" style="margin-top:64px">Frequently asked questions</h2>
 
   <div class="faq">
     <h3>How do I see my command history on a Mac?</h3>
-    <p class="muted">Open the Terminal and type the command <kbd>history</kbd>. This will print a numbered list of the most recent commands you have executed.</p>
+    <p class="muted">Open Terminal and type <kbd>history</kbd>. It prints a numbered list of your recent commands. Type <kbd>!</kbd> followed by a number (for example <kbd>!142</kbd>) to run one again.</p>
 
     <h3>Where is the terminal history file located on Mac?</h3>
-    <p class="muted">If you are using Zsh (the default since macOS Catalina), the history file is located at <code>~/.zsh_history</code>. For Bash users, it is located at <code>~/.bash_history</code>.</p>
+    <p class="muted">Zsh, the default shell since macOS Catalina, saves history to <code>~/.zsh_history</code>. Bash uses <code>~/.bash_history</code>. Terminal.app can also keep a separate history per window under <code>~/.zsh_sessions</code>.</p>
 
     <h3>How do I search my previous commands in Mac terminal?</h3>
-    <p class="muted">Press <kbd>Ctrl + R</kbd> inside your terminal to open the reverse-i-search prompt. Start typing part of the command, and it will find the most recent match. Press <kbd>Ctrl + R</kbd> again to cycle through older matches.</p>
+    <p class="muted">Press <kbd>Ctrl + R</kbd> to open reverse-i-search, then type part of the command. Press <kbd>Ctrl + R</kbd> again to step back through older matches, Return to run the match, or the right arrow key to edit it first.</p>
+
+    <h3>Why don't commands from one Terminal tab show up in another?</h3>
+    <p class="muted">By default zsh writes history to the file when a shell exits, and each tab reads the file only when it starts. Add <code>setopt SHARE_HISTORY</code> to <code>~/.zshrc</code> so every tab writes and reads history as you go.</p>
+
+    <h3>Can I see which folder a command ran in, or whether it failed?</h3>
+    <p class="muted">Not from zsh history. With <code>setopt EXTENDED_HISTORY</code> zsh stores a timestamp and duration, but not the folder, git branch or exit code. L2Cache records all four for every command through a small shell hook.</p>
+
+    <h3>Does L2Cache record commands my AI coding agent ran?</h3>
+    <p class="muted">Yes. Commands run by coding agents such as Claude Code and Codex appear in L2Cache's Terminal history under an Agents filter, separate from the commands you typed yourself.</p>
 
     <h3>How does L2Cache compare to terminal history tools like Atuin or McFly?</h3>
-    <p class="muted">Atuin and McFly are CLI-only shell daemons that hook into <code>~/.zshrc</code> to log commands executed in that specific shell session. <strong>L2Cache</strong> is a native macOS menu bar app that captures developer snippets, terminal commands, Claude Code &amp; Codex AI prompt sessions, and secrets across all apps and IDEs with biometric Touch ID encryption and sub-millisecond SQLite FTS5 search.</p>
+    <p class="muted">Atuin and McFly replace your shell's <kbd>Ctrl + R</kbd> search inside the terminal, and Atuin offers optional sync. <strong>L2Cache</strong> is a Mac app: it records commands with their folder, branch and exit code, keeps them next to your clipboard history and coding-agent sessions, and searches all of them locally with no sync. See <a href="l2cache-vs-atuin.html" style="color: var(--purple);">L2Cache vs Atuin</a>.</p>
   </div>
 
 </article>
