@@ -74,7 +74,7 @@
         "name": "How much does L2Cache cost?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "L2Cache is free to download on the Mac App Store with unlimited clipboard history and a 15-day Pro trial. Pro is a one-time $19.99 launch price (regular $29) with lifetime access and no subscription."
+          "text": "L2Cache is free to download on the Mac App Store with unlimited clipboard history and a {{TRIAL_DAYS}}-day Pro trial. Pro is a one-time {{PRICE}}{{LAUNCH_ONLY}} launch price (regular {{REGULAR_PRICE}}){{/LAUNCH_ONLY}} with lifetime access and no subscription."
         }
       },
       {
@@ -310,7 +310,7 @@
         <td><strong><a href="#l2cache" style="color:var(--text); text-decoration:none;">1. L2Cache</a></strong></td>
         <td>Developer Memory &amp; Clipboard</td>
         <td>Universal search across agent chats, terminal, git, clipboard &amp; OCR</td>
-        <td>Free download; Pro $19.99 once</td>
+        <td>Free download; Pro {{PRICE}} once</td>
       </tr>
       <tr>
         <td><strong><a href="#warp" style="color:var(--text); text-decoration:none;">2. Warp</a></strong></td>
@@ -385,14 +385,14 @@
       <li style="margin-bottom: 6px;"><strong>Local-First &amp; Ultra-Lean:</strong> Stored locally on your Mac using native Swift and SQLite/GRDB with zero telemetry and an ultra-lean ~35MB RAM footprint.</li>
     </ul>
     <div style="display: flex; gap: 12px; align-items: center; margin-top: 18px; flex-wrap: wrap;">
-      <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="btn-primary" target="_blank" rel="noopener">Get L2Cache for Mac (Free download · Pro $19.99 once) ↗</a>
+      <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="btn-primary" target="_blank" rel="noopener">Get L2Cache for Mac (Free download · Pro {{PRICE}} once) ↗</a>
       <a href="index.html" style="font-size: 13px; color: var(--purple); font-weight: 600; text-decoration: none;">Learn more →</a>
     </div>
     <div class="tool-meta">
       <span>Platform: macOS 13+ (Apple Silicon &amp; Intel)</span>
       <span>Engine: Native Swift + SQLite / GRDB</span>
       <span>RAM: ~35MB</span>
-      <span>Pricing: Free download · Pro $19.99 one-time (launch price, regular $29)</span>
+      <span>Pricing: Free download · Pro {{PRICE}} one-time{{LAUNCH_ONLY}} (launch price, regular {{REGULAR_PRICE}}){{/LAUNCH_ONLY}}</span>
     </div>
   </div>
 
@@ -514,9 +514,9 @@
     <h2>Build a Faster, Private Mac Workspace</h2>
     <p style="color: var(--text-muted); max-width: 560px; margin: 0 auto 24px;">Equip your Mac with L2Cache for instant developer memory across coding-agent sessions, shell history, Git commits, screenshot OCR, and Touch ID encrypted secret protection.</p>
     <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="btn-primary" target="_blank" rel="noopener">
-      Download L2Cache on the Mac App Store (Free download · Pro $19.99 once)
+      Download L2Cache on the Mac App Store (Free download · Pro {{PRICE}} once)
     </a>
-    <p style="font-size: 12px; color: var(--text-dim); margin-top: 14px;">macOS 13 Ventura or later · Free download with unlimited clipboard · 15-day Pro trial · Pay once, own forever · No subscriptions</p>
+    <p style="font-size: 12px; color: var(--text-dim); margin-top: 14px;">macOS 13 Ventura or later · Free download with unlimited clipboard · {{TRIAL_DAYS}}-day Pro trial · Pay once, own forever · No subscriptions</p>
   </div>
 
   <!-- FAQ Section -->
@@ -529,7 +529,7 @@
     <p style="color: var(--text-muted);">Standard clipboard tools only store shallow text and don't differentiate between normal copy-paste and sensitive secrets (API keys, JWT tokens). Developer memory tools like <strong>L2Cache</strong> go much deeper: they index coding-agent sessions (Claude Code, Codex, Copilot, Grok Build, Antigravity), terminal commands, Git history, and screenshot text into one instant local search box, while protecting credentials behind Touch ID encryption.</p>
 
     <h3>How much does L2Cache cost?</h3>
-    <p style="color: var(--text-muted);">L2Cache is free to download on the Mac App Store with unlimited clipboard history and a 15-day Pro trial. Pro is a one-time $19.99 launch price (regular $29) that unlocks coding-agent history, Developer Home standups, the built-in MCP server, and screenshot OCR with no recurring subscription.</p>
+    <p style="color: var(--text-muted);">L2Cache is free to download on the Mac App Store with unlimited clipboard history and a {{TRIAL_DAYS}}-day Pro trial. Pro is a one-time {{PRICE}}{{LAUNCH_ONLY}} launch price (regular {{REGULAR_PRICE}}){{/LAUNCH_ONLY}} that unlocks coding-agent history, Developer Home standups, the built-in MCP server, and screenshot OCR with no recurring subscription.</p>
   </div>
 
   <div style="margin-top: 32px; padding: 22px 24px; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; gap: 10px;">

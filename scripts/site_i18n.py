@@ -19,6 +19,8 @@ import shutil
 import sys
 from html.parser import HTMLParser
 
+import pricing
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOURCE_DIR = os.path.join(ROOT, "prototypes", "native-mac")
 SOURCE = os.path.join(SOURCE_DIR, "index.html")
@@ -381,7 +383,7 @@ def build(out_dir=OUT_DIR, only_complete=False, clean=True):
         target = os.path.join(out_dir, "index.html") if lang == "en" else os.path.join(out_dir, lang, "index.html")
         os.makedirs(os.path.dirname(target), exist_ok=True)
         with open(target, "w", encoding="utf-8") as f:
-            f.write(render(source, lang, cat, published))
+            f.write(pricing.apply(render(source, lang, cat, published)))
     skipped = [c for c in LOCALES if c not in published]
     print(f"Homepage: {', '.join(published)}" + (f" (skipped incomplete: {', '.join(skipped)})" if skipped else ""))
     return published

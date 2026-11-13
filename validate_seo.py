@@ -198,6 +198,15 @@ def validate_domain() -> None:
             ERRORS.append(f"{path.relative_to(ROOT)}: still references l2cache.amvo.store")
 
 
+def validate_pricing() -> None:
+    """Prices come from pricing.json: no leftover {{TOKEN}}s and no retired 1.x price in the output."""
+    stale = re.compile(r'(?<![\d.])\$4\.99(?!\d|/yr|/year)|"price":\s*"4\.99"|\{\{/?[A-Z][A-Z_]*\}\}')
+    for path in (ROOT / "out/l2cache").rglob("*"):
+        if path.suffix in {".html", ".txt", ".xml", ".json"}:
+            for m in stale.finditer(path.read_text(encoding="utf-8", errors="ignore")):
+                ERRORS.append(f"{path.relative_to(ROOT)}: price not from pricing.json \"{m.group(0)}\"")
+
+
 def main() -> None:
     for filename in PUBLIC_PAGES:
         validate_page(ROOT / filename, None)
@@ -207,6 +216,7 @@ def main() -> None:
         validate_page(ROOT / "out/teams/index.html", "https://teams.amvo.store/")
     validate_domain()
     validate_claims()
+    validate_pricing()
     validate_sitemap()
     if ERRORS:
         print("SEO validation failed:", file=sys.stderr)

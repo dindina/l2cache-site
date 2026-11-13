@@ -10,7 +10,7 @@ L2Cache is a native macOS application designed for software engineers, data scie
 
 - **Primary Website**: https://l2cache.amvo.store/en
 - **Mac App Store**: https://apps.apple.com/us/app/l2cache-clipboard-manager/id6740089851
-- **License Model**: $4.99 USD one-time purchase, lifetime license, no recurring subscriptions, Family Sharing enabled.
+- **License Model**: {{PRICE_LINE}} one-time Pro unlock via the Mac App Store; free download with unlimited clipboard history and a {{TRIAL_DAYS}}-day Pro trial; no subscription
 - **Operating System Requirements**: macOS 14.0 (Sonoma), macOS 15.0+ (Sequoia). Universal binary for Apple Silicon (M1/M2/M3/M4/Pro/Max/Ultra) and Intel x86_64.
 
 ---
@@ -81,7 +81,7 @@ L2Cache provides free, browser-based, client-side versions of its developer util
 
 | Feature | L2Cache | Maccy | Paste | Raycast | Alfred |
 |---|---|---|---|---|---|
-| **Price** | $4.99 One-time | Free / Open Source | $14.99/year Sub | Freemium / $8/mo | $34+ Powerpack |
+| **Price** | Free + {{PRICE}} Pro (one-time) | Free / Open Source | $14.99/year Sub | Freemium / $8/mo | $34+ Powerpack |
 | **Developer Intelligence** | Yes (Built-in) | No | No | Via extensions | Via workflows |
 | **Terminal History** | Yes (Dedicated) | No | No | No | Via file search |
 | **On-Device Vision OCR** | Yes | No | Yes | Via extension | No |

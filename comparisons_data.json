@@ -7,7 +7,7 @@
     "matrix": [
       [
         "Pricing",
-        "$4.99 one-time purchase (Lifetime access)",
+        "Free download + {{PRICE}} one-time Pro unlock",
         "Free (GitHub) / $9.99 (App Store)"
       ],
       [
@@ -77,17 +77,17 @@
   "paste": {
     "competitor_name": "Paste",
     "seo_title": "L2Cache vs. Paste: Best No-Sub Mac Alternative",
-    "seo_description": "Comparing L2Cache and Paste App. Discover the differences in pricing models ($4.99 one-time vs $29.99/yr subscription), UI layouts, developer smart formatting, and local data security.",
-    "intro_paragraph": "Paste is a visual clipboard manager with a card-based carousel at the bottom of the screen that syncs clipboard data to iCloud for $29.99/year. L2Cache offers a modern, high-performance macOS native alternative: a one-time $4.99 purchase, 100% on-device SQLite database, Apple Intelligence OCR search, and built-in developer code formatters.",
+    "seo_description": "Comparing L2Cache and Paste App. Discover the differences in pricing models (free download + {{PRICE}} one-time Pro vs $29.99/yr subscription), UI layouts, developer smart formatting, and local data security.",
+    "intro_paragraph": "Paste is a visual clipboard manager with a card-based carousel at the bottom of the screen that syncs clipboard data to iCloud for $29.99/year. L2Cache offers a modern, high-performance macOS native alternative: a free download with a {{PRICE}} one-time Pro unlock, 100% on-device SQLite database, Apple Intelligence OCR search, and built-in developer code formatters.",
     "matrix": [
       [
         "Pricing Model",
-        "$4.99 one-time purchase (Lifetime access)",
+        "Free download + {{PRICE}} one-time Pro unlock",
         "$29.99/year recurring subscription"
       ],
       [
         "3-Year Total Cost of Ownership",
-        "$4.99 total (Pay once, own forever)",
+        "{{PRICE}} total (pay once for Pro, own forever)",
         "$89.97 total"
       ],
       [
@@ -130,7 +130,7 @@
       [
         "💎",
         "One-Time Purchase vs. Endless Subscriptions",
-        "Paste App shifted from a standalone tool to a recurring $29.99/year subscription model. L2Cache costs a flat $4.99 one-time purchase with lifetime access, free family sharing via Apple, and all future updates included. Over 3 years, you save over $80 with zero recurring fees."
+        "Paste App shifted from a standalone tool to a recurring $29.99/year subscription model. L2Cache is a free download with a {{PRICE}} one-time Pro unlock with lifetime access, free family sharing via Apple, and all future updates included. Over 3 years, you save over $80 with zero recurring fees."
       ],
       [
         "🛠️",
@@ -151,7 +151,7 @@
     "faqs": [
       [
         "Why switch from Paste to L2Cache?",
-        "The primary reason is pricing and privacy: Paste requires a recurring $29.99/year subscription and syncs unencrypted clipboard data to iCloud. L2Cache costs a flat $4.99 one-time purchase, keeps all data 100% on-device, and includes built-in developer transforms and Touch ID credential protection."
+        "The primary reason is pricing and privacy: Paste requires a recurring $29.99/year subscription and syncs unencrypted clipboard data to iCloud. L2Cache is a free download with a {{PRICE}} one-time Pro unlock, keeps all data 100% on-device, and includes built-in developer transforms and Touch ID credential protection."
       ],
       [
         "How do I switch from Paste to L2Cache on macOS?",
@@ -175,7 +175,7 @@
     "matrix": [
       [
         "Pricing",
-        "$4.99 one-time purchase (Lifetime access)",
+        "Free download + {{PRICE}} one-time Pro unlock",
         "Free (Open Source)"
       ],
       [
@@ -250,7 +250,7 @@
     "matrix": [
       [
         "Pricing",
-        "$4.99 one-time purchase (Lifetime access)",
+        "Free download + {{PRICE}} one-time Pro unlock",
         "Free / $96/yr (Raycast Pro)"
       ],
       [
@@ -308,7 +308,7 @@
       ],
       [
         "Does L2Cache require Raycast Pro?",
-        "No. L2Cache is an independent, native macOS app that is $4.99 one-time purchase with all AI and OCR features running 100% on-device without subscriptions."
+        "No. L2Cache is an independent, native macOS app: a free download with a {{PRICE}} one-time Pro unlock, with all AI and OCR features running 100% on-device without subscriptions."
       ]
     ]
   },
@@ -320,7 +320,7 @@
     "matrix": [
       [
         "Pricing",
-        "$4.99 one-time purchase (Lifetime access)",
+        "Free download + {{PRICE}} one-time Pro unlock",
         "£34 (~$44 USD) Powerpack Single License"
       ],
       [
@@ -378,7 +378,7 @@
       ],
       [
         "Is L2Cache completely free?",
-        "Yes. L2Cache is $4.99 one-time purchase, and early access users own it forever with lifetime updates with all future updates included."
+        "Clipboard history is free and unlimited. Developer Pro is a {{PRICE}} one-time unlock with lifetime updates with all future updates included."
       ]
     ]
   },
@@ -390,7 +390,7 @@
     "matrix": [
       [
         "Pricing",
-        "$4.99 one-time purchase (Lifetime access)",
+        "Free download + {{PRICE}} one-time Pro unlock",
         "$14.99 Lifetime or $4.99/yr"
       ],
       [
@@ -460,7 +460,7 @@
     "matrix": [
       [
         "Pricing",
-        "$4.99 one-time purchase (Lifetime access)",
+        "Free download + {{PRICE}} one-time Pro unlock",
         "Free (Basic) / $7.99 (CopyClip 2)"
       ],
       [
@@ -518,7 +518,7 @@
       ],
       [
         "Is L2Cache free?",
-        "Yes. L2Cache is $4.99 one-time purchase with no ads or subscription requirements."
+        "Yes. L2Cache is a free download with unlimited clipboard history. Developer Pro is a {{PRICE}} one-time unlock, with no ads or subscription."
       ]
     ]
   }

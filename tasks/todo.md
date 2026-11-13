@@ -1,3 +1,40 @@
+# Single source for pricing (2026-11-14)
+
+Goal: set the price in one file. Every page, the homepage and llms.txt pick it up at build time, so a price change is one edit plus a rebuild.
+
+## Today
+- Homepage (`prototypes/native-mac/index.html`, built by `scripts/site_i18n.py`) hardcodes `$19.99` / `$29` / `15-day` in about 8 strings, mirrored in `locales/l2cache/en/home.json`.
+- ~33 published legacy pages + `llms.txt` / `llms-full.txt` hardcode `$4.99` in ~20 phrasings ("$4.99 one-time purchase", "Get L2Cache ($4.99)", `"price": "4.99"`…). That's the 1.x model (paid up front), not 2.0 (free download, 15-day trial, one-time Pro unlock).
+- `build.py` `REGIONAL_PRICING` find-and-replaces 8 exact `$4.99` strings. Legacy pages build for `"en"` only, so the 9 other locales in it are never used.
+
+## Plan
+- [x] 1. `pricing.json` at the repo root, the only place a price is written:
+      `{"currency": "USD", "price": "19.99", "regular_price": "29.00", "launch": true, "trial_days": 15}`
+- [x] 2. `scripts/pricing.py`: loads it and replaces tokens in a page:
+      `{{PRICE}}` $19.99 · `{{PRICE_RAW}}` 19.99 (JSON-LD) · `{{REGULAR_PRICE}}` $29 · `{{CURRENCY}}` USD · `{{TRIAL_DAYS}}` 15 ·
+      `{{PRICE_LINE}}` "$19.99 launch price ($29 regular)", or just "$29" when `launch` is false, so ending the launch is a one-line change.
+      Fails the build on an unknown `{{…}}` token.
+- [x] 3. `build.py`: apply it to every legacy page and to llms.txt / llms-full.txt; delete `REGIONAL_PRICING` and its 8 replace lines.
+- [x] 4. `site_i18n.py`: apply it after rendering each locale. Put the tokens in the homepage source and in the `en/home.json` keys, so translators keep `{{PRICE}}` and their keys don't break when the price changes.
+- [x] 5. Rewrite the `$4.99` text on the published pages to the 2.0 model, using tokens. Examples:
+      "$4.99 one-time purchase, own forever" → "free download; Pro is a {{PRICE}} one-time unlock"
+      "Get L2Cache for Mac ($4.99)" → "Get L2Cache for Mac (free download)"
+      comparison rows: "$4.99 One-Time" → "Free + {{PRICE}} one-time Pro"
+      Unpublished `preview-*.html`, `comparison-template.html` and the old root `index.html` get the tokens too, so a grep stays clean.
+- [x] 6. Guard in `validate_seo.py`: fail if built output contains `$4.99`, `"price": "4.99"` or a leftover `{{`.
+- [x] 7. Verify: build, `validate_seo.py`, `site_i18n.py check`; diff built output before and after (only price text should change); flip `launch` to false and check `{{PRICE_LINE}}` turns into "$29" everywhere, then flip it back.
+
+## Review (2026-11-14)
+- Price lives only in `pricing.json`; `scripts/pricing.py` fills `{{PRICE}}`, `{{PRICE_RAW}}`, `{{REGULAR_PRICE}}`, `{{PRICE_LINE}}`, `{{TRIAL_DAYS}}`, `{{CURRENCY}}` and `{{LAUNCH_ONLY}}…{{/LAUNCH_ONLY}}` in both pipelines. `python3 scripts/pricing.py` prints the current values.
+- Removed `REGIONAL_PRICING` (only "en" was ever built) and the injected script that swapped `$4.99` for `¥38` for Chinese visitors; that script, not the pages, caused most of the stale `$4.99` in the output (212 → 0 guard hits).
+- ~40 sources rewritten to the 2.0 model (free download + one-time Pro unlock); comparison prose that claimed "$4.99 instead of CleanClip's $19.99+" rewritten (no longer true). Generated comparisons fixed in `comparisons_data.json` / `comparison-template.html`. Competitor prices ($14.99, $29.99/yr, PastePal's $4.99/yr) left alone; the guard allows `/yr`.
+- Verified: build ok, `validate_seo.py` passes with the new pricing guard, `site_i18n.py check` unchanged (only missing-locale lines, as before). Built-output diff vs the pre-change snapshot: 208 files, zero changed lines outside price text and the removed script. `launch: false` build: every L2Cache price becomes $29, no launch wording left; restored to true.
+- Not done: app repo copy (out of scope); tools/*.py one-off generators still contain old `$4.99` strings but aren't part of the build.
+
+## Out of scope
+- App repo copy (`AppStoreMetadata.md`, fastlane notes). It isn't built from this site.
+- Per-country prices. Add them to `pricing.json` only when the localized legacy pages ship.
+
 # Competitor Comparison Pages (2026-11-13)
 
 Goal: SEO comparison pages for L2Cache 2.0 (developer memory) against tools in the same space, starting with Pieces.

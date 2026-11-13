@@ -189,7 +189,7 @@
       "name": "Which Claude Code history viewer is free?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Claude Code History Viewer, Claudoscope and Sessions Viewer are all free and MIT licensed, and SpecStory is free. L2Cache is a free download with a 15-day Pro trial; agent history is part of the one-time $19.99 Pro unlock."
+        "text": "Claude Code History Viewer, Claudoscope and Sessions Viewer are all free and MIT licensed, and SpecStory is free. L2Cache is a free download with a {{TRIAL_DAYS}}-day Pro trial; agent history is part of the one-time {{PRICE}} Pro unlock."
       }
     },
     {
@@ -256,7 +256,7 @@
   <table class="data">
     <thead><tr><th></th><th>Agents</th><th>Search</th><th>Resume</th><th>Extras</th><th>Price</th></tr></thead>
     <tbody>
-      <tr><td><strong>L2Cache</strong></td><td>Claude Code, Codex, Copilot, Grok Build, Antigravity</td><td>One box with terminal, git, clipboard, screenshots</td><td>Yes</td><td>MCP server, cold-cache guard, Today view, standups</td><td>Free download; Pro $19.99 once</td></tr>
+      <tr><td><strong>L2Cache</strong></td><td>Claude Code, Codex, Copilot, Grok Build, Antigravity</td><td>One box with terminal, git, clipboard, screenshots</td><td>Yes</td><td>MCP server, cold-cache guard, Today view, standups</td><td>Free download; Pro {{PRICE}} once</td></tr>
       <tr><td><strong>Claude Code History Viewer</strong></td><td>~30 agents</td><td>Across all providers</td><td>No</td><td>Token/cost analytics, full backup, web server mode</td><td>Free, MIT</td></tr>
       <tr><td><strong>Claudoscope</strong></td><td>Claude Code, Claude Cowork</td><td>Yes</td><td>Yes</td><td>Live fleet view, replay, cost alerts, secret scan</td><td>Free, MIT</td></tr>
       <tr><td><strong>Sessions Viewer</strong></td><td>7 incl. Codex, Grok Build, opencode</td><td>Titles and prompts</td><td>Yes</td><td>Skills/MCP/hooks manager, project editor</td><td>Free, MIT</td></tr>
@@ -269,7 +269,7 @@
   <div class="tool">
     <p>L2Cache indexes Claude Code sessions next to Codex, Copilot, Grok Build and Antigravity, and next to your shell history, git commits, clipboard and screenshots, so one search finds the session, the command and the commit together. Opening a result jumps to the matching message, not the top of the conversation. Its Today view shows each project's last prompt and open loops, and it can resume a session in Terminal, Ghostty, Warp or iTerm2.</p>
     <p>For Claude Code in particular it tracks prompt-cache expiry and warns before a cold resume, which can cost 12× to 80× a warm turn depending on the model. A built-in MCP server lets Claude Code search its own past sessions for earlier fixes and decisions. Available details and live-continuity features vary by agent.</p>
-    <p><strong>Trade-offs:</strong> Mac only, and agent history is part of Pro. <strong>Price:</strong> free download, 15-day trial, Pro $19.99 one-time (launch price, regular $29).</p>
+    <p><strong>Trade-offs:</strong> Mac only, and agent history is part of Pro. <strong>Price:</strong> free download, {{TRIAL_DAYS}}-day trial, Pro {{PRICE}} one-time{{LAUNCH_ONLY}} (launch price, regular {{REGULAR_PRICE}}){{/LAUNCH_ONLY}}.</p>
   </div>
 
   <h2>2. Claude Code History Viewer: the widest coverage, free</h2>
@@ -315,14 +315,14 @@
   <h3>How do I resume an old Claude Code session?</h3>
   <p>Run claude --resume with the session ID from the project directory, or claude --resume on its own to pick from a list. L2Cache, Claudoscope and Sessions Viewer can open the resume command for you from the session you found.</p>
   <h3>Which Claude Code history viewer is free?</h3>
-  <p>Claude Code History Viewer, Claudoscope and Sessions Viewer are all free and MIT licensed, and SpecStory is free. L2Cache is a free download with a 15-day Pro trial; agent history is part of the one-time $19.99 Pro unlock.</p>
+  <p>Claude Code History Viewer, Claudoscope and Sessions Viewer are all free and MIT licensed, and SpecStory is free. L2Cache is a free download with a {{TRIAL_DAYS}}-day Pro trial; agent history is part of the one-time {{PRICE}} Pro unlock.</p>
   <h3>Which viewer also covers Codex and other agents?</h3>
   <p>Claude Code History Viewer reads around 30 agents. Sessions Viewer reads seven, including Codex, Grok Build and opencode. L2Cache reads Claude Code, Codex, GitHub Copilot, Grok Build and Antigravity. Claudoscope focuses on Claude Code and Claude Cowork.</p>
   </div>
 
   <div class="cta-box">
     <div class="cta-title">Try L2Cache free for 15 days</div>
-    <p>Free download with unlimited clipboard history. Pro is a one-time $19.99 launch price (regular $29), with no subscription.</p>
+    <p>Free download with unlimited clipboard history. Pro is a one-time {{PRICE}}{{LAUNCH_ONLY}} launch price (regular {{REGULAR_PRICE}}){{/LAUNCH_ONLY}}, with no subscription.</p>
     <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="cta-btn">Download L2Cache for Mac</a>
   </div>
 

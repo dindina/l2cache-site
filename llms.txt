@@ -2,7 +2,7 @@
 
 > L2Cache is a high-performance, 100% local, privacy-focused macOS clipboard manager built with native Swift and SQLite. It provides complete clipboard history, shell command preservation, on-device AI integration, and built-in developer utilities with zero telemetry and zero cloud sync.
 
-L2Cache is designed specifically for software engineers, power users, and privacy-conscious professionals on macOS (Apple Silicon and Intel, macOS 14.0+ Sonoma & macOS 15+ Sequoia). It costs $4.99 as a one-time purchase with lifetime updates and no subscriptions.
+L2Cache is designed specifically for software engineers, power users, and privacy-conscious professionals on macOS (Apple Silicon and Intel, macOS 14.0+ Sonoma & macOS 15+ Sequoia). It is a free download with unlimited clipboard history; Developer Pro is a {{PRICE_LINE}} one-time unlock with a {{TRIAL_DAYS}}-day free trial and no subscription.
 
 ## Core Pages & Features
 
@@ -36,13 +36,13 @@ L2Cache offers free web versions of its built-in developer tools at https://l2ca
 ## Competitor Comparisons
 
 - [Best Mac Clipboard Managers (2026 Guide)](https://l2cache.amvo.store/en/best-mac-clipboard-managers): In-depth comparison of top macOS clipboard managers.
-- [L2Cache vs Pieces](https://l2cache.amvo.store/en/l2cache-vs-pieces): Developer memory compared: reading coding-agent sessions, terminal and git vs Pieces' screen-and-clipboard timeline; $19.99 one-time vs $18.99/month.
+- [L2Cache vs Pieces](https://l2cache.amvo.store/en/l2cache-vs-pieces): Developer memory compared: reading coding-agent sessions, terminal and git vs Pieces' screen-and-clipboard timeline; {{PRICE}} one-time vs $18.99/month.
 - [Pieces Alternatives for Developers (2026)](https://l2cache.amvo.store/en/pieces-alternatives): L2Cache, screenpipe, SpecStory, Mem0 OpenMemory and Claude Code History Viewer compared.
 - [Best Claude Code History Viewers for Mac (2026)](https://l2cache.amvo.store/en/best-claude-code-history-viewers-mac): L2Cache, Claude Code History Viewer, Claudoscope, Sessions Viewer and SpecStory compared.
 - [L2Cache vs Atuin](https://l2cache.amvo.store/en/l2cache-vs-atuin): Comparison of native macOS GUI developer clipboard & snippet management vs CLI-only shell history daemons.
 - [L2Cache vs CleanClip](https://l2cache.amvo.store/en/l2cache-vs-cleanclip): Comparison of Smart Bubble at cursor, Touch ID secret encryption, and developer memory vs CleanClip's paste stack and context menu.
 - [L2Cache vs Maccy](https://l2cache.amvo.store/en/l2cache-vs-maccy): Comparison of UI, search capabilities, developer tooling, and memory efficiency.
-- [L2Cache vs Paste](https://l2cache.amvo.store/en/l2cache-vs-paste): Comparison between L2Cache's $4.99 one-time purchase model and Paste's annual subscription model.
+- [L2Cache vs Paste](https://l2cache.amvo.store/en/l2cache-vs-paste): Comparison between L2Cache's free download with a one-time Pro unlock and Paste's annual subscription model.
 - [L2Cache vs Raycast](https://l2cache.amvo.store/en/l2cache-vs-raycast): Comparison of dedicated clipboard management vs general-purpose launcher extensions.
 - [L2Cache vs Alfred](https://l2cache.amvo.store/en/l2cache-vs-alfred): Comparison of clipboard history features, search speeds, and modern macOS integration.
 - [L2Cache vs PastePal](https://l2cache.amvo.store/en/l2cache-vs-pastepal): Feature and performance comparison.
@@ -83,7 +83,7 @@ L2Cache offers free web versions of its built-in developer tools at https://l2ca
 - **Engine**: 100% Native Swift, SwiftUI, AppKit, SQLite 3 (FTS5 + WAL mode)
 - **Privacy Model**: 100% local on-device database, no cloud sync, zero analytics/telemetry
 - **RAM Usage**: ~12MB to 15MB typical idle footprint
-- **Pricing**: $4.99 USD one-time purchase via Apple Mac App Store (includes Family Sharing & lifetime updates)
+- **Pricing**: {{PRICE_LINE}} one-time Pro unlock via the Mac App Store; free download with unlimited clipboard history and a {{TRIAL_DAYS}}-day Pro trial; no subscription
 - **App Store Link**: https://apps.apple.com/us/app/l2cache-clipboard-manager/id6740089851
 
 ## Optional Full Documentation
