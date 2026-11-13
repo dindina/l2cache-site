@@ -15,7 +15,7 @@ Goal: SEO comparison pages for L2Cache 2.0 (developer memory) against tools in t
 - [x] 4. `best-claude-code-history-viewers-mac.html` roundup (History Viewer, Claudoscope, Sessions Viewer, SpecStory, L2Cache)
 - [x] 5. Wire up each page: build.py, sitemap, comparison hub, internal links, vercel.json; English only
 - [x] 6. Claims gate + validate_seo.py + build.py + local preview
-- [ ] 7. Commit after your review; deploy only when you approve
+- [x] 7. Committed 50861f4 and deployed 2026-11-13 (live on l2cache.app, IndexNow pinged)
 
 ### Review (2026-11-13)
 - New: `l2cache-vs-pieces.html`, `pieces-alternatives.html`, `best-claude-code-history-viewers-mac.html` (English only; Article + Breadcrumb + FAQ schema, plus ItemList on the roundups)
