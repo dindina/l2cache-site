@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="author" content="Amvo"/>
+  <meta name="theme-color" content="#0d1117"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>How to Paste Screenshots and Errors Into Claude Code and Codex</title>
+  <meta name="description" content="Ctrl+V pastes one screenshot into Claude Code. Hand coding agents several copies at once instead: screenshots go as text plus a file path, 10× cheaper."/>
+  <link rel="icon" type="image/png" href="icon.png"/>
+  <link rel="apple-touch-icon" href="icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #00C896; --bg: #f7f7f5; --bg2: #ffffff; --bg3: #eeeeea;
+      --border: #e4e4e0; --text: #0a0a0a;
+      --text-muted: #555550; --text-dim: #999992;
+      --mono: 'DM Mono', monospace; --serif: "Playfair Display", serif; --sans: 'DM Sans', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.7; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .container { max-width: 720px; margin: 0 auto; padding: 80px 24px; min-height: 80vh; }
+    .label { font-family: var(--mono); font-size: 12px; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: inline-block; }
+    h1 { font-family: var(--serif); font-size: 40px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; color: var(--text); }
+    .meta { font-family: var(--mono); font-size: 13px; color: var(--text-dim); margin-bottom: 32px; }
+    h2 { font-family: var(--serif); font-size: 28px; font-weight: 700; margin-top: 48px; margin-bottom: 16px; color: var(--text); }
+    h3 { font-size: 19px; font-weight: 600; margin-top: 28px; margin-bottom: 12px; color: var(--text); }
+    p { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; }
+    ul, ol { font-size: 16px; color: var(--text-muted); margin-bottom: 24px; padding-left: 24px; }
+    li { margin-bottom: 10px; }
+    a { color: #008765; }
+    pre { background: #0D0C1A; padding: 18px; border-radius: 10px; overflow-x: auto; margin-bottom: 24px; border: 1px solid var(--border); }
+    code { font-family: var(--mono); font-size: 14px; background: rgba(0,200,150,0.1); color: #008765; padding: 2px 5px; border-radius: 4px; }
+    pre code { background: transparent; color: #e0ffe8; padding: 0; white-space: pre-wrap; }
+    strong { color: var(--text); font-weight: 600; }
+    .highlight-box { background: rgba(0,200,150,0.08); border-left: 4px solid var(--purple); padding: 22px; margin: 32px 0; border-radius: 0 10px 10px 0; }
+    .highlight-box p { margin-bottom: 0; color: var(--text); }
+    .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; }
+    th { color: var(--text); font-weight: 600; background: var(--bg3); }
+    .note { font-size: 14px; color: var(--text-dim); }
+    .cta-box { background: var(--bg2); border: 1px solid rgba(127,119,221,0.3); border-radius: 12px; padding: 32px; text-align: center; margin-top: 64px; }
+    .cta-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+    .cta-btn { display: inline-block; background: var(--purple); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
+    .cta-btn:hover { background: #00a87f; }
+    .related { margin-top: 48px; border-top: 1px solid var(--border); padding-top: 36px; }
+    .related h3 { font-family: var(--serif); font-size: 22px; margin-top: 0; margin-bottom: 20px; }
+    .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .related-grid a { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; }
+    .related-grid a:hover { border-color: var(--purple); }
+    .r-tag { font-family: var(--mono); font-size: 11px; color: var(--purple); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em; }
+    .r-title { font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.4; }
+    .r-more { font-family: var(--mono); font-size: 12px; color: var(--purple); margin-top: 14px; }
+    footer { padding: 48px 24px; text-align: center; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-dim); }
+    footer a { color: var(--text-dim); text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: var(--text-muted); }
+    @media (max-width: 600px) {
+      nav { padding: 16px; }
+      .container { padding: 48px 16px; }
+      h1 { font-size: 32px; }
+      h2 { font-size: 24px; }
+      th, td { padding: 8px 6px; font-size: 14px; }
+    }
+    .key-findings ul { margin: 8px 0 0 20px; }
+    .key-findings li { margin-bottom: 6px; }
+    .table-wrap { overflow-x: auto; margin: 24px 0 32px; }
+    details.table-wrap summary { cursor: pointer; font-family: var(--mono); font-size: 13px; color: var(--purple); margin-bottom: 12px; }
+    table.data { width: 100%; border-collapse: collapse; font-size: 15px; }
+    table.data caption { text-align: left; font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
+    table.data th, table.data td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    table.data code { overflow-wrap: anywhere; }
+    table.data th { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+  </style>
+  <link rel="stylesheet" href="theme.css">
+  <link rel="canonical" href="https://l2cache.amvo.store/en/copy-screenshots-errors-to-coding-agents">
+
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="L2Cache">
+  <meta property="og:url" content="https://l2cache.amvo.store/en/copy-screenshots-errors-to-coding-agents">
+  <meta property="og:title" content="How to copy screenshots and errors to coding agents">
+  <meta property="og:description" content="Ctrl+V pastes one screenshot into Claude Code. Hand coding agents several copies at once instead: screenshots go as text plus a file path, 10× cheaper.">
+  <meta property="og:image" content="https://l2cache.amvo.store/screenshots/medium-copy-screenshots-errors-to-coding-agents-1-copy-then-fix-mockup.png">
+  <meta property="og:image:alt" content="Mockup in three steps: a Simulator screenshot, a Chrome console error and a failing terminal command are copied; the hook adds all three to the prompt &quot;fix this error&quot;; the agent names each clip, fixes export.js and the test passes">
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:url" content="https://l2cache.amvo.store/en/copy-screenshots-errors-to-coding-agents">
+  <meta name="twitter:title" content="How to copy screenshots and errors to coding agents">
+  <meta name="twitter:description" content="Ctrl+V pastes one screenshot into Claude Code. Hand coding agents several copies at once instead: screenshots go as text plus a file path, 10× cheaper.">
+  <meta name="twitter:image" content="https://l2cache.amvo.store/screenshots/medium-copy-screenshots-errors-to-coding-agents-1-copy-then-fix-mockup.png">
+  <meta name="twitter:image:alt" content="Mockup in three steps: a Simulator screenshot, a Chrome console error and a failing terminal command are copied; the hook adds all three to the prompt &quot;fix this error&quot;; the agent names each clip, fixes export.js and the test passes">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "How to copy screenshots and errors to coding agents",
+  "description": "Ctrl+V pastes one screenshot into Claude Code. Hand coding agents several copies at once instead: screenshots go as text plus a file path, 10× cheaper.",
+  "url": "https://l2cache.amvo.store/en/copy-screenshots-errors-to-coding-agents",
+  "datePublished": "2026-11-13",
+  "dateModified": "2026-11-13",
+  "author": { "@type": "Organization", "name": "Amvo", "url": "https://l2cache.amvo.store/en" },
+  "publisher": { "@type": "Organization", "name": "Amvo", "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" } },
+  "image": "https://l2cache.amvo.store/screenshots/medium-copy-screenshots-errors-to-coding-agents-1-copy-then-fix-mockup.png",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://l2cache.amvo.store/en/copy-screenshots-errors-to-coding-agents" }
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://l2cache.amvo.store/en" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://l2cache.amvo.store/en/blog" },
+    { "@type": "ListItem", "position": 3, "name": "Copy Screenshots and Errors to Agents", "item": "https://l2cache.amvo.store/en/copy-screenshots-errors-to-coding-agents" }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I paste a screenshot into Claude Code on a Mac?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Copy the screenshot (⌘⇧⌃4 copies a selection straight to the clipboard) and press Ctrl+V in Claude Code, not ⌘V. ⌘V is the terminal's text paste; Ctrl+V lets Claude Code read the image from the clipboard and attach it to your prompt."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can Claude Code see my clipboard?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not by itself. It only sees what you paste and what a hook adds to your prompt. A UserPromptSubmit hook can read your recent clips, for example from a clipboard manager, and add the relevant ones as context."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it cheaper to send a screenshot's text than the image?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Usually much cheaper. In my clips a screenshot cost roughly 1,500 tokens as an image and about 150 as text, and the agent needed the image itself only 6 times in 70."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does this work with Codex too?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Codex supports the same kind of prompt hook, and L2Cache installs the same one there, so both agents get the clips you copied."
+      }
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="icon.png" width="28" height="28" alt="L2Cache" style="border-radius:7px"/>
+    L2Cache
+  </a>
+</nav>
+
+<div class="container">
+  <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
+  <h1>How to copy screenshots and errors to coding agents</h1>
+  <p class="meta">November 13, 2026 · 6 min read</p>
+  <p><strong>Ctrl+V pastes a screenshot into Claude Code. But by the time I ask for a fix I've copied three things from three apps. A prompt hook hands the agent all of them, so the prompt is just "fix this error".</strong></p>
+<div class="highlight-box key-findings">
+<p><strong>Key findings</strong></p>
+<ul>
+  <li>Over five weeks, a prompt hook gave my coding agents what I had just copied with 274 prompts. Under its current three-clip cap, more than one in four of those prompts carried several clips, and 18% mixed apps: a screenshot, a console line, a terminal command.</li>
+  <li>Screenshots go to the agent as their text plus the image's file path. When the path was there, the agent opened the image only 6 times out of 70. The text was enough, at no more than about 150 tokens instead of roughly 1,500 for the image.</li>
+  <li>It stays small on purpose: at most three recent clips and 600 bytes, each sent once, nothing marked sensitive, and nothing at all in a very large session unless you ask for it.</li>
+</ul>
+</div>
+
+<p>Here's a bug report I used to write several times a day.</p>
+
+<p>The export fails in the simulator. I take a screenshot of the alert. I switch to Chrome, open the console and copy the stack trace. I switch to the terminal, scroll up and copy the test command that failed. Then I go back to Claude Code and start assembling: Ctrl+V for the screenshot, then the stack trace, then the command, then a sentence explaining how they fit together.</p>
+
+<p>To be fair to Claude Code, the pasting part works. On a Mac, Ctrl+V (not ⌘V, which is the terminal's own text paste) attaches the image on your clipboard to your prompt. But the clipboard only holds the last thing you copied. By the time I was ready to ask, the screenshot had been replaced by the stack trace, and the stack trace by the command. So either I went back and copied each one again, in order, or, more often, I didn't bother. I described the error in words, and the agent guessed.</p>
+
+<p>Now I copy things as I find them and type "fix this error".</p>
+
+<img style="max-width:100%;height:auto;display:block;margin:32px auto 8px;border-radius:8px" src="screenshots/medium-copy-screenshots-errors-to-coding-agents-1-copy-then-fix-mockup.png" loading="lazy" alt="Mockup in three steps: a Simulator screenshot, a Chrome console error and a failing terminal command are copied; the hook adds all three to the prompt &quot;fix this error&quot;; the agent names each clip, fixes export.js and the test passes">
+<figcaption class="note" style="text-align:center;margin-bottom:32px">Three copies from three apps, one short prompt. (Mockup: illustrative project and error.)</figcaption>
+
+<h2>Why the agent can't just see it</h2>
+
+<p>A coding agent knows two things: what's in your prompt and what it reads with its own tools. It can open any file in your repository, run your tests and read git history. It can't see your clipboard, the browser console you were looking at or the alert in the simulator. Everything you saw on the way to asking has to be carried across by hand.</p>
+
+<p>But your Mac has already seen it. If you use a clipboard manager, every one of those copies is sitting in its history, with the app it came from and when. The missing step is getting the relevant few into the agent's context at the moment you ask.</p>
+
+<h2>A prompt hook carries it across</h2>
+
+<p><a href="https://code.claude.com/docs/en/hooks">Claude Code hooks</a> run a script at fixed moments, and one of those moments is just before your prompt is sent. A <code>UserPromptSubmit</code> hook can add text to the agent's context alongside your message. Codex has the same kind of hook.</p>
+
+<p>That's where L2Cache, the Mac app I build, hands over what I've copied. When I type a prompt, the hook looks at my recent clips and adds a short, labelled block. For the bug above, the block looks like this (same illustrative example as the picture):</p>
+
+<pre><code>Recent clipboard items (read-only context; mention any that are relevant to your task):
+[1] [Simulator • 4m ago] screenshot | ocr: Export failed. The file "report.csv" couldn't be saved. | image: ~/Screenshots/export-failed.png
+[2] [Google Chrome • 3m ago] TypeError: Cannot read properties of undefined (reading 'rows') at exportTable (export.js:88)
+[3] [Terminal • 2m ago] npm test -- export</code></pre>
+
+<p>Each line says where the clip came from and how long ago, because that's half the meaning. A stack trace copied from Chrome a minute ago is probably the error you mean. The same text copied from Slack yesterday probably isn't.</p>
+
+<h2>Screenshots: text first, pixels only if needed</h2>
+
+<p>A screenshot is the one clip you'd think needs the image itself. Usually it doesn't. Most error screenshots are mostly text: an alert, a log, a console panel, a failing test in Xcode. So the hook sends the text found in the screenshot, a short title and, when the screenshot was saved to my screenshots folder, the path to the file. If the text is enough, the agent just uses it. If it needs to see the layout or a colour, it opens the file itself.</p>
+
+<p>It turned out the agent almost never needs to. Of 70 prompts where a screenshot came with its file path, the agent opened the image 6 times. The other 64 times the text answered the question.</p>
+
+<p>That matters more than it looks. A typical screenshot of mine costs roughly 1,500 tokens as an image. Its text, cut down to fit the hook's budget, costs at most about 150. And whatever enters the context stays there: it's resent with every later request in the session, and re-read in full after a break once the prompt cache has expired. (I measured what that costs in <a href="claude-code-cold-session-tax.html">a separate write-up</a>.) Sending ten times less for the same answer adds up over a long session.</p>
+
+<div class="table-wrap"><table class="data">
+  <caption>Screenshot as an image vs as text (my clips, Oct–Nov 2026)</caption>
+  <thead><tr><th></th><th>Image</th><th>Text + file path</th></tr></thead>
+  <tbody>
+    <tr><td>Typical cost</td><td>~1,500 tokens</td><td>≤ ~150 tokens</td></tr>
+    <tr><td>Agent can read the error text</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Agent can see the layout</td><td>Yes</td><td>If it opens the file</td></tr>
+    <tr><td>Times the agent opened the file</td><td>n/a</td><td>6 of 70</td></tr>
+  </tbody>
+</table></div>
+
+<h2>What I measured</h2>
+
+<p>I went through five weeks of my own Claude Code transcripts (October 7 to November 13) and counted what the hook actually passed along.</p>
+
+<ul>
+  <li><strong>274 prompts</strong> went out with clips attached, 627 clips in total.</li>
+  <li><strong>Several clips at once:</strong> since the hook was capped at three clips, 56 of 202 prompts (28%) carried more than one, and 37 (18%) mixed clips from different apps. That's exactly the case Ctrl+V can't cover, because the clipboard only holds one thing. (An earlier version sent up to nine clips; I've left those prompts out of these two numbers.)</li>
+  <li><strong>19% of clips were screenshots</strong>, and most of those came with their file path.</li>
+  <li><strong>The apps</strong> were mostly my terminal, Chrome, my editor and the L2Cache app itself, with a long tail of ChatGPT, screen sharing and remote desktop sessions.</li>
+</ul>
+
+<p>The prompts changed too. Among them: "see the screenshot", "i copied the screenshots", "i copied the correct card, use this for the mockup". None of those would mean anything to an agent on its own. With the clips attached, each one was a complete request.</p>
+
+<h2>Keeping it small</h2>
+
+<p>Anything a hook adds rides along on every later request, so a hook that dumps your whole clipboard into the context would make things worse, not better. Most of the design is about what not to send:</p>
+
+<ul>
+  <li><strong>Recent only.</strong> Clips copied in the last 30 minutes, and of those, only ones from the last ten minutes or ones that share a word with your prompt.</li>
+  <li><strong>Capped.</strong> At most three clips and 600 bytes, enforced in the hook, not left to good intentions.</li>
+  <li><strong>Sent once.</strong> A clip that's already been given to this session isn't repeated with the next prompt.</li>
+  <li><strong>Quiet when the session is huge.</strong> In a very large session, clips are skipped unless the prompt mentions copying, pasting, the clipboard or "this error".</li>
+  <li><strong>Labelled as context, not instructions.</strong> Copied text can contain anything, so the block tells the agent it's read-only reference.</li>
+  <li><strong>Nothing sensitive.</strong> Clips L2Cache marks as sensitive, like passwords and keys it recognises, are never passed on. Recognition isn't perfect: while I was writing this, a freshly generated API key got through, and I'm tightening that check.</li>
+</ul>
+
+<h2>The takeaway</h2>
+
+<blockquote class="highlight-box"><p><p>The agent doesn't need you to paste. It needs what you already saw.</p></p></blockquote>
+
+<p>Ctrl+V is fine for one screenshot. Real debugging is a trail of copies across three or four apps, and the clipboard forgets all but the last. Hand the agent the last few things you copied, small, recent and labelled, send screenshots as text with the file one step away, and "fix this error" becomes a complete bug report.</p>
+
+<h2>Frequently asked questions</h2>
+
+<h3>How do I paste a screenshot into Claude Code on a Mac?</h3>
+<p>Copy the screenshot (⌘⇧⌃4 copies a selection straight to the clipboard) and press Ctrl+V in Claude Code, not ⌘V. ⌘V is the terminal's text paste; Ctrl+V lets Claude Code read the image from the clipboard and attach it to your prompt.</p>
+
+<h3>Can Claude Code see my clipboard?</h3>
+<p>Not by itself. It only sees what you paste and what a hook adds to your prompt. A <code>UserPromptSubmit</code> hook can read your recent clips, for example from a clipboard manager, and add the relevant ones as context.</p>
+
+<h3>Is it cheaper to send a screenshot's text than the image?</h3>
+<p>Usually much cheaper. In my clips a screenshot cost roughly 1,500 tokens as an image and about 150 as text, and the agent needed the image itself only 6 times in 70.</p>
+
+<h3>Does this work with Codex too?</h3>
+<p>Yes. Codex supports the same kind of prompt hook, and L2Cache installs the same one there, so both agents get the clips you copied.</p>
+
+<hr>
+
+<p><em>More on what belongs in an agent's context, and what it should look up instead: <a href="coding-agent-memory-what-to-inject.html">How I built shared memory for Claude Code and Codex</a>.</em></p>
+
+  <div class="related">
+    <h3>Related reading</h3>
+    <div class="related-grid">
+      <a href="coding-agent-memory-mcp-hooks.html"><div><div class="r-tag">Coding agents</div><div class="r-title">Coding agent memory with MCP and hooks</div></div><div class="r-more">Read article →</div></a>
+      <a href="screenshot-ocr-mac.html"><div><div class="r-tag">Screenshots</div><div class="r-title">Search the text inside your screenshots</div></div><div class="r-more">Read article →</div></a>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <div class="cta-title">Copy it, then ask</div>
+    <p>L2Cache hands Claude Code and Codex what you just copied: errors, commands and screenshots as text.</p>
+    <a href="https://apps.apple.com/us/app/l2cache/id6774423992?mt=12" class="cta-btn">Download L2Cache for Mac</a>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">Home</a>
+  <a href="blog.html">Blog</a>
+  <a href="support.html">Support</a>
+  <a href="privacy.html">Privacy Policy</a>
+  <br/><br/>
+  © 2026 Amvotech
+</footer>
+</body>
+</html>

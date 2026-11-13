@@ -3,8 +3,9 @@
     python3 scripts/backlinks/syndicate.py --dry-run [SLUG]   # write Markdown to $TMPDIR/l2cache-syndication/, no API calls
     python3 scripts/backlinks/syndicate.py SLUG               # create or update the dev.to draft
     python3 scripts/backlinks/syndicate.py SLUG --update-published   # refresh a post you already published
+    python3 scripts/backlinks/syndicate.py SLUG --publish            # create or update, and publish
 
-Never publishes: drafts are published by hand on dev.to (or by the tracker's Publish step).
+Creates drafts unless --publish is passed (only when the user asked to publish that essay).
 Post IDs go to state.json, and existing posts are matched by canonical URL, so nothing is posted twice.
 Needs DEV_TO_API_KEY (environment or l2cache-site/.env).
 """
@@ -207,13 +208,13 @@ def syndicate(p, article):
         print(f"{p['slug']}: already published on dev.to ({existing['url']}), left unchanged (--update-published to refresh it)")
         posts[p["slug"]] = existing["id"]
     else:
-        fields = {k: v for k, v in article.items() if v} | {"published": False}
+        fields = {k: v for k, v in article.items() if v} | {"published": "--publish" in sys.argv}
         if existing:
             post = call("PUT", f"/articles/{existing['id']}", {"article": fields})
-            print(f"{p['slug']}: updated draft {post['id']}")
+            print(f"{p['slug']}: updated {'and published' if post.get('published') or post.get('published_at') else 'draft'} {post['id']} {post.get('url', '')}")
         else:
             post = call("POST", "/articles", {"article": fields})
-            print(f"{p['slug']}: created draft {post['id']}")
+            print(f"{p['slug']}: created {'and published' if post.get('published') or post.get('published_at') else 'draft'} {post['id']} {post.get('url', '')}")
         posts[p["slug"]] = post["id"]
     json.dump(state, open(STATE, "w"), indent=2)
     open(STATE, "a").write("\n")

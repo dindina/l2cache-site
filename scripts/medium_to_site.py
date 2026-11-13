@@ -9,6 +9,14 @@ MODIFIED, MODIFIED_TEXT = "2026-11-13", "November 13, 2026"
 APP = "https://apps.apple.com/us/app/l2cache/id6774423992?mt=12"
 
 ARTICLES = [
+    dict(src="screenshot-to-agent", slug="copy-screenshots-errors-to-coding-agents", date=("2026-11-13", "November 13, 2026"),
+         seo_title="How to Paste Screenshots and Errors Into Claude Code and Codex",
+         section="coding-agents",
+         tag="Coding agents · Measured", short="Copy Screenshots and Errors to Agents",
+         desc="Ctrl+V pastes one screenshot into Claude Code. Hand coding agents several copies at once instead: screenshots go as text plus a file path, 10× cheaper.",
+         related=[("coding-agent-memory-mcp-hooks", "Coding agents", "Coding agent memory with MCP and hooks"),
+                  ("screenshot-ocr-mac", "Screenshots", "Search the text inside your screenshots")],
+         cta=("Copy it, then ask", "L2Cache hands Claude Code and Codex what you just copied: errors, commands and screenshots as text.")),
     dict(src="claude-code-cold-session-cost", slug="claude-code-cold-session-tax", seo_title="Claude Code Prompt Cache: Why a Cold Session Costs 12–80× More",
          section="context-cost",
          tag="Claude Code · Measured", short="Stretch Your Weekly Limit",
@@ -107,8 +115,9 @@ def page(a):
     head = head.replace("https://l2cache.amvo.store/en/claude-code-cold-cache-resume-cost", url)
     head = re.sub(r'"headline": "[^"]*"', f'"headline": {json_str(title)}', head)
     head = re.sub(r'"description": "[^"]*"', f'"description": {json_str(a["desc"])}', head)
-    head = re.sub(r'"datePublished": "[^"]*"', f'"datePublished": "{DATE}"', head)
-    head = re.sub(r'"dateModified": "[^"]*"', f'"dateModified": "{MODIFIED}"', head)
+    (date, date_text), modified = a.get("date", (DATE, DATE_TEXT)), max(MODIFIED, a.get("date", (DATE,))[0])
+    head = re.sub(r'"datePublished": "[^"]*"', f'"datePublished": "{date}"', head)
+    head = re.sub(r'"dateModified": "[^"]*"', f'"dateModified": "{modified}"', head)
     head = head.replace('content="https://l2cache.amvo.store/icon.png"', f'content="{image}"')
     head = head.replace('"image": "https://l2cache.amvo.store/icon.png"', f'"image": "{image}"')
     head = re.sub(r'(<meta (?:property="og:image:alt"|name="twitter:image:alt") content=")[^"]*"', rf'\g<1>{image_alt}"', head)
@@ -129,7 +138,7 @@ def page(a):
     return a, title, head + "<body>" + nav + f'''<div class="container">
   <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
   <h1>{html.escape(title)}</h1>
-  <p class="meta">{DATE_TEXT} · Updated {MODIFIED_TEXT} · {minutes} min read</p>
+  <p class="meta">{date_text}{f" · Updated {MODIFIED_TEXT}" if modified != date else ""} · {minutes} min read</p>
   <p><strong>{subtitle}</strong></p>
 {body.strip()}
 
