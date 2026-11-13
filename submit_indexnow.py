@@ -14,7 +14,7 @@ INDEXNOW_KEY = "f429f476aace450d98d63642289564df"
 SITES = [
     {
         "host": "l2cache.app",
-        "sitemap": "out/l2cache/sitemap.xml" if os.path.exists("out/l2cache/sitemap.xml") else "sitemap.xml",
+        "sitemap": "out/l2cache/sitemap.xml",
         "key_location": f"https://l2cache.app/{INDEXNOW_KEY}.txt"
     },
     {

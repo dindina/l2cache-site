@@ -482,7 +482,7 @@ def build():
             elif file in ["intelligence.html", "clipboard-history-mac.html", "mac-command-history.html", "claude-code-history.html", "codex-history.html", "custom-actions.html", "developer-clipboard.html", "benchmark.html", "clipboard-privacy-report.html", "changelog.html"]:
                 changefreq = "weekly"
                 priority = "0.9"
-            elif file.startswith("blog") or file.startswith("l2cache-vs-") or file == "best-mac-clipboard-managers.html":
+            elif file.startswith("blog") or file.startswith("l2cache-vs-") or file in ["best-mac-clipboard-managers.html", "pieces-alternatives.html", "best-claude-code-history-viewers-mac.html"]:
                 changefreq = "weekly"
                 priority = "0.8"
             else:
