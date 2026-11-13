@@ -18,7 +18,7 @@ ARTICLES = [
          cta=("Know before a session goes cold", "L2Cache warns you before a heavy session's cache expires and offers a fresh start with a handoff.")),
     dict(src="coding-agent-memory-what-to-inject", slug="coding-agent-memory-what-to-inject", seo_title="Coding Agent Memory: What to Inject, What to Pull (MCP)",
          section="coding-agents",
-         tag="Coding agents · Memory", short="Your Coding Agent Has Amnesia",
+         tag="Coding agents · Memory", short="Memory for Claude Code and Codex",
          desc="Coding agent memory works best on a diet: push only what the agent can't find itself (hooks, CLAUDE.md) and let it pull the rest over MCP. Measured.",
          related=[("coding-agent-memory-mcp-hooks", "Coding agents", "Coding agent memory with MCP and hooks"),
                   ("coding-agent-session-handoff", "Coding agents", "Start a fresh coding-agent session without losing context")],

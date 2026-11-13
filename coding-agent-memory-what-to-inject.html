@@ -82,13 +82,13 @@
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="L2Cache">
   <meta property="og:url" content="https://l2cache.amvo.store/en/coding-agent-memory-what-to-inject">
-  <meta property="og:title" content="Your coding agent has amnesia. Stuffing its context isn&#x27;t the cure.">
+  <meta property="og:title" content="How I built memory for Claude Code and Codex: inject little, let them pull the rest">
   <meta property="og:description" content="Coding agent memory works best on a diet: push only what the agent can&#x27;t find itself (hooks, CLAUDE.md) and let it pull the rest over MCP. Measured.">
   <meta property="og:image" content="https://l2cache.amvo.store/screenshots/medium-coding-agent-memory-what-to-inject-1-push-vs-pull-table.png">
   <meta property="og:image:alt" content="Table: start-fresh handoff up to 1.5k tokens, project brief up to 1,000 bytes, recent clipboard up to 3 items and 600 bytes, compaction gaps up to 5 lines plus a short note; everything else is pulled on demand at a median of about 160 tokens">
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:url" content="https://l2cache.amvo.store/en/coding-agent-memory-what-to-inject">
-  <meta name="twitter:title" content="Your coding agent has amnesia. Stuffing its context isn&#x27;t the cure.">
+  <meta name="twitter:title" content="How I built memory for Claude Code and Codex: inject little, let them pull the rest">
   <meta name="twitter:description" content="Coding agent memory works best on a diet: push only what the agent can&#x27;t find itself (hooks, CLAUDE.md) and let it pull the rest over MCP. Measured.">
   <meta name="twitter:image" content="https://l2cache.amvo.store/screenshots/medium-coding-agent-memory-what-to-inject-1-push-vs-pull-table.png">
   <meta name="twitter:image:alt" content="Table: start-fresh handoff up to 1.5k tokens, project brief up to 1,000 bytes, recent clipboard up to 3 items and 600 bytes, compaction gaps up to 5 lines plus a short note; everything else is pulled on demand at a median of about 160 tokens">
@@ -96,7 +96,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "Your coding agent has amnesia. Stuffing its context isn't the cure.",
+  "headline": "How I built memory for Claude Code and Codex: inject little, let them pull the rest",
   "description": "Coding agent memory works best on a diet: push only what the agent can't find itself (hooks, CLAUDE.md) and let it pull the rest over MCP. Measured.",
   "url": "https://l2cache.amvo.store/en/coding-agent-memory-what-to-inject",
   "datePublished": "2026-11-11",
@@ -114,7 +114,7 @@
   "itemListElement": [
     { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://l2cache.amvo.store/en" },
     { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://l2cache.amvo.store/en/blog" },
-    { "@type": "ListItem", "position": 3, "name": "Your Coding Agent Has Amnesia", "item": "https://l2cache.amvo.store/en/coding-agent-memory-what-to-inject" }
+    { "@type": "ListItem", "position": 3, "name": "Memory for Claude Code and Codex", "item": "https://l2cache.amvo.store/en/coding-agent-memory-what-to-inject" }
   ]
 }
   </script>
@@ -169,8 +169,8 @@
 
 <div class="container">
   <a href="blog.html" class="label" style="text-decoration: none;">← Back to Blog</a>
-  <h1>Your coding agent has amnesia. Stuffing its context isn&#x27;t the cure.</h1>
-  <p class="meta">November 11, 2026 · Updated November 13, 2026 · 10 min read</p>
+  <h1>How I built memory for Claude Code and Codex: inject little, let them pull the rest</h1>
+  <p class="meta">November 11, 2026 · Updated November 13, 2026 · 11 min read</p>
   <p><strong>Agent memory works best when it's on a diet: inject only what the agent can't find out for itself, and let it ask for the rest.</strong></p>
 <div class="highlight-box key-findings">
 <p><strong>Key findings</strong></p>
@@ -225,6 +225,8 @@
 <p><strong><a href="https://code.claude.com/docs/en/hooks">Hooks</a> push.</strong> Claude Code and Codex run scripts at moments like session start, each prompt and compaction, and a hook can add text to the context. Push is right for the small things the agent needs before it knows to ask.</p>
 
 <p><strong>MCP lets the agent pull.</strong> A <a href="https://modelcontextprotocol.io/">Model Context Protocol</a> server exposes tools the agent calls when it decides it needs something: search the history, fetch one past event, list the fixes for an error. Pull is right for everything else, because the agent only pays for what it asks for.</p>
+
+<p><strong>Neither belongs to one agent.</strong> The memory is built from files already on disk: both agents' transcripts, shell history and git. So it isn't tied to whichever agent wrote them. In L2Cache the same hooks run in Claude Code and Codex, and both connect to the same MCP server. A fix found in a Claude Code session on Tuesday is there when Codex hits the same error on Thursday, and a decision made in Codex can be searched from Claude Code.</p>
 
 <p><strong>And CLAUDE.md?</strong> <a href="https://code.claude.com/docs/en/memory">CLAUDE.md</a> (or <a href="https://agents.md/">AGENTS.md</a> for other agents) is push too: it's loaded into every session. That makes it the right place for stable rules the agent can't infer, such as how to run the tests or which conventions to follow, and the wrong place for history. A CLAUDE.md that collects session notes grows forever and rides along on every request. Most of what people now call context engineering comes down to this split: a short, stable file you push, and history the agent pulls when it needs it.</p>
 
