@@ -84,14 +84,14 @@
   <meta property="og:url" content="https://l2cache.amvo.store/en/why-claude-resume-burns-plan">
   <meta property="og:title" content="Why claude --resume Burns Your $30 Plan by Wednesday (And How to Fix It)">
   <meta property="og:description" content="Why sending one prompt after a break in Claude Code costs up to 40× a normal turn, how prompt cache TTLs actually work, and how to stop mid-week lockouts.">
-  <meta property="og:image" content="https://l2cache.amvo.store/screenshots/medium-why-claude-resume-burns-plan-3-handoff-screen.png">
-  <meta property="og:image:alt" content="L2Cache Pickup Card in Developer Home showing 254k tokens and handoff trade-offs">
+  <meta property="og:image" content="https://l2cache.amvo.store/screenshots/prompt-caching-ttl-banner.jpg">
+  <meta property="og:image:alt" content="Infographic showing Prompt Caching and 5-Minute TTL Lifecycle in AI Coding Agents">
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:url" content="https://l2cache.amvo.store/en/why-claude-resume-burns-plan">
   <meta name="twitter:title" content="Why claude --resume Burns Your $30 Plan by Wednesday (And How to Fix It)">
   <meta name="twitter:description" content="Why sending one prompt after a break in Claude Code costs up to 40× a normal turn, how prompt cache TTLs actually work, and how to stop mid-week lockouts.">
-  <meta name="twitter:image" content="https://l2cache.amvo.store/screenshots/medium-why-claude-resume-burns-plan-3-handoff-screen.png">
-  <meta name="twitter:image:alt" content="L2Cache Pickup Card in Developer Home showing 254k tokens and handoff trade-offs">
+  <meta name="twitter:image" content="https://l2cache.amvo.store/screenshots/prompt-caching-ttl-banner.jpg">
+  <meta name="twitter:image:alt" content="Infographic showing Prompt Caching and 5-Minute TTL Lifecycle in AI Coding Agents">
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -103,7 +103,7 @@
   "dateModified": "2026-11-14",
   "author": { "@type": "Organization", "name": "Amvo", "url": "https://l2cache.amvo.store/en" },
   "publisher": { "@type": "Organization", "name": "Amvo", "logo": { "@type": "ImageObject", "url": "https://l2cache.amvo.store/icon.png" } },
-  "image": "https://l2cache.amvo.store/screenshots/medium-why-claude-resume-burns-plan-3-handoff-screen.png",
+  "image": "https://l2cache.amvo.store/screenshots/prompt-caching-ttl-banner.jpg",
   "mainEntityOfPage": { "@type": "WebPage", "@id": "https://l2cache.amvo.store/en/why-claude-resume-burns-plan" }
 }
   </script>
@@ -132,6 +132,11 @@
   <h1>Why claude --resume Burns Your $30 Plan by Wednesday (And How to Fix It)</h1>
   <p class="meta">November 14, 2026 · 6 min read</p>
   <p><strong>The Reddit mystery solved: why typing "one quick message" after a break burns through your rate limits, how prompt cache TTLs actually work, and the diagnostic prompt to audit your machine.</strong></p>
+
+  <figure style="margin: 28px 0;">
+    <img src="screenshots/prompt-caching-ttl-banner.jpg" alt="How Prompt Caching and 5-Minute TTL Work in Claude Code" style="width: 100%; border-radius: 10px; border: 1px solid var(--border);" />
+    <figcaption style="font-size: 13.5px; color: var(--text-dim); text-align: center; margin-top: 8px;">The 5-Minute Cache TTL Cliff: Continuous active sessions stay cached at a 90% discount (left), but sitting idle past 5 minutes forces a full cold re-read of 100k+ tokens at 100% price (right).</figcaption>
+  </figure>
 <p>If you browse <code>r/ClaudeAI</code> or <code>r/ClaudeCode</code> on any given Wednesday, you’ll see the exact same developer lament repeated like clockwork:</p>
 
 <blockquote class="highlight-box"><p>"I hit my 5-hour limit at noon. I waited until 5:00 PM for the reset. I opened my terminal, sent <strong>one single prompt</strong> to continue, and 15 minutes later Claude Code told me I was locked out again until 10:00 PM!"</p></blockquote>
