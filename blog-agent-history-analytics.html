@@ -324,12 +324,12 @@
         <tr style="border-bottom: 1px solid var(--border);">
           <td style="padding: 12px 16px; font-weight: 600;">Resumption Method</td>
           <td style="padding: 12px 16px; color: #555550;">Run terminal command in repository</td>
-          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">1-Click "Resume in Terminal" from floating panel (<code>⌘⇧V</code>)</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">1-Click resume from Developer Home (<code>⌃⌥H</code>) into Ghostty, Warp, iTerm2, or Terminal</td>
         </tr>
         <tr style="border-bottom: 1px solid var(--border);">
           <td style="padding: 12px 16px; font-weight: 600;">Multi-Provider Support</td>
           <td style="padding: 12px 16px; color: #555550;">Isolated to one CLI tool at a time</td>
-          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">Unified timeline across Claude Code, Codex, and shell history</td>
+          <td style="padding: 12px 16px; color: #00a87f; font-weight: 600;">Unified timeline across Claude Code, Codex, Copilot, Grok, and Antigravity</td>
         </tr>
         <tr>
           <td style="padding: 12px 16px; font-weight: 600;">Privacy &amp; Telemetry</td>
@@ -340,22 +340,27 @@
     </table>
   </div>
 
-  <h2 id="token-analytics">Tracking Claude Code Token Usage and Prompt Cache Hit Rates</h2>
-  <p>In <strong>L2Cache 1.4</strong>, we introduced native <strong>AI Agent History &amp; Analytics</strong>—bringing full visibility to your CLI agent sessions directly from your Mac's menu bar or global hotkey.</p>
+  <h2 id="token-analytics">Tracking Claude Code Token Usage, Cold Resume Guards, and MCP Memory</h2>
+  <p>In <strong>L2Cache 2.0</strong>, we expanded native <strong>AI Agent History &amp; Analytics</strong> into a complete developer memory layer—giving you instant visibility and continuity across CLI agent sessions directly from your Mac's menu bar, Developer Home, or global hotkeys.</p>
 
   <div class="feature-card">
-    <h3>Real-Time Token &amp; Cost Breakdown</h3>
-    <p>View total input tokens, output tokens, and overall token consumption for every session across Claude Code and Codex. Instantly identify token-heavy prompts or runaway context loops before they inflate API bills.</p>
+    <h3>Developer Home &amp; "Today" Hub (<code>⌃⌥H</code>)</h3>
+    <p>View where you left off across every repository. The <strong>Hero Card</strong> surfaces your active git branch, the exact prompt where Claude stopped, uncommitted changes, open compiler errors, and a 1-click <em>"Resume with Claude Code"</em> button targeting your favorite terminal (Ghostty, Warp, iTerm2, or native Terminal).</p>
   </div>
 
   <div class="feature-card">
-    <h3>Prompt Cache Efficiency (Cache Hit Ratio)</h3>
-    <p>Track <code>cacheReadTokens</code> and prompt cache hit ratios. See exactly how effectively your agent sessions leverage LLM prompt caching, allowing you to optimize prompt structures for maximum speed and cost efficiency.</p>
+    <h3>Cold Resume Guard &amp; Handoff Injection</h3>
+    <p>Resuming an idle session after the 5-minute / 1-hour cache TTL triggers an expensive cold cache reload (10× to 80× more expensive per turn). L2Cache's terminal hooks detect expired caches and offer <strong>"Start fresh with L2Cache handoff"</strong>: running <code>/clear</code> injects a compact summary of decisions, files, and next steps—dropping 250k stale tokens down to 10k fresh tokens without losing context.</p>
   </div>
 
   <div class="feature-card">
-    <h3>Session Sorting &amp; Fast Search</h3>
-    <p>Sort past sessions by <strong>Recent Activity</strong>, <strong>Total Tokens</strong>, <strong>Prompt Cache Hits</strong>, or <strong>Runtime Duration</strong>. Filter sessions by provider (Claude vs. Codex) or search through full conversation histories instantly with SQLite FTS5 fast search.</p>
+    <h3>Embedded Local MCP Server (<code>l2cache</code> MCP)</h3>
+    <p>L2Cache runs an embedded Model Context Protocol server. Claude Code can self-query past history directly using native tools: <code>search_agent_history</code>, <code>get_recovery_point</code>, <code>get_error_resolutions</code>, and <code>get_session_summary</code>—preventing agents from repeating the same debugging loops.</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>Real-Time Token Breakdown &amp; Cache Miss Ledger</h3>
+    <p>View total input/output tokens, track <code>cacheReadTokens</code> hit ratios, and monitor the Cache Miss Ledger to prevent prefix drift (e.g. mid-session edits to <code>CLAUDE.md</code> that unintentionally invalidate prefix caching).</p>
   </div>
 
   <h2 id="prevent-memory-rot">Preventing Agent Memory Loss: Promoting Gotchas to AGENTS.md</h2>

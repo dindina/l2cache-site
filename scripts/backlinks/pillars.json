@@ -125,5 +125,23 @@
       "productivity",
       "macos"
     ]
+  },
+  {
+    "id": "M8",
+    "slug": "why-claude-resume-burns-plan",
+    "keyword": "claude resume rate limit mid week",
+    "related": [
+      "claude code rate limit after break",
+      "why does claude resume burn limits",
+      "claude prompt cache ttl",
+      "claude code 5 hour limit reset"
+    ],
+    "question": "Why does claude --resume burn through my weekly plan limit so fast?",
+    "devto_tags": [
+      "ai",
+      "claude",
+      "programming",
+      "productivity"
+    ]
   }
 ]
